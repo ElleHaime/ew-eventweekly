@@ -51,7 +51,10 @@
         {
             if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
             {
-                var contentString = '<div id="content"><div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div></div>';
+                var contentString = '<div class="info-win" id="content">' +
+                        '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
+                        '<div><a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">link</a></div>'+
+                        '</div>';
                     //contentString+='<div>Lat: '+event.venue.latitude+'</div><div>Lng: '+event.venue.longitude+'</div>';
                 var infowindow = new google.maps.InfoWindow({
                     content: contentString
