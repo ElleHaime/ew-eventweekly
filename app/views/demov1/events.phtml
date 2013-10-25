@@ -1,0 +1,46 @@
+<?php include('../app/views/header.phtml'); ?>
+<?php include('../app/views/menu.phtml'); ?>
+
+<?php if (!empty($events)): ?>
+    <div data-role="collapsible-set">
+
+        <div class="block">
+          <div>Own events:</div>
+          <?php if (count($events[0])>0): ?>
+            <?php foreach($events[0] as $event): ?>
+              <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+                  <h3><?php echo $event['name'] ?></h3>
+                  <img src="<?php echo $event['pic_square'] ?>">
+                  <?php echo $event['anon'].'...' ?>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+              <div>Not found<div>
+          <?php endif; ?>
+        </div>
+
+        <div class="block">
+          <div>Friend events:</div>
+          <?php if (count($events[1])>0): ?>
+          <?php foreach($events[1] as $event): ?>
+                <div data-role="collapsible" data-content-theme="a" data-collapsed="true">
+                    <h3><?php echo $event['name'] ?></h3>
+                    <img src="<?php echo $event['pic_square'] ?>">
+                    <?php echo $event['anon'].'...' ?>
+                </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+              <div>Not found<div>
+          <?php endif; ?>
+        </div>
+
+    </div>
+<?php else: ?>
+  <div>Login required<div>
+<?php endif; ?>
+
+
+
+</div>
+</div>
+<?php include('../app/views/footer.phtml'); ?>

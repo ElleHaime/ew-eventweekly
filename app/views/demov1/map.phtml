@@ -1,0 +1,73 @@
+<?php include('../app/views/header.phtml'); ?>
+<?php include('../app/views/menu.phtml'); ?>
+
+<?php if (isset($user_loc)) echo "<input type=hidden id='lat' value='".$user_loc['lat']."'>"; ?>
+<?php if (isset($user_loc)) echo "<input type=hidden id='lon' value='".$user_loc['lon']."'>"; ?>
+
+<div class="gmap" id="map_canvas"></div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+    $(document).bind('pageinit', function(){
+        var lat = $('#lat').val(),
+            lng = $('#lon').val();
+
+        if ( (typeof(lat)!=='undefined') && (typeof(lng)!=='undefined') )
+        {
+          var mapOptions = {
+              center: new google.maps.LatLng(lat, lng),
+              zoom: 8,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+            $.post("/public/demov1/eventsForMap",
+                    function(data) {
+                        data = jQuery.parseJSON(data);
+                        if (data.status=="OK")
+                        {
+                            if (data.message[0].length>0) //own events
+                            {
+                                console.log('My events count:'+data.message[0].length);
+                                $.each(data.message[0], function(index,event) {
+                                    showEvent(event);
+                                });
+                            }
+                            if (data.message[1].length>0) //friend events
+                            {
+                                console.log('Friend events count:'+data.message[1].length);
+                                $.each(data.message[1], function(index,event) {
+                                    showEvent(event);
+                                });
+                            }
+                        }
+
+
+                    });
+        }
+        function showEvent(event)
+        {
+            if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
+            {
+                var contentString = '<div id="content"><div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div></div>';
+                    //contentString+='<div>Lat: '+event.venue.latitude+'</div><div>Lng: '+event.venue.longitude+'</div>';
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString
+                })
+                myLatlng = new google.maps.LatLng(event.venue.latitude,event.venue.longitude);
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+                    title:event.name
+                });
+                google.maps.event.addListener(marker, 'click', function() {
+                    infowindow.open(map,marker);
+                });
+            }
+        }
+    });
+</script>
+
+<?php include('../app/views/footer.phtml'); ?>

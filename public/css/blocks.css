@@ -1,0 +1,59 @@
+.ui-mobile [data-role="page"], .ui-mobile [data-role="dialog"], .ui-page
+{
+    position: relative!important;
+}
+
+@media screen and (min-width:1024px) {
+    .ui-mobile [data-role="page"]
+    {
+        width: 1024px!important;
+        margin: 0 auto;
+    }
+}
+
+.ui-header-fixed, .ui-footer-fixed
+{
+    /*position: absolute!important;*/
+}
+
+.block{
+    border: 1px solid #AAAAAA;
+    font-family: Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    outline: 0 none;
+    padding: 0.4em;
+    -moz-box-sizing: border-box;
+    margin-top: 10px;
+}
+.left-text{
+    text-align: left;
+}
+.center-text{
+    text-align: center;
+}
+.right-text{
+    text-align: right;
+}
+.hidden {
+    display: none;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+a {
+    text-decoration: none;
+}
+.red{
+    color: #FF0000;
+}
+.green{
+    color: #2b740a;
+}
+
+.gmap{
+    height: 600px!important;
+}

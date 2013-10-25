@@ -1,0 +1,61 @@
+<?php include('../app/views/header.phtml'); ?>
+<?php include('../app/views/menu.phtml'); ?>
+
+    <?php if (!empty($user_loc)): ?>
+      <div data-role="fieldcontain">
+          <label for="textinput1">Current location:</label>
+          <input name="" id="location" value="<?php if (isset($user_loc)) echo $user_loc; ?>" type="text">
+      </div>
+      <div id="results" hidden="hidden">
+          <ul data-role="listview" id="locations" data-inset="true">
+              <li data-role="list-divider" role="heading">Select one:</li>
+              <!--<li><a href="#" data-transition="slide">Button</a></li>-->
+          </ul>
+      </div>
+    <?php else: ?>
+      <div>Login required<div>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    $(document).bind('pageinit', function(){
+        $('#location').keyup(function() {
+            var text = encodeURI($('#location').val()),
+                url = 'http://maps.googleapis.com/maps/api/geocode/json?address='+text+'&sensor=false&language=en';
+            if (text!='')
+            $.get(url, function(data) {
+                if (data.status == 'OK')
+                {
+                    $('#results').show();
+                    $("#locations").empty()
+                    $.each( data.results, function(key, val) {
+                        //$item->geometry->location->lat
+                        $('#locations').append('<li><a id="loc_item" data-lng='+val.geometry.location.lng+' data-lat='+val.geometry.location.lat+'>'+val.formatted_address+'</a></li>');
+                    });
+                    $('#locations').listview('refresh');
+                }
+                else
+                {
+                    $("#locations").empty();
+                }
+                });
+        });
+    });
+    $('body').on('click', '#loc_item', function(e){
+        var $loc_text =$(this).html();
+
+        $.mobile.loading("show");
+        $.post("/public/demov1/saveLocation", { loc: $loc_text},
+                function(data) {
+                    data = jQuery.parseJSON(data);
+                    if (data.status=='OK')
+                    {
+                        $('#location').val($loc_text);
+                        $("#locations").empty();
+                        $.mobile.loading("hide");
+                    }
+                });
+    });
+</script>
+
+<?php include('../app/views/footer.phtml'); ?>
