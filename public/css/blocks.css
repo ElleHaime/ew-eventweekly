@@ -57,3 +57,7 @@ a {
 .gmap{
     height: 600px!important;
 }
+
+.info-win{
+    height: 120px;
+}
