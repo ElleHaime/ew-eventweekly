@@ -95,6 +95,22 @@ class Fb_extractor
     return $events;
   }
 
+  public function getEventById($eventId,$accessToken)
+  {
+    $fql = array(
+      'event' =>
+        'SELECT eid, name, description, location, venue, pic_square, creator, end_time, pic_square, start_time, update_time
+          FROM event WHERE eid='.$eventId
+    );
+    $data = $this->getFQL($fql,$accessToken);
+    if ($data['STATUS']==FALSE)
+    {
+      echo $data['MESSAGE'];
+      die;
+    }
+    return $data['MESSAGE'];
+  }
+
   public function getEventsSimple($accessToken)
   {
     $limit = 50;

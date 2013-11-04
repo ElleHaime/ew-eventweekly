@@ -26,7 +26,6 @@ $(document).bind('pageinit', function(){
                                          $('#login_message').show();
                                      }
                                  });
-                             //
                          }
                          });
                 }

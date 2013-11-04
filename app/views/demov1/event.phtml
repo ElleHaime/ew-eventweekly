@@ -1,0 +1,35 @@
+<?php include('../app/views/header.phtml'); ?>
+<?php include('../app/views/menu.phtml'); ?>
+
+<div class="block">
+  <?php if (!empty($event['name'])): ?>
+    <h3>Name: <?php echo $event['name'] ?></h3>
+  <?php endif; ?>
+  <?php if (!empty($event['pic_square'])): ?>
+    <div><?php echo "<img src=".$event['pic_square'].">" ?></div>
+  <?php endif; ?>
+  <?php if (!empty($event['description'])): ?>
+    <div>Description:<pre><?php echo $event['description'] ?></pre></div>
+  <?php endif; ?>
+  <?php if (!empty($event['location'])): ?>
+    <div>Location:<?php echo $event['location'] ?></div>
+  <?php endif; ?>
+  <?php if (!empty($event['venue'])): ?>
+    <div>Venue:<pre><?php var_dump($event['venue']) ?></pre></div>
+  <?php endif; ?>
+  <?php if (!empty($event['start_time'])): ?>
+    <div>Start time:<?php echo $event['start_time'] ?></div>
+  <?php endif; ?>
+  <?php if (!empty($event['end_time'])): ?>
+    <div>End time:<?php echo $event['end_time'] ?></div>
+  <?php endif; ?>
+  <?php if (!empty($event['update_time'])): ?>
+    <div>Update time:<?php echo $event['update_time'] ?></div>
+  <?php endif; ?>
+</div>
+
+
+</div>
+</div>
+
+<?php include('../app/views/footer.phtml'); ?>
