@@ -74,7 +74,7 @@ class Fb_extractor
     $data = $this->getFQL($fql,$accessToken);
     if ($data['STATUS']==FALSE)
     {
-      echo $data['MESSAGE'];
+      return $data;
       die;
     }
 
@@ -105,7 +105,7 @@ class Fb_extractor
     $data = $this->getFQL($fql,$accessToken);
     if ($data['STATUS']==FALSE)
     {
-      echo $data['MESSAGE'];
+      return $data;
       die;
     }
     return $data['MESSAGE'];
@@ -139,7 +139,7 @@ class Fb_extractor
     $data = $this->getFQL($fql,$accessToken);
     if ($data['STATUS']==FALSE)
     {
-      echo $data['MESSAGE'];
+      return $data;
       die;
     }
 
@@ -186,7 +186,7 @@ class Fb_extractor
     $data = $this->getFQL($fql,$accessToken);
     if ($data['STATUS']==FALSE)
     {
-      echo $data['MESSAGE'];
+      return $data;
       die;
     }
 

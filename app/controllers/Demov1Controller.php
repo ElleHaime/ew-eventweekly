@@ -27,7 +27,12 @@ class Demov1Controller extends Phalcon\Mvc\Controller
 
   public function loginAction()
   {
+    $access_token = $this->session->get("user_token");
 
+    if (!empty($access_token))
+    {
+      $this->view->setVar('is_authorized', true);
+    }
   }
 
   public function profileAction()
@@ -128,7 +133,7 @@ class Demov1Controller extends Phalcon\Mvc\Controller
     }
   }
 
-  public function EventAction()
+  public function eventAction()
   {
     $request = new Phalcon\Http\Request();
     $eventId = $request->getPost("eventId");
@@ -142,6 +147,13 @@ class Demov1Controller extends Phalcon\Mvc\Controller
     require_once '../app/libraries/facebook/fb_extractor.php';
     $this->facebook = new Fb_extractor();
     $event = $this->facebook->getEventById($eventId,$accessToken);
+
+    /*
+    if ($event['STATUS']==FALSE)
+    {
+      $this->session->destroy();
+    }
+    */
 
     if (!empty($event[0]['fql_result_set'][0]))
       $event = $event[0]['fql_result_set'][0];

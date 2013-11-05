@@ -3,7 +3,6 @@
 
 <?php if (!empty($events)): ?>
     <div data-role="collapsible-set">
-
         <div class="block">
           <div>Own events:</div>
           <?php if (count($events[0])>0): ?>
@@ -14,15 +13,14 @@
                   <?php echo $event['anon'].'...' ?>
                   <div class="ui-grid-b">
                       <div class="ui-block-a">
-                      </div>
-                      <div class="ui-block-b">
                           <form method="POST" action="Event" data-ajax="false">
                               <input type="hidden" value="<?php echo $event['eid'] ?>" name="eventId">
                               <input type="submit" value="More...">
                           </form>
-                          <!--<a data-role="button" rel="external" href="">More...</a>-->
                       </div>
+                      <div class="ui-block-b"></div>
                       <div class="ui-block-c">
+                          <a data-role="button" id="event_share" href="#page1">Share</a>
                       </div>
                   </div>
               </div>
@@ -42,15 +40,14 @@
                     <?php echo $event['anon'].'...' ?>
                     <div class="ui-grid-b">
                         <div class="ui-block-a">
-                        </div>
-                        <div class="ui-block-b">
                             <form method="POST" action="Event" data-ajax="false">
                                 <input type="hidden" value="<?php echo $event['eid'] ?>" name="eventId">
                                 <input type="submit" value="More...">
                             </form>
-                            <!--<a data-role="button" rel="external" href="<?php echo "Event/".$event['eid'] ?>">More...</a>-->
                         </div>
+                        <div class="ui-block-b"></div>
                         <div class="ui-block-c">
+                            <a data-role="button" id="event_share" href="#page1">Share</a>
                         </div>
                     </div>
                 </div>

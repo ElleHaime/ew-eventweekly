@@ -1,4 +1,31 @@
 $(document).bind('pageinit', function(){
+
+    //https://developers.facebook.com/docs/reference/dialogs/feed/
+    $('#event_going').click(function() {
+        FB.ui({
+            method: 'feed',
+            link: 'bash.im',
+            caption: 'User are joined event'
+        }, function(response){});
+    });
+
+
+    $('#event_share').click(function() {
+        FB.ui({
+            method: 'feed',
+            link: 'bash.im',
+            caption: 'User are shared this event'
+        }, function(response){});
+    });
+
+    //https://developers.facebook.com/docs/reference/dialogs/send/
+    $('#fb-invite').click(function() {
+        FB.ui({
+            method: 'send',
+            link: 'http://bash.im'
+        });
+    });
+
     $('#fb-login').click(function() {
         FB.login(
             function(response) {
