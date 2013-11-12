@@ -1,49 +1,29 @@
 <?php
 
-try {
+error_reporting(E_ALL);
 
-  //Register an autoloader
-  $loader = new \Phalcon\Loader();
-  $loader->registerDirs(
-      array(
-          '../app/controllers/',
-          '../app/models/',
-          '../app/libraries/'
-      )
-  )->register();
-
-
-  //Create a DI
-  $di = new Phalcon\DI\FactoryDefault();
-
-  //Set the database service
-  $di->set('db', function(){
-      return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
-          "host" => "localhost",
-          "username" => "root",
-          "password" => "secret",
-          "dbname" => "test_db"
-      ));
-  });
-
-  //Setting up the view component
-  $di->set('view', function(){
-      $view = new \Phalcon\Mvc\View();
-      $view->setViewsDir('../app/views/');
-      return $view;
-  });
-
-  $di->setShared('session', function() {
-    $session = new Phalcon\Session\Adapter\Files();
-    $session->start();
-    return $session;
-  });
-
-  //Handle the request
-  $application = new \Phalcon\Mvc\Application();
-  $application->setDI($di);
-  echo $application->handle()->getContent();
-
-} catch(\Phalcon\Exception $e) {
-     echo "PhalconException: ", $e->getMessage();
+if (!defined('SEP')) {
+	define('SEP', DIRECTORY_SEPARATOR);
 }
+
+if (!defined('ROOT_APP')) {
+	define('ROOT_APP', dirname(dirname(__FILE__)) . SEP);
+}
+if (!defined('ROOT_LIB')) {
+	define('ROOT_LIB', ROOT_APP . 'apps' . SEP . 'library' . SEP . 'Core' . SEP);
+}
+if (!defined('CONFIG_SOURCE')) {
+	define('CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'config.php');
+}
+
+require_once ROOT_LIB . 'Application.php';
+
+try {
+	$application = new Application();
+	$application -> run();
+	
+	echo $application -> getOutput();
+	
+} catch (Exception $e) {
+	throw $e;
+} 

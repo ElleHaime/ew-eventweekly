@@ -1,0 +1,582 @@
+
+/*----reset css ----*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+html {
+    height: 100%;
+}
+header, nav, section, article, aside, footer {
+    display: block;
+}
+body {
+    font: 12px/18px Tahoma, Verdana, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+a {
+    color: #ffffff;
+    outline: none;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+    color: #ffffff;
+}
+p {
+    margin:0;
+}
+img {
+    border: none;
+}
+input {
+    vertical-align: middle;
+}
+
+h1, h2,h3, h4,h5 {
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+}
+.clearfix:after {content:"."; display:block; height:0px; clear:both; visibility:hidden;}
+.clear { clear:both; font-size:0px; overflow:hidden;}
+
+label {
+    padding: 0;
+    margin: 0;
+}
+
+
+.container {
+    background: #0071BC;
+}
+body {
+   background: url(../img/demo/bg-body.jpg) repeat;
+}
+/*----header----*/
+.logo {
+    display: block;
+    margin: 16px 0 0 16px;
+}
+
+.out {
+    background: #333333;
+}
+.header {
+    background: #333333;
+    max-height: 70px;
+ }
+
+.content {
+    border-top: 1px solid #29abe2;
+}
+.select-box {
+    float:right;
+    margin: 5px 16px 0 10px;
+}
+.select-box label, .user-box label {
+    color:#666666;
+    font-size: 10px;
+    display: block;
+    padding-bottom: 2px;
+}
+.select-box select {
+    width: 113px;
+    height: 24px;
+    margin: 0;
+    font-size: 12px;
+    color:#1A1A1A;
+    background: #F2F2F2;
+    border: 0;
+}
+
+/*-------top about ------*/
+.top-about {
+    padding: 46px 0 10px 0 ;
+}
+.top-about-text h4 {
+    color:#ffffff;
+    font-size: 14px;
+    padding: 0;
+    text-align: center;
+    font-weight: bold;
+}
+.top-about img {
+    text-align: center;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+.link-about {
+    border-bottom: 1px solid #29abe2;
+}
+.link-about a {
+    text-align: center;
+    display: block;
+}
+
+
+p {
+    font-size: 14px;
+    color:#ffffff;
+}
+
+.agreement-box  {
+    padding: 30px 0 15px 0;
+    border-bottom: 1px solid #29abe2;
+}
+.agreement-box p {
+    text-align: left;
+    line-height: 22px;
+}
+.agreement-box-text {
+    margin: 20px auto;
+    display: block;
+    width: 350px;
+}
+.agreement-box-text p  {
+    padding-left: 80px;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+.agreement-box-text img {
+    float: left;
+}
+
+.btn {
+    background: #67ADDA;
+    font-family: 'Open Sans', sans-serif;
+}
+.btn {
+    padding: 10px 70px;
+    text-align: center;
+    background: #29ABE2;
+    display: inline-block;
+    font-size: 17px;
+    font-weight: normal;
+    color:#ffffff;
+    text-shadow: none;
+    border: 0;
+}
+.btn:hover, .btn:active, .btn:focus  {
+    background: #67ADDA;
+    color:#ffffff;
+    outline: none;
+}
+
+.agreement-box .btn {
+    text-transform: capitalize;
+ }
+.sign-box {
+    margin: 30px 0px 50px 0px;
+}
+.sign-box  .btn {
+    width: 90%;
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0;
+}
+.sign-box p {
+    text-align: right;
+    font-size: 12px;
+}
+.sign-box  span {
+    color:#ffffff;
+    vertical-align: middle;
+    display: block;
+    margin-top: 7px;
+}
+
+.btn-fb {
+    width: 50%;
+    display: block;
+    margin: 20px auto;
+}
+
+.line {
+    border-left:1px solid #1a1a1a;
+    border-right:2px solid #4d4d4d;
+    float: left;
+    width: 0;
+    height: 69px;
+    display: block;
+}
+.user-box {
+    float: left;
+    padding: 15px 0 10px 30px;
+    position: relative;
+    margin-right: 20px;
+}
+.user-box  a {
+    display: block;
+    min-width: 180px;
+    background: #29ABE2;
+    border-radius: 5px;
+    position: relative;
+    z-index: 10;
+}
+.user-box  a:hover {
+    text-decoration: none;
+}
+
+.user-box a span {
+    padding: 11px 0;
+    display: inline-block;
+}
+.user-box a:active, a:focus  {
+    border: 0;
+    text-decoration: none;
+    color:#fff;
+}
+
+.user-box a >  span {
+    padding-left:19px;
+    padding-right: 10px;
+    text-align: center;
+    color:#ffffff;
+    padding-top: 10px;
+}
+.user-box a img {
+    border-radius: 5px;
+    border:1px solid #ffffff;
+    height: 39px;
+}
+
+ .caret {
+    vertical-align: middle;
+    position:absolute ;
+    right:15px;
+    border-left: 5px solid rgba(0, 0, 0, 0);
+    border-right: 5px solid rgba(0, 0, 0, 0);
+    border-top: 6px solid #ffffff;
+    top:18px;
+}
+
+.user-down , .user-form {
+    background: #29ABE2;
+    position: absolute;
+    left:0;
+    top:76px;
+    width: 360px;
+    padding: 22px 0 7px 0;
+    box-shadow: 0 2px 9px #656667;
+}
+.edit-btn {
+    padding: 0 22px;
+    border-bottom: 2px solid #54bce8;
+
+}
+.user-down .btn {
+    background: #ffffff;
+    color:#000000;
+    font-weight: normal;
+    text-align: left;
+    padding: 0 8px;
+    margin: 0 0 20px  0;
+
+}
+.edit-icon {
+    background: url(../img/demo/edit.jpg) no-repeat center center  #e6e6e6;
+    width: 34px;
+    height: 33px;
+    padding: 6px 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+.btn-text {
+    display: inline-block;
+    vertical-align: middle;
+    padding-left: 10px;
+    font-size: 14px;
+}
+
+
+
+.btn-list .btn {
+    background: #f2f2f2;
+    color:#4D4D4D;
+    font-weight: normal;
+    text-align: left;
+    padding: 0 8px;
+    margin: 0 0 20px  0;
+}
+
+.btn-list {
+    padding: 22px 22px 0 22px;
+}
+
+.btn-count {
+    color:#ffffff;
+    font-weight: bold;
+    font-size: 24px;
+    background: #f15a24;
+    width: 63px;
+    height: 43px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 43px;
+}
+
+
+.btn-add {
+    float: left;
+    padding: 10px 12px;
+    margin-right: 30px;
+    margin-top: 15px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.btn-add span {
+    margin-right: 10px;
+}
+
+
+/**/
+.location {
+    float: left;
+    margin:15px 30px 0 30px;
+}
+.location-count {
+    background: #f15a24;
+    color:#ffffff;
+    padding: 10px 17px;
+    border-radius: 5px;
+    font-size: 15px;
+    margin-right: 4px;
+    float: left;
+}
+
+.location-count_no {
+    background: #CCCCCC;
+}
+
+.location-place  {
+    margin-top:0px;
+    margin-right: 4px;
+    float: left;
+    position: relative;
+}
+
+.location-place span {
+    padding-right: 12px;
+}
+.location-place a {
+    background: none repeat scroll 0 0 #29ABE2;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 10px 0px;
+    min-width: 180px;
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    font-size: 11px;
+    text-align: center;
+}
+.location-place a:hover {
+    text-decoration: none;
+}
+
+a.location-city  {
+    min-width: 100px;
+}
+
+.show-box {
+    float: left;
+    margin: 15px 10px 0 20px;
+}
+
+.btn-show i {
+    border-right:1px solid #ccc;
+    margin-right: 3px;
+    padding-right: 4px;
+    vertical-align: middle;
+}
+
+.btn-show , .btn-show:hover {
+    background: #ececec;
+    color:#000000;
+    font-size: 12px;
+    font-weight: bold;
+    padding:9px;
+}
+
+.btn-show  span {
+   vertical-align: middle;
+    padding: 5px 25px 5px 5px;
+
+ }
+
+.location-search input {
+    padding: 10px;
+    border: 0;
+}
+.location-search .btn {
+    padding: 10px 30px;
+    font-weight: normal;
+    font-size: 15px;
+    background: #ffffff;
+    color:#1a1a1a;
+
+}
+.location-search .input-append .add-on:last-child, .location-search  .input-append .btn:last-child, .location-search .input-append .btn-group:last-child > .dropdown-toggle
+{
+    border-radius: 0;
+}
+
+.location-search {
+    background: #29ABE2;
+    position: absolute;
+    right:0;
+    top:54px;
+    width: auto;
+    padding: 22px;
+    box-shadow: 0 2px 9px #656667;
+}
+
+.active-box a {
+    padding-bottom:30px;
+}
+
+.input-append input {
+    background: #0088c4;
+    color:#ffffff;
+    font-size: 15px;
+    border-radius: 0;
+}
+.location-search  .input-append {
+    float: right;
+}
+
+.user-form {
+    top:65px;
+}
+
+.form-horizontal  {
+    padding: 20px;
+    margin: 0;
+}
+.user-form .form-horizontal {
+    padding: 0 20px;
+}
+ .form-horizontal .control-label,  .form-horizontal label
+{
+    width:80px;
+    color:#ffffff;
+    text-align: left;
+    font-size: 14px;
+}
+.form-horizontal label {
+    width: 100px;
+ }
+
+.control-group {
+    margin-bottom: 10px;
+}
+.form-horizontal .controls {
+    margin-left: 90px;
+}
+
+
+.form-horizontal  .btn-login {
+    background:#0088C4;
+    color:#fff;
+    padding: 10px 30px;
+    font-weight: normal;
+}
+
+.controls .btn {
+    margin-top: 10px;
+}
+
+.location-search {
+    display: none;
+}
+.form-horizontal .controls label {
+    width: auto;
+    font-size: 13px;
+
+}
+
+
+.list-event {
+    margin:20px 20px;
+    background: #fff;
+    padding: 20px;
+}
+.list-event-img {
+    float: left;
+    margin-right: 30px;
+}
+.list-event-img img {
+    border-radius: 5px;
+    border:1px solid #ccc;
+}
+.list-event-text {
+    float: left;
+}
+ .list-event-text  a {
+    color:#1A1A1A;
+    font-size: 22px;
+     padding-bottom: 10px;
+}
+
+ .location-event {
+     clear: both;
+     color: #29ABE2;;
+     display: block;
+ }
+ .date-list {
+     padding-bottom: 5px;
+ }
+
+.list-event p {
+     color:#4D4D4D;
+     opacity: 0.8;
+     font-size: 14px;
+     padding-bottom: 4px;
+     padding-top: 3px;
+ }
+
+ .date-start, .date-finish  {
+     font-weight:bold;
+ }
+
+/*-------form------*/
+input, select:focus,a:focus, a:active ,
+select:active , option:focus, option:active,
+button:active, button:focus, input:focus,
+input:active , textarea:focus, textarea:active,
+.radio input[type="radio"],
+.checkbox input[type="checkbox"]{
+    outline: none;
+    box-shadow: none;
+}
+textarea:focus, input[type="text"]:focus,
+input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus,
+input[type="search"]:focus, input[type="tel"]:focus,
+input[type="color"]:focus, .uneditable-input:focus
+{
+    border-color:#ccc;
+    box-shadow: none;
+}
+textarea {
+    resize: none;
+}
+
+.map{
+    width: 1024px;
+    text-align: center;
+    margin-left: auto ;
+    margin-right: auto ;
+}
+#map_canvas{
+    position: static;
+    width: 1024px;
+    height: 600px;
+}

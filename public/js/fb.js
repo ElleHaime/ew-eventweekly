@@ -1,66 +1,158 @@
-window.fbAsyncInit = function() {
-    FB.init({
-        appId      : '303226713112475',
-        status     : true
+$( document ).ready(function() {
+
+    //https://developers.facebook.com/docs/reference/dialogs/feed/
+    $('#event_going').click(function() {
+        FB.ui({
+            method: 'feed',
+            link: 'bash.im',
+            caption: 'User are joined event'
+        }, function(response){});
     });
-};
 
-(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=361888093918931";
-    fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
 
-$(document).ready(function() {
+    $('#event_share').click(function() {
+        FB.ui({
+            method: 'feed',
+            link: 'bash.im',
+            caption: 'User are shared this event'
+        }, function(response){});
+    });
 
-    /*
-    if (navigator.geolocation)
+    //https://developers.facebook.com/docs/reference/dialogs/send/
+    $('#fb-invite').click(function() {
+        FB.ui({
+            method: 'send',
+            link: 'http://bash.im'
+        });
+    });
+
+    function showEvent(event)
     {
-        navigator.geolocation.getCurrentPosition
-            (
-                function( position )
-                {
-                    alert( 'lat: ' + position.coords.latitude + ' long:' + position.coords.longitude );
-                },
-                function( error ){
-                    console.log( "Something went wrong: ", error );
-                },
-                {
-                    timeout: (5 * 1000),
-                    maximumAge: (1000 * 60 * 15),
-                    enableHighAccuracy: true
-                }
-            );
+        if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
+        {
+            var contentString = '<div class="info-win" id="content">' +
+                '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
+                '<div><a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">link</a></div>'+
+                '</div>';
+            //contentString+='<div>Lat: '+event.venue.latitude+'</div><div>Lng: '+event.venue.longitude+'</div>';
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            })
+            myLatlng = new google.maps.LatLng(event.venue.latitude,event.venue.longitude);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title:event.name
+            });
+            markers.push(marker);
+            google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map,marker);
+            });
+        }
     }
-    */
 
-    $('body').on('click','#fb-login',function(e){
+    var lat = $('#lat').val(),
+        lng = $('#lng').val();
+    if ( (typeof(lat)!=='undefined') && (typeof(lng)!=='undefined') )
+    {
+        var mapOptions = {
+            center: new google.maps.LatLng(lat, lng),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        var mc = new MarkerClusterer(map);
+        var markers = [];
+
+        $.post("/search",
+            function(data) {
+                data = jQuery.parseJSON(data);
+                if (data.status == "OK") {
+                    if (data.message[0].length > 0) //own events
+                    {
+                        console.log('My events count:'+data.message[0].length);
+                        $.each(data.message[0], function(index,event) {
+                            showEvent(event);
+                        });
+                    }
+                    if (data.message[1].length>0) //friend events
+                    {
+                        console.log('Friend events count:'+data.message[1].length);
+                        $.each(data.message[1], function(index,event) {
+                            showEvent(event);
+                        });
+                    }
+                }
+            }).done(function (){
+                var mcOptions = { gridSize: 50, maxZoom: 15};
+                var mc = new MarkerClusterer(map, markers, mcOptions);
+            });
+    }
+
+
+    $('#fb-login').click(function() {
         FB.login(
             function(response) {
                 if (response.authResponse) {
-                    //console.log('logged in');
-                    var access_token = response.authResponse.accessToken;
-                    var query='SELECT current_location FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())';
-                    FB.api({
-                            method: 'fql.query',
-                            query: query},
-                        function(facebookData) {
-                            if(facebookData) {
-                                console.dir(facebookData);
-                            }
-                            else
+                    access_token=response.authResponse.accessToken;
+                    $.post("fblogin", { uid: response.authResponse.userID, access_token: access_token },
+                        function(data) {
+                            data = jQuery.parseJSON(data);
+                            if (data.status=='OK')
                             {
-                                console.log('error getting data');
+                                //window.location.href='/map';
+                                 FB.api({
+                                     method: 'fql.query',
+                                     query: 'SELECT first_name,last_name, email,current_location, current_address, username FROM user WHERE uid='+response.authResponse.userID},
+                                     function(facebookData) {
+                                        if(facebookData) {
+
+                                            $.post("fbregister", { uid: response.authResponse.userID, 
+                                                              address: facebookData[0].current_address,
+                                                              location: facebookData[0].current_location,
+                                                              email: facebookData[0].email,
+                                                              logo: facebookData[0].pic,
+                                                              first_name: facebookData[0].first_name,
+                                                              last_name: facebookData[0].last_name,
+                                                              username: facebookData[0].username },
+                                                    function(registered) {
+                                                        session = jQuery.parseJSON(registered);
+                                                        if (session.status == 'OK') {
+                                                            window.location.href='/map';
+                                                        }
+                                                    });                                           
+                                            
+                                        } else {
+                                            $('#login_message').html('Facebook return empty result :(');
+                                            $('#login_message').show();
+                                        }
+                                 });
+                                
                             }
                         });
                 }
                 else {
-                    console.log('login filed');
+                    alert('You need to be logged in.');
                 }
             },
-            {scope: 'publish_stream,user_events,friends_events,email,user_likes,create_event,offline_access,read_stream,friends_birthday'}
+            {scope: 'user_events,friends_events,email'}
         );
     });
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '423750634398167',
+            status     : true
+        });
+    };
+
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=361888093918931";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 });
+
+
