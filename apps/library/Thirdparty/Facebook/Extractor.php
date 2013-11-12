@@ -97,7 +97,7 @@ class Extractor
           FROM user
             WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 IN (SELECT uid FROM #my_id)) LIMIT '.$limit,
       'my_events_info'=>
-      'SELECT eid, name, creator, substr(description,0,120), location, venue, pic_square
+      'SELECT eid, name, substr(description,0,120), location, venue, pic_square, creator, start_time, end_time
           FROM event
             WHERE eid IN (SELECT eid FROM event_member WHERE uid=me())
     		AND creator=me()
@@ -105,7 +105,7 @@ class Extractor
             AND venue.longitude <\''.$lngpo.'\'  AND venue.longitude >\''.$lngmo.'\' AND venue.latitude <\''.$latpo.'\' AND venue.latitude > \''.$latmo.'\''.
             ' LIMIT '.$limit,
       'friends_events_info'=>
-      'SELECT eid, name, substr(description,0,120), location, venue, pic_square, creator
+      'SELECT eid, name, substr(description,0,120), location, venue, pic_square, creator, start_time, end_time
           FROM event
             WHERE eid IN (SELECT eid FROM event_member WHERE uid IN (SELECT uid FROM #friends_uid_info))
             AND creator!=me()

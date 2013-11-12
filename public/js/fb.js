@@ -4,8 +4,8 @@ $( document ).ready(function() {
     $('#event_going').click(function() {
         FB.ui({
             method: 'feed',
-            link: 'bash.im',
-            caption: 'User are joined event'
+            link: window.location.href,
+            caption: 'You are joined event'
         }, function(response){});
     });
 
@@ -13,7 +13,7 @@ $( document ).ready(function() {
     $('#event_share').click(function() {
         FB.ui({
             method: 'feed',
-            link: 'bash.im',
+            link: window.location.href,
             caption: 'User are shared this event'
         }, function(response){});
     });
@@ -22,7 +22,7 @@ $( document ).ready(function() {
     $('#fb-invite').click(function() {
         FB.ui({
             method: 'send',
-            link: 'http://bash.im'
+            link: window.location.href
         });
     });
 
@@ -89,7 +89,6 @@ $( document ).ready(function() {
             });
     }
 
-
     $('#fb-login').click(function() {
         FB.login(
             function(response) {
@@ -100,14 +99,12 @@ $( document ).ready(function() {
                             data = jQuery.parseJSON(data);
                             if (data.status=='OK')
                             {
-                                //window.location.href='/map';
                                  FB.api({
                                      method: 'fql.query',
                                      query: 'SELECT first_name,last_name, email,current_location, current_address, username FROM user WHERE uid='+response.authResponse.userID},
                                      function(facebookData) {
                                         if(facebookData) {
-
-                                            $.post("fbregister", { uid: response.authResponse.userID, 
+                                            $.post("fbregister", { uid: response.authResponse.userID,
                                                               address: facebookData[0].current_address,
                                                               location: facebookData[0].current_location,
                                                               email: facebookData[0].email,
