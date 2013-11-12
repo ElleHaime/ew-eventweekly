@@ -124,9 +124,13 @@ class AuthController extends \Core\Controller
 	    	$location = new Location();
 	    	if (!isset($userData['location']) || empty($userData['location'])) {
 	    		$memberLocation = $location -> createOnChange($this -> geo -> getUserLocation());
-	    	} else {
-	    		$memberLocation = $location -> createOnChange($userData['location']);
-	    	}
+		    } else {
+			    if (is_array($userData['location']))
+			    {
+				    $location = $userData['location']['country'].', '.$userData['location']['city'];
+			    }
+			    $memberLocation = $location -> createOnChange($location);
+		    }
 
 			$member -> assign(array(
 					'email' => $userData['email'],

@@ -9,10 +9,8 @@
 	                            <button class="btn btn-block" onclick="location.href='/profile/edit'"><span class="edit-icon"></span><span class="btn-text">edit profile</span></button>
 	                            <button class="btn btn-block" onclick="location.href='/campaign/list'"><span class="edit-icon"></span><span class="btn-text">manage campaigns</span></button>
 	                            <button class="btn btn-block" onclick="location.href='/event/list'"><span class="edit-icon"></span><span class="btn-text">manage events</span></button>
-	                            
 	                        </div>
-	                        
-	                        
+
 	                        <div class="btn-list">
 	                            <button class="btn btn-block"><span class="btn-count">21</span><span class="btn-text">Recommended for you</span></button>
 	                            <button class="btn btn-block"><span class="btn-count">12</span><span class="btn-text">Shared by your friends</span></button>
@@ -57,7 +55,7 @@
 	                </div>
 	                <span  class="line"></span>
 	                <div class="show-box">
-	                    <button class="btn btn-show"><i class=" icon-list"></i><span>Show as list </span></button>
+	                    <button class="btn btn-show" onclick="location.href='/event/events'"><i class=" icon-list"></i><span>Show as list </span></button>
 	                </div>
 
 	            </div>

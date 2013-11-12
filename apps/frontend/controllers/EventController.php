@@ -53,7 +53,7 @@ class EventController extends \Core\Controllers\CrudController
 		}		
 	}
 
-	
+
 	public function eventsAction()
 	{
 		if ($this -> session -> has("user_token")) {
@@ -69,8 +69,8 @@ class EventController extends \Core\Controllers\CrudController
 			}
 		}
 	}
-	
-	
+
+
 	public function showAction($eid)
 	{
 		if ($this -> session -> has("user_token")) {
@@ -153,7 +153,6 @@ class EventController extends \Core\Controllers\CrudController
 			}			
 		}		
 	}
-	
 
 	public function dropLocationAction()
 	{
