@@ -127,9 +127,9 @@ class AuthController extends \Core\Controller
 		    } else {
 			    if (is_array($userData['location']))
 			    {
-				    $location = $userData['location']['country'].', '.$userData['location']['city'];
+				    $loc = $userData['location']['country'].', '.$userData['location']['city'];
+				    $memberLocation = $location -> createOnChange ($loc);
 			    }
-			    $memberLocation = $location -> createOnChange($location);
 		    }
 
 			$member -> assign(array(

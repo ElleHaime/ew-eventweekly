@@ -25,7 +25,7 @@ class EventController extends \Core\Controllers\CrudController
 				'lat' => $result -> results[0] -> geometry -> location -> lat,
 				'lng' => $result -> results[0] -> geometry -> location -> lng
 			);
-	
+
 			$this -> session -> set('user_loc', $loc);
 			$this -> view -> setVar('user_loc', $loc);
 		}
@@ -152,6 +152,13 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}			
 		}		
+	}
+
+	public function answerAction()
+	{
+		$ret['STATUS']='OK';
+		$ret['MESSAGE']='';
+		echo json_encode($ret);
 	}
 
 	public function dropLocationAction()
