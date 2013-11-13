@@ -116,13 +116,6 @@ class Extractor
 
     $data = $this->getFQL($fql,$accessToken);
 
-/*
-    echo "<pre>";
-    var_dump($data);
-    echo "</pre>";
-    die;
-*/
-
     if ($data['STATUS']==FALSE)
     {
       return $data;

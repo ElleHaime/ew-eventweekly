@@ -7,6 +7,11 @@ use Core\Utils as _U;
 
 class MemberController extends \Core\Controllers\CrudController
 {
+	public function indexAction()
+	{
+	    $this -> view -> pick('member/index');
+	}
+
 	public function listAction()
 	{
 		$isExternalLogged = $this -> view -> member -> network;

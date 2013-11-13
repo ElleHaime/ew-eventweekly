@@ -25,7 +25,7 @@
 	                <button class="btn btn-add" onclick="location.href='/event/add'"> <span class="icon-plus-sign"></span>Add Event</button>
 	                <span  class="line"></span>
 	                <div class="location clearfix">
-	                    <span class="location-count">0</span>
+	                    <span class="location-count" id="events_count">0</span>
 
 	                  <div class="location-place">
 	                      <a href="#" class="location-city">

@@ -7,7 +7,8 @@ use Core\Utils as _U,
 	Frontend\Models\Location,
 	Frontend\Models\MemberNetwork,
 	Frontend\Models\Event,
-	Objects\EventImage;
+	Objects\EventImage,
+	Objects\EventMember;
 
 
 class EventController extends \Core\Controllers\CrudController
@@ -25,10 +26,10 @@ class EventController extends \Core\Controllers\CrudController
 				'lat' => $result -> results[0] -> geometry -> location -> lat,
 				'lng' => $result -> results[0] -> geometry -> location -> lng
 			);
-	
+
 			$this -> session -> set('user_loc', $loc);
 			$this -> view -> setVar('user_loc', $loc);
-		}
+		} 
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
 	}
 
@@ -41,11 +42,9 @@ class EventController extends \Core\Controllers\CrudController
 
 			$this -> facebook = new Extractor();
 			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
-			//_U::dump($events);			
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
 				$res['status'] = 'OK';
 				$res['message'] = $events;
-
 				echo json_encode($res);
 				$this -> parseEvent($events);
 				die;
@@ -152,6 +151,46 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}			
 		}		
+	}
+
+	public function answerAction()
+	{
+		if ($this -> session -> has('member')) {
+			$member = $this -> session -> get('member');
+
+			switch ($this -> request -> getPost('answer', 'string'))
+			{
+		    case 'JOIN': $status = EventMember::JOIN; break;
+				case 'MAYBE': $status = EventMember::MAYBE; break;
+				case 'DECLINE': $status = EventMember::DECLINE; break;
+			}
+			$event_id = $this -> request -> getPost('event_id', 'string');
+			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
+			$eventMember = EventMember::findFirst(array(
+				$conditions
+			));
+
+			echo "<pre>";
+			_U::dump($eventMember);
+			echo "</pre>";
+			die;
+
+			if ($eventMember){
+				if ($eventMember -> member_status != $status){
+					$eventMember -> assign(array('member_status'=> $status));
+					$eventMember -> save();
+				}
+			}else{
+				$eventMember = new EventMember();
+				$eventMember -> member_id =  $member -> id;
+				$eventMember -> event_id  =  $event_id;
+				$eventMember -> member_status = $status;
+				$eventMember -> save();
+			}
+
+			$ret['STATUS']='OK';
+			echo json_encode($ret);
+		}
 	}
 
 	public function dropLocationAction()

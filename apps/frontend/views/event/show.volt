@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="container content_noBorder">
-
+    <input type="hidden" id="event_id" value="{{ event['eid'] }}">
     <div class="row-fluid ">
     <div class="span12">
     <div class="category-title">

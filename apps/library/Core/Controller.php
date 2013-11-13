@@ -28,7 +28,7 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this -> view -> member = $this -> session -> get('member');
 
 			if (isset($this -> view -> member -> location)) {
-				$this -> view -> setVar('location', $this -> view -> member -> location -> name);	
+				$this -> view -> setVar('location', $this -> view -> member -> location -> name);
 				$this -> session -> set('location', $this -> view -> member -> location -> name);			
 			} else {
 				$this -> view -> setVar('location', $location);

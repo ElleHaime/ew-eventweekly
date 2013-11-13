@@ -6,14 +6,14 @@
     <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your campaigns</h3>
     <div class="row-fluid ">
         <div class="span12">
-
+		{% if object is defined %}
 			{% for item in object %}
 				<div class="list-event clearfix">
 					<div class="list-event-img">
 						<a href="#">{{ image('img/demo/h_back_1.jpg') }}</a>
 					</div>
 					<div class="list-event-text">
-						{{ link_to ('campaigns/edit/' ~ item.id, item.name) }}
+						{{ link_to ('campaign/edit/' ~ item.id, item.name) }}
 						<p>{{ item.description}}</p>
 	                    <div class="date-list">
 	                        <i class="icon-time"></i> start
@@ -26,7 +26,9 @@
 					</div>
 				</div>
 			{% endfor %}
-
+		{% else %}
+		    You didn't create campaigns yet
+		{% endif %}
         </div>
     </div>
  </div>
