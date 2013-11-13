@@ -58,7 +58,7 @@ class AuthController extends \Core\Controller
     public function loginAction()
     {
     	$form = new LoginForm();
-	
+
 		if ($this -> request -> isPost()) {
 			$email = $this -> request -> getPost('email', 'string');
 			$pass = $this -> request -> getPost('password', 'string');
@@ -86,9 +86,12 @@ class AuthController extends \Core\Controller
 								  -> send();
 			}
 		}
-
-		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city', 'country')));
-    	$this -> view -> form = $form;
+		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
+    		$this -> view -> form = $form;
+// WTF?
+		$this -> view -> start();
+		$this -> view -> render('auth', 'login');
+		$this -> view -> finish();
     }
 
 
@@ -181,8 +184,10 @@ class AuthController extends \Core\Controller
 
     public function logoutAction()
     {
-    	$this -> session -> destroy();
-    	$this -> response -> redirect();
+	$this -> session -> remove('role');
+	$this -> session -> remove('member');
+	$this -> session -> remove('memberId');
+	$this -> response -> redirect('/');
     }
     
     private function _registerMemberSession($params) {

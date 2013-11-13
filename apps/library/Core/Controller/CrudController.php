@@ -18,8 +18,11 @@ class CrudController extends \Core\Controller
 	public function listAction()
 	{
 		$object = $this -> getObj();
-		$filters = $this -> setListFilters();
-		$this -> view -> setVar('object', $object::find($filters));
+		$filters = $this -> getListFilters();
+		$list = $object::find((array)$filters);
+		if (count($list) != 0) {
+    		    $this -> view -> setVar('object', $list);
+		} 
 	}
 
 	public function editAction()
@@ -155,8 +158,9 @@ class CrudController extends \Core\Controller
 	}
 
 
-	public function setListFilters()
+	public function getListFilters()
 	{
-		return 'member_id = ' . $this -> memberId;
+	    $filter = 'member_id = ' . $this -> memberId;
+	    return $filter;
 	}
 }

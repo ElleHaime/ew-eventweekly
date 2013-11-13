@@ -6,6 +6,7 @@
     <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your events</h3>
     <div class="row-fluid ">
         <div class="span12">
+	    {% if object is defined %}
         	{% for event in object %}
         		<div class="list-event clearfix">
 					<div class="list-event-img">
@@ -24,6 +25,9 @@
 					</div>
 				</div>
         	{% endfor %}
+	    {% else %}
+		You didn't create events yet.
+	    {% endif %}
         </div>
     </div>
 </div>
