@@ -13,9 +13,9 @@ $cfg_settings = array(
 	'database' => array(
 		'adapter' => 'Mysql',
 		'host' => 'localhost',
-		'username' => 'root',
-		'password' => 'root',
-		'dbname' => 'ew',
+		'username' => 'event_dev',
+		'password' => 'brUZacra7ruC',
+		'dbname' => 'eventweekly_dev',
 		'charset'   =>'utf8'
 	),
 	
