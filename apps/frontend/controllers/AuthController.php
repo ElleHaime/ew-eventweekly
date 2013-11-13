@@ -87,7 +87,7 @@ class AuthController extends \Core\Controller
 			}
 		}
 
-		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city', 'country')));
+		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
     	$this -> view -> form = $form;
     }
 

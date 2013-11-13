@@ -1,3 +1,70 @@
+$(window).load(function() {
+
+    checkProfile();
+
+    function checkProfile() {
+        if ($('#check_ext_profile').length) {
+            FB.api({
+                 method: 'fql.query',
+                 query: 'SELECT current_location, current_address, username, pic FROM user WHERE uid=' + $('#member_uid').val() },
+                 function(facebookData) {
+                    if(facebookData) {
+                        var fbState = new Array();
+                        for (var i in facebookData[0]) {
+                            if (facebookData[0][i] === null || facebookData[0][i] === undefined) {
+                                fbState[i] = '';
+                            } else {
+                                fbState[i] = facebookData[0][i];
+                            }
+                        }
+
+                        for (var state in fbState) {
+                            if (fbState[state] === $('#acc_' + state).val() || (state == 'current_location' && fbState[state] == '')) {
+                                delete fbState[state];
+                                $('#acc_' + state).remove();
+                            }  
+                        }
+
+                        if (Object.keys(fbState).length != 0) {
+                            for (state in fbState) {
+                                $('#acc_' + state).val(fbState[state]);
+                            }
+                            $('#do_update_profile').toggle();
+                        } 
+                    }
+            });
+        }
+    }
+
+    $('#sync_profiles').click(function() {
+        var changeParams = $('[name=acc_difference]');
+
+        if (changeParams.length != 0) {
+            var states = {};
+            changeParams.each(function() {
+                states[$(this).attr('ew_val')] = $(this).val();
+            });
+            $.post("profile/refresh", 
+                    states,
+                    function(data) {
+                        data = jQuery.parseJSON(data);
+                        console.log(data);                        
+                        if (data.status=='OK') {
+                        //    console.log(data);
+                        }
+                    });
+        }
+    });
+
+    $('#no_sync_profiles').click(function() {
+        $('#do_update_profile').hide();
+    });
+
+    $('#he_is_nervous').click(function() {
+        $('#do_update_profile').hide();
+    });
+});
+
 $( document ).ready(function() {
 
     //https://developers.facebook.com/docs/reference/dialogs/feed/
@@ -101,7 +168,7 @@ $( document ).ready(function() {
                             {
                                  FB.api({
                                      method: 'fql.query',
-                                     query: 'SELECT first_name,last_name, email,current_location, current_address, username FROM user WHERE uid='+response.authResponse.userID},
+                                     query: 'SELECT first_name,last_name, email,current_location, current_address, username, pic FROM user WHERE uid='+response.authResponse.userID},
                                      function(facebookData) {
                                         if(facebookData) {
                                             $.post("fbregister", { uid: response.authResponse.userID,
@@ -150,6 +217,7 @@ $( document ).ready(function() {
         js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=361888093918931";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+
 });
 
 

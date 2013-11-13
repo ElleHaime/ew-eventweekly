@@ -9,6 +9,11 @@ class MemberController extends \Core\Controllers\CrudController
 {
 	public function listAction()
 	{
+		$isExternalLogged = $this -> view -> member -> network;
+		if ($isExternalLogged) {
+			$this -> view -> setVar('acc_external', $isExternalLogged);
+			$this -> view -> setVar('acc_uid_network', 'facebook');
+		}
 	}
 	
 	public function loadObject()
@@ -22,5 +27,11 @@ class MemberController extends \Core\Controllers\CrudController
 	public function loadRedirect()
 	{
 		$this -> response -> redirect('profile');
+	}
+
+	public function refreshAction()
+	{
+		$userData =  $this -> request -> getPost();
+		
 	}
 }

@@ -37,7 +37,7 @@ class Controller extends \Phalcon\Mvc\Controller
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);
 			$this -> session -> set('location', $location);	
-			$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city', 'country')));
+			$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
 		}
 	}
 
