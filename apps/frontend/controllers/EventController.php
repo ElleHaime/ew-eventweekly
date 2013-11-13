@@ -28,7 +28,7 @@ class EventController extends \Core\Controllers\CrudController
 	
 			$this -> session -> set('user_loc', $loc);
 			$this -> view -> setVar('user_loc', $loc);
-		}
+		} 
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
 	}
 
