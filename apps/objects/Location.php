@@ -15,6 +15,7 @@ class Location extends Model
 	public $lon;
 	public $parent_id = 0;
 
+
 	public function initialize()
 	{
 		$this -> belongsTo('id', '\Objects\Member', 'location_id');
