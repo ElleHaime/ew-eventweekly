@@ -70,18 +70,33 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function showAction($eid)
+	public function showAction($eventId)
 	{
+		$event = Event::findFirst(array('id = '.$eventId));	
 		if ($this -> session -> has("user_token")) {
 			$accessToken = $this -> session -> get("user_token");
 			$this -> facebook = new Extractor();
-			$event = $this -> facebook -> getEventById($eid,$accessToken);
-			$this -> view -> setVar('event', $event[0]['fql_result_set'][0]);
+			$eventFb = $this -> facebook -> getEventById($event->fb_uid,$accessToken);
 
-			$this -> view -> start();
-			$this -> view -> render('event', 'show');
-			$this -> view -> finish();
-		}
+			$eventFb = $eventFb[0]['fql_result_set'][0];
+			$eventFb['id'] = $event -> id;
+
+			if ($this -> session -> has('member')) {
+				$member = $this -> session -> get('member');
+				$conditions = "member_id = ".$member -> id." AND event_id = '".$event -> id."'";
+				$eventMember = EventMember::findFirst(array(
+					$conditions
+				));
+				if ($eventMember)
+				{
+					$eventFb['answer']=(int)$eventMember -> member_status;
+				}
+				else
+					$eventFb['answer']=0;
+			}
+
+			$this -> view -> setVar('event', $eventFb);
+		}	
 	}
 	
 
@@ -90,7 +105,7 @@ class EventController extends \Core\Controllers\CrudController
 		$location = new Location();
 		$membersList = MemberNetwork::find();
 		$eventsList = Event::find();
-		
+
 		if ($membersList) {
 			$membersScope = array();
 			foreach ($membersList as $mn) {
@@ -101,7 +116,7 @@ class EventController extends \Core\Controllers\CrudController
 		if($eventsList) {
 			$eventsScope = array();
 			foreach ($eventsList as $ev) {
-				$eventsScope[$ev -> fb_uid] = $ev -> id; 
+				$eventsScope[$ev -> fb_uid] = $ev -> id;
 			}
 		}
 
@@ -111,7 +126,6 @@ class EventController extends \Core\Controllers\CrudController
 					if (!isset($eventsScope[$ev['eid']])) {
 						$result = array();
 						
-//_U::dump(iconv(mb_detect_encoding($ev['location'], mb_detect_order(), true), "UTF-8", $ev['location']));
 						if (!empty($ev['location'])) {
 							$location = new Location();
 							$eventLoc = addslashes($ev['location']);
@@ -150,11 +164,15 @@ class EventController extends \Core\Controllers\CrudController
 								'image' => $ev['pic_square']
 							));
 							$images -> save();
+							$data[$source][$item]['id'] = $eventObj -> id;
 						}
 					}
+					else
+						$data[$source][$item]['id'] = $eventsScope[$ev['eid']];
 				}
 			}			
-		}		
+		}
+		return $data;
 	}
 
 	public function answerAction()

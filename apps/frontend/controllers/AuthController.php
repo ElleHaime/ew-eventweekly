@@ -88,10 +88,6 @@ class AuthController extends \Core\Controller
 		}
 		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
     		$this -> view -> form = $form;
-// WTF?
-		$this -> view -> start();
-		$this -> view -> render('auth', 'login');
-		$this -> view -> finish();
     }
 
 
@@ -188,7 +184,6 @@ class AuthController extends \Core\Controller
 	$this -> session -> remove('member');
 	$this -> session -> remove('memberId');
 
-	//$this -> view -> setRenderLevel(\Phalcon\Mvc\View::LEVEL_NO_RENDER);
 	return $this -> response -> redirect();
     }
 

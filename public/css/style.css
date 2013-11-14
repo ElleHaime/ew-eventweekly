@@ -1646,6 +1646,7 @@ button.close {
     background: #ffffff;
 }
 
+
 .btn-orange , .btn-orange:hover {
     background: #F15A24;
     height: 18px;
@@ -1686,7 +1687,6 @@ button.close {
         height: 24px;
     }
 }
-
 
 .author-user {
     font-weight: bold;

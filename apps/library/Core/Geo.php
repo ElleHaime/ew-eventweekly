@@ -97,7 +97,6 @@ class Geo extends Plugin
 		} else {
 			$this -> _errors[] = $result -> status; 
 		} 
-
 	}
 	
 	public function getErrors()
