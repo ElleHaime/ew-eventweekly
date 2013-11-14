@@ -42,12 +42,17 @@ class EventController extends \Core\Controllers\CrudController
 
 			$this -> facebook = new Extractor();
 			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
+			
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
 				$res['status'] = 'OK';
 				$res['message'] = $events;
-				echo json_encode($res);
+				echo json_encode($res);				
 				$this -> parseEvent($events);
 				die;
+			} else {
+				$res['status'] = 'ERROR';
+				$res['message'] = 'no events';
+				echo json_encode($res);
 			}
 		}		
 	}

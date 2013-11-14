@@ -3,3 +3,4 @@ config/config.php
 public/.htaccess
 var
 config/config.json
+.project
