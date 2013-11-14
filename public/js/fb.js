@@ -69,7 +69,7 @@ $( document ).ready(function() {
 
                     if (data.message[0].length > 0) //own events
                     {
-                        totalEvents=data.message[0].length;
+                        totalEvents+=data.message[0].length;
                         //console.log('My events count:'+data.message[0].length);
                         $.each(data.message[0], function(index,event) {
                             showEvent(event);
