@@ -46,7 +46,7 @@
                     <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                         <div class="modal-body">
-                            <img src="img/demo/list.jpg" alt="">
+                            <img src="/img/demo/list.jpg" alt="">
                         </div>
                     </div>
                 </div>
@@ -143,14 +143,14 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="comment-box">
-                    <img src="img/demo/comments.jpg" alt="">
+                    <img src="/img/demo/comments.jpg" alt="">
                 </div>
             </div>
         </div>
     </div>
     <div class="span3">
         <div class="sidebar">
-            <button type="button" class=" btn btn_invite" id="fb-invite"><img src="img/demo/btn.png" alt="">Invite friends</button>
+            <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn.png" alt="">Invite friends</button>
             {#
             <div class=" place-address">
                 Smock Alley Theatre

@@ -147,6 +147,7 @@ $( document ).ready(function() {
         var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
         var mc = new MarkerClusterer(map);
         var markers = [];
+        var totalEvents=0;
 
         $.post("/search",
             function(data) {
@@ -166,8 +167,11 @@ $( document ).ready(function() {
                             showEvent(event);
                         });
                     }
+                } else {
+                	console.log(data.message);
                 }
             }).done(function (){
+            	$('#events_count').html(totalEvents);
                 var mcOptions = { gridSize: 50, maxZoom: 15};
                 var mc = new MarkerClusterer(map, markers, mcOptions);
             });
