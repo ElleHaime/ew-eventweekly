@@ -188,8 +188,7 @@ $( document ).ready(function() {
                                      query: 'SELECT first_name,last_name, email,current_location, current_address, username, pic FROM user WHERE uid='+response.authResponse.userID},
                                      function(facebookData) {
                                         if(facebookData) {
-console.log(facebookData);
-                                            /*$.post("fbregister", { uid: response.authResponse.userID,
+                                            $.post("fbregister", { uid: response.authResponse.userID,
                                                               address: facebookData[0].current_address,
                                                               location: facebookData[0].current_location,
                                                               email: facebookData[0].email,
@@ -203,7 +202,6 @@ console.log(facebookData);
                                                             window.location.href='/map';
                                                         }
                                                     });                                           
-                                            */
                                         } else {
                                             $('#login_message').html('Facebook return empty result :(');
                                             $('#login_message').show();
