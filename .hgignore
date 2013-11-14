@@ -1,4 +1,6 @@
 config/config.php
+.htaccess
+public/.htaccess
 var
-config
+config/config.json
 .project
