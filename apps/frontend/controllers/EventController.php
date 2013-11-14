@@ -83,6 +83,7 @@ class EventController extends \Core\Controllers\CrudController
 
 	public function showAction($eventId)
 	{
+		//test
 		$event = Event::findFirst(array('id = '.$eventId));
 		if ($this -> session -> has("user_token")) {
 			$accessToken = $this -> session -> get("user_token");
