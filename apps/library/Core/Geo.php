@@ -52,7 +52,7 @@ class Geo extends Plugin
 	{
 		return $this -> _userIp;
 	}
-	
+
 	public function getUserLocation($resultSet = array())
 	{
 		if ($this -> _locLat && $this -> _locLon) {

@@ -1,6 +1,6 @@
 $( document ).ready(function() {
 
-    //https://developers.facebook.com/docs/reference/dialogs/feed/
+//https://developers.facebook.com/docs/reference/dialogs/feed/
     $('#event_going').click(function() {
         console.log('join');
         FB.ui({
@@ -21,16 +21,6 @@ $( document ).ready(function() {
         }, function(response){});
     });
 
-    //https://developers.facebook.com/docs/reference/dialogs/send/
-    $('#fb-invite').click(function() {
-        FB.ui({
-            method: 'send',
-            link: window.location.href
-        }, function(response){
-            console.log(response);
-        });
-    });
-
     function showEvent(event)
     {
         if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
@@ -39,7 +29,7 @@ $( document ).ready(function() {
                 '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
                 '<div>' +
                 '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-                '<a target="_blank" href="'+window.location.origin+'/event/show/'+event.eid+'">Eventweekly link</a></div>' +
+                '<a target="_blank" href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
                 '</div>';
             //contentString+='<div>Lat: '+event.venue.latitude+'</div><div>Lng: '+event.venue.longitude+'</div>';
             var infowindow = new google.maps.InfoWindow({
@@ -80,15 +70,15 @@ $( document ).ready(function() {
                     if (data.message[0].length > 0) //own events
                     {
                         totalEvents=data.message[0].length;
-                        console.log('My events count:'+data.message[0].length);
+                        //console.log('My events count:'+data.message[0].length);
                         $.each(data.message[0], function(index,event) {
                             showEvent(event);
                         });
                     }
                     if (data.message[1].length>0) //friend events
                     {
-                        totalEvents=data.message[1].length;
-                        console.log('Friend events count:'+data.message[1].length);
+                        totalEvents+=data.message[1].length;
+                        //console.log('Friend events count:'+data.message[1].length);
                         $.each(data.message[1], function(index,event) {
                             showEvent(event);
                         });

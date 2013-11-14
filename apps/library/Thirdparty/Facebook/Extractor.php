@@ -76,7 +76,7 @@ class Extractor
 
   public function getEventsSimpleByLocation($accessToken,$loc)
   {
-    $limit  = 50;
+    $limit  = 200;
     $offset = 1.8;
 
     $lat = floatval($loc['lat']);
@@ -100,7 +100,7 @@ class Extractor
       'SELECT eid, name, substr(description,0,120), location, venue, pic_square, creator, start_time, end_time
           FROM event
             WHERE eid IN (SELECT eid FROM event_member WHERE uid=me())
-    		AND creator=me()
+    		    AND creator=me()
             AND start_time>=now()
             AND venue.longitude <\''.$lngpo.'\'  AND venue.longitude >\''.$lngmo.'\' AND venue.latitude <\''.$latpo.'\' AND venue.latitude > \''.$latmo.'\''.
             ' LIMIT '.$limit,
