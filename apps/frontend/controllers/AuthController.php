@@ -187,8 +187,11 @@ class AuthController extends \Core\Controller
 	$this -> session -> remove('role');
 	$this -> session -> remove('member');
 	$this -> session -> remove('memberId');
-	$this -> response -> redirect('/');
+
+	//$this -> view -> setRenderLevel(\Phalcon\Mvc\View::LEVEL_NO_RENDER);
+	return $this -> response -> redirect();
     }
+
     
     private function _registerMemberSession($params) {
     	$this -> session -> set('member', $params);

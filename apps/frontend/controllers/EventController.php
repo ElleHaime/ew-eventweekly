@@ -77,6 +77,10 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> facebook = new Extractor();
 			$event = $this -> facebook -> getEventById($eid,$accessToken);
 			$this -> view -> setVar('event', $event[0]['fql_result_set'][0]);
+
+			$this -> view -> start();
+			$this -> view -> render('event', 'show');
+			$this -> view -> finish();
 		}
 	}
 	
