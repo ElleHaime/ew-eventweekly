@@ -5,8 +5,7 @@ $( document ).ready(function() {
         FB.ui({
             method: 'send',
             //link: window.location.href
-            //link: 'http://events.apppicker.com/index.php'
-            link: 'http://events.apppicker.com/event/list'
+            link: 'http://events.apppicker.com/index.php'
         });
     });
     $( "#event-join" ).click(function() {
