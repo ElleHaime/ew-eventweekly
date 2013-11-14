@@ -1,6 +1,17 @@
 $( document ).ready(function() {
+    //https://developers.facebook.com/docs/reference/dialogs/send/
+    $('#fb-invite').click(function() {
+        $('.categ_green').show();
+        FB.ui({
+            method: 'send',
+            //link: window.location.href
+            link: 'http://events.apppicker.com/index.php'
+        });
+    });
     $( "#event-join" ).click(function() {
-        $('.categ_yellow').hide();
+        $('#event-join').hide();
+        $('#event-maybe').hide();
+        $('#event-decline').hide();
         $('.categ_green').show();
         $.post("/event/answer", { answer: 'JOIN', event_id : $('#event_id').val() });
         FB.ui({
@@ -10,13 +21,16 @@ $( document ).ready(function() {
         }, function(response){});
     });
     $( "#event-maybe" ).click(function() {
-        $('.categ_green').hide();
+        $('#event-join').hide();
+        $('#event-maybe').hide();
+        $('#event-decline').hide();
         $('.categ_yellow').show();
         $.post("/event/answer", { answer: 'MAYBE', event_id : $('#event_id').val() });
     });
     $( "#event-decline" ).click(function() {
-        $('.categ_green').hide();
-        $('.categ_yellow').hide();
+        $('#event-join').hide();
+        $('#event-maybe').hide();
+        $('#event-decline').hide();
         $.post("/event/answer", { answer: 'DECLINE', event_id : $('#event_id').val() });
     });
 });

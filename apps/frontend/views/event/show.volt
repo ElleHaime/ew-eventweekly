@@ -3,12 +3,12 @@
 {% block content %}
 
     <div class="container content_noBorder">
-    <input type="hidden" id="event_id" value="{{ event['eid'] }}">
+    <input type="hidden" id="event_id" value="{{ event['id'] }}">
     <div class="row-fluid ">
     <div class="span12">
-    <div class="category-title">
+    {#<div class="category-title">
         <span>Misic</span>
-    </div>
+    </div>#}
     <div class="row-fluid ">
     <div class="span9">
         <div class="list-event clearfix">
@@ -66,17 +66,19 @@
                     <span>So, whats your plan?</span>
                     <div class="btn-hide clearfix">
                         <div class="event-site">
-                            <button class="btn" id="event-join">Join</button>
-                            <div class="event-category categ_green clearfix">
-                                <span class="color-type green">Im going!</span>
-                                <span class="arrow arrow_green"></span>
-                            </div>
-                            <button class="btn" id="event-maybe">Maybe</button>
-                            <div class="event-category categ_yellow clearfix">
-                                <span class="color-type yellow">Its interesting, maybe im going</span>
-                                <span class="arrow arrow_yellow"></span>
-                            </div>
-                            <button class="btn" id="event-decline">Decline</button>
+                                <div class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
+                                    <span class="color-type green">Im going!</span>
+                                    <span class="arrow arrow_green"></span>
+                                </div>
+                                <div class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
+                                    <span class="color-type yellow">Its interesting, maybe im going</span>
+                                    <span class="arrow arrow_yellow"></span>
+                                </div>
+                            {% if !event['answer'] %}
+                                <button class="btn" id="event-join">Join</button>
+                                <button class="btn" id="event-maybe">Maybe</button>
+                                <button class="btn" id="event-decline">Decline</button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -157,7 +159,6 @@
                 </button>
             </div>
             #}
-
             <div class="event-site">
                 <p>Event web-site :</p>
                 <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>

@@ -43,11 +43,10 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> facebook = new Extractor();
 			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
+				$events = $this -> parseEvent($events);
 				$res['status'] = 'OK';
 				$res['message'] = $events;
 				echo json_encode($res);
-				$this -> parseEvent($events);
-				die;
 			}
 		}		
 	}
@@ -55,6 +54,18 @@ class EventController extends \Core\Controllers\CrudController
 
 	public function eventsAction()
 	{
+		function addIds ($events){
+			foreach ($events as $key => $event)
+			{
+				$event = Event::findFirst(array('fb_uid = '.$event['eid']));
+				if ($event)
+				{
+					$events[$key]['id'] = $event -> id;
+				}
+			}
+			return $events;
+		}
+
 		if ($this -> session -> has("user_token")) {
 			$accessToken = $this -> session -> get("user_token");
 			$loc = $this -> session -> get("user_loc");
@@ -63,30 +74,49 @@ class EventController extends \Core\Controllers\CrudController
 			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
 	
 			if (count($events) > 0) {
-				$this -> view -> setVar('userEvents', $events[0]);
-				$this -> view -> setVar('friendEvents', $events[1]);
+				$this -> view -> setVar('userEvents',  addIds($events[0]));
+				$this -> view -> setVar('friendEvents', addIds($events[1]));
 			}
 		}
 	}
 
 
-	public function showAction($eid)
+	public function showAction($eventId)
 	{
+		$event = Event::findFirst(array('id = '.$eventId));
 		if ($this -> session -> has("user_token")) {
 			$accessToken = $this -> session -> get("user_token");
 			$this -> facebook = new Extractor();
-			$event = $this -> facebook -> getEventById($eid,$accessToken);
-			$this -> view -> setVar('event', $event[0]['fql_result_set'][0]);
+			$eventFb = $this -> facebook -> getEventById($event->fb_uid,$accessToken);
+
+			$eventFb = $eventFb[0]['fql_result_set'][0];
+			$eventFb['id'] = $event -> id;
+
+			if ($this -> session -> has('member')) {
+				$member = $this -> session -> get('member');
+				$conditions = "member_id = ".$member -> id." AND event_id = '".$event -> id."'";
+				$eventMember = EventMember::findFirst(array(
+					$conditions
+				));
+				if ($eventMember)
+				{
+					$eventFb['answer']=(int)$eventMember -> member_status;
+				}
+				else
+					$eventFb['answer']=0;
+			}
+
+			$this -> view -> setVar('event', $eventFb);
 		}
 	}
-	
+
 
 	public function parseEvent($data)
 	{
 		$location = new Location();
 		$membersList = MemberNetwork::find();
 		$eventsList = Event::find();
-		
+
 		if ($membersList) {
 			$membersScope = array();
 			foreach ($membersList as $mn) {
@@ -97,7 +127,7 @@ class EventController extends \Core\Controllers\CrudController
 		if($eventsList) {
 			$eventsScope = array();
 			foreach ($eventsList as $ev) {
-				$eventsScope[$ev -> fb_uid] = $ev -> id; 
+				$eventsScope[$ev -> fb_uid] = $ev -> id;
 			}
 		}
 
@@ -107,7 +137,6 @@ class EventController extends \Core\Controllers\CrudController
 					if (!isset($eventsScope[$ev['eid']])) {
 						$result = array();
 						
-//_U::dump(iconv(mb_detect_encoding($ev['location'], mb_detect_order(), true), "UTF-8", $ev['location']));
 						if (!empty($ev['location'])) {
 							$location = new Location();
 							$eventLoc = addslashes($ev['location']);
@@ -146,11 +175,15 @@ class EventController extends \Core\Controllers\CrudController
 								'image' => $ev['pic_square']
 							));
 							$images -> save();
+							$data[$source][$item]['id'] = $eventObj -> id;
 						}
 					}
+					else
+						$data[$source][$item]['id'] = $eventsScope[$ev['eid']];
 				}
 			}			
-		}		
+		}
+		return $data;
 	}
 
 	public function answerAction()
@@ -165,28 +198,12 @@ class EventController extends \Core\Controllers\CrudController
 				case 'DECLINE': $status = EventMember::DECLINE; break;
 			}
 			$event_id = $this -> request -> getPost('event_id', 'string');
-			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
-			$eventMember = EventMember::findFirst(array(
-				$conditions
-			));
 
-			echo "<pre>";
-			_U::dump($eventMember);
-			echo "</pre>";
-			die;
-
-			if ($eventMember){
-				if ($eventMember -> member_status != $status){
-					$eventMember -> assign(array('member_status'=> $status));
-					$eventMember -> save();
-				}
-			}else{
-				$eventMember = new EventMember();
-				$eventMember -> member_id =  $member -> id;
-				$eventMember -> event_id  =  $event_id;
-				$eventMember -> member_status = $status;
-				$eventMember -> save();
-			}
+			$eventMember = new EventMember();
+			$eventMember -> member_id =  $member -> id;
+			$eventMember -> event_id  =  $event_id;
+			$eventMember -> member_status = $status;
+			$eventMember -> save();
 
 			$ret['STATUS']='OK';
 			echo json_encode($ret);
