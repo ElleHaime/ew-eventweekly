@@ -12,12 +12,12 @@
 						<a href="#"><img src="{{ event['pic_square'] }}"></a>
 					</div>
 					<div class="list-event-text">
-						{{ link_to ('event/edit/' ~ event['eid'], event['name']) }}
+                        {{ link_to ('event/show/' ~ event['id'], event['name']) }}
 						<p>{{ event['anon']}}</p>
 	                    <div class="date-list">
 	                        <i class="icon-time"></i>
-                            start <span class="date-start">20/03/23</span>
-                            finish <span class="date-finish">30/03/23</span>
+                            start <span class="date-start">{{ event['start_time'] }}</span>
+                            finish <span class="date-finish">{{ event['end_time'] }}</span>
 	                    </div>
 					</div>
 				</div>
@@ -33,7 +33,7 @@
                         <a href="#"><img src="{{ event['pic_square'] }}"></a>
                     </div>
                     <div class="list-event-text">
-                        {{ link_to ('event/show/' ~ event['eid'], event['name']) }}
+                        {{ link_to ('event/show/' ~ event['id'], event['name']) }}
                         <p>{{ event['anon']}}</p>
                         <div class="date-list">
                             <i class="icon-time"></i>
