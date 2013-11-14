@@ -24,3 +24,5 @@ basic commands:
 use "hg help" for the full list of commands or "hg -v" for details
 .htaccess
 public/.htaccess
+var
+config/config.json
