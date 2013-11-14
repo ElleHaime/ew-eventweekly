@@ -10,6 +10,9 @@ class Location extends Model
 	public $id;
 	public $name;
 	public $type;
+	public $coordinates;
+	public $lat;
+	public $lon;
 	public $parent_id = 0;
 
 	public function initialize()

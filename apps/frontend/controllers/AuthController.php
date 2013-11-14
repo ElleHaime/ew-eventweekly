@@ -139,6 +139,7 @@ class AuthController extends \Core\Controller
 
 			$member -> assign(array(
 					'email' => $userData['email'],
+					'password' => md5(time() . rand(0, 100)),
 					'role' => Acl::ROLE_MEMBER,
 					'location_id' => $memberLocation,
 					'name' => $userData['first_name'] . ' ' . $userData['last_name'],
@@ -186,10 +187,11 @@ class AuthController extends \Core\Controller
 
     public function logoutAction()
     {
-	$this -> session -> remove('role');
-	$this -> session -> remove('member');
-	$this -> session -> remove('memberId');
-	$this -> response -> redirect('/');
+		$this -> session -> remove('role');
+		$this -> session -> remove('member');
+		$this -> session -> remove('memberId');
+
+		$this -> response -> redirect(null);
     }
     
     private function _registerMemberSession($params) {

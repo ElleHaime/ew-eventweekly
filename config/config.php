@@ -198,6 +198,11 @@ $cfg_settings = array(
 			'controller' => 'event',
 			'action' => 'search'
 		),
+		'profile/refresh' => array(
+			'module' => 'frontend',
+			'controller' => 'member',
+			'action' => 'refresh'
+		),
 		'event/events' => array(
 			'module' => 'frontend',
 			'controller' => 'event',
