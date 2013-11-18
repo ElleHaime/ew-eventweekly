@@ -17,6 +17,7 @@ class EventController extends \Core\Controllers\CrudController
 	public function mapAction()
 	{
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
+		$this -> view -> setVar('link_to_list', true);
 	}
 
 
