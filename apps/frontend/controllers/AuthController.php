@@ -114,7 +114,7 @@ class AuthController extends \Core\Controller
     	if (!$this -> session -> has('member')) {
 	    	$userData =  $this -> request -> getPost();
 	    	$member = new Member();
-
+	    	
 	    	if (!isset($userData['location']) || empty($userData['location'])) {
 	    		$memberLocation = $this -> session -> get('location');
 		    } else {
