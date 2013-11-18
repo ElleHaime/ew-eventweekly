@@ -8,32 +8,75 @@ use Core\Model,
 class Location extends Model
 {
 	public $id;
-	public $name;
-	public $type;
+	public $facebook_id;
+	public $city;
+	public $state;
+	public $country;
+	public $alias;
 	public $coordinates;
-	public $lat;
-	public $lon;
+	public $latitude;
+	public $longitude;
 	public $parent_id = 0;
 
+	public $geo;
+	 
 
 	public function initialize()
 	{
-		$this -> belongsTo('id', '\Objects\Member', 'location_id');
-		$this -> belongsTo('id', '\Objects\Event', 'location_id');
-		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaignDependency'));
+		$this -> belongsTo('location_id', '\Objects\Member', 'id');
+		$this -> belongsTo('location_id', '\Objects\Event', 'id');
+		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaign'));
+		$this -> belongsTo('location_id', '\Objects\Venue', 'id', array('alias' => 'venue'));
 	}
 	
-	public function createOnChange($argument)
+	public function createOnChange($argument = array(), $compare = array(), $network = 'facebook')
 	{
-		$isLocationExists = self::findFirst(array('name = "'. $argument . '"'));
+		if (empty($argument)) {
+			$argument = $this -> geo -> getLocation();
+		}
+		$query = array();
+		
+		if (!empty($compare)) {
+			foreach ($compare as $key => $value) {
+				$query[] = $value . ' like "%' . trim($argument[$value]) . '%"';
+			}
+		} else {
+			if (isset($argument['city'])) {
+				$query[] = 'city like "%' . trim($argument['city']) . '%"';
+			}
+			if (isset($argument['country'])) {
+				$query[] .= 'country like "%' . trim($argument['country']) . '%"';
+			}
+		}
+		
+		$query = implode(' and ', $query);
+		$isLocationExists = self::findFirst($query);
+
 		if (!$isLocationExists) {
-			$this -> assign(array('name' => $argument,
-								  'type' => 'city'));
+			if (!isset($argument['id']) || empty($argument['id'])) {
+				$argument['id'] = null;
+			}
+			
+			$this -> assign(array(
+				$network . '_id' => $argument['id'],
+				'city' => $argument['city'],
+				'country' => $argument['country'],
+				'latitude' => (float)$argument['latitude'],
+				'longitude' => (float)$argument['longitude'],
+				'alias' => $argument['name']
+			));
 			$this -> save();
 			
-			return $this -> id;
+			return $this;
+			
 		} else {
-			return $isLocationExists -> id;
+			return $isLocationExists;
 		}
+	} 
+	
+	public function setGeoService(\Core\Geo $geo)
+	{
+		$this -> geo = $geo;
 	}
+	
 }

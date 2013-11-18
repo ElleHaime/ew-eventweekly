@@ -7,7 +7,6 @@ use Frontend\Form\SignupForm,
 	Frontend\Form\RestoreForm,
 	Frontend\Models\Member,
 	Frontend\Models\MemberNetwork,
-	Frontend\Models\Location,
 	Core\Auth,
 	Core\Acl,
 	Core\Utils as _U;
@@ -27,30 +26,26 @@ class AuthController extends \Core\Controller
 					$this -> view -> form = $form;
 					return;
 				}
-				$locations = new Location();
-				$memberLocation = $locations -> createOnChange($this -> geo -> getUserLocation());
 
 				$email = $this -> request -> getPost('email');
 				$password = $this -> request -> getPost('password');
+				$location = $this -> session -> get('location');
 				$member -> assign(array(
 					'email' => $email,
 					'pass' => $this -> security -> hash($password),
 					'role' => Acl::ROLE_MEMBER,
-					'location_id' => $memberLocation 
+					'location_id' => $location -> id 
 				));
 	
 				if ($member -> save()) {
 					$this -> _registerMemberSession($member);
-					$this -> response -> redirect('home');
+					$this -> response -> redirect('map');
 				} else {
 					echo 'Sad =/'; die();
 				}
-				
 				$this -> flash -> error($member -> getMessages());
 			} 
 		} 
-
-		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city', 'country')));
 		$this -> view -> form = $form;
     }
 
@@ -78,7 +73,7 @@ class AuthController extends \Core\Controller
 				}
 				
 				$this -> _registerMemberSession($member);
-				$this -> response -> redirect('home');
+				$this -> response -> redirect('map');
 				
 			} else {
 				$this -> response -> setStatusCode(401, 'Unauthorized')
@@ -86,8 +81,7 @@ class AuthController extends \Core\Controller
 								  -> send();
 			}
 		}
-		$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
-    		$this -> view -> form = $form;
+   		$this -> view -> form = $form;
     }
 
 
@@ -120,21 +114,17 @@ class AuthController extends \Core\Controller
     	if (!$this -> session -> has('member')) {
 	    	$userData =  $this -> request -> getPost();
 	    	$member = new Member();
-	    	$location = new Location();
+
 	    	if (!isset($userData['location']) || empty($userData['location'])) {
-	    		$memberLocation = $location -> createOnChange($this -> geo -> getUserLocation());
+	    		$memberLocation = $this -> session -> get('location');
 		    } else {
-			    if (is_array($userData['location']))
-			    {
-				    $loc = $userData['location']['country'].', '.$userData['location']['city'];
-				    $memberLocation = $location -> createOnChange ($loc);
-			    }
+			    $memberLocation = $this -> locator -> createOnChange($userData['location']);
 		    }
 
 			$member -> assign(array(
 					'email' => $userData['email'],
 					'role' => Acl::ROLE_MEMBER,
-					'location_id' => $memberLocation,
+					'location_id' => $memberLocation -> id,
 					'name' => $userData['first_name'] . ' ' . $userData['last_name'],
 					'auth_type' => 'facebook',
 					'address' => $userData['address'],
@@ -164,30 +154,23 @@ class AuthController extends \Core\Controller
 		echo json_encode($res);
     }
 
-
     public function restoreAction()
     {
     	$form = new RestoreForm();
 
     	if ($this -> request -> isPost()) {
     		if ($form -> isValid($this -> request -> getPost())) {
-    			
     		}
     	}
-
     	$this -> view -> form = $form;
     }
 
     public function logoutAction()
     {
-	$this -> session -> remove('role');
-	$this -> session -> remove('member');
-	$this -> session -> remove('memberId');
-
-	return $this -> response -> redirect();
+		$this -> session -> destroy();
+		return $this -> response -> redirect();
     }
 
-    
     private function _registerMemberSession($params) {
     	$this -> session -> set('member', $params);
     	$this -> session -> set('role', $params -> role);
@@ -195,5 +178,4 @@ class AuthController extends \Core\Controller
     	
     	return;
     }
-
 }

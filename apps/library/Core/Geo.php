@@ -9,12 +9,15 @@ use Phalcon\Mvc\User\Plugin,
 
 class Geo extends Plugin
 {
-	protected $_sxgeo	= false;
-	protected $_locLon 	= array();
-	protected $_locLat 	= array();
-	protected $_userIp 	= false;
-	protected $_config 	= false;
-	protected $_errors	= array();
+	const DEFAULT_RADIUS_DIFF = 10;
+
+	protected $_sxgeo		= false;
+	protected $_locLon 		= false;
+	protected $_locLat 		= false;
+	protected $_countryCode = false;
+	protected $_userIp 		= false;
+	protected $_config 		= false;
+	protected $_errors		= array();
 	
 	public function __construct($dependencyInjector)
 	{
@@ -41,8 +44,10 @@ class Geo extends Plugin
 	{
 		if ($this -> _userIp) {
 			$city = $this -> _sxgeo -> getCityFull($this -> _userIp);
+						
 			$this -> _locLat = $city['lat'];
 			$this -> _locLon = $city['lon'];
+			$this -> _countryCode = $city['country'];
 		} else {
 			$this -> _userIp = $this -> getUserIp();
 		}
@@ -52,53 +57,93 @@ class Geo extends Plugin
 	{
 		return $this -> _userIp;
 	}
-
-	public function getUserLocation($resultSet = array())
+	
+	public function getUserCoordinates()
 	{
-		if ($this -> _locLat && $this -> _locLon) {
-			$url = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' . $this -> _locLat . ',' . $this -> _locLon . '&sensor=false&language=en';
+		return array('latitude' => $this -> _locLat,
+					 'longitude' => $this -> _locLon);
+	}
+
+	public function getLocation($coordinates = array())
+	{
+		if (empty($coordinates)) {
+			$queryParams = $this -> _buildQuery($this -> _locLat, $this -> _locLon, $this -> _countryCode); 
+		} else {
+			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['lontitude']); 
+		}
+
+		if ($queryParams != '') {	
+			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
 			$result = json_decode(file_get_contents($url));
-		
-			if ($result -> status == 'OK') {
-				foreach ($result -> results as $item)	{
-					foreach ($item -> address_components as $level) {
-						if ($level -> types[0] == 'country') {
-							$location['country'] = $level -> long_name;
-						}
-						
-						if ($level -> types[0] == 'administrative_area_level_1') {
-							$location['region'] = $level -> long_name;
-						}
-						
-						if ($level -> types[0] == 'locality') {
-							$location['city'] = $level -> long_name;
-						}
-						
-						if ($level -> types[0] == 'sublocality') {
-							$location['sublocality'] = $level -> long_name;
-						}
+			
+			if ($result -> status == 'OK' && count($result -> results) > 0) {
+				foreach ($result -> results[0] -> address_components as $level) {
+					if ($level -> types[0] == 'country') {
+						$location['country'] = $level -> long_name;
+					}
+			
+					if ($level -> types[0] == 'administrative_area_level_1') {
+						$location['state'] = $level -> long_name;
+					}
+			
+					if ($level -> types[0] == 'locality') {
+						$location['city'] = $location['name'] = $level -> long_name;
+					}
+			
+					if ($level -> types[0] == 'route') {
+						$location['street'] = $level -> long_name;
+					}
+			
+					if ($level -> types[0] == 'street_number') {
+						$location['street_number'] = $level -> long_name;
 					}
 				}
 				
-				if (!empty($resultSet)) {
-					$loc = '';
-					foreach ($resultSet as $item => $part) {
-						$loc .= $location[$part]  . ', ';						
-					}
-					$loc = substr($loc, 0, strlen($loc) - 2);
-				} else {
-					$loc = $location['country'].', ';
-					$loc .= $location['region'].', ';
-					$loc .= $location['city'];
+				if (!empty($result -> results[0] -> geometry)) {
+					$location['latitude'] = $result -> results[0] -> geometry -> location -> lat;
+					$location['longitude'] = $result -> results[0] -> geometry -> location -> lng;
 				}
 				
-				return $loc;
+				return $location;
+				
+			} else {
+			 	$return = $result -> status;
 			}
 		} else {
-			$this -> _errors[] = $result -> status; 
-		} 
+			return false;
+		}
+	} 
+	
+	protected function _buildQuery($lat, $lon, $countryCode = false)
+	{
+		$result = array();
+
+
+		if ($countryCode) {
+			$result[] = 'region=' . $this -> _countryCode;
+		}
+		if ($this -> _locLat && $this -> _locLon) {
+			$result[] = 'latlng=' . $lat . ',' . $lon;
+		}
+		
+		return implode("&", $result);
 	}
 	
+	
+	public function buildCoordinateScale($latitude, $longitude)
+	{
+		$result = array();
+
+		$result['lonMin'] = $longitude - self::DEFAULT_RADIUS_DIFF / abs(cos(deg2rad($latitude)) * 111.04);
+		$result['lonMax'] = $longitude + self::DEFAULT_RADIUS_DIFF / abs(cos(deg2rad($latitude)) * 111.04);
+
+		$result['latMin'] = $latitude - self::DEFAULT_RADIUS_DIFF / 111.04;
+		$result['latMax'] = $latitude + self::DEFAULT_RADIUS_DIFF / 111.04;
+
+		return $result;
+	}
+
+
 	public function getErrors()
 	{
 		return $this -> _errors;

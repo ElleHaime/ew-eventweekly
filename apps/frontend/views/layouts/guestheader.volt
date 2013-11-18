@@ -1,18 +1,19 @@
-					<div class="span10">
+					<div class="span4 sign_no">
 	                    <span  class="line"></span>
-	                    <div class="user-box active-box">
-	                       <a href="registration" style="padding-bottom:0px; margin-top:2px;"><span>Sign Up</span></a>
+	                    <div class="user-box">
+	                       <a href="registration" style=" margin-top:2px;"><span>Sign Up</span></a>
 	                    </div>
 
 						<span  class="line"></span>	 
-
+                    </div>
+                    <div class="span4  location-box">
 						<div class="location clearfix">
 							<span class="location-count location-count_no">?</span>
 
 		                    <div class="location-place">
 		                        <a href="#" class="location-city">
 		                            <span id="location">
-		                            	{{ location }}
+		                            	{{ location.alias }}
 		                           </span>
 		                           <div id="results" hidden="hidden">
 							          <ul data-role="listview" id="locations" data-inset="true">
@@ -27,8 +28,10 @@
 	                          	</a>
 	                      	</div>
                     	</div>
+                    	<span  class="line"></span>
+                    </div>
+                    <div class="span2">
 
-                   		<span  class="line"></span>
 	                    <div class="show-box">
 	                    	{% if view_action is defined %}
 	                        			{%if view_action == 'list' %}

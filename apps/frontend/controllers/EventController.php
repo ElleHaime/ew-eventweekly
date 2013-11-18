@@ -5,8 +5,9 @@ namespace Frontend\Controllers;
 use Core\Utils as _U,
 	Thirdparty\Facebook\Extractor,
 	Frontend\Models\Location,
+	Frontend\Models\Venue as Venue,	
 	Frontend\Models\MemberNetwork,
-	Frontend\Models\Event,
+	Frontend\Models\Event as Event,
 	Objects\EventImage,
 	Objects\EventMember;
 
@@ -15,101 +16,175 @@ class EventController extends \Core\Controllers\CrudController
 {
 	public function mapAction()
 	{
-		$location = $this -> session -> get('location');
-
-		$text = urlencode($location);
-		$url = "http://maps.googleapis.com/maps/api/geocode/json?address=$text&sensor=false&language=ru";
-		$result = json_decode(file_get_contents($url));
-
-		if ($result -> status == 'OK') {
-			$loc = array(
-				'lat' => $result -> results[0] -> geometry -> location -> lat,
-				'lng' => $result -> results[0] -> geometry -> location -> lng
-			);
-
-			$this -> session -> set('user_loc', $loc);
-			$this -> view -> setVar('user_loc', $loc);
-		} 
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
+	}
+
+
+	public function eventmapAction()
+	{
+		$events = $this -> searchAction();
+
+		if (count($events) > 0) {
+			$res['status'] = 'OK';
+			$res['message'] = $events;
+			echo json_encode($res);				
+			die();
+		} else {
+			$res['status'] = 'ERROR';
+			$res['message'] = 'no events';
+			echo json_encode($res);
+			die();
+		}
+	}
+
+	public function eventlistAction()
+	{
+		$events = $this -> searchAction();
+
+		if (count($events) > 0) {
+			$this -> view -> setVar('userEvents', $events[0]);
+			$this -> view -> setVar('friendEvents', $events[1]);
+			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
+		} 
+		$this -> view -> pick('event/events');
 	}
 
 
 	public function searchAction()
 	{
-		if ($this -> session -> has("user_token")) {
-			$accessToken = $this -> session -> get("user_token");
-			$loc = $this -> session -> get("user_loc");
+		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
 
+			// user registered via facebook and has facebook account
 			$this -> facebook = new Extractor();
-			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
-			
+			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), 
+																	 $this -> session -> get('location'));
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
-				$res['status'] = 'OK';
-				$res['message'] = $events;
-				echo json_encode($res);				
-				$this -> parseEvent($events);
-				die;
+				$events = $this -> parseEvent($events);
+				return $events;
 			} else {
 				$res['status'] = 'ERROR';
 				$res['message'] = 'no events';
 				echo json_encode($res);
+				die();
 			}
-		}		
-	}
 
+		} else {
 
-	public function eventsAction()
-	{
-		if ($this -> session -> has("user_token")) {
-			$accessToken = $this -> session -> get("user_token");
-			$loc = $this -> session -> get("user_loc");
-	
-			$this -> facebook = new Extractor();
-			$events = $this -> facebook -> getEventsSimpleByLocation($accessToken, $loc);
-	
-			if (count($events) > 0) {
-				$this -> view -> setVar('userEvents', $events[0]);
-				$this -> view -> setVar('friendEvents', $events[1]);
+			// user registered via email
+			$location = $this -> session -> get('location');
+			$modelPath = $this -> getModelPath();
+			$scale = $this -> geo -> buildCoordinateScale($location -> latitude , $location -> longitude);
+			$query = 'select event.*, venue.latitude as latitude, venue.longitude as longitude
+						from ' . $modelPath . 'Event as event 
+						left join ' . $modelPath . 'Venue as venue on event.venue_id = venue.id 
+						where 
+							venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
+						and 
+							venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+			$eventsList = $this -> modelsManager -> executeQuery($query);
+			if ($eventsList -> count() > 0) {
+				$events[0] = array();
+				$events[1] = array();
+
+				foreach ($eventsList as $ev) {
+					if ($ev -> event -> member_id == $this -> session -> get('memberId')) {
+						$elem = 0;
+					} else {
+						$elem = 1;
+					}
+
+					$events[$elem][] = array(
+						'id' => $ev -> event -> id,
+						'pic_square' => '',
+						'address' => $ev -> event -> address,
+						'name' => $ev -> event -> name,
+						'venue' => array('latitude' => $ev -> latitude,
+										 'longitude' => $ev -> longitude),
+						'location_id' => $ev -> event -> location_id,
+						'anon' => $ev -> event -> description,
+						'start_time' => date('F, l d, H:i', strtotime($ev -> event -> start_date)),
+						'end_time' => date('F, l d, H:i', strtotime($ev -> event -> end_date)),
+					);
+				}
 			}
+			return $events;
 		}
 	}
 
 
 	public function showAction($eventId)
 	{
-		$event = Event::findFirst(array('id = '.$eventId));	
-		if ($this -> session -> has("user_token")) {
-			$accessToken = $this -> session -> get("user_token");
+		$eventObj = Event::findFirst(array('id = ' . $eventId));
+	
+		if ($this -> session -> has('user_token')) {
+			$accessToken = $this -> session -> get('user_token');
 			$this -> facebook = new Extractor();
-			$eventFb = $this -> facebook -> getEventById($event->fb_uid,$accessToken);
+			$event = $this -> facebook -> getEventById($eventObj -> fb_uid, $accessToken);
 
-			$eventFb = $eventFb[0]['fql_result_set'][0];
-			$eventFb['id'] = $event -> id;
+			$event = $event[0]['fql_result_set'][0];
+			$event['id'] = $eventObj -> id;
+		} else {
+			$event = array(
+				'id' => $eventObj -> id,
+				'name' => $eventObj -> name,
+				'description' => $eventObj -> description,
+				'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
+				'end_time' => date('F, l d, H:i', strtotime($eventObj -> end_date)),
+				'pic_square' => ''
+			);
+		}
 
-			if ($this -> session -> has('member')) {
-				$member = $this -> session -> get('member');
-				$conditions = "member_id = ".$member -> id." AND event_id = '".$event -> id."'";
-				$eventMember = EventMember::findFirst(array(
-					$conditions
-				));
-				if ($eventMember)
-				{
-					$eventFb['answer']=(int)$eventMember -> member_status;
-				}
-				else
-					$eventFb['answer']=0;
-			}
-
-			$this -> view -> setVar('event', $eventFb);
-		}	
+		$event['answer'] = 0;
+		if ($this -> session -> has('memberId')) {
+			$conditions = 'member_id = ' . $this -> session -> get('memberId') . ' AND event_id = ' . $eventObj -> id;
+			$eventMember = EventMember::findFirst($conditions);
+			
+			if ($eventMember) {
+				$event['answer'] = (int)$eventMember -> member_status;
+			} 
+		} 
+		$this -> view -> setVar('event', $event);
 	}
 	
 
+	public function answerAction()
+	{
+		if ($this -> session -> has('member')) {
+			$member = $this -> session -> get('member');
+
+			$answer = $this -> request -> getPost('answer', 'string');
+			$status = EventMember::$answer;
+			
+			$event_id = $this -> request -> getPost('event_id', 'string');
+			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
+			$eventMember = EventMember::findFirst(array($conditions));
+
+			if ($eventMember){
+				if ($eventMember -> member_status != $status){
+					$eventMember -> assign(array('member_status' => $status));
+					$eventMember -> save();
+				}
+			} else {
+				$eventMember = new EventMember();
+				$eventMember -> assign(array(
+					'member_id' =>  $member -> id,
+					'event_id'  =>  $event_id,
+					'member_status' => $status));
+				$eventMember -> save();
+			}
+
+			$ret['STATUS']='OK';
+			echo json_encode($ret);
+		}
+	}
+
+
 	public function parseEvent($data)
 	{
-		$location = new Location();
 		$membersList = MemberNetwork::find();
 		$eventsList = Event::find();
+		$locationsList = Location::find();
+		$venuesList = Venue::find();
 
 		if ($membersList) {
 			$membersScope = array();
@@ -118,47 +193,120 @@ class EventController extends \Core\Controllers\CrudController
 			}
 		}
 		
-		if($eventsList) {
+		if ($eventsList) {
 			$eventsScope = array();
 			foreach ($eventsList as $ev) {
-				$eventsScope[$ev -> fb_uid] = $ev -> id;
+				$eventsScope[$ev -> fb_uid] = array('id' => $ev -> id,
+													'start_date' => $ev -> start_date,
+													'end_date' => $ev -> end_date);
+			}
+		}
+
+		if ($venuesList) {
+			$venuesScope = array();
+			foreach ($venuesList as $vn) {
+				$venuesScope[$vn -> fb_uid] = array('venue_id' => $vn -> id,
+													'address' => $vn -> address,
+													'location_id' => $vn -> location_id);
+			}
+		}
+
+		if ($locationsList) {
+			$locationsScope = array();
+			foreach ($locationsList as $loc) {
+				$locationsScope[$loc -> id] = array('lat' => $loc -> latitude,
+													'lon' => $loc -> longitude,
+													'city' => $loc -> city,
+													'country' => $loc -> country);
 			}
 		}
 
 		foreach($data as $source => $events) {
 			if (!empty($events)) {
 				foreach($events as $item => $ev) {
+
 					if (!isset($eventsScope[$ev['eid']])) {
 						$result = array();
-						
-						if (!empty($ev['location'])) {
-							$location = new Location();
-							$eventLoc = addslashes($ev['location']);
-							$eventLocation = $location -> createOnChange($eventLoc);
-						} else {
-							$eventLocation = '';
+						$result['fb_uid'] = $ev['eid'];
+						$result['fb_creator_uid'] = $ev['creator'];
+						$result['description'] = $ev['anon'];
+						$result['name'] = $ev['name'];
+
+						if (!empty($ev['start_time'])) {
+							$result['start_date'] = date('Y-m-d H:i:s', strtotime($ev['start_time']));
 						}
-						
-						$result = array(
-							'fb_uid' => $ev['eid'],
-							'fb_creator_uid' => $ev['creator'],
-							'name' => $ev['name'],
-							'description' => $ev['anon'],
-							'location_id' => $eventLocation
-						); 
-						
+						if (!empty($ev['end_time'])) {
+							$result['end_date'] = date('Y-m-d H:i:s', strtotime($ev['end_time']));
+						}
+
 						if (isset($membersScope[$ev['creator']])) {
 							$result['member_id'] = $membersScope[$ev['creator']];
 						}
-						
+
+						$eventLocation = '';
+
 						if (!empty($ev['venue'])) {
-							if (!empty($ev['venue']['street'])) {
-								$result['address'] = $ev['venue']['street'];
+							if (!isset($venuesScope[$ev['venue']['id']])) {
+
+								// check location by city and country of venue
+								foreach ($locationsScope as $loc_id => $coords) {
+									if ($ev['venue']['city'] == $coords['city'] && $ev['venue']['country'] == $coords['country']) {
+										$eventLocation = $loc_id;
+										break;
+									}
+								}
+
+								// check location by venue coordinates
+								if ($eventLocation == '') {
+									$scale = $this -> geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
+									foreach ($locationsScope as $loc_id => $coords) {
+										if ($scale['latMin'] <= $coords['lat'] && $coords['lat'] <= $scale['latMax'] &&
+											$scale['lonMin'] <= $coords['lon'] && $coords['lon'] <= $scale['lonMax'])
+										{
+											$eventLocation = $loc_id;
+											break;
+										}
+									}
+								} 
+
+								// create new location from coordinates
+								if ($eventLocation == '') {
+									$locationArgs = $this -> geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
+																			 		  'longitude' => $ev['venue']['longitude']));
+									$loc = $this -> locator -> createOnChange($locationArgs);
+									$eventLocation = $loc -> id;
+
+									$locationsScope[$loc -> id] = array(
+														'lat' => $loc -> latitude,
+														'lon' => $loc -> longitude,
+														'city' => $loc -> city,
+														'country' => $loc -> country);
+								}
+
+								$venueObj = new Venue();
+								$venueObj -> assign(array(
+									'fb_uid' => $ev['venue']['id'],
+									'location_id' => $eventLocation,
+									'name' => $ev['location'],
+									'address' => $ev['venue']['street'],
+									'latitude' => $ev['venue']['latitude'],
+									'longitude' => $ev['venue']['longitude']
+								));
+								if ($venueObj -> save()) {
+									$result['venue_id'] = $venueObj -> id;
+									$result['address'] = $ev['venue']['street'];
+									$result['location_id'] = $venueObj -> location_id;
+
+									$venuesScope[$venueObj -> id] = array(
+															'address' => $venueObj -> address,
+															'location_id' => $venueObj -> location_id);
+								}
+							} else {
+								$result['venue_id'] = $venuesScope[$ev['venue']['id']]['venue_id'];
+								$result['address'] = $venuesScope[$ev['venue']['id']]['address'];	
+								$result['location_id'] = $venuesScope[$ev['venue']['id']]['location_id'];	
 							}
-							if (!empty($ev['venue']['latitude']) && !empty($ev['venue']['longitude'])) {
-						//		$result['coordinates'] = $ev['venue']['latitude'] . ',' . $ev['venue']['longitude'];
-							}
-						}
+						} 
 						
 						$eventObj = new Event(); 
 						$eventObj -> assign($result);
@@ -169,55 +317,30 @@ class EventController extends \Core\Controllers\CrudController
 								'image' => $ev['pic_square']
 							));
 							$images -> save();
+
 							$data[$source][$item]['id'] = $eventObj -> id;
+							if (!empty($eventObj -> start_date)) {
+								$data[$source][$item]['start_date'] = date('F, l d, H:i', strtotime($eventObj -> start_date));
+							}
+							if (!empty($eventObj -> end_date)) {
+								$data[$source][$item]['end_date'] = date('F, l d, H:i', strtotime($eventObj -> end_date));
+							}
+
+							$eventsScope[$ev['eid']] = $eventObj -> id;
+						}
+					} else {
+						$data[$source][$item]['id'] = $eventsScope[$ev['eid']]['id'];
+						if (!empty($eventsScope[$ev['eid']]['start_date'])) {
+							$data[$source][$item]['start_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
+						}
+						if (!empty($eventsScope[$ev['eid']]['end_date'])) {
+							$data[$source][$item]['end_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
 						}
 					}
-					else
-						$data[$source][$item]['id'] = $eventsScope[$ev['eid']];
 				}
 			}			
 		}
 		return $data;
-	}
-
-	public function answerAction()
-	{
-		if ($this -> session -> has('member')) {
-			$member = $this -> session -> get('member');
-
-			switch ($this -> request -> getPost('answer', 'string'))
-			{
-		    case 'JOIN': $status = EventMember::JOIN; break;
-				case 'MAYBE': $status = EventMember::MAYBE; break;
-				case 'DECLINE': $status = EventMember::DECLINE; break;
-			}
-			$event_id = $this -> request -> getPost('event_id', 'string');
-			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
-			$eventMember = EventMember::findFirst(array(
-				$conditions
-			));
-
-			echo "<pre>";
-			_U::dump($eventMember);
-			echo "</pre>";
-			die;
-
-			if ($eventMember){
-				if ($eventMember -> member_status != $status){
-					$eventMember -> assign(array('member_status'=> $status));
-					$eventMember -> save();
-				}
-			}else{
-				$eventMember = new EventMember();
-				$eventMember -> member_id =  $member -> id;
-				$eventMember -> event_id  =  $event_id;
-				$eventMember -> member_status = $status;
-				$eventMember -> save();
-			}
-
-			$ret['STATUS']='OK';
-			echo json_encode($ret);
-		}
 	}
 
 	public function dropLocationAction()

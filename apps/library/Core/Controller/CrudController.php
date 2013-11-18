@@ -20,8 +20,9 @@ class CrudController extends \Core\Controller
 		$object = $this -> getObj();
 		$filters = $this -> getListFilters();
 		$list = $object::find((array)$filters);
+	
 		if (count($list) != 0) {
-    		    $this -> view -> setVar('object', $list);
+    		   $this -> view -> setVar('object', $list);
 		} 
 	}
 

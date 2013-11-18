@@ -2,124 +2,173 @@
 
 {% block content %}
 
-<div class="container content">
-    <h4 style="color: #FAF5F9; font-weight:bold; padding-left:15px; padding-top:10px;">Edit event</h4>
-    <div class="row-fluid">
-        <div class="span6 offset2">
-        	 <form class="form-horizontal" method="post">
+<div class="container content_noBorder">
 
-        	 	<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('name') }}</label>
-					<div class="controls">
-						{{ form.render('name') }}
-						{{ form.messages('name') }}
-					</div>
-				</div>
+        <div class="row-fluid ">
+             <div class="span12">
+                 <div class="row-fluid ">
+                     <div class="span9">
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('description') }}</label>
-					<div class="controls">
-						{{ form.render('description') }}
-						{{ form.messages('description') }}
-					</div>
-				</div>
+	                     <div class="add-event">
+	                         <h3 class="title-page">Create event</h3>
+	                         <div class="row-fluid">
+	                             <div class="span3">
+	                                 <div class="add-img">
+	                                     <a  href=""><img src="img/demo/q1.jpg" alt=""></a>
+	                                     <button class="btn" type="button">add image</button>
+	                                 </div>
+	                             </div>
+	                             <div class="span9">
+	                                 <div class="input-div clearfix">
+	                                     <input  type="text" value=""  placeholder="main title">
+	                                     <span>description / example</span>
+	                                 </div>
+	                                 <div class="input-div_date clearfix">
+	                                     <div class="input-div_small">
+	                                         <input type="text" placeholder="5/11/2012"><i class="icon-calendar"></i>
+	                                     </div>
+	                                     <div class="input-div_small">
+	                                         <input type="text" placeholder="5/11/2012"><i class="icon-time"></i>
+	                                     </div>
+	                                     <div class="date-box">
+	                                     <span class="date-start">12 Aug 2013</span>, starts at <span class="date-time">20:30</span>  <span class="day-title">—  tomorrow</span>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('address') }}</label>
-					<div class="controls">
-						{{ form.render('address') }}
-						{{ form.messages('address') }}
-					</div>
-				</div>
+	                                     </div>
+	                                 </div>
+	                                     <select>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                         <option>only for my Facebook friends</option>
+	                                     </select>
+	                                 <div class="clear"></div>
+	                                     <textarea class="field-big"  placeholder="add description"> </textarea>
+	                                 <div class="btn-add_group clearfix">
+	                                     <button class="btn btn-cancel">Cancel</button>
+	                                     <button class="btn" type="button">Preview</button>
+	                                     <button class="btn" type="button">Save and publish</button>
+	                                 </div>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('start_date') }}</label>
-					<div class="controls">
-						{{ form.render('start_date') }}
-						{{ form.messages('start_date') }}
-					</div>
-				</div>
+	                         </div>
+	                         </div>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('end_date') }}</label>
-					<div class="controls">
-						{{ form.render('end_date') }}
-						{{ form.messages('end_date') }}
-					</div>
-				</div>
+	                     </div>
+	                 </div>
+	                 <div class="span3">
+	                     <div class="sidebar">
+	                         <div class="input-append">
+	                             <input  type="text" placeholder="choose location"><button class="btn btn-primary" type="button">
+	                             <i class="icon-map-marker"></i></button>
+	                         </div>
+	                         <div class=" place-address">
+	                             Smock Alley Theatre
+	                             <button class="btn btn-primary">
+	                                 <i class="icon-map-marker"></i>
+	                             </button>
+	                         </div>
+	                         <div class="input-append change-input">
+	                             <button class="btn btn-primary" type="button">
+	                                 <i class="icon-map-marker"></i></button>
+	                             <input  type="text" placeholder="change location">
+	                         </div>
+	                         <div class="input-append">
+	                             <input  type="text" placeholder="Event web site"><button class="btn btn-primary" type="button">Ok</button>
+	                         </div>
+	                         <div class="event-site clearfix">
+	                             <p>Event web-site :</p>
+	                             <a href="#">http://www.dpdp.com</a>
+	                             <button class="btn btn-sm">Edit</button>
+	                         </div>
+	                         <select>
+	                             <option>Suggest category</option>
+	                             <option>Suggest category</option>
+	                             <option>Suggest category</option>
+	                             <option>Suggest category</option>
+	                             <option>Suggest category</option>
+	                         </select>
+	                         <div class="type-box">
+	                             <div class="event-site">
+	                                 <p>Type:</p>
+	                                 <div class="event-category clearfix">
+	                                     <span class="color-type gray ">festival</span>
+	                                     <span class="arrow"></span>
+	                                 </div>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('tickets_url') }}</label>
-					<div class="controls">
-						{{ form.render('tickets_url') }}
-						{{ form.messages('tickets_url') }}
-					</div>
-				</div>
+	                             </div>
+	                             <div class="event-site">
+	                                 <p>Genres:</p>
+	                                 <div class="event-category clearfix">
+	                                     <span class="color-type yellow">rock</span>
+	                                     <span class="arrow arrow_yellow"></span>
+	                                 </div>
+	                                 <div class="event-category clearfix">
+	                                     <span class="color-type yellow">gothic</span>
+	                                     <span class="arrow arrow_yellow"></span>
+	                                 </div>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('recurring') }}</label>
-					<div class="controls">
-						{{ form.render('recurring') }}
-						{{ form.messages('recurring') }}
-					</div>
-				</div>
+	                             </div>
 
-				<div class="control-group">
-					<label class="control-label" for="inputEmail">{{ form.label('current_location') }}</label>
-					<div class="controls">
-						{{ form.render('current_location') }}
-						{{ form.messages('current_location') }}
+	                             <div class="event-site">
+	                                 <p>Venue:</p>
+	                                 <div class="event-category clearfix">
+	                                     <span class="color-type light_yellow">gothic</span>
+	                                     <span class="arrow arrow_light-yellow"></span>
+	                                 </div>
 
-						{{ form.render('location_id') }}
-						{{ form.render('prev_location') }}
-						{{ form.render('member_id') }}
+	                             </div>
+	                             <div class="event-site tags-box clearfix">
 
-						<div id="results" hidden="hidden">
-							<ul data-role="listview" id="locations" data-inset="true">
-								<li data-role="list-divider" role="heading">Select one:</li>
-							</ul>
-				     	</div>
-					</div>
-				</div>
+	                                 <div class="input-append">
 
-				<div class="control-group">
-					<div class="controls">
-						<button type="submit" class="btn">Save</button>
-					</div>
-				</div>
+	                                     <input  type="text" placeholder="Tags">
+	                                     <button class="btn btn-primary" type="button">Ok</button>
+	                                 </div>
 
-        	 </form>
+	                             </div>
+	                         </div>
+	                         <div class="radio-box">
+	                             <p>Reacuring event</p>
+	                             <label class="radio">
+	                                 <input type="radio" name="optionsRadios"  value="option1" checked>
+	                                     daily
+	                             </label>
+	                             <label class="radio">
+	                                 <input type="radio" name="optionsRadios" value="option1" checked>
+	                               weekly
+	                             </label>
+	                             <label class="radio">
+	                                 <input type="radio" name="optionsRadios" value="option1" checked>
+	                                 monthly
+	                             </label>
+	                             <label class="radio" style="display: none">
+	                                 <input type="radio" name="optionsRadios" value="option1" checked>
+	                                 other
+	                             </label>
+	                             <hr>
+	                            <div class="checkbox-block">
+	                                 <label class="checkbox">
+
+	                                     <input type="checkbox" value="">
+	                                     Create Promoter
+	                                 </label>
+
+	                                 <p> Choose from existing</p>
+	                                 <select  disabled="disabled" >
+	                                     <option>Select existing</option>
+	                                     <option>Select existing</option>
+	                                     <option>Select existing</option>
+	                                     <option>Select existing</option>
+	                                 </select>
+	                            </div>
+	                         </div>
+	                     </div>
+	                 </div>
+	             </div>
+	             </div>
         </div>
-    </div>
 </div>
-<script type='text/javascript'>
-		$('#current_location').keyup(function() {
-			var text = encodeURI($('#current_location').val()),
-				url = 'http://maps.googleapis.com/maps/api/geocode/json?address='+text+'&sensor=false&language=en';
-			if (text!='') {
-	            $.get(url, function(data) {
-	                if (data.status == 'OK') {
-	                    $('#results').show();
-	                    $("#locations").empty();
-	                    $.each( data.results, function(key, val) {
-	                        $('#locations').append('<li><a id="loc_item" data-lng='+val.geometry.location.lng+' data-lat='+val.geometry.location.lat+'>'+val.formatted_address+'</a></li>');
-	                    });
-	                    $('#locations').listview('refresh');
-	                } else {
-	                    $("#locations").empty();
-	                }
-				});
-			}
-        });
-        
-		$('body').on('click', '#loc_item', function(e){
-	        var $loc_text = $(this).html();
-	
-	        $.mobile.loading("show");
-			$('#current_location').val($loc_text);
-			$('#locations').empty();
-			$.mobile.loading("hide");		
-		});
-</script>
 
 {% endblock %}
