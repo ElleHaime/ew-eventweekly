@@ -14,44 +14,6 @@
         <div class="list-event clearfix">
             <div class="list-event-img">
                 <a href="#"><img src="{{ event['pic_square'] }}"></a>
-                {#
-                <div class="small-img clearfix">
-                    <a href="#myModal" role="button" data-toggle="modal"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-                    <a  href="#"><img src="/img/demo/small.jpg" alt=""></a>
-
-                    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <div class="modal-body">
-                            <img src="/img/demo/list.jpg" alt="">
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary"> more photos &#187; </button>
-                #}
             </div>
 
             <div class="list-event-text">
@@ -59,7 +21,6 @@
                 <div class="date-list">
                     <i class="icon-time"></i>
                     Start at: <span class="date-start">{{ event['start_time'] }}</span>
-                    {#<span class="date-time">20:43</span> <span class="day-title"> - tomorrow</span>#}
                 </div>
                 <p>{{ event['description']|nl2br }} </p>
                 <div class="plans-box clearfix">
@@ -148,79 +109,17 @@
             </div>
         </div>
     </div>
-    <div class="span3">
-        <div class="sidebar">
-            <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn.png" alt="">Invite friends</button>
-            {#
-            <div class=" place-address">
-                Smock Alley Theatre
-                <button class="btn btn-primary">
-                    <i class="icon-map-marker"></i>
-                </button>
+    {% if event['eid'] is defined %}
+        <div class="span3">
+            <div class="sidebar">
+                <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn.png" alt="">Invite friends</button>
+                <div class="event-site">
+                    <p>Event web-site :</p>
+                    <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>
+                </div>
             </div>
-            #}
-            <div class="event-site">
-                <p>Event web-site :</p>
-                <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>
-            </div>
-{#
-            <div class="event-site">
-                <p>Category:</p>
-                <div class="event-category clearfix">
-                    <span class="color-span orange ">Music</span>
-                    <b>/</b>
-                    <button class="btn ">Suggest category</button>
-                </div>
-
-            </div>
-            <div class="event-site">
-                <p>Type:</p>
-                <div class="event-category clearfix">
-                    <span class="color-type gray ">festival</span>
-                    <span class="arrow"></span>
-                </div>
-
-            </div>
-            <div class="event-site">
-                <p>Genres:</p>
-                <div class="event-category clearfix">
-                    <span class="color-type yellow">rock</span>
-                    <span class="arrow arrow_yellow"></span>
-                </div>
-                <div class="event-category clearfix">
-                    <span class="color-type yellow">gothic</span>
-                    <span class="arrow arrow_yellow"></span>
-                </div>
-
-            </div>
-
-            <div class="event-site">
-                <p>Venue:</p>
-                <div class="event-category clearfix">
-                    <span class="color-type light_yellow">gothic</span>
-                    <span class="arrow arrow_light-yellow"></span>
-                </div>
-
-            </div>
-            <div class="event-site tags-box clearfix">
-                <p>Tags:</p>
-                <div class="event-category clearfix">
-                    <span class="color-type blue">Dp</span>
-                    <span class="arrow arrow_blue"></span>
-                </div>
-                <div class="event-category clearfix">
-                    <span class="color-type blue">concert</span>
-                    <span class="arrow arrow_blue"></span>
-                </div>
-                <div class="event-category clearfix">
-                    <span class="color-type blue">events of the year </span>
-                    <span class="arrow arrow_blue"></span>
-                </div>
-
-            </div>
-#}
         </div>
-    </div>
+    {% endif %}
     </div>
 
     </div>

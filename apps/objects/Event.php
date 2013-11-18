@@ -27,9 +27,9 @@ class Event extends Model
 
 	public function initialize()
 	{
-		$this -> hasOne('id', '\Object\Location', 'location_id', array('alias' => 'location'));
-		$this -> hasMany('id', '\Object\EventImage', 'event_id', array('alias' => 'image'));
-		$this -> belongsTo('member_id', '\Object\Member', 'id', array('alias' => 'member'));
+		$this -> hasOne('id', '\Objects\Location', 'location_id', array('alias' => 'location'));
+		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
+		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
 	}
 	
 	public function beforeValidationOnCreate()

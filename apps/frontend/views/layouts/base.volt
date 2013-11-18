@@ -29,19 +29,72 @@
 </head>
 
 <body>
+	<div id="fb-root"></div>
+	
+  {% if external_logged is defined %}
+    <div id="external_logged" extname="{{ external_logged }}"></div>
+  {% endif %}
+  {% if acc_external is defined %}
+    <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
+  {% endif %}
+
 	<div class="out">
 	    <div class="container header">
-	        <div class="row-fluid ">
+	        <div class="row">
 	                <div class="span2">
-	                        <a href="/" class="logo">{{ image('img/demo/logo.png', 'alt': 'EventWeekly') }}</a>
+	                        <span  class="line"></span>
+	                        <a href="/" class="logo"></a>	                
 	                </div>
+	                {% if member is defined %}
+        						{% include 'layouts/accheader.volt' %}
+        					{% else %}
+        						{% include 'layouts/guestheader.volt' %}
+        					{% endif %}
+        	</div>
+	   
+	   
+	       <div class="container">
+                        <a href="#" class="btn-row-down">
+                            <i class=" icon-white icon-chevron-down "></i>
+                        </a>
+                        <div id="back-to-top" class="text-center clearfix">
 
-					{% if member is defined %}
-						{% include 'layouts/accheader.volt' %}
-					{% else %}
-						{% include 'layouts/guestheader.volt' %}
-					{% endif %}
-	        </div>
+                            <div class=" location-box">
+                                <div class="location clearfix">
+                            <span class="location-count" id="events_count">0</span>
+
+                          <div class="location-place">
+                              <a href="#" class="location-city">
+                                  <i class="caret"></i>
+                                  <span>{{ location.alias }}</span>
+                              </a>
+                              <div class="location-search clearfix">
+                                  <div class="input-append">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine">
+                                      <button class="btn" type="button">Find</button>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="location-place location-place_ask">
+                              <a href="#">
+                              <i class="caret"></i>
+                                  <span>What are you looking for?</span>
+                              </a>
+                              <div class="location-search clearfix">
+                                  <div class="input-append">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Search city">
+                                      <button class="btn" type="button">Find</button>
+                                  </div>
+                              </div>
+
+                          </div>
+
+                        </div>
+                                </div>
+                                <span  class="line"></span>
+                            </div>
+
+                        </div>
 	    </div>
 	</div>
 
@@ -78,9 +131,17 @@
 			$.mobile.loading("hide");		
 		});
 		
-		$('#user-down-caret').click(function() {
-                $('#user-down').slideToggle('slow');
-        });
+	
+    $('#user-down-caret').click(function() {
+      $('#user-down').slideToggle('2000');
+    });
+    $('#user-down-caret').click(function() {
+      $('.user-box').toggleClass('active-box');
+    });
+    $('.btn-row-down').click(function() {
+      $('#back-to-top').slideToggle('slow');
+    });
+        
 		
 	</script>
 

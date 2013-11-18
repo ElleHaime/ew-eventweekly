@@ -3,7 +3,7 @@
 namespace Objects;
 
 use Core\Model,
-		Core\Utils as _U;
+	Core\Utils as _U;
 
 class EventMember extends Model
 {
@@ -19,8 +19,8 @@ class EventMember extends Model
 
 	public function initialize()
 	{
-		$this -> belongsTo('event_id', '\Object\Event', 'id', array('alias' => 'event'));
-		$this -> belongsTo('member_id', '\Object\Member', 'id', array('alias' => 'member'));
+		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'eventpart'));
+		$this -> hasMany('member_id', '\Object\Member', 'id', array('alias' => 'memberpart'));
 	}
 
 	public function createOnChange($argument)

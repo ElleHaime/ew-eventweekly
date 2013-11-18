@@ -25,6 +25,7 @@ class Member extends Model
 		$this -> hasMany('id', '\Objects\Campaign', 'member_id', array('alias' => 'campaign'));
 		$this -> hasMany('id', '\Objects\Event', 'member_id', array('alias' => 'event'));
 		$this -> hasOne('id', '\Objects\MemberNetwork', 'member_id', array('alias' => 'network'));
+		$this -> hasOne('id', '\Objects\EventMember', 'member_id', array('alias' => 'eventpart'));
 	}
 	
 	
@@ -34,7 +35,7 @@ class Member extends Model
 				'location' => array(
 					'type' => 'hasOne',
 					'createOnChange' => true,
-					'createOnChangeField' => 'name',
+					'createOnChangeField' => 'alias',
 					'createOnChangeRelation' => 'location_id'
 				),
 				'campaign' => array(

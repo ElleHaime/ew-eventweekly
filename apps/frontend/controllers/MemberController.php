@@ -9,13 +9,15 @@ class MemberController extends \Core\Controllers\CrudController
 {
 	public function listAction()
 	{
-		$isExternalLogged = $this -> view -> member -> network;
-		if ($isExternalLogged) {
-			$this -> view -> setVar('acc_external', $isExternalLogged);
-			$this -> view -> setVar('acc_uid_network', 'facebook');
+		$member = $this -> obj;
+		$list = $member::findFirst($this -> session -> get('memberId'));
+		if (!$list -> location) {
+			$list -> location = $this -> session -> get('location');
 		}
+		
+		$this -> view -> setVar('member', $list);
 	}
-	
+
 	public function loadObject()
 	{
 		$this -> obj = $this -> session -> get('member');
@@ -32,8 +34,7 @@ class MemberController extends \Core\Controllers\CrudController
 	public function refreshAction()
 	{
 		$userData =  $this -> request -> getPost();
-		$userData = array('Member.logo' =>  "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-ash1/273593_100005266382366_453421009_s.jpg");
-		
+				
 		if (!empty($userData)) {
 			$models = array();
 			$res = array();

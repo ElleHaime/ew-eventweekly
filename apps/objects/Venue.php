@@ -8,15 +8,18 @@ use Core\Model,
 class Venue extends Model
 {
 	public $id;
+	public $fb_uid;
 	public $location_id;
 	public $name;
 	public $address;	
 	public $coordinates;
+	public $latitude;
+	public $longitude;
 
 	public function initialize()
 	{
-		$this -> hasOne('location_id', '\Object\Location', 'id', array('alias' => 'location'));
-		$this -> hasMay('event_id', '\Object\Event', 'id', array('alias' => 'event'));
+		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
+		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'event'));
 	}
 	
 	public function beforeValidationOnCreate()

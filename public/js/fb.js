@@ -1,6 +1,7 @@
 $(window).load(function() {
 
     checkProfile();
+    checkLocation();
 
     function checkProfile() {
         if ($('#check_ext_profile').length) {
@@ -47,12 +48,10 @@ $(window).load(function() {
                 states[$(this).attr('ew_val')] = $(this).val();
             });
 
-            //console.log(states);
             $.post("profile/refresh", 
                     states,
                     function(data) {
                         data = jQuery.parseJSON(data);
-                       //console.log(data);
                         if (data.status == 'OK') {
                             for (var item in data.updated) {
                                 elem = $('#' + item).get(0).tagName;
@@ -84,6 +83,22 @@ $(window).load(function() {
     $('#he_is_nervous').click(function() {
         $('#do_update_profile').hide();
     });
+    
+    
+    function checkLocation() {
+        if ($('#external_logged').length) {
+        	FB.api({
+                method: 'fql.query',
+                query: 'SELECT current_location FROM user WHERE uid=' + $('#member_ext_uid').val() },
+                function(facebookData) {
+                   if(facebookData) {
+    console.log(facebookData);            	   
+                   }
+                }
+        	);
+        }
+	}
+    
 });
 
 $( document ).ready(function() {
@@ -137,8 +152,7 @@ $( document ).ready(function() {
 
     var lat = $('#lat').val(),
         lng = $('#lng').val();
-    if ( (typeof(lat)!=='undefined') && (typeof(lng)!=='undefined') )
-    {
+    if ( (typeof(lat)!=='undefined') && (typeof(lng)!=='undefined') ) {
         var mapOptions = {
             center: new google.maps.LatLng(lat, lng),
             zoom: 8,
@@ -149,7 +163,7 @@ $( document ).ready(function() {
         var markers = [];
         var totalEvents=0;
 
-        $.post("/search",
+        $.post("/eventmap",
             function(data) {
                 data = jQuery.parseJSON(data);
                 if (data.status == "OK") {
@@ -160,7 +174,7 @@ $( document ).ready(function() {
                             showEvent(event);
                         });
                     }
-                    if (data.message[1].length>0) //friend events
+                    if (data.message[1].length > 0) //friend events
                     {
                         totalEvents+=data.message[1].length;
                         $.each(data.message[1], function(index,event) {
@@ -192,8 +206,7 @@ $( document ).ready(function() {
                                      query: 'SELECT first_name,last_name, email,current_location, current_address, username, pic FROM user WHERE uid='+response.authResponse.userID},
                                      function(facebookData) {
                                         if(facebookData) {
-                                        	console.log(facebookData);
-                                            $.post("fbregister", { uid: response.authResponse.userID,
+                                           $.post("fbregister", { uid: response.authResponse.userID,
                                                               address: facebookData[0].current_address,
                                                               location: facebookData[0].current_location,
                                                               email: facebookData[0].email,
@@ -206,7 +219,7 @@ $( document ).ready(function() {
                                                         if (session.status == 'OK') {
                                                             window.location.href='/map';
                                                         }
-                                                    });                                            
+                                                    });                                           
                                         } else {
                                             $('#login_message').html('Facebook return empty result :(');
                                             $('#login_message').show();
@@ -224,21 +237,30 @@ $( document ).ready(function() {
         );
     });
 
-    window.fbAsyncInit = function() {
+    /*window.fbAsyncInit = function() {
         FB.init({
             appId      : '423750634398167',
             status     : true
         });
-    };
+    };*/
 
     (function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=361888093918931";
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=423750634398167";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
+});
+
+$( document ).keydown(function(e) {
+    if( e.keyCode === 27 ) {
+        if ($('#user-down').css('display') != 'none') {
+            $('.user-box').toggleClass('active-box');
+            $('#user-down').hide();
+        }
+    }
 });
 
 

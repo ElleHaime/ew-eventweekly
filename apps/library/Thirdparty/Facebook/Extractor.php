@@ -24,7 +24,6 @@ class Extractor
   {
     foreach ($data as $field)
     {
-
       /*
       echo "<pre>";
       var_dump($field['']);
@@ -74,13 +73,12 @@ class Extractor
 
   }
 
-  public function getEventsSimpleByLocation($accessToken,$loc)
+  public function getEventsSimpleByLocation($accessToken, $loc)
   {
     $limit  = 200;
     $offset = 1.8;
-
-    $lat = floatval($loc['lat']);
-    $long = floatval($loc['lng']);
+    $lat = $loc -> latitude;
+    $long = $loc -> longitude;
 
     $lngpo = str_replace('.',',', $long+$offset);
     $lngmo = str_replace('.',',', $long-$offset);

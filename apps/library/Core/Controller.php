@@ -14,32 +14,38 @@ class Controller extends \Phalcon\Mvc\Controller
 	protected $model				= false;
 	protected $module 				= false;
 	protected $memberId				= false;
+	protected $locator				= false;
 	
- 	public function onConstruct()
+	
+	public function initialize()
 	{
 		$this -> _setModule();
 		$this -> _getChild();
 		$this -> _parseQueryVals();
 		
-		$location = $this -> geo -> getUserLocation(array('city', 'country'));
+		if (!$this -> locator) {
+			$this -> plugLocator();
+		}
+
+		if (!$this -> session -> has('location')) {
+			$location = $this -> locator -> createOnChange();
+			$this -> session -> set('location', $location);
+		}
 
 		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
 			$this -> memberId = $this -> session -> get('memberId');
 			$this -> view -> member = $this -> session -> get('member');
 
-			if (isset($this -> view -> member -> location)) {
-				$this -> view -> setVar('location', $this -> view -> member -> location -> name);
-				$this -> session -> set('location', $this -> view -> member -> location -> name);			
-			} else {
-				$this -> view -> setVar('location', $location);
-				$this -> session -> set('location', $location);	
+			if ($this -> session -> has('user_token')) {
+				$this -> view -> setVar('external_logged', 'facebook');
+				$this -> view -> setVar('acc_external', $this -> view -> member -> network);
 			}
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);
-			$this -> session -> set('location', $location);	
-			$this -> view -> setVar('location', $this -> geo -> getUserLocation(array('city')));
 		}
+		$this -> view -> setVar('location', $this -> session -> get('location'));	
 	}
+	
 
 	public function getObj()
 	{
@@ -105,5 +111,13 @@ class Controller extends \Phalcon\Mvc\Controller
 		$module = $this -> module;
 		
 		return '\\' . $this -> config -> modules -> $module -> formNamespace . '\\';
+	}
+	
+	public function plugLocator()
+	{
+		$locModel = 'Location';
+		$locPath = $this -> getModelPath() . $locModel;
+		$this -> locator = new $locPath;
+		$this -> locator -> setGeoService($this -> geo);
 	}
 }

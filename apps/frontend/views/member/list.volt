@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container content_noBorder">
+<div class="container content_noBorder" style="padding-top:100px;">
 	<div class="row-fluid profile-top">
 	
         <div class="span9">
@@ -22,7 +22,7 @@
                 <input type="text" name="member_name" id="member_name_update" value="{{ member.name }}" style="background:#29ABE2; color: #fff; border: 0; display:none;">
                 
                 <div class="clear"></div>
-                <span class="location-state"><span id="member_location">{{ member.location.name }}</span> <span id="member_address">{{ member.address }}</span></span>
+                <span class="location-state"><span id="member_location">{{ member.location.alias }}</span> <span id="member_address">{{ member.address }}</span></span>
                 <span class="mail">{{ member.email }}</span>
 				<input type="text" name="member_email" id="member_email_update" value="{{ member.email }}" style="background:#29ABE2; color: #fff; border: 0; display:none;">
 
