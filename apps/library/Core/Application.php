@@ -173,7 +173,7 @@ class Application extends BaseApplication
 
 	protected function _initCache(\Phalcon\DI $di)
 	{
-		if (!$this -> _config -> application -> debug) {
+		/*if (!$this -> _config -> application -> debug) {
 
             // Get the parameters
 			$cacheAdapter = '\Phalcon\Cache\Backend\\' . $this -> _config -> application -> cache -> adapter;
@@ -198,12 +198,12 @@ class Application extends BaseApplication
 			$cacheModels = new $cacheAdapter($frontDataCache, $backEndOptions);
 			$di -> set('modelsCache', $cacheModels, true);
 
-		} else {
+		} else { */
 			$cache = new \Core\Cache\Mock(null);
 			$di -> set('cacheData', $cache);
 			$di -> set('cacheOutput', $cache);
 			$di -> set('modelsCache', $cache);
 			$di -> set('viewCache', $cache);
-		}
+		//}
 	}
 }
