@@ -38,9 +38,9 @@
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search clearfix">
+                              <div class="location-search searchCityBlock clearfix">
                                   <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>

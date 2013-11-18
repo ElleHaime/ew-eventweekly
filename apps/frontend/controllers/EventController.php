@@ -24,9 +24,9 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function eventmapAction()
+	public function eventmapAction($lat = null, $lng = null)
 	{
-		$events = $this -> searchAction();
+		$events = $this -> searchAction($lat, $lng);
 
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
@@ -54,14 +54,23 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function searchAction()
+	public function searchAction($lat = null, $lng = null)
 	{
+        $loc = new \stdClass();
+        $l = $this -> session -> get('location');
+        if(!empty($lat) && !empty($lng)) {
+            $loc->latitude = $lat;
+            $loc->longitude = $lng ;
+        }else {
+            $loc->latitude = $l->latitude;
+            $loc->longitude = $l->longitude ;
+        }
+
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
 
 			// user registered via facebook and has facebook account
 			$this -> facebook = new Extractor();
-			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), 
-																	 $this -> session -> get('location'));
+			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), $loc);
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
 				$totalEvents=count($events[0])+count($events[1]);
 				$this -> view -> setVar('eventsTotal', $totalEvents);
@@ -78,7 +87,7 @@ class EventController extends \Core\Controllers\CrudController
 		} else {
 
 			// user registered via email
-			$location = $this -> session -> get('location');
+			$location = $loc;
 			$modelPath = $this -> getModelPath();
 			$scale = $this -> geo -> buildCoordinateScale($location -> latitude , $location -> longitude);
 			$query = 'select event.*, venue.latitude as latitude, venue.longitude as longitude

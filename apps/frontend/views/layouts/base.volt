@@ -24,8 +24,19 @@
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
 
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+
+    {{ javascript_include('js/addressAutocomplete.js') }}
+    {{ javascript_include('js/top_panel.js') }}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            topPanel.init({
+                searchCityBlock: '.searchCityBlock'
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -70,9 +81,9 @@
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search clearfix">
+                              <div class="location-search searchCityBlock clearfix">
                                   <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>
