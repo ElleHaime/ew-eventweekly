@@ -182,9 +182,14 @@ $( document ).ready(function() {
                         });
                     }
                 } else {
-                	console.log(data.message);
+                	//console.log(data.message);
                 }
             }).done(function (){
+                if (totalEvents == 0)
+                {
+                    $('#events_count').addClass('location-count_no');
+                }
+
             	$('#events_count').html(totalEvents);
                 var mcOptions = { gridSize: 50, maxZoom: 15};
                 var mc = new MarkerClusterer(map, markers, mcOptions);
