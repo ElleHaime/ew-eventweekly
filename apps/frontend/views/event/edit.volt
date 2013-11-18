@@ -10,8 +10,9 @@
                      <div class="span9">
 
 	                     <div class="add-event">
-	                         <h3 class="title-page">Create event</h3>
-	                         <div class="row-fluid">
+							<h3 class="title-page">Create event</h3>
+							<form method="post">	                         
+							<div class="row-fluid">
 	                             <div class="span3">
 	                                 <div class="add-img">
 	                                     <a  href=""><img src="img/demo/q1.jpg" alt=""></a>
@@ -166,6 +167,7 @@
 	                         </div>
 	                     </div>
 	                 </div>
+	                 </form>
 	             </div>
 	             </div>
         </div>
