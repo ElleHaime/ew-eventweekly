@@ -35,12 +35,12 @@
 	                    <div class="show-box">
 	                    	{% if view_action is defined %}
 	                        			{%if view_action == 'list' %}
-											<button class="btn btn-show" onclick="location.href='map'"><i class=" icon-list"></i><span>Show as map</span></button>
+											<button class="btn btn-block btn-show" onclick="location.href='map'"><i class=" icon-list"></i><span>Show as map</span></button>
 										{% else %}
-											<button class="btn btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
+											<button class="btn btn-block btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
 										{% endif %}
 							{% else %}	
-								<button class="btn btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
+								<button class="btn btn-block btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
 							{% endif %}
 	                        	</span> 
 	                       	</button>

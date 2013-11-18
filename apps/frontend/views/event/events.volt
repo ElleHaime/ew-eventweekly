@@ -1,9 +1,9 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-
-<div class="container content">
-    <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your events:</h3>
+<div class="padd_70"></div>
+<div class="container content_noBorder">
+    <h3 style="color: #2a2a2a; font-weight:bold; padding-left:15px;">Your events:</h3>
     <div class="row">
         <div class="span12">
         	{% for event in userEvents %}
@@ -24,10 +24,12 @@
 	                    </div>
 					</div>
 				</div>
+                <hr/>
         	{% endfor %}
+
         </div>
     </div>
-    <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Friend events:</h3>
+    <h3 style="color: #2a2a2a; font-weight:bold; padding-left:15px;">Friend events:</h3>
     <div class="row">
         <div class="span12">
             {% for event in friendEvents %}
@@ -48,6 +50,7 @@
                         </div>
                     </div>
                 </div>
+                <hr/>
             {% endfor %}
         </div>
     </div>
