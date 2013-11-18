@@ -581,7 +581,7 @@ hr {
     margin-left: 90px;
 }
 
-.btn-cancel {
+.btn-cancel, .btn-cancel:hover, .btn-cancel:active, .btn-cancel:focus {
     background: #999999;
 }
 .btn-add_group
@@ -1821,7 +1821,7 @@ body {
     padding: 0;
     margin: 0;
 }
-.header .span4.user-block
+.header .span4.user-block, .sign_no 
 {
     width: 332px;
 }
