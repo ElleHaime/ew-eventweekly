@@ -1,7 +1,7 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-
+<div class="padd_70"></div>
 <div class="container content_noBorder">
 
         <div class="row-fluid ">

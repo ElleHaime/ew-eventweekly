@@ -224,7 +224,7 @@ p {
     float: left;
     padding: 15px 0 10px 30px;
     position: relative;
-    margin-right: 20px;
+    margin-right: 5px;
     max-width: 180px;
 }
 .user-box  a {
@@ -581,7 +581,7 @@ hr {
     margin-left: 90px;
 }
 
-.btn-cancel {
+.btn-cancel, .btn-cancel:hover, .btn-cancel:active, .btn-cancel:focus {
     background: #999999;
 }
 .btn-add_group
@@ -797,7 +797,8 @@ input[type="color"]:focus, .uneditable-input:focus
 
 }
 .sidebar .input-append .btn {
-    height: 42px;
+    height: 45px;
+    width: 60px;
 }
 .change-input  {
     margin-top: 10px;
@@ -1059,11 +1060,11 @@ button.close {
 }
 .add-img  img {
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .add-img .btn {
     padding: 10px 10px;
-    margin-top: 20px;
     width: 100%;
 }
 
@@ -1774,7 +1775,7 @@ button.close {
     float: none;
 }
 .header .span4.user-block  {
-    width: 346px;
+    width: 315px;
 }
 .location {
     margin:  15px 0px 0 0px;
@@ -1801,7 +1802,7 @@ a.btn-row-down {
     outline: medium none;
     text-decoration: none;
     width: 50px;
-    top:40px;
+    top:50px;
     position: absolute;
     display: none;
 }
@@ -1820,7 +1821,10 @@ body {
     padding: 0;
     margin: 0;
 }
-
+.header .span4.user-block, .sign_no 
+{
+    width: 332px;
+}
 
 .header .row {
     min-height:70px;
@@ -1828,7 +1832,11 @@ body {
 /*---responsive*/
 
 
-@media screen and (max-width: 1200px) {
+
+.location-box {
+    padding-right: 15px;
+}
+@media screen and (max-width: 1160px) {
     .btn-add {
         margin-right: 20px;
     }
@@ -1837,16 +1845,18 @@ body {
 
 
 
-@media screen and (max-width: 1200px) {
 
-    .user-box {
-        padding-left: 15px;
+
+@media screen and (max-width: 1200px) {
+    .show-box {
+        padding-left: 22px;
+        padding-right: 22px;
     }
     .location {
-        padding-left: 8px;
+        padding-left: 9px;
     }
-    .show-box {
-        padding-left: 13px;
+    .user-box {
+        padding-left: 15px;
     }
 }
 
@@ -1862,8 +1872,15 @@ body {
 }
 
 @media screen and (max-width: 990px) {
+    .header .span4.user-block  {
+        width: 315px;
+    }
     .header .span2:first-child {
-        width: 100px;
+        width: 80px;
+    }
+
+    .location-box {
+        padding-right: 0px;
     }
     .container {
         width: 100%;
@@ -1953,14 +1970,15 @@ body {
     }
 
     .user-box {
-        padding-left: 15px;
-    }
-    .sign_no {
-      width: 133px;
+        padding-left: 0px;
     }
 }
 
 @media screen and (max-width: 770px) {
+
+    .user-box {
+        padding-left: 13px;
+    }
     .location {
         padding-left: 10px;
     }
@@ -1996,15 +2014,6 @@ body {
     .show-list {
         padding-left: 17px;
     }
-
-    .header .span2, .header .span4 {
-        float: left;
-        width: auto;
-    }
-    .header .span4 {
-        padding: 0 14px 0 4px;
-    }
-    .header .span2:last-child  {   padding: 0 14px;}
 }
 
 
@@ -2015,8 +2024,6 @@ body {
         padding: 5px 0 10px 0;
     }
 
-    .user-down { width: 258px;}
-
     a.btn-row-down {
         display: block;
     }
@@ -2025,7 +2032,8 @@ body {
         display: none;
     }
     .header .span4.user-block {
-        width: 243px;
+        width: 268px;
+        padding-left: 6px;
     }
     .user-box a span {
         display: block;
@@ -2033,6 +2041,9 @@ body {
     }
     .location-box {
         margin: 0 auto;
+    }
+    .user-box {
+        padding-left: 15px;
     }
 
 }
@@ -2044,17 +2055,6 @@ body {
     }
     .header .span4.user-block {
         width: 172px;
-    }
-    .user-down { width: 190px;}
-    .btn-text {
-        font-size: 11px;
-    }
-    .btn-count{
-        font-size: 17px;
-        width: 40px;
-    }
-    .edit-icon {
-        padding: 4px 8px 5px;
     }
 }
 
@@ -2071,6 +2071,18 @@ body {
 }
 
 
-.row-fluid .span2, .row-fluid  .span4 {
-    position: relative;
+
+/*----temperary---*/
+.list-event {
+    margin: 20px;
+}
+.content_noBorder {
+    padding-top: 30px;
+}
+.padd_70 {
+    padding: 70px 0 0 0;
+}
+
+.list-event-img_more a {
+    display: block;
 }

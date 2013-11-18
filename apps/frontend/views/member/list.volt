@@ -1,8 +1,8 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-
-<div class="container content_noBorder" style="padding-top:100px;">
+<div class="padd_70"></div>
+<div class="container content_noBorder">
 	<div class="row-fluid profile-top">
 	
         <div class="span9">
