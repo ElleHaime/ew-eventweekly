@@ -25,6 +25,7 @@ $( document ).ready(function() {
         $('#event-maybe').hide();
         $('#event-decline').hide();
         $('.categ_yellow').show();
+        console.log($('#event_id').val());
         $.post("/event/answer", { answer: 'MAYBE', event_id : $('#event_id').val() });
     });
     $( "#event-decline" ).click(function() {

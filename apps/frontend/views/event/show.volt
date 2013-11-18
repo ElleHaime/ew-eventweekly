@@ -23,26 +23,28 @@
                     Start at: <span class="date-start">{{ event['start_time'] }}</span>
                 </div>
                 <p>{{ event['description']|nl2br }} </p>
-                <div class="plans-box clearfix">
-                    <span>So, whats your plan?</span>
-                    <div class="btn-hide clearfix">
-                        <div class="event-site">
-                                <div class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
-                                    <span class="color-type green">Im going!</span>
-                                    <span class="arrow arrow_green"></span>
-                                </div>
-                                <div class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
-                                    <span class="color-type yellow">Its interesting, maybe im going</span>
-                                    <span class="arrow arrow_yellow"></span>
-                                </div>
-                            {% if !event['answer'] %}
-                                <button class="btn" id="event-join">Join</button>
-                                <button class="btn" id="event-maybe">Maybe</button>
-                                <button class="btn" id="event-decline">Decline</button>
-                            {% endif %}
+                {% if event['answer'] != 3 %}
+                    <div class="plans-box clearfix">
+                        <span>So, whats your plan?</span>
+                        <div class="btn-hide clearfix">
+                            <div class="event-site">
+                                    <div class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
+                                        <span class="color-type green">Im going!</span>
+                                        <span class="arrow arrow_green"></span>
+                                    </div>
+                                    <div class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
+                                        <span class="color-type yellow">Its interesting, maybe im going</span>
+                                        <span class="arrow arrow_yellow"></span>
+                                    </div>
+                                {% if !event['answer'] %}
+                                    <button class="btn" id="event-join">Join</button>
+                                    <button class="btn" id="event-maybe">Maybe</button>
+                                    <button class="btn" id="event-decline">Decline</button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
 

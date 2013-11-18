@@ -145,36 +145,30 @@ class EventController extends \Core\Controllers\CrudController
 		} 
 		$this -> view -> setVar('event', $event);
 	}
-	
+
 
 	public function answerAction()
 	{
 		if ($this -> session -> has('member')) {
 			$member = $this -> session -> get('member');
 
-			$answer = $this -> request -> getPost('answer', 'string');
-			$status = EventMember::$answer;
-			
-			$event_id = $this -> request -> getPost('event_id', 'string');
-			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
-			$eventMember = EventMember::findFirst(array($conditions));
-
-			if ($eventMember){
-				if ($eventMember -> member_status != $status){
-					$eventMember -> assign(array('member_status' => $status));
-					$eventMember -> save();
-				}
-			} else {
-				$eventMember = new EventMember();
-				$eventMember -> assign(array(
-					'member_id' =>  $member -> id,
-					'event_id'  =>  $event_id,
-					'member_status' => $status));
-				$eventMember -> save();
+			switch ($this -> request -> getPost('answer', 'string'))
+			{
+				case 'JOIN': $status = EventMember::JOIN; break;
+				case 'MAYBE': $status = EventMember::MAYBE; break;
+				case 'DECLINE': $status = EventMember::DECLINE; break;
 			}
+			$event_id = $this -> request -> getPost('event_id', 'string');
+
+			$eventMember = new EventMember();
+			$eventMember -> member_id =  $member -> id;
+			$eventMember -> event_id  =  $event_id;
+			$eventMember -> member_status = $status;
+			$eventMember -> save();
 
 			$ret['STATUS']='OK';
 			echo json_encode($ret);
+			die;
 		}
 	}
 
