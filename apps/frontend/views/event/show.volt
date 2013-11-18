@@ -104,7 +104,8 @@
         <div class="row-fluid">
             <div class="span12">
                 <div class="comment-box">
-                    <img src="/img/demo/comments.jpg" alt="">
+                    <h2>Leave a comment:</h2>
+                    <fb:comments href="http://events.apppicker.com/event/show/{{ event['id'] }}"></fb:comments>
                 </div>
             </div>
         </div>
