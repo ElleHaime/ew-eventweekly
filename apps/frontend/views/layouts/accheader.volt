@@ -74,5 +74,4 @@
                                 <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-list"></i><span>Show as map </span></button>
                             {% endif %}
                         </div>
-
 	                 </div>
