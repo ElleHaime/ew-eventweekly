@@ -28,14 +28,11 @@
 	                <div class="span4 location-box">
 
                         <div class="location clearfix">
-                            <span class="location-count" id="events_count">
                               {% if eventsTotal is defined %}
-                                {{ eventsTotal }}
+                                  <span class="location-count" id="events_count">{{ eventsTotal }}</span>
                               {% else %}
-                                  0
-                                {#<span class="location-count location-count_no" id="events_count">0</span>#}
+                                  <span class="location-count location-count_no" id="events_count">0</span>
                               {% endif %}
-                                </span>
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>

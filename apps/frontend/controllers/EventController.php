@@ -18,6 +18,9 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
 		$this -> view -> setVar('link_to_list', true);
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
 	}
 
 
@@ -60,6 +63,9 @@ class EventController extends \Core\Controllers\CrudController
 			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), 
 																	 $this -> session -> get('location'));
 			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
+				$totalEvents=count($events[0])+count($events[1]);
+				$this -> view -> setVar('eventsTotal', $totalEvents);
+				$this->session->set("eventsTotal", $totalEvents);
 				$events = $this -> parseEvent($events);
 				return $events;
 			} else {
@@ -121,6 +127,10 @@ class EventController extends \Core\Controllers\CrudController
 			$accessToken = $this -> session -> get('user_token');
 			$this -> facebook = new Extractor();
 			$event = $this -> facebook -> getEventById($eventObj -> fb_uid, $accessToken);
+
+			if ($this -> session -> has('eventsTotal')) {
+				$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+			}
 
 			$event = $event[0]['fql_result_set'][0];
 			$event['id'] = $eventObj -> id;

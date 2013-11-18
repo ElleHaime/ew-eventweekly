@@ -51,8 +51,7 @@
         						{% include 'layouts/guestheader.volt' %}
         					{% endif %}
         	</div>
-	   
-	   
+
 	       <div class="container">
                         <a href="#" class="btn-row-down">
                             <i class=" icon-white icon-chevron-down "></i>
@@ -61,8 +60,11 @@
 
                             <div class=" location-box">
                                 <div class="location clearfix">
-                            <span class="location-count" id="events_count">0</span>
-
+                              {% if eventsTotal is defined %}
+                                  <span class="location-count" id="events_count">{{ eventsTotal }}</span>
+                              {% else %}
+                                  <span class="location-count location-count_no" id="events_count">0</span>
+                              {% endif %}
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
