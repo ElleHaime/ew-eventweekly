@@ -38,7 +38,9 @@ class Controller extends \Phalcon\Mvc\Controller
 
 			if ($this -> session -> has('user_token')) {
 				$this -> view -> setVar('external_logged', 'facebook');
-				$this -> view -> setVar('acc_external', $this -> view -> member -> network);
+				if (isset($this -> view -> member -> network)) {
+					$this -> view -> setVar('acc_external', $this -> view -> member -> network);
+				}
 			}
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);

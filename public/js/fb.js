@@ -219,7 +219,7 @@ $( document ).ready(function() {
                                                         if (session.status == 'OK') {
                                                             window.location.href='/map';
                                                         }
-                                                    });                                           
+                                                    });                                            
                                         } else {
                                             $('#login_message').html('Facebook return empty result :(');
                                             $('#login_message').show();
