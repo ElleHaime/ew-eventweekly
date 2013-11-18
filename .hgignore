@@ -3,5 +3,6 @@ config/config.php
 .idea
 public/.htaccess
 var
-config/config.json
 .project
+.idea
+.hgignore

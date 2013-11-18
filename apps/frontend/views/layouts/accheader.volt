@@ -32,10 +32,10 @@
                               {% if eventsTotal is defined %}
                                 {{ eventsTotal }}
                               {% else %}
-                                0
+                                  0
+                                {#<span class="location-count location-count_no" id="events_count">0</span>#}
                               {% endif %}
-                            </span>
-
+                                </span>
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
@@ -67,9 +67,11 @@
 	                </div>
 	                
 	                <div class="span2 show-list">
-
                         <div class="show-box">
-                            <button class="btn btn-block btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            {% if link_to_list is defined %}
+                                <button class="btn btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            {% else %}
+                                <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-list"></i><span>Show as map </span></button>
+                            {% endif %}
                         </div>
-
 	                 </div>
