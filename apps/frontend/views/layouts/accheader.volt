@@ -32,10 +32,10 @@
                               {% if eventsTotal is defined %}
                                 {{ eventsTotal }}
                               {% else %}
-                                0
+                                  0
+                                {#<span class="location-count location-count_no" id="events_count">0</span>#}
                               {% endif %}
-                            </span>
-
+                                </span>
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
