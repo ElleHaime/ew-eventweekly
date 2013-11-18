@@ -69,7 +69,7 @@
 	                <div class="span2 show-list">
 
                         <div class="show-box">
-                            <button class="btn btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            <button class="btn btn-block btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
                         </div>
 
 	                 </div>
