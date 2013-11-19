@@ -131,6 +131,7 @@ class EventController extends \Core\Controllers\CrudController
 
 					$events[$elem][] = array(
 						'id' => $ev -> event -> id,
+						'eid' => $ev -> event -> fb_uid,
 						'pic_square' => '',
 						'address' => $ev -> event -> address,
 						'name' => $ev -> event -> name,
@@ -166,6 +167,7 @@ class EventController extends \Core\Controllers\CrudController
 		} else {
 			$event = array(
 				'id' => $eventObj -> id,
+				'eid' => $eventObj -> fb_uid,
 				'name' => $eventObj -> name,
 				'description' => $eventObj -> description,
 				'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
