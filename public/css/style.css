@@ -646,9 +646,7 @@ hr {
     border-radius: 5px;
     border:1px solid #ccc;
 }
-.list-event-text {
-    /*float: left;*/
-}
+
 .list-event-text  a , .list-event-text_more a {
     color:#1A1A1A;
     font-size: 22px;
