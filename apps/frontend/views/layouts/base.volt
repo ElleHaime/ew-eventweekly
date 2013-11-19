@@ -20,12 +20,22 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+
+    {{ javascript_include('js/project/vendors/underscore.js') }}
+
+    {{ javascript_include('js/project/vendors/jquery.cookie.js') }}
+
     {{ javascript_include('js/bootstrap.min.js') }}
+
+    {{ javascript_include('js/main.js') }}
+    {{ javascript_include('js/project/map/gmap.js') }}
+    {{ javascript_include('js/project/map/gmap_events.js') }}
+
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
-
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
-	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
 
     {{ javascript_include('js/addressAutocomplete.js') }}
     {{ javascript_include('js/top_panel.js') }}
@@ -35,6 +45,13 @@
             topPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });
+            app.Gmap.init({
+                mapCenter: {
+                    lat: '{{ location.latitude }}',
+                    lng: '{{ location.longitude }}'
+                }
+            });
+            app.GmapEvents.init();
         });
     </script>
 </head>

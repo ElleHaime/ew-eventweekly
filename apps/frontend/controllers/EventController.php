@@ -24,9 +24,9 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function eventmapAction($lat = null, $lng = null)
+	public function eventmapAction($lat = null, $lng = null, $city = null)
 	{
-		$events = $this -> searchAction($lat, $lng);
+		$events = $this -> searchAction($lat, $lng, $city);
 
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
@@ -54,16 +54,19 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function searchAction($lat = null, $lng = null)
+	public function searchAction($lat = null, $lng = null, $city = null)
 	{
-        $loc = new \stdClass();
-        $l = $this -> session -> get('location');
+        $loc = $this -> session -> get('location');
         if(!empty($lat) && !empty($lng)) {
             $loc->latitude = $lat;
             $loc->longitude = $lng ;
-        }else {
-            $loc->latitude = $l->latitude;
-            $loc->longitude = $l->longitude ;
+
+            if(!empty($city)) {
+                $loc->city = $city;
+                $loc->alias = $city;
+            }
+
+            $this->session->set('location', $loc);
         }
 
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {

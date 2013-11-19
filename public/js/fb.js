@@ -31,7 +31,7 @@ $( document ).ready(function() {
         });
     });
 
-    function showEvent(event)
+    /*function showEvent(event)
     {
         if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
         {
@@ -99,7 +99,7 @@ $( document ).ready(function() {
                 var mcOptions = { gridSize: 50, maxZoom: 15};
                 window.mc = new MarkerClusterer(window.map, window.markers, mcOptions);
             });
-    }
+    }*/
 
     $('#fb-login').click(function() {
         FB.login(
