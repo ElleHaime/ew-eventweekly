@@ -68,7 +68,7 @@
                             {% if link_to_list is defined %}
                                 <button class="btn btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
                             {% else %}
-                                <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-list"></i><span>Show as map </span></button>
+                                <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-map"></i><span>Show as map </span></button>
                             {% endif %}
                         </div>
 	                 </div>
