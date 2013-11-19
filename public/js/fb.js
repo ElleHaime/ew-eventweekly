@@ -1,8 +1,8 @@
 $( document ).ready(function() {
 
     //https://developers.facebook.com/docs/reference/dialogs/feed/
-    /*
     $('#event_going').click(function() {
+        console.log('join');
         FB.ui({
             method: 'feed',
             link: window.location.href,
@@ -12,6 +12,7 @@ $( document ).ready(function() {
         });
     });
 
+
     $('#event_share').click(function() {
         FB.ui({
             method: 'feed',
@@ -19,7 +20,16 @@ $( document ).ready(function() {
             caption: 'User are shared this event'
         }, function(response){});
     });
-    */
+
+    //https://developers.facebook.com/docs/reference/dialogs/send/
+    $('#fb-invite').click(function() {
+        FB.ui({
+            method: 'send',
+            link: window.location.href
+        }, function(response){
+            console.log(response);
+        });
+    });
 
     /*function showEvent(event)
     {
@@ -29,7 +39,7 @@ $( document ).ready(function() {
                 '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
                 '<div>' +
                 '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+                '<a target="_blank" href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
                 '</div>';
             //contentString+='<div>Lat: '+event.venue.latitude+'</div><div>Lng: '+event.venue.longitude+'</div>';
             var infowindow = new google.maps.InfoWindow({
@@ -60,29 +70,32 @@ $( document ).ready(function() {
         window.map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
         window.mc = new MarkerClusterer(window.map);
         window.markers = [];
+        var totalEvents=0;
 
         $.post("/eventmap",
             function(data) {
                 data = jQuery.parseJSON(data);
                 if (data.status == "OK") {
+
                     if (data.message[0].length > 0) //own events
                     {
-                        //console.log('My events count:'+data.message[0].length);
+                        totalEvents=data.message[0].length;
+                        console.log('My events count:'+data.message[0].length);
                         $.each(data.message[0], function(index,event) {
                             showEvent(event);
                         });
                     }
                     if (data.message[1].length>0) //friend events
                     {
-                        //console.log('Friend events count:'+data.message[1].length);
+                        totalEvents=data.message[1].length;
+                        console.log('Friend events count:'+data.message[1].length);
                         $.each(data.message[1], function(index,event) {
                             showEvent(event);
                         });
                     }
-                    $('#events_count').html(data.message[0].length + data.message[1].length);
-                    $('#events_count').removeClass('location-count_no');
                 }
             }).done(function (){
+                $('#events_count').html(totalEvents);
                 var mcOptions = { gridSize: 50, maxZoom: 15};
                 window.mc = new MarkerClusterer(window.map, window.markers, mcOptions);
             });
@@ -135,20 +148,18 @@ $( document ).ready(function() {
         );
     });
 
-    /*
     window.fbAsyncInit = function() {
         FB.init({
             appId      : '423750634398167',
             status     : true
         });
     };
-    */
 
     (function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=423750634398167";
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=361888093918931";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 });

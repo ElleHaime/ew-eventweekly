@@ -93,14 +93,14 @@
                               {% else %}
                                   <span class="location-count location-count_no" id="events_count">0</span>
                               {% endif %}
-                          <div class="location-place">
+                          <div class="location-place location-place_country">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search searchCityBlock clearfix">
-                                  <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
+                              <div class="location-search searchCityBlock clearfix" style="width: 295px">
+                                  <div class="input-append" style="float: none">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity" style="width: 69%">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>
@@ -168,12 +168,41 @@
     $('#user-down-caret').click(function() {
       $('.user-box').toggleClass('active-box');
     });
+
+    $('.location-place_ask > a ').click(function() {
+      $('.location-place_ask .location-search').slideToggle('2000');
+    });
+        $('.location-place_ask > a ').click(function() {
+      $('.location-place_ask').toggleClass('active-box');
+    });
+     $('.location-place_country .location-city').click(function() {
+          $('.location-place_country').toggleClass('active-box');
+     });
+
     $('.btn-row-down').click(function() {
       $('#back-to-top').slideToggle('slow');
     });
-        
-		
+
+
 	</script>
+
+    <script>
+
+        // Wait until the document is ready
+        $(function(){
+
+            if($.fn.noUiSlider) {
+                // Run noUiSlider
+                $('.noUiSlider').noUiSlider({
+                    range: [10,40]
+                    ,start: [20,30]
+                });
+            }
+
+        });
+
+
+    </script>
 
 </body>
 </html>

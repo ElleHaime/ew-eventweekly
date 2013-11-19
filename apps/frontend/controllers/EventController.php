@@ -21,16 +21,9 @@ class EventController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
-	}
-
-	public function listAction()
-	{
-		if ($this -> session -> has('eventsTotal')) {
-			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
-		}
-	}
-
-	public function editAction()
+	}	
+    
+    public function listAction()
 	{
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
