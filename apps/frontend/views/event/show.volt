@@ -54,8 +54,12 @@
                     <span class="share-box-title">Share this article:</span>
                     <div class="share-box-icon">
                         <!--Facebook-->
-                        <div class="fb-like" data-colorscheme="light" data-layout="button_count" data-action="like" data-show-faces="false" data-send="true"></div>
-
+                        <div class="fb-share-button" data-href="" data-type="button"></div>
+                        <script type="text/javascript">
+                            $( document ).ready(function() {
+                                $('.fb-share-button').attr('data-href')=window.location.href;
+                            });
+                        </script>
                         <!--Google +-->
                         <!-- Place this tag where you want the +1 button to render. -->
                         <div class="g-plusone" data-size="medium" data-annotation="none"></div>

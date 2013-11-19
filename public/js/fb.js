@@ -80,6 +80,7 @@ $( document ).ready(function() {
                         });
                     }
                     $('#events_count').html(data.message[0].length + data.message[1].length);
+                    $('#events_count').removeClass('location-count_no');
                 }
             }).done(function (){
                 var mcOptions = { gridSize: 50, maxZoom: 15};
