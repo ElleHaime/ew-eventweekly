@@ -128,6 +128,13 @@
         float: left;
     }
 
+    .location-place_ask .location-search {
+        width: 419px;
+    }
+
+    .location-search input {
+        width: 79%;
+    }
     .user-box a  {
         min-width: 70px;
     }
@@ -180,7 +187,7 @@
     .location {
         padding-left: 10px;
     }
-    .location-place_ask a {
+    .location-place_ask > a {
         width: 150px;
     }
     .location-box {
@@ -197,7 +204,7 @@
 
 
 @media screen and (max-width: 770px) {
-    .location-place_ask span {
+    .location-place_ask  > a >  span {
         text-indent: -9999px;
         background: url(../img/demo/search.png) no-repeat ;
         width: 14px;
@@ -207,7 +214,7 @@
         vertical-align: middle;
         margin-left: 10px;
     }
-    .location-place_ask a {
+    .location-place_ask > a {
         width: 60px;
     }
     .location-box {
@@ -215,6 +222,11 @@
     }
     .show-list {
         padding-left: 17px;
+    }
+
+    .location-search  .input-append input
+    {
+        height: 42px;
     }
 }
 
@@ -228,6 +240,9 @@
     .add-event .form-center {
         margin-right: 30px;
     }
+
+
+
 }
 @media screen and (max-width: 580px) {
     .sidebar .input-append input {

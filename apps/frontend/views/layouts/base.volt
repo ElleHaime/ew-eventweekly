@@ -13,6 +13,7 @@
     {{ stylesheet_link('css/style.css') }}
     {{ stylesheet_link('css/jake.css') }}
     {{ stylesheet_link('css/respond.css') }}
+    {{ stylesheet_link('css/jquery.nouislider.css') }}
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -26,6 +27,7 @@
     {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
+    {{ javascript_include('js/jquery.nouislider.js') }}
 
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
@@ -79,7 +81,7 @@
                               {% else %}
                                   <span class="location-count location-count_no" id="events_count">0</span>
                               {% endif %}
-                          <div class="location-place">
+                          <div class="location-place location-place_country">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
@@ -154,12 +156,38 @@
     $('#user-down-caret').click(function() {
       $('.user-box').toggleClass('active-box');
     });
+
+    $('.location-place_ask > a ').click(function() {
+      $('.location-place_ask .location-search').slideToggle('2000');
+    });
+        $('.location-place_ask > a ').click(function() {
+      $('.location-place_ask').toggleClass('active-box');
+    });
+     $('.location-place_country .location-city').click(function() {
+          $('.location-place_country').toggleClass('active-box');
+     });
+
     $('.btn-row-down').click(function() {
       $('#back-to-top').slideToggle('slow');
     });
-        
-		
+
+
 	</script>
+
+    <script>
+
+        // Wait until the document is ready
+        $(function(){
+
+            // Run noUiSlider
+            $('.noUiSlider').noUiSlider({
+                range: [10,40]
+                ,start: [20,30]
+            });
+        });
+
+
+    </script>
 
 </body>
 </html>
