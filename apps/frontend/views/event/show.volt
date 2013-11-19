@@ -54,8 +54,7 @@
                     <span class="share-box-title">Share this article:</span>
                     <div class="share-box-icon">
                         <!--Facebook-->
-                        <div class="fb-like" data-colorscheme="light" data-layout="button_count" data-action="like" data-show-faces="false" data-send="true"></div>
-
+                        <div class="fb-share-button" data-type="button"></div>
                         <!--Google +-->
                         <!-- Place this tag where you want the +1 button to render. -->
                         <div class="g-plusone" data-size="medium" data-annotation="none"></div>
@@ -115,7 +114,7 @@
     {% if event['eid'] is defined %}
         <div class="span3">
             <div class="sidebar">
-                <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn-m.png" alt="">Invite friends</button>
+                <button type="button" class="btn btn_invite" id="fb-invite"><img src="/img/demo/btn-m.png" alt="">Invite friends</button>
                 <div class="event-site">
                     <p>Event web-site :</p>
                     <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>
