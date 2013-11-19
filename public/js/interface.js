@@ -2,7 +2,6 @@ $( document ).ready(function() {
     //https://developers.facebook.com/docs/reference/dialogs/send/
     $('#fb-invite').click(function() {
         FB.ui({
-            picture: window.location.host+'/img/logo200.png',
             method: 'send',
             //link: window.location.href
             link: 'http://events.apppicker.com/index.php'
