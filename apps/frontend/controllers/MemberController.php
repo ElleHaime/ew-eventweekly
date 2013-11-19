@@ -7,6 +7,9 @@ use Core\Utils as _U;
 
 class MemberController extends \Core\Controllers\CrudController
 {
+	/**
+	 * @Route("/profile", methods={"GET", "POST"})
+	 */
 	public function listAction()
 	{
 		$member = $this -> obj;
@@ -31,6 +34,10 @@ class MemberController extends \Core\Controllers\CrudController
 		$this -> response -> redirect('profile');
 	}
 
+	
+	/**
+	 * @Route("/profile/refresh", methods={"GET", "POST"})
+	 */
 	public function refreshAction()
 	{
 		$userData =  $this -> request -> getPost();

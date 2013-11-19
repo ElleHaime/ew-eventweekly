@@ -106,27 +106,96 @@ class Application extends BaseApplication
 		}
 	}
 	
-// TODO: select routing type, straight or annotations	
+
 	protected function _initRouter(\Phalcon\DI $di)
 	{
-		$this -> _router = new Router();
+		$this -> _router = new \Phalcon\Mvc\Router\Annotations(false);
+		$this -> _router -> removeExtraSlashes(true);
 		
-		$router = $this -> _config -> get('router');
-		if ($router) {
-			foreach($router as $rt_path => $rt_settings) {
-				$this -> _router -> add($rt_path, (array)$rt_settings);
-			}
-			$this -> _router -> notFound(array(
-									'module' => self::$defModule,
-									'controller' => 'index',
-									'action' => 'index'
-			));  
-			$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
-			$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
-			$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
-			$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);
-		}
+		$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
+		$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
+		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);		
+		
+		$reader = new \Phalcon\Annotations\Adapter\Memory();
+		$modules = $di -> get('modules');
+	
+		if ($modules) {
+			foreach ($modules as $module => $settings) {
+				if (!$this -> _config -> modules -> $module -> enabled) {
+					continue;
+				}
+				$cntPath = ucfirst($module) . '\Controllers';
+				$controllers = scandir($settings -> namespaces -> $cntPath);
+				
+				foreach ($controllers as $item => $file) {
+					if ($file == "." || $file == "..") {
+						continue;
+					}
+// list, add, edit{}, delete{}
+					$controllerNS = $cntPath . '\\' . str_replace('.php', '', $file);
+					$reflector = $reader -> get($controllerNS);
+					
+					$annotationsClass = $reflector -> getClassAnnotations();
+					$annotationsMethods = $reflector -> getMethodsAnnotations();
 
+					if ($annotationsClass) {
+						foreach ($annotationsClass -> getAnnotations() as $object) {
+							switch ($object -> getName()) {
+								case 'RouteRule':
+										foreach ($object -> getArguments() as $item => $arg) {
+											switch ($item) {
+												case 'useCrud':
+														if ($arg) {
+															$crudOperations = array(
+																'list' => array('params' => ''), 
+																'add' => array('params' => ''), 
+																'edit' => array('params' => '/:id'), 
+																'delete' => array('params' => '/:id'));
+															$crudController = strtolower(str_replace('Controller.php', '', $file));
+															foreach ($crudOperations as $action => $options) {
+																if ($options['params'] == '') {
+																	$this -> _router -> add('/' . $crudController, array(
+																		'module' => $module,
+																		'controller' => $crudController,
+																		'action' => $action));
+																} else {
+																	$this -> _router -> add('/' . $crudController . '/' . $action . $options['params'], array(
+																		'module' => $module,
+																		'controller' => $crudController,
+																		'action' => $action,
+																		'id' => 1));
+																}
+															}
+														} 
+													break;									
+											}	
+										}
+									break;
+							}
+						}
+					}
+					
+					if ($annotationsMethods) {
+						foreach ($annotationsMethods as $item => $docblock) {
+							foreach($docblock -> getAnnotations() as $object) {
+								switch ($object -> getName()) {
+									case 'Route':
+											$arg = $object -> getArguments();
+											$this -> _router -> add($arg[0], array(
+												'module' => $module,
+												'controller' => strtolower(str_replace('Controller.php', '', $file)),
+												'action' => str_replace('Action', '', $item)
+											));
+										break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+echo '<pre>'; var_dump($this -> _router); echo '</pre>'; die();
 		$di -> set('router', $this -> _router);
 	}
 	

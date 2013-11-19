@@ -11,9 +11,14 @@ use Core\Utils as _U,
 	Objects\EventImage,
 	Objects\EventMember;
 
-
+/**
+ * @RouteRule(useCrud = true)
+ */
 class EventController extends \Core\Controllers\CrudController
 {
+	/**
+	 * @Route("/map", methods={"GET", "POST"})
+	 */
 	public function mapAction()
 	{
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
@@ -24,6 +29,9 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
+	/**
+	 * @Route("/eventmap", methods={"GET", "POST"})
+	 */
 	public function eventmapAction()
 	{
 		$events = $this -> searchAction();
@@ -41,6 +49,9 @@ class EventController extends \Core\Controllers\CrudController
 		}
 	}
 
+	/**
+	 * @Route("/list", methods={"GET", "POST"})
+	 */
 	public function eventlistAction()
 	{
 		$events = $this -> searchAction();
@@ -54,6 +65,9 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
+	/**
+	 * @Route("/search", methods={"GET", "POST"})
+	 */
 	public function searchAction()
 	{
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
@@ -118,7 +132,10 @@ class EventController extends \Core\Controllers\CrudController
 		}
 	}
 
-
+	
+	/**
+	 * @Route("/event/show/{eventId:[0-9]+}", methods={"GET", "POST"})
+	 */
 	public function showAction($eventId)
 	{
 		$eventObj = Event::findFirst(array('id = ' . $eventId));
@@ -158,6 +175,9 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
+	/**
+	 * @Route("/event/answer", methods={"GET", "POST"})
+	 */
 	public function answerAction()
 	{
 		if ($this -> session -> has('member')) {

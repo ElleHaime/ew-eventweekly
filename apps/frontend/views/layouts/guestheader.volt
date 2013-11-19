@@ -1,7 +1,7 @@
 					<div class="span4 sign_no">
 	                    <span  class="line"></span>
 	                    <div class="user-box">
-	                       <a href="registration" style=" margin-top:2px;"><span>Sign Up</span></a>
+	                       <a href="signup" style=" margin-top:2px;"><span>Sign Up</span></a>
 	                    </div>
 
 						<span  class="line"></span>	 
