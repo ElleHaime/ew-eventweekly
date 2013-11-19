@@ -15,7 +15,7 @@ var topPanel = {
     init: function(options) {
         var $this = this;
 
-        console.log('init top panel');
+        //console.log('init top panel');
 
         // extends options
         $this.settings = $.extend($this.settings, options);

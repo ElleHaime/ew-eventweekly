@@ -1,7 +1,6 @@
 $( document ).ready(function() {
     //https://developers.facebook.com/docs/reference/dialogs/send/
     $('#fb-invite').click(function() {
-        $('.categ_green').show();
         FB.ui({
             method: 'send',
             //link: window.location.href
@@ -15,6 +14,7 @@ $( document ).ready(function() {
         $('.categ_green').show();
         $.post("/event/answer", { answer: 'JOIN', event_id : $('#event_id').val() });
         FB.ui({
+            picture: window.location.host+'/img/logo200.png',
             method: 'feed',
             link:   window.location.href,
             caption: 'You are joined event'
@@ -33,4 +33,17 @@ $( document ).ready(function() {
         $('#event-decline').hide();
         $.post("/event/answer", { answer: 'DECLINE', event_id : $('#event_id').val() });
     });
+
+    $('#date-picker').datetimepicker({
+        pickTime: false
+    });
+    $('#time-picker').datetimepicker({
+        pickDate: false
+    });
+    $('#date-picker').on('changeDate', function(e) {
+        //var date = e.localDate.toString();
+        console.log(e.localDate.getDate());
+        //console.log(e.localDate.toString('MM/dd/yyyy'));
+    });
+
 });

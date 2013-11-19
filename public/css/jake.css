@@ -14,3 +14,21 @@
 .info-win a{
     color: #0000FF;
 }
+
+.table-condensed a.btn {
+    height: auto;
+    padding: 4px 12px;
+    min-height: 24px;
+}
+
+.table-condensed  i.icon-chevron-down, .table-condensed  .icon-chevron-up
+{
+    position: relative;
+    left: 0;
+    top:5px;
+}
+
+.bootstrap-datetimepicker-widget td span {
+    height: 39px;
+    line-height: 39px;
+}
