@@ -2,6 +2,7 @@ config/config.php
 .htaccess
 .idea
 public/.htaccess
-var
-config/config.json
+^var/compiled/(?!empty$)
 .project
+.idea
+.hgignore

@@ -28,22 +28,19 @@
 	                <div class="span4 location-box">
 
                         <div class="location clearfix">
-                            <span class="location-count" id="events_count">
                               {% if eventsTotal is defined %}
-                                {{ eventsTotal }}
+                                  <span class="location-count" id="events_count">{{ eventsTotal }}</span>
                               {% else %}
-                                0
+                                  <span class="location-count location-count_no" id="events_count">0</span>
                               {% endif %}
-                            </span>
-
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search clearfix">
+                              <div class="location-search searchCityBlock clearfix">
                                   <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>
@@ -67,9 +64,11 @@
 	                </div>
 	                
 	                <div class="span2 show-list">
-
                         <div class="show-box">
-                            <button class="btn btn-block btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            {% if link_to_list is defined %}
+                                <button class="btn btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            {% else %}
+                                <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-map"></i><span>Show as map </span></button>
+                            {% endif %}
                         </div>
-
 	                 </div>

@@ -17,12 +17,29 @@ class EventController extends \Core\Controllers\CrudController
 	public function mapAction()
 	{
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
+		$this -> view -> setVar('link_to_list', true);
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
 	}
 
-
-	public function eventmapAction()
+	public function listAction()
 	{
-		$events = $this -> searchAction();
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+	}
+
+	public function editAction()
+	{
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+	}
+
+	public function eventmapAction($lat = null, $lng = null)
+	{
+		$events = $this -> searchAction($lat, $lng);
 
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
@@ -50,15 +67,34 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function searchAction()
+	public function searchAction($lat = null, $lng = null)
 	{
+        $loc = new \stdClass();
+        $l = $this -> session -> get('location');
+        if(!empty($lat) && !empty($lng)) {
+            $loc->latitude = $lat;
+            $loc->longitude = $lng ;
+        }else {
+            $loc->latitude = $l->latitude;
+            $loc->longitude = $l->longitude ;
+        }
+
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
 
 			// user registered via facebook and has facebook account
 			$this -> facebook = new Extractor();
-			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), 
-																	 $this -> session -> get('location'));
-			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
+			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), $loc);
+
+			if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE))
+			{
+				echo $events['MESSAGE'];
+				die;
+			}
+
+			if (!empty($events[0]) || !empty($events[1])) {
+				$totalEvents=count($events[0])+count($events[1]);
+				$this -> view -> setVar('eventsTotal', $totalEvents);
+				$this->session->set("eventsTotal", $totalEvents);
 				$events = $this -> parseEvent($events);
 				return $events;
 			} else {
@@ -71,7 +107,7 @@ class EventController extends \Core\Controllers\CrudController
 		} else {
 
 			// user registered via email
-			$location = $this -> session -> get('location');
+			$location = $loc;
 			$modelPath = $this -> getModelPath();
 			$scale = $this -> geo -> buildCoordinateScale($location -> latitude , $location -> longitude);
 			$query = 'select event.*, venue.latitude as latitude, venue.longitude as longitude
@@ -121,6 +157,10 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> facebook = new Extractor();
 			$event = $this -> facebook -> getEventById($eventObj -> fb_uid, $accessToken);
 
+			if ($this -> session -> has('eventsTotal')) {
+				$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+			}
+
 			$event = $event[0]['fql_result_set'][0];
 			$event['id'] = $eventObj -> id;
 		} else {
@@ -145,36 +185,30 @@ class EventController extends \Core\Controllers\CrudController
 		} 
 		$this -> view -> setVar('event', $event);
 	}
-	
+
 
 	public function answerAction()
 	{
 		if ($this -> session -> has('member')) {
 			$member = $this -> session -> get('member');
 
-			$answer = $this -> request -> getPost('answer', 'string');
-			$status = EventMember::$answer;
-			
-			$event_id = $this -> request -> getPost('event_id', 'string');
-			$conditions = "member_id = ".$member -> id." AND event_id = `".$event_id."`";
-			$eventMember = EventMember::findFirst(array($conditions));
-
-			if ($eventMember){
-				if ($eventMember -> member_status != $status){
-					$eventMember -> assign(array('member_status' => $status));
-					$eventMember -> save();
-				}
-			} else {
-				$eventMember = new EventMember();
-				$eventMember -> assign(array(
-					'member_id' =>  $member -> id,
-					'event_id'  =>  $event_id,
-					'member_status' => $status));
-				$eventMember -> save();
+			switch ($this -> request -> getPost('answer', 'string'))
+			{
+				case 'JOIN': $status = EventMember::JOIN; break;
+				case 'MAYBE': $status = EventMember::MAYBE; break;
+				case 'DECLINE': $status = EventMember::DECLINE; break;
 			}
+			$event_id = $this -> request -> getPost('event_id', 'string');
+
+			$eventMember = new EventMember();
+			$eventMember -> member_id =  $member -> id;
+			$eventMember -> event_id  =  $event_id;
+			$eventMember -> member_status = $status;
+			$eventMember -> save();
 
 			$ret['STATUS']='OK';
 			echo json_encode($ret);
+			die;
 		}
 	}
 

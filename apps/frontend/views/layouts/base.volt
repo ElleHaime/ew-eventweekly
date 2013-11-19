@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>EventWeekly Demo</title>
+    <title>EventWeekly</title>
     <meta charset="utf-8" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -9,6 +9,7 @@
 
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
     {{ stylesheet_link('css/style.css') }}
     {{ stylesheet_link('css/jake.css') }}
     {{ stylesheet_link('css/respond.css') }}
@@ -22,11 +23,23 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     {{ javascript_include('js/bootstrap.min.js') }}
+    {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
 
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
 	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+
+    {{ javascript_include('js/addressAutocomplete.js') }}
+    {{ javascript_include('js/top_panel.js') }}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            topPanel.init({
+                searchCityBlock: '.searchCityBlock'
+            });
+        });
+    </script>
 </head>
 
 <body>
@@ -52,8 +65,7 @@
         						{% include 'layouts/guestheader.volt' %}
         					{% endif %}
         	</div>
-	   
-	   
+
 	       <div class="container">
                         <a href="#" class="btn-row-down">
                             <i class=" icon-white icon-chevron-down "></i>
@@ -62,16 +74,19 @@
 
                             <div class=" location-box">
                                 <div class="location clearfix">
-                            <span class="location-count" id="events_count">0</span>
-
+                              {% if eventsTotal is defined %}
+                                  <span class="location-count" id="events_count">{{ eventsTotal }}</span>
+                              {% else %}
+                                  <span class="location-count location-count_no" id="events_count">0</span>
+                              {% endif %}
                           <div class="location-place">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search clearfix">
+                              <div class="location-search searchCityBlock clearfix">
                                   <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>

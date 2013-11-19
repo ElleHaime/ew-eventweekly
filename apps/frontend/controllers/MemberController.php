@@ -14,7 +14,11 @@ class MemberController extends \Core\Controllers\CrudController
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
-		
+
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+
 		$this -> view -> setVar('member', $list);
 	}
 

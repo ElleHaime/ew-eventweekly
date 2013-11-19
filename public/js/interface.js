@@ -33,4 +33,17 @@ $( document ).ready(function() {
         $('#event-decline').hide();
         $.post("/event/answer", { answer: 'DECLINE', event_id : $('#event_id').val() });
     });
+
+    $('#date-picker').datetimepicker({
+        pickTime: false
+    });
+    $('#time-picker').datetimepicker({
+        pickDate: false
+    });
+    $('#date-picker').on('changeDate', function(e) {
+        //var date = e.localDate.toString();
+        console.log(e.localDate.getDate());
+        //console.log(e.localDate.toString('MM/dd/yyyy'));
+    });
+
 });
