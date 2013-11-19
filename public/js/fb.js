@@ -1,8 +1,8 @@
 $( document ).ready(function() {
 
     //https://developers.facebook.com/docs/reference/dialogs/feed/
+    /*
     $('#event_going').click(function() {
-        console.log('join');
         FB.ui({
             method: 'feed',
             link: window.location.href,
@@ -12,7 +12,6 @@ $( document ).ready(function() {
         });
     });
 
-
     $('#event_share').click(function() {
         FB.ui({
             method: 'feed',
@@ -20,16 +19,7 @@ $( document ).ready(function() {
             caption: 'User are shared this event'
         }, function(response){});
     });
-
-    //https://developers.facebook.com/docs/reference/dialogs/send/
-    $('#fb-invite').click(function() {
-        FB.ui({
-            method: 'send',
-            link: window.location.href
-        }, function(response){
-            console.log(response);
-        });
-    });
+    */
 
     function showEvent(event)
     {
