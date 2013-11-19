@@ -112,7 +112,7 @@
     {% if event['eid'] is defined %}
         <div class="span3">
             <div class="sidebar">
-                <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn.png" alt="">Invite friends</button>
+                <button type="button" class=" btn btn_invite" id="fb-invite"><img src="/img/demo/btn-m.png" alt="">Invite friends</button>
                 <div class="event-site">
                     <p>Event web-site :</p>
                     <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>
