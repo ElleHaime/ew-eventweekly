@@ -23,6 +23,19 @@ class EventController extends \Core\Controllers\CrudController
 		}
 	}
 
+	public function listAction()
+	{
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+	}
+
+	public function editAction()
+	{
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+	}
 
 	public function eventmapAction($lat = null, $lng = null)
 	{
@@ -71,7 +84,14 @@ class EventController extends \Core\Controllers\CrudController
 			// user registered via facebook and has facebook account
 			$this -> facebook = new Extractor();
 			$events = $this -> facebook -> getEventsSimpleByLocation($this -> session -> get('user_token'), $loc);
-			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
+
+			if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE))
+			{
+				echo $events['MESSAGE'];
+				die;
+			}
+
+			if (!empty($events[0]) || !empty($events[1])) {
 				$totalEvents=count($events[0])+count($events[1]);
 				$this -> view -> setVar('eventsTotal', $totalEvents);
 				$this->session->set("eventsTotal", $totalEvents);

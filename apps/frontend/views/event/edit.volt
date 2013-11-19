@@ -21,20 +21,34 @@
 	                             <div class="span9">
 	                                 <div class="input-div clearfix">
 	                                     <input  type="text" value=""  placeholder="main title">
-	                                     <span>description / example</span>
+	                                     {#<span>description / example</span>#}
 	                                 </div>
-	                                 <div class="input-div_date clearfix">
+                                     <div class="input-div_date clearfix">
+                                         <div id="date-picker" class="input-div_small">
+                                             <input data-format="MM/dd/yyyy" type="text"></input>
+                                                <span class="add-on">
+                                                    <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                                </span>
+                                         </div>
+                                         <div id="time-picker" class="input-div_small">
+                                             <input data-format="hh:mm:ss" type="text"></input>
+                                                <span class="add-on">
+                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                                </span>
+                                         </div>
+                                         {#
 	                                     <div class="input-div_small">
-	                                         <input type="text" placeholder="5/11/2012"><i class="icon-calendar"></i>
+	                                         <input type="text" placeholder=""><i class="icon-calendar"></i>
 	                                     </div>
 	                                     <div class="input-div_small">
-	                                         <input type="text" placeholder="5/11/2012"><i class="icon-time"></i>
+	                                         <input type="text" placeholder=""><i class="icon-time"></i>
 	                                     </div>
-	                                     <div class="date-box">
-	                                     <span class="date-start">12 Aug 2013</span>, starts at <span class="date-time">20:30</span>  <span class="day-title">—  tomorrow</span>
-
-	                                     </div>
-	                                 </div>
+                                         #}
+                                         <div class="date-box">
+                                             <span class="date-start">12 Aug 2013</span>, starts at <span class="date-time">20:30</span>
+                                             <span class="day-title">—tomorrow</span>
+                                         </div>
+                                     </div>
 	                                     <select>
 	                                         <option>only for my Facebook friends</option>
 	                                         <option>only for my Facebook friends</option>

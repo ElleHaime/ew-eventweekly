@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>EventWeekly Demo</title>
+    <title>EventWeekly</title>
     <meta charset="utf-8" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -9,6 +9,7 @@
 
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
     {{ stylesheet_link('css/style.css') }}
     {{ stylesheet_link('css/jake.css') }}
     
@@ -21,6 +22,7 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     {{ javascript_include('js/bootstrap.min.js') }}
+    {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
 
