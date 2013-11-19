@@ -15,6 +15,7 @@ $( document ).ready(function() {
         $('.categ_green').show();
         $.post("/event/answer", { answer: 'JOIN', event_id : $('#event_id').val() });
         FB.ui({
+            picture: window.location.host+'/img/logo200.png',
             method: 'feed',
             link:   window.location.href,
             caption: 'You are joined event'
