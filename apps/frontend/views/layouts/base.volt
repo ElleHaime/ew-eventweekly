@@ -40,6 +40,12 @@
             });
         });
     </script>
+
+    <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
+    {#{% if event['pic_square'] is defined %}
+         <meta property="og:image" content="{{ event['pic_square'] }}"/>
+    {% endif %}#}
+
 </head>
 
 <body>
