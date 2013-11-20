@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>EventWeekly Demo</title>
+    <title>EventWeekly</title>
     <meta charset="utf-8" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
+    <meta property="og:title" content="EventWeekly"/>
 
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
