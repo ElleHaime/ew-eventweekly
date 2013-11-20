@@ -44,23 +44,28 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	protected function _initView($di)
 	{
 		$config = $this -> _config;
-		$viewPath = $this -> getModuleDir() . '/views/'; 
+		$viewPath = $this -> getModuleDir() . '/views/';
+
+        $that = $this;
 	
 		$di -> set('view',
-			function() use ($config, $di, $viewPath) 
+			function() use ($config, $di, $viewPath, $that)
 			{
 				$view = new View();
 				$view -> setViewsDir($viewPath);
  
 				$view -> registerEngines(array(
 					'.volt' => 					
-						function ($view, $di) use ($config)
+						function ($view, $di) use ($config, $that)
 						{
 							$volt = new Volt($view, $di);
 							$volt -> setOptions((array)$config -> application -> views);
 							if ($config -> application -> debug) {
 								//$volt -> setOptions(array('compileAlways' => true));
 							}
+
+                            $that->initViewFilters($volt);
+
 							return $volt;
 						},
 					'.phtml' => 'Phalcon\Mvc\View\Engine\Volt'
@@ -135,5 +140,31 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	{
 		return $this -> _config -> application -> modulesDir . $this -> _moduleName;
 	}
+
+    public function initViewFilters($volt)
+    {
+        $compiler = $volt->getCompiler();
+
+        $compiler->addFilter('hash', 'md5');
+
+        $compiler->addFilter('truncate', function($value, $length = 30, $separator = '...') {
+                $res = null;
+
+                $value = $length[0]['expr']['value'];
+                $length = $length[1]['expr']['value'];
+
+                if (function_exists('mb_get_info')) {
+                    $res = "mb_substr($value, 0, $length, 'utf-8') . \$sep = (strlen($value) > $length) ? '$separator' : ''";
+                }else {
+                    $res = "substr($value, 0, $length) . (strlen($value) > $length) ? '$separator' : ''";
+                }
+
+                if(empty($res)) {
+                    $res = '\'\'';
+                }
+
+                return $res;
+            });
+    }
 
 }
