@@ -1,5 +1,6 @@
 $( document ).ready(function() {
 
+    /*
     //https://developers.facebook.com/docs/reference/dialogs/feed/
     $('#event_going').click(function() {
         console.log('join');
@@ -31,6 +32,7 @@ $( document ).ready(function() {
             console.log(response);
         });
     });
+    */
 
     /*function showEvent(event)
     {
