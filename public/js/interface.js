@@ -3,8 +3,8 @@ $( document ).ready(function() {
     $('#fb-invite').click(function() {
         FB.ui({
             method: 'send',
-            //link: window.location.href
-            link: 'http://events.apppicker.com/index.php'
+            link: window.location.href
+            //link: 'http://events.apppicker.com/index.php'
         });
     });
     $( "#event-join" ).click(function() {
@@ -40,10 +40,27 @@ $( document ).ready(function() {
     $('#time-picker').datetimepicker({
         pickDate: false
     });
+
     $('#date-picker').on('changeDate', function(e) {
-        //var date = e.localDate.toString();
-        console.log(e.localDate.getDate());
+        var date = dateConvert(e);
+        console.log(date);
+        //var date = new Date();
+        //console.log(typeof(date));
+        //console.log(e.localDate.getDate());
         //console.log(e.localDate.toString('MM/dd/yyyy'));
     });
+
+    function dateConvert($date)
+    {
+        var m_names = new Array("Jan", "Feb", "Mar",
+            "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+            "Oct", "Nov", "Dec");
+
+        var d = new Date();
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth();
+        var curr_year = d.getFullYear();
+        return curr_date + " " + m_names[curr_month]+ " " + curr_year;
+    }
 
 });

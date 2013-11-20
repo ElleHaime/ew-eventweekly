@@ -21,25 +21,18 @@ class EventController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
-	}
-
-	public function listAction()
+	}	
+    
+    public function listAction()
 	{
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
 	}
 
-	public function editAction()
+	public function eventmapAction($lat = null, $lng = null, $city = null)
 	{
-		if ($this -> session -> has('eventsTotal')) {
-			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
-		}
-	}
-
-	public function eventmapAction($lat = null, $lng = null)
-	{
-		$events = $this -> searchAction($lat, $lng);
+		$events = $this -> searchAction($lat, $lng, $city);
 
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
@@ -67,16 +60,19 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-	public function searchAction($lat = null, $lng = null)
+	public function searchAction($lat = null, $lng = null, $city = null)
 	{
-        $loc = new \stdClass();
-        $l = $this -> session -> get('location');
+        $loc = $this -> session -> get('location');
         if(!empty($lat) && !empty($lng)) {
             $loc->latitude = $lat;
             $loc->longitude = $lng ;
-        }else {
-            $loc->latitude = $l->latitude;
-            $loc->longitude = $l->longitude ;
+
+            if(!empty($city)) {
+                $loc->city = $city;
+                $loc->alias = $city;
+            }
+
+            $this->session->set('location', $loc);
         }
 
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {

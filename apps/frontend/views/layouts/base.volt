@@ -7,14 +7,16 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link type="image/ico" href="/img/128.ico" rel="icon">
+    <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
+    <meta property="og:title" content="EventWeekly"/>
+
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
     {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
     {{ stylesheet_link('css/style.css') }}
     {{ stylesheet_link('css/jake.css') }}
-    {{ stylesheet_link('css/respond.css') }}
-    {{ stylesheet_link('css/jquery.nouislider.css') }}
-
+    
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
@@ -23,14 +25,23 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
+
+    {{ javascript_include('js/project/vendors/underscore.js') }}
+
+    {{ javascript_include('js/project/vendors/jquery.cookie.js') }}
+
     {{ javascript_include('js/bootstrap.min.js') }}
     {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
+
+    {{ javascript_include('js/main.js') }}
+    {{ javascript_include('js/project/map/gmap.js') }}
+    {{ javascript_include('js/project/map/gmap_events.js') }}
+
     {{ javascript_include('js/interface.js') }}
     {{ javascript_include('js/fb.js') }}
-    {{ javascript_include('js/jquery.nouislider.js') }}
-
-	<script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&sensor=false&libraries=places"></script>
-	<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
 
     {{ javascript_include('js/addressAutocomplete.js') }}
     {{ javascript_include('js/top_panel.js') }}
@@ -40,14 +51,15 @@
             topPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });
+            app.Gmap.init({
+                mapCenter: {
+                    lat: '{{ location.latitude }}',
+                    lng: '{{ location.longitude }}'
+                }
+            });
+            app.GmapEvents.init();
         });
     </script>
-
-    <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
-    {#{% if event['pic_square'] is defined %}
-         <meta property="og:image" content="{{ event['pic_square'] }}"/>
-    {% endif %}#}
-
 </head>
 
 <body>
@@ -92,9 +104,9 @@
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search searchCityBlock clearfix">
-                                  <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
+                              <div class="location-search searchCityBlock clearfix" style="width: 295px">
+                                  <div class="input-append" style="float: none">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity" style="width: 69%">
                                       <button class="btn" type="button">Find</button>
                                   </div>
                               </div>
@@ -185,11 +197,14 @@
         // Wait until the document is ready
         $(function(){
 
-            // Run noUiSlider
-            $('.noUiSlider').noUiSlider({
-                range: [10,40]
-                ,start: [20,30]
-            });
+            if($.fn.noUiSlider) {
+                // Run noUiSlider
+                $('.noUiSlider').noUiSlider({
+                    range: [10,40]
+                    ,start: [20,30]
+                });
+            }
+
         });
 
 
