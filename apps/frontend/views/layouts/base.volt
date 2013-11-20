@@ -9,6 +9,7 @@
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
     <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
+    {#<meta property="og:url" content="http://events.apppicker.com/event/show/200"/>#}
     <meta property="og:title" content="EventWeekly"/>
 
     {{ stylesheet_link('css/bootstrap.min.css') }}

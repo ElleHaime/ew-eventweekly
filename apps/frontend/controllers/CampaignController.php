@@ -10,5 +10,6 @@ class CampaignController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
+		parent::listAction();
 	}
 }
