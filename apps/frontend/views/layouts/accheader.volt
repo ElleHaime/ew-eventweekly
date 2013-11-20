@@ -33,16 +33,17 @@
                               {% else %}
                                   <span class="location-count location-count_no" id="events_count">0</span>
                               {% endif %}
-                          <div class="location-place">
+                          <div class="location-place location-place_country">
                               <a href="#" class="location-city">
                                   <i class="caret"></i>
                                   <span>{{ location.alias }}</span>
                               </a>
-                              <div class="location-search searchCityBlock clearfix">
-                                  <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Event search engine" id="topSearchCity">
+                              <div class="location-search searchCityBlock clearfix" style="width: 295px">
+                                  <div class="input-append" style="float: none">
+                                      <input class=" input-large"  size="16" type="text" placeholder="Search city" id="topSearchCity" style="width: 69%">
                                       <button class="btn" type="button">Find</button>
                                   </div>
+
                               </div>
                           </div>
                           <div class="location-place location-place_ask">
@@ -52,8 +53,37 @@
                               </a>
                               <div class="location-search clearfix">
                                   <div class="input-append">
-                                      <input class=" input-large"  size="16" type="text" placeholder="Search city">
+                                      <input class=" input-large"  size="16" type="text" placeholder=" Event search engine">
                                       <button class="btn" type="button">Find</button>
+                                  </div>
+
+                                  <div class="service-search clearfix">
+                                      <p><span class="count-events">54</span>Events for you, <a href="#">username</a> <span class="icon-refresh icon-white"></span></p>
+                                      <div class="noUiSlider">
+                                          <i class="icon-time icon-white"></i>
+                                          <i class="icon-calendar icon-white"></i>
+                                      </div>
+                                      <ul class=" days-events clearfix">
+                                          <li class="activity">Now</li>
+                                          <li>Today</li>
+                                          <li>Tomorrow</li>
+                                          <li>in 3 days</li>
+                                          <li>in 7 days</li>
+                                          <li>in 30 days</li>
+                                          <li>2091 AD</li>
+                                      </ul>
+                                      <ul class=" category-list clearfix">
+                                          <li><span class="count-category blue-color">24</span>Entertaiment</li>
+                                          <li><span class="count-category purple-color">24</span>Music</li>
+                                          <li><span class="count-category orange-color">4</span>Sport</li>
+                                          <li><span class="count-category red-color">24</span>Shopping</li>
+                                          <li class="none_active"><span class="count-category gray-color">24</span>NightLife</li>
+                                      </ul>
+
+                                      <a class="edit-link"  href="#"><i class=" icon-cog icon-white"></i>
+                                          <span> customise your search event-profile </span>
+                                      </a>
+                                      <button class="btn text-right">Done</button>
                                   </div>
                               </div>
 
@@ -72,3 +102,4 @@
                             {% endif %}
                         </div>
 	                 </div>
+

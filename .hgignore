@@ -3,6 +3,6 @@ config/config.php
 .idea
 public/.htaccess
 ^var/compiled/(?!empty$)
-.project
+^\.project
 .idea
 .hgignore

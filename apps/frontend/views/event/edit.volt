@@ -25,13 +25,17 @@
 	                                 </div>
                                      <div class="input-div_date clearfix">
                                          <div id="date-picker" class="input-div_small">
-                                             <input data-format="MM/dd/yyyy" type="text"></input>
+<<<<<<< local
+                                             <input data-format="dd/MM/yyyy" type="text"></input>
+=======
+                                             <input data-format="MM/dd/yyyy" type="text"/>
+>>>>>>> other
                                                 <span class="add-on">
                                                     <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
                                                 </span>
                                          </div>
                                          <div id="time-picker" class="input-div_small">
-                                             <input data-format="hh:mm:ss" type="text"></input>
+                                             <input data-format="hh:mm:ss" type="text"/>
                                                 <span class="add-on">
                                                     <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
                                                 </span>

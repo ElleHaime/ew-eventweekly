@@ -412,10 +412,10 @@ p {
     position: relative;
 }
 
-.location-place span {
+.location-place > span {
     padding-right: 12px;
 }
-.location-place a {
+.location-place > a {
     background: none repeat scroll 0 0 #29ABE2;
     border-radius: 5px;
     display: inline-block;
@@ -440,7 +440,7 @@ a.location-city  {
     max-width: 86px;
     padding-right: 24px;
 }
-.location-place  span {
+.location-place >  span {
     display: block;
     height: 22px;
     overflow: hidden;
@@ -511,6 +511,7 @@ i.icon-map {
     width: auto;
     padding: 22px;
     box-shadow: 0 2px 9px #656667;
+    border-radius: 5px;
 }
 select {
     background: #29ABE2;
@@ -529,8 +530,8 @@ hr {
     margin: 10px 0 5px 0;
 }
 
-.active-box a {
-    padding-bottom:23px;
+.active-box > a {
+    padding-bottom:27px;
 }
 .input-append input {
     background: #0088c4;
@@ -1905,11 +1906,143 @@ body {
     clear: both;
 }
 
-
-
-
-
-
 .btn-add_group  .btn {
     margin-bottom: 10px;
+}
+
+
+
+/*---.service-search ------*/
+.service-search  {
+    clear: both;
+}
+.service-search .icon-refresh {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+}
+.service-search  .count-events {
+    background: #ffffff;
+    border-radius: 4px;
+    padding: 3px 6px;
+    text-align: center;
+    margin-right: 6px;
+    font-weight: bold;
+}
+
+
+.service-search .icon-time {
+    position: absolute;
+    left:-23px; top:-7px;
+}
+.service-search  .icon-calendar {
+    position: absolute;
+    right:-23px; top:-7px;
+
+}
+
+.service-search ul {
+    margin: 0;
+    padding: 0;
+}
+.service-search {
+    clear: both;
+    position: relative;
+    padding-top: 10px;
+}
+.blue-color{
+    background: #1B1464;
+}
+.purple-color
+{
+    background:#9E005D ;
+}
+.orange-color
+{
+    background:#F7931E ;
+}
+.red-color
+{
+    background:#ED1C24 ;
+}
+.gray-color
+{
+    background: #999999;
+}
+
+.category-list li {
+    background: #ffffff;
+    list-style: none;
+    padding: 0 10px 0 0;
+    float: left;
+    margin: 0 4px 10px 0;
+    border-radius: 5px;
+
+}
+
+
+.count-category  {
+    color:#ffffff;
+    width: 30px;
+    height: 26px;
+    padding-top: 4px;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    margin-right: 10px;
+    border-radius: 5px 0 0 5px;
+    font-weight: bold;
+}
+
+
+.category-list .none_active {
+    background: #B3B3B3;
+}
+.service-search  i {
+    vertical-align: middle;
+    cursor: pointer;
+
+}
+
+.service-search a {
+    text-decoration: underline;
+}
+
+.service-search .edit-link  {
+    text-decoration: none;
+}
+
+.service-search .edit-link span
+{
+    color: #ffffff;
+    font-size: 13px;
+    border-bottom: 1px dashed #ffffff;
+    padding: 0;
+}
+.service-search .btn {
+    clear: both;
+    margin-top: 20px;
+    float: right;
+}
+
+ul.days-events  {
+    display: table;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.days-events  li {
+    display: table-cell;
+    text-align: center;
+    color:#0088C4;
+
+}
+.days-events  li.activity {
+    color:#ffffff;
+}
+.location-place_ask .location-search  {
+    width: 700px;
+}
+
+.location-search input {
+    width: 87%;
 }
