@@ -16,6 +16,7 @@ class CampaignController extends \Core\Controllers\CrudController
 	public function listAction()
 	{
 		parent::listAction();
+
 	}
 
 

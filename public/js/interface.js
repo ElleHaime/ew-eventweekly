@@ -42,25 +42,58 @@ $( document ).ready(function() {
     });
 
     $('#date-picker').on('changeDate', function(e) {
-        var date = dateConvert(e);
-        console.log(date);
-        //var date = new Date();
-        //console.log(typeof(date));
-        //console.log(e.localDate.getDate());
-        //console.log(e.localDate.toString('MM/dd/yyyy'));
+        redraw(e.localDate, null)
+    });
+    $('#time-picker').on('changeDate', function(e) {
+        redraw(null, e.localDate)
     });
 
-    function dateConvert($date)
+    var currDate = new Date(),
+        currDateFormatted =  currDate.getDate()+'/'+(currDate.getMonth()+1)+'/'+currDate.getFullYear();
+
+    $('#date-input').val(currDateFormatted);
+    $('#date-start').html(convertDate(currDate));
+
+    function redraw(startDate,startTime)
+    {
+        if (startDate != null)
+        {
+            startDate = convertDate(startDate);
+            $('#date-start').html(startDate);
+        }
+
+        if (startTime != null)
+        {
+            var hours   = startTime.getHours(),
+                minutes = startTime.getMinutes();
+            if (hours<10) hours='0'+hours;
+            if (minutes<10) minutes='0'+minutes;
+            startTime = hours+':'+minutes;
+            $('#time-start').html(startTime);
+        }
+
+        $('#time-string').show('fast');
+    }
+
+    /*
+    1) можно ли тащить евенты из лицекниги без токена
+    2) если чел не залогинен показать ему кнопку "show more", вытащить полный дескрипшн и сохранить в базу
+    3) добавить og:url
+    4) добавить og:description
+    */
+
+    function convertDate(startDate)
     {
         var m_names = new Array("Jan", "Feb", "Mar",
             "Apr", "May", "Jun", "Jul", "Aug", "Sep",
             "Oct", "Nov", "Dec");
+        return startDate.getDate() + " " + m_names[startDate.getMonth()]+ " " + startDate.getFullYear();
+    }
 
-        var d = new Date();
-        var curr_date = d.getDate();
-        var curr_month = d.getMonth();
-        var curr_year = d.getFullYear();
-        return curr_date + " " + m_names[curr_month]+ " " + curr_year;
+    function daysBetween(firstDate,secondDate)
+    {
+        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var diffDays = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
     }
 
 });

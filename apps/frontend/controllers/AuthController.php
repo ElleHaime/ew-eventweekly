@@ -20,39 +20,43 @@ class AuthController extends \Core\Controller
 	 * @Route("/login", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   
 	 */
-	public function loginAction()
-	{
-		$form = new LoginForm();
-	
+ 	public function loginAction()
+    {
+    	$form = new LoginForm();
+
 		if ($this -> request -> isPost()) {
 			$email = $this -> request -> getPost('email', 'string');
 			$pass = $this -> request -> getPost('password', 'string');
-				
+					
 			if ($form -> isValid($this -> request -> getPost())) {
 				$member = Member::findFirst(array('email = ?0',
-						'bind' => (array)$email));
-	
+												   'bind' => (array)$email));
+				
 				if (!$member) {
 					$this -> flash -> error('No such member');
 					$this -> view -> form = $form;
 					return false;
 				}
-				if (!$this -> security -> checkHash($pass, $member -> pass)) {
+				if (!$this -> security -> checkHash($pass, $member -> pass)) { 
 					$this -> flash -> error('Incorrect password');
 					return false;
 				}
-	
+				
 				$this -> _registerMemberSession($member);
+
+                $this->afterLogin();
+
 				$this -> response -> redirect('map');
-	
+				
 			} else {
 				$this -> response -> setStatusCode(401, 'Unauthorized')
-				-> setContent('Not authorized')
-				-> send();
+								  -> setContent('Not authorized')
+								  -> send();
 			}
 		}
-		$this -> view -> form = $form;
-	}
+   		$this -> view -> form = $form;
+    }
+	
 
 	
 	/**
@@ -95,6 +99,7 @@ class AuthController extends \Core\Controller
     }
 
 
+
     /**
      * @Route("/fblogin", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});     
@@ -112,6 +117,8 @@ class AuthController extends \Core\Controller
 	    	}
 		    $this -> session -> set('user_token', $access_token);
 		    $this -> session -> set('role', Acl::ROLE_MEMBER);
+
+            $this->afterLogin();
 
 		    $res['status'] = 'OK';
 		    $res['message'] = $access_token;
@@ -206,5 +213,10 @@ class AuthController extends \Core\Controller
     	$this -> session -> set('memberId', $params -> id);
     	
     	return;
+    }
+
+    private function afterLogin() {
+        $this -> cookies -> get('lastLat') -> delete();
+        $this -> cookies -> get('lastLng') -> delete();
     }
 }

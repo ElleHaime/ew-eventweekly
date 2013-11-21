@@ -27,7 +27,6 @@ class EventController extends \Core\Controllers\CrudController
 	}	
     
 
-
 	/**
 	 * @Route("/eventmap/{lat}/{lan}", methods={"GET", "POST"})
 	 * @Route("/eventmap/{lat}/{lan}/{city}", methods={"GET", "POST"})* 

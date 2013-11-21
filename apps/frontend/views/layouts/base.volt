@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
+
     {% if event is defined %}
     	<meta property="og:image" content="http://events.apppicker.com/upload/img/event/{{ event['logo'] }}"/>
     	<meta property="og:title" content="EventWeekly"/>
