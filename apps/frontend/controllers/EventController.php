@@ -28,6 +28,7 @@ class EventController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
+		parent::listAction();
 	}
 
 	public function eventmapAction($lat = null, $lng = null, $city = null)

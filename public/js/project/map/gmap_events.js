@@ -143,7 +143,7 @@ app.GmapEvents = {
                 '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
                 '<div>' +
                 '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-                '<a target="_blank" href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
                 '</div>';
 
             // initialize popup window

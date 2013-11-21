@@ -7,11 +7,14 @@
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link type="image/ico" href="/img/128.ico" rel="icon">
     <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
+    {#<meta property="og:url" content="http://events.apppicker.com/event/show/200"/>#}
     <meta property="og:title" content="EventWeekly"/>
 
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
     {{ stylesheet_link('css/style.css') }}
     {{ stylesheet_link('css/jake.css') }}
     
@@ -32,6 +35,7 @@
     {{ javascript_include('js/project/vendors/jquery.cookie.js') }}
 
     {{ javascript_include('js/bootstrap.min.js') }}
+    {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
 
     {{ javascript_include('js/main.js') }}
     {{ javascript_include('js/project/map/gmap.js') }}
