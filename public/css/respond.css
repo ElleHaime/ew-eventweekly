@@ -240,10 +240,10 @@
     .add-event .form-center {
         margin-right: 30px;
     }
-
-
-
 }
+
+
+
 @media screen and (max-width: 580px) {
     .sidebar .input-append input {
         width: 84%;

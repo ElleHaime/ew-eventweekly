@@ -159,6 +159,10 @@ class EventController extends \Core\Controllers\CrudController
 				$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 			}
 
+			$descFull = $this -> facebook -> getEventDescription($eventObj -> fb_uid);
+			if ($descFull)
+				$eventObj -> description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1">$1</a>', $descFull);
+
 			$event = $event[0]['fql_result_set'][0];
 			$event['id'] = $eventObj -> id;
 		} else {
