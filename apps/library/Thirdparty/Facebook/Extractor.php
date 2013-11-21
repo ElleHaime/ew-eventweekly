@@ -32,6 +32,20 @@ class Extractor
     }
   }
 
+	public function getEventDescription($eventId)
+	{
+		$accessToken = $this->facebook->getAccessToken();
+		$fql = array('event_desc'=> 'SELECT description FROM event WHERE eid='.$eventId);
+		$data = $this->getFQL($fql,$accessToken);
+		if ($data['STATUS'])
+		{
+			$data = $data['MESSAGE'];
+			return $data[0]['fql_result_set'][0]['description'];
+		}
+		else
+			return FALSE;
+	}
+
   public function getFriendsCount($accessToken)
   {
     $fql = array(
