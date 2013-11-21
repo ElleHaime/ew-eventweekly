@@ -190,6 +190,7 @@ class EventController extends \Core\Controllers\CrudController
 			} 
 		}
 		 
+		$this -> view -> setVar('logo', $event['logos']);
 		$this -> view -> setVar('event', $event);
 	}
 
