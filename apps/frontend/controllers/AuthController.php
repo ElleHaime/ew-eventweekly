@@ -18,6 +18,7 @@ class AuthController extends \Core\Controller
 {
 	/**
 	 * @Route("/login", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
 	 */
 	public function loginAction()
 	{
@@ -56,6 +57,7 @@ class AuthController extends \Core\Controller
 	
 	/**
 	 * @Route("/signup", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
 	 */
     public function signupAction()
     { 
@@ -95,6 +97,7 @@ class AuthController extends \Core\Controller
 
     /**
      * @Route("/fblogin", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});     
      */
     public function fbloginAction()
     {
@@ -122,6 +125,7 @@ class AuthController extends \Core\Controller
 
     /**
      * @Route("/fbregister", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
      */
     public function fbregisterAction()
     {
@@ -171,6 +175,7 @@ class AuthController extends \Core\Controller
     
     /**
      * @Route("/restore", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});     
      */
     public function restoreAction()
     {
@@ -186,12 +191,14 @@ class AuthController extends \Core\Controller
     
     /**
      * @Route("/logout", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});     
      */
     public function logoutAction()
     {
 		$this -> session -> destroy();
 		return $this -> response -> redirect();
     }
+    
 
     private function _registerMemberSession($params) {
     	$this -> session -> set('member', $params);

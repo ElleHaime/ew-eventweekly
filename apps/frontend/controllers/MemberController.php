@@ -9,6 +9,7 @@ class MemberController extends \Core\Controllers\CrudController
 {
 	/**
 	 * @Route("/profile", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
 	 */
 	public function listAction()
 	{
@@ -21,6 +22,17 @@ class MemberController extends \Core\Controllers\CrudController
 		$this -> view -> setVar('member', $list);
 	}
 
+
+	/**
+	 * @Route("/member/edit", methods={"GET"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function editAction()
+	{
+		parent::editAction();
+	}
+
+
 	public function loadObject()
 	{
 		$this -> obj = $this -> session -> get('member');
@@ -28,6 +40,7 @@ class MemberController extends \Core\Controllers\CrudController
 		
 		return $this;
 	}
+	
 	
 	public function loadRedirect()
 	{
@@ -37,6 +50,7 @@ class MemberController extends \Core\Controllers\CrudController
 	
 	/**
 	 * @Route("/profile/refresh", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	   	 
 	 */
 	public function refreshAction()
 	{

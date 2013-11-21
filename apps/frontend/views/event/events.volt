@@ -9,7 +9,13 @@
         	{% for event in userEvents %}
         		<div class="list-event clearfix">
 					<div class="list-event-img_more">
-						<a href="#"><img src="{{ event['pic_square'] }}"></a>
+						<a href="#">
+							{% if event['logo'] is defined %}
+								<img src="{{ event['logo'] }}">
+							{% else %}
+								<img src="{{ event['pic_square'] }}">
+							{% endif %}
+						</a>
 					</div>
 					<div class="list-event-text_more">
                         {{ link_to ('event/show/' ~ event['id'], event['name']) }}
@@ -35,7 +41,13 @@
             {% for event in friendEvents %}
                 <div class="list-event clearfix">
                     <div class="list-event-img_more">
-                        <a href="#"><img src="{{ event['pic_square'] }}"></a>
+                        <a href="#">
+							{% if event['logo'] is defined %}
+								<img src="{{ event['logo'] }}">
+							{% else %}
+								<img src="{{ event['pic_square'] }}">
+							{% endif %}
+						</a>
                     </div>
                     <div class="list-event-text_more">
                         {{ link_to ('event/show/' ~ event['id'], event['name']) }}

@@ -10,7 +10,11 @@
         	{% for event in object %}
         		<div class="list-event clearfix">
 					<div class="list-event-img">
-						<a href="#">{{ image('img/demo/h_back_1.jpg') }}</a>
+						<a href="#">
+							{% if event.fb_uid != '' %}
+								{{ image('/upload/img/event/' ~ event.logo ) }}
+							{% endif %}
+						</a>
 					</div>
 					<div class="list-event-text">
 						{{ link_to ('event/edit/' ~ event.id, event.name) }}
