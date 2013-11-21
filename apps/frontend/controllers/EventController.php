@@ -28,8 +28,9 @@ class EventController extends \Core\Controllers\CrudController
     
 
 	/**
+	 * @Route("/eventmap", methods={"GET", "POST"})
 	 * @Route("/eventmap/{lat}/{lan}", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat}/{lan}/{city}", methods={"GET", "POST"})* 
+	 * @Route("/eventmap/{lat}/{lan}/{city}", methods={"GET", "POST"})*
 	 * @Acl(roles={'guest', 'member'});   	 	 	 
 	 */
 	public function eventmapAction($lat = null, $lng = null, $city = null)
