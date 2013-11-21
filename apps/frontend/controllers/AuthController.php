@@ -73,6 +73,9 @@ class AuthController extends \Core\Controller
 				}
 				
 				$this -> _registerMemberSession($member);
+
+                $this->afterLogin();
+
 				$this -> response -> redirect('map');
 				
 			} else {
@@ -98,6 +101,8 @@ class AuthController extends \Core\Controller
 	    	}
 		    $this -> session -> set('user_token', $access_token);
 		    $this -> session -> set('role', Acl::ROLE_MEMBER);
+
+            $this->afterLogin();
 
 		    $res['status'] = 'OK';
 		    $res['message'] = $access_token;
@@ -177,5 +182,10 @@ class AuthController extends \Core\Controller
     	$this -> session -> set('memberId', $params -> id);
     	
     	return;
+    }
+
+    private function afterLogin() {
+        $this->cookies->get('lastLat')->delete();
+        $this->cookies->get('lastLng')->delete();
     }
 }
