@@ -14,6 +14,7 @@ class Application extends BaseApplication
 	private $_config 			= null;
 	private $_router 			= null;	
 	protected $_loader			= null;
+	protected $_annotations		= null;
 	public static $defModule	= 'frontend';
 	public static $defNamespace	= '';
 	
@@ -43,7 +44,8 @@ class Application extends BaseApplication
 		
 		$this -> _initModules($di);
 		$this -> _initLoader($di);
-		$this -> _initDatabase($di);		
+		$this -> _initAnnotations($di);
+		$this -> _initDatabase($di);
 		$this -> _initRouter($di);
 		$this -> _initUrl($di);
 		$this -> _initCache($di);
@@ -84,6 +86,7 @@ class Application extends BaseApplication
 
 	}
 
+	
 	protected function _initModules(\Phalcon\DI $di)
 	{
 		$modules = $this -> _config -> get('modules');
@@ -105,26 +108,31 @@ class Application extends BaseApplication
 			$this -> registerModules($enabled);
 		}
 	}
+
 	
-// TODO: select routing type, straight or annotations	
+	protected function _initAnnotations(\Phalcon\DI $di)
+	{
+		$this -> _annotations = new \Core\Annotations($di);
+		$this -> _annotations -> run();
+				
+		$di -> set('annotations', $this -> _annotations);
+	}
+
 	protected function _initRouter(\Phalcon\DI $di)
 	{
-		$this -> _router = new Router();
+		$this -> _router = new \Phalcon\Mvc\Router\Annotations(false);
+		$this -> _router -> removeExtraSlashes(true);
 		
-		$router = $this -> _config -> get('router');
-		if ($router) {
-			foreach($router as $rt_path => $rt_settings) {
-				$this -> _router -> add($rt_path, (array)$rt_settings);
+		$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
+		$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
+		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);		
+
+		$routes = $this -> _annotations -> getRoutes();
+		if (!empty($routes)) {
+			foreach($routes as $link => $route) {
+				$this -> _router -> add($link, $route);
 			}
-			$this -> _router -> notFound(array(
-									'module' => self::$defModule,
-									'controller' => 'index',
-									'action' => 'index'
-			));  
-			$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
-			$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
-			$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
-			$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);
 		}
 
 		$di -> set('router', $this -> _router);

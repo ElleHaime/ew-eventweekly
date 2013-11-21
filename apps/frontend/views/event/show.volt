@@ -13,7 +13,7 @@
     <div class="span9">
         <div class="list-event clearfix">
             <div class="list-event-img">
-                <a href="#"><img src="{{ event['pic_square'] }}"></a>
+                <a href="#"><img src="/upload/img/event/{{ event['logo'] }}"></a>
             </div>
 
             <div class="list-event-text">
