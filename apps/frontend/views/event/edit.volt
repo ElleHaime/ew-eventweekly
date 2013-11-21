@@ -8,24 +8,7 @@
             <div class="span12">
                 <div class="row-fluid ">
                     <div class="span9">
-	                     <div class="add-event">
-							<h3 class="title-page">Create event</h3>
-							<form method="post">	                         
-							<div class="row-fluid">
-	                             <div class="span3">
-	                                 <div class="add-img">
-	                                     <a  href=""><img src="img/demo/q1.jpg" alt=""></a>
-	                                     <button class="btn" type="button">add image</button>
-	                                 </div>
-	                             </div>
-	                             <div class="span9">
-	                                 <div class="input-div clearfix">
-	                                     <input  type="text" value=""  placeholder="main title">
-	                                     {#<span>description / example</span>#}
-	                                 </div>
-                                     <div class="input-div_date clearfix">
-                                         <div id="date-picker" class="input-div_small">
-                                             <input data-format="MM/dd/yyyy" type="text"/>
+
                         <div class="add-event">
                             <h3 class="title-page">Create event</h3>
                             <div class="row-fluid">
@@ -199,7 +182,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
