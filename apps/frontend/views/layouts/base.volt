@@ -8,8 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
-    <meta property="og:image" content="http://events.apppicker.com/img/logo200.png"/>
-    <meta property="og:title" content="EventWeekly"/>
+
+    {% if logo is defined %}
+    	<meta property="og:image" content="http://events.apppicker.com/upload/img/event/{{ logo }}"/>
+    	<meta property="og:title" content="EventWeekly"/>
+    {% endif %}
 
     {{ stylesheet_link('css/bootstrap.min.css') }}
     {{ stylesheet_link('css/bootstrap-responsive.min.css') }}

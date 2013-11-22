@@ -42,25 +42,89 @@ $( document ).ready(function() {
     });
 
     $('#date-picker').on('changeDate', function(e) {
-        var date = dateConvert(e);
-        console.log(date);
-        //var date = new Date();
-        //console.log(typeof(date));
-        //console.log(e.localDate.getDate());
-        //console.log(e.localDate.toString('MM/dd/yyyy'));
+        redraw(e.localDate, null)
+    });
+    $('#time-picker').on('changeDate', function(e) {
+        redraw(null, e.localDate)
     });
 
-    function dateConvert($date)
+    var currDate = new Date(),
+        currDateFormatted =  currDate.getDate()+'/'+(currDate.getMonth()+1)+'/'+currDate.getFullYear();
+
+    $('#date-input').val(currDateFormatted);
+    $('#date-start').html(convertDate(currDate));
+
+    function convertDate(startDate)
     {
         var m_names = new Array("Jan", "Feb", "Mar",
             "Apr", "May", "Jun", "Jul", "Aug", "Sep",
             "Oct", "Nov", "Dec");
+        return startDate.getDate() + " " + m_names[startDate.getMonth()]+ " " + startDate.getFullYear();
+    }
 
-        var d = new Date();
-        var curr_date = d.getDate();
-        var curr_month = d.getMonth();
-        var curr_year = d.getFullYear();
-        return curr_date + " " + m_names[curr_month]+ " " + curr_year;
+    function daysCount(firstDate,secondDate)
+    {
+        var oneDay = 24*60*60*1000;
+        return Math.ceil((firstDate.getTime() - secondDate.getTime())/(oneDay));
+    }
+
+    function redraw(startDate,startTime)
+    {
+        if (startDate != null)
+        {
+            var now = new Date(),
+                daysBetween = daysCount(startDate,now);
+            if (daysBetween < 0)
+            {
+                $('#date-input').val('Incorrect date');
+                $('#time-string').hide('fast');
+                return;
+            }
+
+            if ( daysBetween%30 == 0)
+            {
+                var count = daysBetween/30,
+                    text = 'Event happens - in '+count+' month';
+                if (count>1)
+                    text+='s';
+                $('#days-count').html(text);
+                return;
+            }
+
+            if ( daysBetween%7 == 0)
+            {
+                var count = daysBetween/7,
+                    text = 'Event happens - in '+count+' week';
+                if (count>1)
+                    text+='s';
+                $('#days-count').html(text);
+                return;
+            }
+
+            if (daysBetween == 0)
+                $('#days-count').html('Event happens - today');
+
+            if (daysBetween == 1)
+                $('#days-count').html('Event happens - tomorrow');
+
+            if ( (daysBetween > 1) )
+                $('#days-count').html('Event happens - in '+daysBetween+' days');
+
+            startDate = convertDate(startDate);
+            $('#date-start').html(startDate);
+        }
+
+        if (startTime != null)
+        {
+            var hours   = startTime.getHours(),
+                minutes = startTime.getMinutes();
+            if (hours<10) hours='0'+hours;
+            if (minutes<10) minutes='0'+minutes;
+            startTime = hours+':'+minutes;
+            $('#time-start').html(startTime);
+        }
+
+        $('#time-string').show('fast');
     }
 
 });

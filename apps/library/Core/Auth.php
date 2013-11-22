@@ -27,15 +27,4 @@ class Auth extends Plugin
 
 		return $member;
 	}
-	
-
-	public function checkAccessByHash()
-	{
-
-	}
-
-	public function checkAccessByCookies()
-	{
-
-	}
 }

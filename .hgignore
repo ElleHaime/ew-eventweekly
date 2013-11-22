@@ -2,6 +2,8 @@ config/config.php
 .htaccess
 .idea
 public/.htaccess
+public/upload
+<<<<<<< local
 ^var/compiled/(?!empty$)
 ^\.project
 .idea

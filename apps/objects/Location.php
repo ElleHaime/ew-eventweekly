@@ -17,8 +17,6 @@ class Location extends Model
 	public $latitude;
 	public $longitude;
 	public $parent_id = 0;
-
-	public $geo;
 	 
 
 	public function initialize()
@@ -73,10 +71,4 @@ class Location extends Model
 			return $isLocationExists;
 		}
 	} 
-	
-	public function setGeoService(\Core\Geo $geo)
-	{
-		$this -> geo = $geo;
-	}
-	
 }

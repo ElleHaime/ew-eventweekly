@@ -23,6 +23,8 @@ class Event extends Model
 	public $event_status	= 0;
 	public $coordinates;
 	public $address;
+	public $logo;
+	public $is_description_full = 0; 
 
 
 	public function initialize()
