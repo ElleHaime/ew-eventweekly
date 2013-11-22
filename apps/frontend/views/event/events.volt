@@ -45,7 +45,7 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
-                                {% if event['location'] %}
+                                {% if event['location'] is defined %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
                                     <div class=" place-address">
@@ -167,7 +167,7 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
-                                {% if event['location'] %}
+                                {% if event['location'] is defined %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
 
