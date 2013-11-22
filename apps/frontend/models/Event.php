@@ -215,7 +215,8 @@ class Event extends EventObject
 									$result['address'] = $ev['venue']['street'];
 									$result['location_id'] = $venueObj -> location_id;
 
-									$venuesScope[$venueObj -> id] = array(
+									$venuesScope[$venueObj -> fb_uid] = array(
+															'venue_id' => $venueObj -> id,
 															'address' => $venueObj -> address,
 															'location_id' => $venueObj -> location_id);
 								}
