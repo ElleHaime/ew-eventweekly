@@ -227,7 +227,7 @@ p {
     margin-right: 5px;
     max-width: 180px;
 }
-.user-box  a {
+.user-box  > a {
     display: block;
     min-width: 180px;
     background: #29ABE2;
@@ -260,6 +260,14 @@ p {
     color:#ffffff;
     height: 22px;
     overflow: hidden;
+    word-break: break-all;
+}
+
+.location-place > a span {
+    color:#ffffff;
+    height: 22px;
+    overflow: hidden;
+    display: inline-block;
     word-break: break-all;
 }
 .user-box a img {
@@ -305,11 +313,10 @@ p {
 .user-down .btn-list {
    padding-left: 0;
     padding-right: 0;
+    padding-top: 0;
 }
 .edit-btn {
-    /*padding: 0 22px;*/
     border-bottom: 2px solid #54bce8;
-
 }
 .user-down .btn {
     background: #ffffff;
@@ -327,8 +334,6 @@ p {
     display: inline-block;
     vertical-align: middle;
 }
-
-
 
 .btn-text {
     display: inline-block;
@@ -379,7 +384,7 @@ p {
     margin-right: 10px;
 }
 
-/**/
+/*---location block---*/
 .location {
     float: left;
     margin:15px 26px 0 30px;
@@ -641,7 +646,6 @@ hr {
 .list-event-img   {
     float: left;
     margin: 0 20px 10px 0;
-    /*width: 260px;*/
 }
 .list-event-img img , .list-event-img_more img {
     border-radius: 5px;
@@ -986,7 +990,6 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .place-address {
     background: #E6E6E6;
-    padding-right: 50px;
     position: relative;
     padding:12px 70px 12px 20px;
     border-radius: 5px;
@@ -2045,4 +2048,37 @@ ul.days-events  {
 
 .location-search input {
     width: 87%;
+}
+
+
+
+
+#user-down  .edit-btn {
+    position: relative;
+    z-index: 10;
+}
+#user-down  #back-to {
+    position: absolute;
+     bottom: 28px;
+     left:46%;
+    display: block;
+
+}
+#user-down #back-to a {
+    background: #29ABE2;
+    border-radius: 50%;
+    display: block;
+    height: 50px;
+    left: 43%;
+    margin: 0 auto -50px;
+    outline: medium none;
+    text-decoration: none;
+    width: 50px;
+   box-shadow:  0 4px  0px #b7b4b4;
+    text-align: center;
+}
+#back-to a i {
+    margin-top: 20px;
+    z-index: 11;
+    position: relative;
 }
