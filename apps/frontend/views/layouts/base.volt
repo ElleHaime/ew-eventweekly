@@ -174,8 +174,17 @@
     $('#user-down-caret').click(function() {
       $('#user-down').slideToggle('2000');
     });
+
+    $('#back-to a ').click(function() {
+        $('#user-down').slideToggle('2000');
+    });
+
     $('#user-down-caret').click(function() {
-      $('.user-box').toggleClass('active-box');
+      $('.user-box').addClass('active-box');
+    });
+
+    $('#back-to a').click(function() {
+       $('.user-box').removeClass('active-box');
     });
 
     $('.location-place_ask > a ').click(function() {
@@ -184,9 +193,12 @@
         $('.location-place_ask > a ').click(function() {
       $('.location-place_ask').toggleClass('active-box');
     });
-     $('.location-place_country .location-city').click(function() {
-          $('.location-place_country').toggleClass('active-box');
-     });
+//     $('.location-place_country .location-city').click(function() {
+//          $('.location-place_country').toggleClass('active-box');
+//     });
+        $('.location-place_country .location-city').click(function() {
+            $('.location-place_country').addClass('active-box');
+        });
 
     $('.btn-row-down').click(function() {
       $('#back-to-top').slideToggle('slow');

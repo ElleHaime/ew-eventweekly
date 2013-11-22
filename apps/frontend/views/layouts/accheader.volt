@@ -20,6 +20,13 @@
                                     <button class="btn btn-block" onclick="location.href='/logout'"><span class="edit-icon"></span><span class="btn-text">logout</span></button>
                                 </div>
 
+                                <div id="back-to" class=" clearfix">
+                                    <a href="#">
+                                        <i class="icon-chevron-up icon-white"></i>
+
+                                    </a>
+                                </div>
+
                             </div>
                         </div>
                           <button class="btn btn-add" onclick="location.href='/event/add'"> <span class="icon-plus-sign"></span><span class="text-btn">Add Event</span></button>
