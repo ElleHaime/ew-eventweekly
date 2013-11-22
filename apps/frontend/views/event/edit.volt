@@ -49,6 +49,7 @@
                                             <span id="days-count" class="day-title">Event happens - today</span>
                                         </div>
                                     </div>
+                                    {#
                                     <select>
                                         <option>only for my Facebook friends</option>
                                         <option>only for my Facebook friends</option>
@@ -58,6 +59,7 @@
                                         <option>only for my Facebook friends</option>
                                         <option>only for my Facebook friends</option>
                                     </select>
+                                    #}
                                     <div class="clear"></div>
                                     <textarea class="field-big"  placeholder="add description"> </textarea>
                                     <div class="btn-add_group clearfix">
@@ -74,35 +76,95 @@
                     <div class="span3">
                         <div class="sidebar">
                             <div class="input-append">
-                                <input  type="text" placeholder="choose location"><button class="btn btn-primary" type="button">
-                                <i class="icon-map-marker"></i></button>
+                                <input type="text" placeholder="Choose location" id="location-input" value="{{ location.city }}, {{ location.country }}">
+                                {#<button class="btn btn-primary" type="button">Ok</button>#}
+                                <div class="search-queries hidden">
+                                    <ul id="locations-list">
+                                        <li>Text1</li>
+                                        <li>Text2</li>
+                                        <li>Text3</li>
+                                        <li>Text4</li>
+                                        <li>Text5</li>
+                                    </ul>
+                                </div>
+                                {#<i class="icon-map-marker"></i></button>#}
                             </div>
+                            <div class="input-append">
+                                <input type="text" placeholder="Choose address" id="address-input">
+                                {#
+                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary" type="button">Ok</button>
+                                #}
+                                <div class="search-queries hidden">
+                                    <ul id="addresses-list">
+                                        <li>Text1</li>
+                                        <li>Text2</li>
+                                        <li>Text3</li>
+                                        <li>Text4</li>
+                                        <li>Text5</li>
+                                    </ul>
+                                </div>
+                                {#<i class="icon-map-marker"></i></button>#}
+                            </div>
+
+                            <div class="input-append">
+                                <input type="text" placeholder="Choose venue" id="venue-input">
+                                {#
+                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary" type="button">Ok</button>
+                                #}
+                                <div class="search-queries hidden">
+                                    <ul id="venues-list">
+                                        <li>Text1</li>
+                                        <li>Text2</li>
+                                        <li>Text3</li>
+                                        <li>Text4</li>
+                                        <li>Text5</li>
+                                    </ul>
+                                </div>
+                                {#<i class="icon-map-marker"></i></button>#}
+                            </div>
+
+                            {#
                             <div class=" place-address">
                                 Smock Alley Theatre
                                 <button class="btn btn-primary">
                                     <i class="icon-map-marker"></i>
                                 </button>
                             </div>
+                            #}
+
                             <div class="input-append change-input">
+                                {#
                                 <button class="btn btn-primary" type="button">
                                     <i class="icon-map-marker"></i></button>
                                 <input  type="text" placeholder="change location">
+                                #}
                             </div>
+
                             <div class="input-append">
-                                <input  type="text" placeholder="Event web site"><button class="btn btn-primary" type="button">Ok</button>
+                                <input  type="text" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
                             </div>
-                            <div class="event-site clearfix">
-                                <p>Event web-site :</p>
-                                <a href="#">http://www.dpdp.com</a>
-                                <button class="btn btn-sm">Edit</button>
+                            <div id="event-sites" class="event-site clearfix">
+                                <p>Event web-sites :</p>
                             </div>
-                            <select>
+
+                            <select id="categories">
                                 <option>Suggest category</option>
-                                <option>Suggest category</option>
-                                <option>Suggest category</option>
-                                <option>Suggest category</option>
-                                <option>Suggest category</option>
+                                <option>Music</option>
+                                <option>Sport</option>
+                                <option>Outdoors</option>
+                                <option>Arts</option>
+                                <option>Business</option>
+                                <option>Shopping</option>
+                                <option>Night life</option>
+                                <option>Other</option>
+                                {#<option>Custom</option>#}
                             </select>
+                            <div id="event-categories" class="event-site clearfix">
+                                <p>Event categories :</p>
+                            </div>
+
                             <div class="type-box">
                                 <div class="event-site">
                                     <p>Type:</p>
