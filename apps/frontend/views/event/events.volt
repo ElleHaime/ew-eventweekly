@@ -45,6 +45,7 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
+                                {% if event['location'] %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
                                     <div class=" place-address">
@@ -54,6 +55,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="rating clearfix">
                                     <span class="small-text">Ratting</span>
                                     <span class="rating-icon"></span>
@@ -165,8 +167,10 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
+                                {% if event['location'] %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
+
                                     <div class=" place-address">
                                         {{ event['location']|truncate(20) }}
                                         <button class="btn btn-primary">
@@ -174,6 +178,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="rating clearfix">
                                     <span class="small-text">Ratting</span>
                                     <span class="rating-icon"></span>
