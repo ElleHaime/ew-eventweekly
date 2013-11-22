@@ -14,9 +14,9 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
-                                    <a href="#">
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">
 										{% if event['logo'] is defined %}
-											<img src="{{ event['logo'] }}">
+											<img src="/upload/img/event/{{ event['logo'] }}">
 										{% else %}
 											<img src="{{ event['pic_square'] }}">
 										{% endif %}
@@ -81,9 +81,9 @@
                     <div class="span7">
                         <div class="event-one clearfix">
                             <div class="event-one-img">
-                                <a href="#">										
+                                <a href="event/show/{{ event['id'] }}"  class="name-link">										
                                 	{% if event['logo'] is defined %}
-										<img src="{{ event['logo'] }}">
+										<img src="/upload/img/event/{{ event['logo'] }}">
 									{% else %}
 										<img src="{{ event['pic_square'] }}">
 									{% endif %}</a>
@@ -141,12 +141,13 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
+                                <a href="event/show/{{ event['id'] }}"  class="name-link">
                                     {% if event['logo'] is defined %}
-                                        <img src="{{ event['logo'] }}">
+                                        <img src="/upload/img/event/{{ event['logo'] }}">
                                     {% else %}
                                         <img src="{{ event['pic_square'] }}">
                                     {% endif %}
-                                    {#<a href="#"><img src="{{ event['pic_square'] }}" alt=""></a>#}
+                                    </a>
                                     <div class="like-box clearfix">
                                         <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
                                         <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
