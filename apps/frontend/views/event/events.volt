@@ -179,7 +179,7 @@
                                     <span class="rating-icon"></span>
                                     <span class="rating-text">34</span>
                                 </div>
-                                <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }};'">More</button>
+                                <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }}';">More</button>
                             </div>
                         </div>
                     </div>
