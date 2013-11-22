@@ -229,7 +229,7 @@ app.GmapEvents = {
             console.log('Set longitude to cookie: '+lng);
         }
 
-        if (_.isUndefined(path) || _.isElement(path)) {
+        if (_.isUndefined(path) || _.isEmpty(path)) {
             path = '/';
         }
 

@@ -178,7 +178,8 @@ class EventController extends \Core\Controllers\CrudController
 			
 			if ($descFull && $descFull != '') {
 				$event['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$eventObj -> assign(array('description' => $event['description']));
+				$eventObj -> assign(array('description' => $event['description'],
+                                          'is_description_full' => 1));
 				$eventObj -> save();				
 			}
 		}
