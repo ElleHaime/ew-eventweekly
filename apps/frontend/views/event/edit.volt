@@ -122,7 +122,6 @@
                                         <span class="color-type yellow">gothic</span>
                                         <span class="arrow arrow_yellow"></span>
                                     </div>
-
                                 </div>
 
                                 <div class="event-site">
@@ -131,40 +130,29 @@
                                         <span class="color-type light_yellow">gothic</span>
                                         <span class="arrow arrow_light-yellow"></span>
                                     </div>
-
                                 </div>
+
                                 <div class="event-site tags-box clearfix">
-
                                     <div class="input-append">
-
                                         <input  type="text" placeholder="Tags">
                                         <button class="btn btn-primary" type="button">Ok</button>
                                     </div>
-
                                 </div>
                             </div>
+
                             <div class="radio-box">
                                 <p>Reacuring event</p>
                                 <label class="radio">
-                                    <input type="radio" name="optionsRadios"  value="option1" checked>
-                                    daily
-                                </label>
+                                    <input type="radio" name="reacuring"  value="1" checked="checked">Once</label>
                                 <label class="radio">
-                                    <input type="radio" name="optionsRadios" value="option1" checked>
-                                    weekly
-                                </label>
+                                    <input type="radio" name="reacuring"  value="2">Daily</label>
                                 <label class="radio">
-                                    <input type="radio" name="optionsRadios" value="option1" checked>
-                                    monthly
-                                </label>
-                                <label class="radio" style="display: none">
-                                    <input type="radio" name="optionsRadios" value="option1" checked>
-                                    other
-                                </label>
+                                    <input type="radio" name="reacuring" value="3">Weekly</label>
+                                <label class="radio">
+                                    <input type="radio" name="reacuring" value="4">Monthly</label>
                                 <hr>
                                 <div class="checkbox-block">
                                     <label class="checkbox">
-
                                         <input type="checkbox" value="">
                                         Create Promoter
                                     </label>
