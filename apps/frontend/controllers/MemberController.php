@@ -7,6 +7,10 @@ use Core\Utils as _U;
 
 class MemberController extends \Core\Controllers\CrudController
 {
+	/**
+	 * @Route("/profile", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
+	 */
 	public function listAction()
 	{
 		$member = $this -> obj;
@@ -22,6 +26,17 @@ class MemberController extends \Core\Controllers\CrudController
 		$this -> view -> setVar('member', $list);
 	}
 
+
+	/**
+	 * @Route("/member/edit", methods={"GET"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function editAction()
+	{
+		parent::editAction();
+	}
+
+
 	public function loadObject()
 	{
 		$this -> obj = $this -> session -> get('member');
@@ -30,11 +45,17 @@ class MemberController extends \Core\Controllers\CrudController
 		return $this;
 	}
 	
+	
 	public function loadRedirect()
 	{
 		$this -> response -> redirect('profile');
 	}
 
+	
+	/**
+	 * @Route("/profile/refresh", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	   	 
+	 */
 	public function refreshAction()
 	{
 		$userData =  $this -> request -> getPost();

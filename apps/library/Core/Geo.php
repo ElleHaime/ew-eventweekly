@@ -69,7 +69,7 @@ class Geo extends Plugin
 		if (empty($coordinates)) {
 			$queryParams = $this -> _buildQuery($this -> _locLat, $this -> _locLon, $this -> _countryCode); 
 		} else {
-			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['lontitude']); 
+			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']); 
 		}
 
 		if ($queryParams != '') {	

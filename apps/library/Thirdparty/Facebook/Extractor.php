@@ -32,6 +32,27 @@ class Extractor
     }
   }
 
+	public function getEventDescription($eventId)
+	{
+		$accessToken = $this -> facebook -> getAccessToken();
+		$data = '';
+		
+		if ($accessToken) {
+			$fql = array('event_desc'=> 'SELECT description FROM event WHERE eid=' . $eventId);
+			$result = $this -> getFQL($fql, $accessToken);
+			
+			if ($result['STATUS']) {
+				$result = $result['MESSAGE'];
+				
+				if (!empty($result[0]['fql_result_set']) && $result[0]['fql_result_set'][0]['description'] != '') {
+					$data = $result[0]['fql_result_set'][0]['description'];
+					return $data;
+				} 
+			}
+		}
+		return $data;
+	}
+
   public function getFriendsCount($accessToken)
   {
     $fql = array(

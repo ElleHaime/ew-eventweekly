@@ -9,9 +9,7 @@ use Phalcon\Mvc\User\Plugin,
 	Phalcon\Acl\Role as AclRole,
 	Phalcon\Acl\Resource as AclResource,
 	Phalcon\Acl\Adapter\Memory as AclMemory,
-	Core\Acl\Roles as EwRoles,
-	Core\Acl\Permissions as EwPermissions,
-	Core\Acl\RolesPermissions as EwRolesPermitted;
+	Core\Acl\Roles as EwRoles;
 
 
 class Acl extends Plugin
@@ -25,10 +23,13 @@ class Acl extends Plugin
 	protected $_acl;
 	protected $_roles 		= array(); 
 	protected $_roleDefault = 'guest';
+	protected $di;
+	protected $annotations;
 
 	public function __construct($dependencyInjector) 
 	{
-		$this -> _dependencyInjector = $dependencyInjector;
+		$this -> di = $dependencyInjector;
+		$this -> annotations = $this -> di -> get('annotations');
 	}
 
 	protected function _getAcl()
@@ -36,7 +37,7 @@ class Acl extends Plugin
 		if (!$this -> _acl) {
 
 			// search acl data in cache
-			$cacheData = $this -> _dependencyInjector -> get('cacheData');
+			$cacheData = $this -> di -> get('cacheData');
 			$aclCache = $cacheData -> get(self::ACL_CACHE);
 
 			if ($aclCache === null) {
@@ -59,29 +60,26 @@ class Acl extends Plugin
 					}
 				}
 
-				$rolesPermitted = EwRolesPermitted::find();
+				$permissions = $this -> annotations -> getPermissions();
 
-				$permissions = EwPermissions::find();
-				$resources = array();
-				foreach ($permissions as $perm) {
-					$rname = ucfirst($perm -> module) . ucfirst($perm -> controller);
-					if (!isset($resources[$rname])) {
-						$resources[$rname] = array();
-					}
-					$resources[$rname]['actions'][$perm -> id] = $perm -> action;
-				}
+				if (!empty($permissions)) {
+					foreach($permissions as $controller => $access) {
+						$actions = array();
+						$permitted = array();
 
-				foreach ($resources as $resName => $resOptions) {
-					$resource = new AclResource($resName);
-					$acl -> addResource($resource, $resOptions['actions']);
+						foreach ($access as $acc => $roles) {
+							$actions[] = $acc;
+							$permitted[$acc] = $roles;
+						}			
 
-					foreach ($rolesPermitted as $rp) {
+						$resource = new AclResource($controller);
+						$acl -> addResource($resource, $actions); 	
 
-						if (isset($resOptions['actions'][$rp -> permissions_id])) {
-							$acl -> allow($rolesScope[$rp -> roles_id], 
-										  $resName,
-										  $resOptions['actions'][$rp -> permissions_id]);
-						}
+						foreach ($permitted as $action => $val) {
+							foreach ($val as $i => $rl) {
+								$acl -> allow($rl, $controller, $action);
+							}
+						}	
 					}
 				}
 
@@ -116,7 +114,7 @@ class Acl extends Plugin
 			$dispatcher -> forward(array(
 				'module' => $dispatcher -> getModuleName(),
 				'controller' => 'index',
-				'action' => 'index'
+				'action' => 'denied'
 			)); 
 
 			return false;
@@ -126,7 +124,7 @@ class Acl extends Plugin
 
 	public function clearAcl()
 	{
-		$this -> _dependencyInjector -> get('cacheData') -> delete(self::ACL_CACHE);
+		$this -> di -> get('cacheData') -> delete(self::ACL_CACHE);
 	}
 
 }

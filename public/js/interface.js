@@ -54,11 +54,58 @@ $( document ).ready(function() {
     $('#date-input').val(currDateFormatted);
     $('#date-start').html(convertDate(currDate));
 
-    function convertDate(startDate){
+    function convertDate(startDate)
+    {
         var m_names = new Array("Jan", "Feb", "Mar",
             "Apr", "May", "Jun", "Jul", "Aug", "Sep",
             "Oct", "Nov", "Dec");
         return startDate.getDate() + " " + m_names[startDate.getMonth()]+ " " + startDate.getFullYear();
+    }
+
+    function daysCount(firstDate,secondDate)
+    {
+        var oneDay = 24*60*60*1000;
+        return Math.ceil((firstDate.getTime() - secondDate.getTime())/(oneDay));
+    }
+
+            var now = new Date(),
+                daysBetween = daysCount(startDate,now);
+            if (daysBetween < 0)
+            {
+                $('#date-input').val('Incorrect date');
+                $('#time-string').hide('fast');
+                return;
+            }
+
+            if ( daysBetween%30 == 0)
+            {
+                var count = daysBetween/30,
+                    text = 'Event happens - in '+count+' month';
+                if (count>1)
+                    text+='s';
+                $('#days-count').html(text);
+                return;
+            }
+
+            if ( daysBetween%7 == 0)
+            {
+                var count = daysBetween/7,
+                    text = 'Event happens - in '+count+' week';
+                if (count>1)
+                    text+='s';
+                $('#days-count').html(text);
+                return;
+            }
+
+            if (daysBetween == 0)
+                $('#days-count').html('Event happens - today');
+
+            if (daysBetween == 1)
+                $('#days-count').html('Event happens - tomorrow');
+
+            if ( (daysBetween > 1) )
+                $('#days-count').html('Event happens - in '+daysBetween+' days');
+
     }
 
     function daysCount(firstDate,secondDate){
@@ -74,7 +121,6 @@ $( document ).ready(function() {
             $('#time-string').hide('fast');
             return;
         }
-
         if ( daysBetween%30 == 0){
             var count = daysBetween/30,
                 text = 'Event happens - in '+count+' month';
@@ -82,7 +128,6 @@ $( document ).ready(function() {
             $('#days-count').html(text);
             return;
         }
-
         if ( daysBetween%7 == 0){
             var count = daysBetween/7,
                 text = 'Event happens - in '+count+' week';
@@ -90,7 +135,6 @@ $( document ).ready(function() {
             $('#days-count').html(text);
             return;
         }
-
         if ( (daysBetween > 1) ){
             $('#days-count').html('Event happens - in '+daysBetween+' days');
             return;

@@ -93,6 +93,10 @@ app.GmapEvents = {
 
         if (data.status == "OK") {
 
+            if (_.isNull(app.Gmap.Map) || _.isNull(app.Gmap.MC)) {
+                $this.__redirectToMap(data);
+            }
+
             app.Gmap.markers = [];
             app.Gmap.MC.clearMarkers();
 
@@ -115,8 +119,7 @@ app.GmapEvents = {
             $($this.settings.eventsCounter).html(data.message[0].length + data.message[1].length);
 
             // write last map positions in to cookie
-            $.cookie('lastLat', $this.__lastLat, {expires: 1});
-            $.cookie('lastLng', $this.__lastLng, {expires: 1});
+            $this.__setCookies($this.__lastLat, $this.__lastLng);
 
             app.Gmap.Map.setCenter(new app.__GoogleApi.maps.LatLng($this.__lastLat, $this.__lastLng));
 
@@ -169,6 +172,29 @@ app.GmapEvents = {
                 infoWindow.open(app.Gmap.Map, marker);
             });
         }
+    },
+
+    __redirectToMap: function(data) {
+        var $this = this, lat = null, lng = null;
+        if (!_.isEmpty(data.message[0])) {
+            lat = _.last(data.message[0]).venue.latitude;
+            lng = _.last(data.message[0]).venue.longitude;
+            $this.__setCookies(lat, lng);
+        }
+
+        if (!_.isEmpty(data.message[1])) {
+            lat = _.last(data.message[1]).venue.latitude;
+            lng = _.last(data.message[1]).venue.longitude;
+            $this.__setCookies(lat, lng);
+        }
+
+        window.location.href = '/map';
+    },
+
+    __setCookies: function(lat, lng) {
+        // write last map positions in to cookie
+        $.cookie('lastLat', lat, {expires: 1});
+        $.cookie('lastLng', lng, {expires: 1});
     }
 
 };

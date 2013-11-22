@@ -11,11 +11,60 @@ use Frontend\Form\SignupForm,
 	Core\Acl,
 	Core\Utils as _U;
 
-
+/**
+ * @RouteRule(useCrud = false)
+ */
 class AuthController extends \Core\Controller
 {
-    public function registerAction()
+	/**
+	 * @Route("/login", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
+	 */
+ 	public function loginAction()
     {
+    	$form = new LoginForm();
+
+		if ($this -> request -> isPost()) {
+			$email = $this -> request -> getPost('email', 'string');
+			$pass = $this -> request -> getPost('password', 'string');
+					
+			if ($form -> isValid($this -> request -> getPost())) {
+				$member = Member::findFirst(array('email = ?0',
+												   'bind' => (array)$email));
+				
+				if (!$member) {
+					$this -> flash -> error('No such member');
+					$this -> view -> form = $form;
+					return false;
+				}
+				if (!$this -> security -> checkHash($pass, $member -> pass)) { 
+					$this -> flash -> error('Incorrect password');
+					return false;
+				}
+				
+				$this -> _registerMemberSession($member);
+
+                $this->afterLogin();
+
+				$this -> response -> redirect('map');
+				
+			} else {
+				$this -> response -> setStatusCode(401, 'Unauthorized')
+								  -> setContent('Not authorized')
+								  -> send();
+			}
+		}
+   		$this -> view -> form = $form;
+    }
+	
+
+	
+	/**
+	 * @Route("/signup", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
+	 */
+    public function signupAction()
+    { 
 		$form = new SignupForm();
 
 		if ($this -> request -> isPost()) {
@@ -50,41 +99,11 @@ class AuthController extends \Core\Controller
     }
 
 
-    public function loginAction()
-    {
-    	$form = new LoginForm();
 
-		if ($this -> request -> isPost()) {
-			$email = $this -> request -> getPost('email', 'string');
-			$pass = $this -> request -> getPost('password', 'string');
-					
-			if ($form -> isValid($this -> request -> getPost())) {
-				$member = Member::findFirst(array('email = ?0',
-												   'bind' => (array)$email));
-				
-				if (!$member) {
-					$this -> flash -> error('No such member');
-					$this -> view -> form = $form;
-					return false;
-				}
-				if (!$this -> security -> checkHash($pass, $member -> pass)) { 
-					$this -> flash -> error('Incorrect password');
-					return false;
-				}
-				
-				$this -> _registerMemberSession($member);
-				$this -> response -> redirect('map');
-				
-			} else {
-				$this -> response -> setStatusCode(401, 'Unauthorized')
-								  -> setContent('Not authorized')
-								  -> send();
-			}
-		}
-   		$this -> view -> form = $form;
-    }
-
-
+    /**
+     * @Route("/fblogin", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});     
+     */
     public function fbloginAction()
     {
 		$access_token = $this -> request -> getPost('access_token', 'string');
@@ -99,6 +118,8 @@ class AuthController extends \Core\Controller
 		    $this -> session -> set('user_token', $access_token);
 		    $this -> session -> set('role', Acl::ROLE_MEMBER);
 
+            $this->afterLogin();
+
 		    $res['status'] = 'OK';
 		    $res['message'] = $access_token;
 		    echo json_encode($res);
@@ -109,6 +130,10 @@ class AuthController extends \Core\Controller
 	    }
     }
 
+    /**
+     * @Route("/fbregister", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   
+     */
     public function fbregisterAction()
     {
     	if (!$this -> session -> has('member')) {
@@ -154,6 +179,11 @@ class AuthController extends \Core\Controller
 		echo json_encode($res);
     }
 
+    
+    /**
+     * @Route("/restore", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});     
+     */
     public function restoreAction()
     {
     	$form = new RestoreForm();
@@ -165,11 +195,17 @@ class AuthController extends \Core\Controller
     	$this -> view -> form = $form;
     }
 
+    
+    /**
+     * @Route("/logout", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});     
+     */
     public function logoutAction()
     {
 		$this -> session -> destroy();
 		return $this -> response -> redirect();
     }
+    
 
     private function _registerMemberSession($params) {
     	$this -> session -> set('member', $params);
@@ -177,5 +213,10 @@ class AuthController extends \Core\Controller
     	$this -> session -> set('memberId', $params -> id);
     	
     	return;
+    }
+
+    private function afterLogin() {
+        $this -> cookies -> get('lastLat') -> delete();
+        $this -> cookies -> get('lastLng') -> delete();
     }
 }

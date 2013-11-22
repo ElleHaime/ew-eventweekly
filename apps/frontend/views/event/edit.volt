@@ -46,7 +46,7 @@
                                         #}
                                         <div class="date-box" id="time-string">
                                             <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start" class="date-time">00:00:00</span>
-                                            <span class="day-title">—tomorrow</span>
+                                            <span id="days-count" class="day-title">Event happens - today</span>
                                         </div>
                                     </div>
                                     <select>

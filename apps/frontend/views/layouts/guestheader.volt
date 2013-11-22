@@ -1,7 +1,7 @@
 					<div class="span4 sign_no">
 	                    <span  class="line"></span>
 	                    <div class="user-box">
-	                       <a href="registration" style=" margin-top:2px;"><span>Sign Up</span></a>
+	                       <a href="/signup" style=" margin-top:2px;"><span>Sign Up</span></a>
 	                    </div>
 
 						<span  class="line"></span>	 
@@ -33,17 +33,11 @@
                     <div class="span2">
 
 	                    <div class="show-box">
-	                    	{% if view_action is defined %}
-	                        			{%if view_action == 'list' %}
-											<button class="btn btn-block btn-show" onclick="location.href='map'"><i class=" icon-list"></i><span>Show as map</span></button>
-										{% else %}
-											<button class="btn btn-block btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
-										{% endif %}
-							{% else %}	
-								<button class="btn btn-block btn-show" onclick="location.href='list'"><i class=" icon-list"></i><span>Show as list</span></button>
-							{% endif %}
-	                        	</span> 
-	                       	</button>
+	                    	{% if link_to_list is defined %}
+                                <button class="btn btn-show" onclick="location.href='/list'"><i class=" icon-list"></i><span>Show as list </span></button>
+                            {% else %}
+                                <button class="btn btn-show" onclick="location.href='/map'"><i class=" icon-map"></i><span>Show as map </span></button>
+                            {% endif %}
 	                    </div>
 
 					</div>

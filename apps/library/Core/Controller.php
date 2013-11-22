@@ -32,6 +32,10 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this -> session -> set('location', $location);
 		}
 
+		if ($this -> session -> has('eventsTotal')) {
+			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+
 		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
 			$this -> memberId = $this -> session -> get('memberId');
 			$this -> view -> member = $this -> session -> get('member');
@@ -120,6 +124,5 @@ class Controller extends \Phalcon\Mvc\Controller
 		$locModel = 'Location';
 		$locPath = $this -> getModelPath() . $locModel;
 		$this -> locator = new $locPath;
-		$this -> locator -> setGeoService($this -> geo);
 	}
 }
