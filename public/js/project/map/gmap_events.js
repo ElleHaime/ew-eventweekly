@@ -223,14 +223,19 @@ app.GmapEvents = {
         window.location.href = '/map';
     },
 
-    __setCookies: function(lat, lng) {
+    __setCookies: function(lat, lng, path) {
         if (this.debug) {
             console.log('Set latitude to cookie: '+lat);
             console.log('Set longitude to cookie: '+lng);
         }
+
+        if (_.isUndefined(path) || _.isEmpty(path)) {
+            path = '/';
+        }
+
         // write last map positions in to cookie
-        $.cookie('lastLat', lat, {expires: 1});
-        $.cookie('lastLng', lng, {expires: 1});
+        $.cookie('lastLat', lat, {expires: 1, path: path});
+        $.cookie('lastLng', lng, {expires: 1, path: path});
     },
 
     __createInfoPopupContent: function(event) {
