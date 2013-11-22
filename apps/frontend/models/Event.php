@@ -64,7 +64,7 @@ class Event extends EventObject
 
 	public function grabEventsByCoordinatesScale($scale)
 	{
-        $query = 'select event.*, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
+        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
 					from \Frontend\Models\Event as event
 					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
 					left join \Frontend\Models\Location as location on event.location_id = location.id
