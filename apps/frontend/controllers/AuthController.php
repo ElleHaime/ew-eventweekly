@@ -206,8 +206,7 @@ class AuthController extends \Core\Controller
 				$this -> session -> set('reset_member', $member);
 				$resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri; 
 				
-				$template = "Here is your link for new password \n
-" . $resetLink. "\nDon't lose it again";
+				$template = "Here is your link for new password: http://" . $resetLink. "\n\nDon't lose it again";
 				$subject = 'Reset password';
 				$to = $email;
 

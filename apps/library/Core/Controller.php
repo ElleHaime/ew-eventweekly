@@ -23,6 +23,11 @@ class Controller extends \Phalcon\Mvc\Controller
 		$this -> _getChild();
 		$this -> _parseQueryVals();
 		
+		
+		if (!$this -> session -> isStarted()) {
+			$this -> session -> start();
+		}
+		
 		if (!$this -> locator) {
 			$this -> plugLocator();
 		}

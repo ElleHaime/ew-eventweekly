@@ -97,7 +97,7 @@ class Extractor
   public function getEventsSimpleByLocation($accessToken, $loc)
   {
     $limit  = 50;
-    $offset = 1.8;
+    $offset = 0.7;
     $lat = $loc -> latitude;
     $long = $loc -> longitude;
 
