@@ -4,6 +4,8 @@
 
 app.GmapEvents = {
 
+    debug: true,
+
     /**
      * Settings
      */
@@ -63,7 +65,9 @@ app.GmapEvents = {
     __request: function(lat, lng, city) {
         var $this = this;
 
-        console.log('CITY - '+city);
+        if ($this.debug) {
+            console.log('CITY - '+city);
+        }
 
         var url = $this.settings.eventsUrl;
 
@@ -102,14 +106,18 @@ app.GmapEvents = {
 
             if (data.message[0].length > 0) //own events
             {
-                console.log('My events:'+data.message[0].length);
+                if ($this.debug) {
+                    console.log('My events:'+data.message[0].length);
+                }
                 $.each(data.message[0], function(index,event) {
                     $this.__drawMarker(event);
                 });
             }
             if (data.message[1].length>0) //friend events
             {
-                console.log('Friend events:'+data.message[1].length);
+                if ($this.debug) {
+                    console.log('Friend events:'+data.message[1].length);
+                }
                 $.each(data.message[1], function(index,event) {
                     $this.__drawMarker(event);
                 });
@@ -139,15 +147,15 @@ app.GmapEvents = {
     __drawMarker: function(event) {
         var $this = this;
 
+        if ($this.debug) {
+            console.log('Draw event below: ');
+            console.log(event);
+        }
+
         if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude)!='undefined')
         {
             // prepare HTML for popup window on map
-            var contentString = '<div class="info-win" id="content">' +
-                '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
-                '<div>' +
-                '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
-                '</div>';
+            var contentString = $this.__createInfoPopupContent(event);
 
             // initialize popup window
             var infoWindow = new app.__GoogleApi.maps.InfoWindow({
@@ -157,12 +165,36 @@ app.GmapEvents = {
             $this.__lastLat = event.venue.latitude;
             $this.__lastLng = event.venue.longitude;
 
+            var newLatLng = new app.__GoogleApi.maps.LatLng(event.venue.latitude,event.venue.longitude);
+
             // create marker
             var marker = new app.__GoogleApi.maps.Marker({
-                position: new app.__GoogleApi.maps.LatLng(event.venue.latitude,event.venue.longitude),
+                position: newLatLng,
                 map: app.Gmap.Map,
                 title: event.name
             });
+
+            // add content to marker
+            marker.content  = infoWindow.content;
+
+            // get array of markers currently in cluster
+            var allMarkers = app.Gmap.markers;
+
+            // check to see if any of the existing markers match the latlng of the new marker
+            if (allMarkers.length != 0) {
+                for (var i=0; i < allMarkers.length; i++) {
+                    var existingMarker = allMarkers[i];
+                    var pos = existingMarker.getPosition();
+                    if (newLatLng.equals(pos)) {
+                        infoWindow.content = existingMarker.content + " & " + $this.__createInfoPopupContent(event);
+                    }
+                }
+            }
+
+            if ($this.debug) {
+                console.log('New map marker was created below:');
+                console.log(marker);
+            }
 
             // push new marker to storage
             app.Gmap.markers.push(marker);
@@ -191,10 +223,28 @@ app.GmapEvents = {
         window.location.href = '/map';
     },
 
-    __setCookies: function(lat, lng) {
+    __setCookies: function(lat, lng, path) {
+        if (this.debug) {
+            console.log('Set latitude to cookie: '+lat);
+            console.log('Set longitude to cookie: '+lng);
+        }
+
+        if (_.isUndefined(path) || _.isEmpty(path)) {
+            path = '/';
+        }
+
         // write last map positions in to cookie
-        $.cookie('lastLat', lat, {expires: 1});
-        $.cookie('lastLng', lng, {expires: 1});
+        $.cookie('lastLat', lat, {expires: 1, path: path});
+        $.cookie('lastLng', lng, {expires: 1, path: path});
+    },
+
+    __createInfoPopupContent: function(event) {
+        return '<div class="info-win" id="content">' +
+            '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
+            '<div>' +
+            '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
+            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+            '</div>';
     }
 
 };

@@ -14,10 +14,11 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
-                                    <div class="img-box">
-                                        <a href="#">
-                                            {% if event['logo'] is defined %}
-                                                <img src="{{ event['logo'] }}">
+                                     <div class="img-box">
+                                          <a href="#">
+                                           {% if event['logo'] is defined %}
+                                              <img src="{{ event['logo'] }}">
+
                                             {% else %}
                                                 <img src="{{ event['pic_square'] }}">
                                             {% endif %}
@@ -48,6 +49,7 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
+                                {% if event['location'] is defined %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
                                     <div class=" place-address">
@@ -57,6 +59,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="rating clearfix">
                                     <span class="small-text">Ratting</span>
                                     <span class="rating-icon"></span>
@@ -82,9 +85,9 @@
                     <div class="span7">
                         <div class="event-one clearfix">
                             <div class="event-one-img">
-                                <a href="#">										
+                                <a href="event/show/{{ event['id'] }}"  class="name-link">										
                                 	{% if event['logo'] is defined %}
-										<img src="{{ event['logo'] }}">
+										<img src="/upload/img/event/{{ event['logo'] }}">
 									{% else %}
 										<img src="{{ event['pic_square'] }}">
 									{% endif %}</a>
@@ -142,9 +145,13 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
-                                    <div class="img-box">
-                                         <a href="#"><img src="{{ event['pic_square'] }}" alt=""></a>
-                                    </div>
+                                <a href="event/show/{{ event['id'] }}"  class="name-link">
+                                    {% if event['logo'] is defined %}
+                                        <img src="/upload/img/event/{{ event['logo'] }}">
+                                    {% else %}
+                                        <img src="{{ event['pic_square'] }}">
+                                    {% endif %}
+                                    </a>
                                     <div class="like-box clearfix">
                                         <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
                                         <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
@@ -170,8 +177,10 @@
                         </div>
                         <div class="span5">
                             <div class="event-list-btn clearfix">
+                                {% if event['location'] is defined %}
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
+
                                     <div class=" place-address">
                                         <p class="tooltip-text" rel="tooltip" title="{{ event['location'] }}">{{ event['location']|truncate(20) }}</p>
                                         <button class="btn btn-primary">
@@ -179,12 +188,13 @@
                                         </button>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="rating clearfix">
                                     <span class="small-text">Ratting</span>
                                     <span class="rating-icon"></span>
                                     <span class="rating-text">34</span>
                                 </div>
-                                <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }};'">More</button>
+                                <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }}';">More</button>
                             </div>
                         </div>
                     </div>

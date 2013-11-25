@@ -4476,7 +4476,7 @@ a.thumbnail:focus {
 .hero-unit li {
   line-height: 30px;
 }
-.tooltip {
+.tooltip  {
   position: absolute;
   z-index: 1030;
   display: block;
