@@ -64,12 +64,13 @@ class Event extends EventObject
 
 	public function grabEventsByCoordinatesScale($scale)
 	{
-		$query = 'select event.*, venue.latitude as latitude, venue.longitude as longitude
-					from \Frontend\Models\Event as event 
-					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id 
-					where 
+        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
+					from \Frontend\Models\Event as event
+					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
+					left join \Frontend\Models\Location as location on event.location_id = location.id
+					where
 						venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
-					and 
+					and
 						venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
 
 		$eventsList = $this -> modelsManager -> executeQuery($query);

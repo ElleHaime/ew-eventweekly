@@ -138,10 +138,12 @@ class EventController extends \Core\Controllers\CrudController
 						'pic_square' => '',
 						'address' => $ev -> event -> address,
 						'name' => $ev -> event -> name,
-						'venue' => array('latitude' => $ev -> latitude,
-										 'longitude' => $ev -> longitude),
+						'venue' => array('latitude' => $ev -> venue_latitude,
+										 'longitude' => $ev -> venue_longitude),
 						'location_id' => $ev -> event -> location_id,
+                        'location' => $ev -> location,
 						'anon' => $ev -> event -> description,
+						'logo' => $ev -> logo,
 						'start_time' => date('F, l d, H:i', strtotime($ev -> event -> start_date)),
 						'end_time' => date('F, l d, H:i', strtotime($ev -> event -> end_date)),
 					);
@@ -176,7 +178,8 @@ class EventController extends \Core\Controllers\CrudController
 			
 			if ($descFull && $descFull != '') {
 				$event['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$eventObj -> assign(array('description' => $event['description']));
+				$eventObj -> assign(array('description' => $event['description'],
+                                          'is_description_full' => 1));
 				$eventObj -> save();				
 			}
 		}
@@ -190,8 +193,8 @@ class EventController extends \Core\Controllers\CrudController
 				$event['answer'] = (int)$eventMember -> member_status;
 			} 
 		}
-		 
-		$this -> view -> setVar('logo', $event['logos']);
+//_U::dump($event);		 
+		$this -> view -> setVar('logo', $event['logo']);
 		$this -> view -> setVar('event', $event);
 	}
 
