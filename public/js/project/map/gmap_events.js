@@ -4,7 +4,7 @@
 
 app.GmapEvents = {
 
-    debug: true,
+    debug: false,
 
     /**
      * Settings
