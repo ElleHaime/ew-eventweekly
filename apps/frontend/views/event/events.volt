@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name'] }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -42,7 +42,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}
                                     </div>
-                                    <p>{{ event['anon']}}</p>
+                                    <p>{{ event['anon']|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>
@@ -145,13 +145,15 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
-                                <a href="event/show/{{ event['id'] }}"  class="name-link">
-                                    {% if event['logo'] is defined %}
-                                        <img src="/upload/img/event/{{ event['logo'] }}">
-                                    {% else %}
-                                        <img src="{{ event['pic_square'] }}">
-                                    {% endif %}
-                                    </a>
+                                    <div class="img-box">
+                                        <a href="event/show/{{ event['id'] }}"  class="name-link">
+                                            {% if event['logo'] is defined %}
+                                                <img src="/upload/img/event/{{ event['logo'] }}">
+                                            {% else %}
+                                                <img src="{{ event['pic_square'] }}">
+                                            {% endif %}
+                                            </a>
+                                    </div>
                                     <div class="like-box clearfix">
                                         <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
                                         <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
@@ -159,7 +161,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name'] }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -170,7 +172,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}#}
                                     </div>
-                                    <p>{{ event['anon']}}</p>
+                                    <p>{{ event['anon']|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>
@@ -181,8 +183,8 @@
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
 
-                                    <div class=" place-address">
-                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location'] }}">{{ event['location']|truncate(20) }}</p>
+                                    <div class="place-address">
+                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|escape }}">{{ event['location']|truncate(20) }}</p>
                                         <button class="btn btn-primary">
                                             <i class="icon-map-marker"></i>
                                         </button>

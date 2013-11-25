@@ -5,8 +5,10 @@
 var topPanel = {
 
     settings: {
-        searchCityBtn: '.location-city',
-        searchCityBlock: '.location-search',
+        searchCityBtn: '.locationCity',
+        advancedSearchBtn: '.advancedSearchBtn',
+        searchCityBlock: '.searchCityBlock',
+        advancedSearchBlock: '.advancedSearchBlock',
         sendCoordsUrl: ''
     },
 
@@ -27,10 +29,11 @@ var topPanel = {
     },
 
     __bindClicks: function() {
-        var $this = this;
-        $('body').on('click', $this.settings.searchCityBtn, function(e){
+        var $this = this, htmlBody = $('body');
+        htmlBody.on('click', $this.settings.searchCityBtn, function(e){
             e.preventDefault();
-            $this.__changeVisibility($this.settings.searchCityBlock);
+
+            $this.__changeVisibility('city');
             $($this.settings.searchCityBlock).find('input').focus();
 
             var list = addressAutoComplete('topSearchCity');
@@ -46,22 +49,49 @@ var topPanel = {
                 $this.__sendCoords(lat, lng);
             });
         });
+
+        htmlBody.on('click', $this.settings.advancedSearchBtn, function(e) {
+            e.preventDefault();
+
+            $this.__changeVisibility('advanced');
+        });
     },
 
-    __changeVisibility: function(elem) {
-        var element = $(elem), state = element.is(":visible");
+    __changeVisibility: function(type) {
+        var $this = this;
 
-        if (state) {
-            element.hide();
-        }else {
-            element.show();
+        $($this.settings.searchCityBtn).closest('div').removeClass('active-box');
+        $($this.settings.advancedSearchBtn).closest('div').removeClass('active-box');
+
+        if (type == 'city' && !$($this.settings.searchCityBlock).is(":visible")) {
+            // hide advanced block
+            $($this.settings.advancedSearchBlock).hide();
+
+            // show city block
+            $($this.settings.searchCityBtn).closest('div').addClass('active-box');
+            $($this.settings.searchCityBlock).show();
+        }else if (type == 'city' && $($this.settings.searchCityBlock).is(":visible")) {
+            $($this.settings.searchCityBtn).closest('div').removeClass('active-box');
+            $($this.settings.searchCityBlock).hide();
+        }
+
+        if (type == 'advanced' && !$($this.settings.advancedSearchBlock).is(":visible")) {
+            // hide search block
+            $($this.settings.searchCityBlock).hide();
+
+            // show advanced block
+            $($this.settings.advancedSearchBtn).closest('div').addClass('active-box');
+            $($this.settings.advancedSearchBlock).show();
+        }else if (type == 'advanced' && $($this.settings.advancedSearchBlock).is(":visible")) {
+            $($this.settings.advancedSearchBtn).closest('div').removeClass('active-box');
+            $($this.settings.advancedSearchBlock).hide();
         }
     },
 
     __sendCoords: function(lat, lng) {
         var $this = this;
         app.GmapEvents.getEvents(lat, lng, $this.__city);
-        $this.__changeVisibility($this.settings.searchCityBlock);
+        $this.__changeVisibility('city');
     }
 
 };
