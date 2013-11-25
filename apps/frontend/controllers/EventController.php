@@ -238,6 +238,14 @@ class EventController extends \Core\Controllers\CrudController
 		parent::listAction();
 	}
 
+	/**
+	 * @Route("/event/getLocations", methods={"POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function getLocations()
+	{
+
+	}
 
 	/**
 	 * @Route("/event/add", methods={"GET", "POST"})
@@ -246,6 +254,9 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function editAction()
 	{
+
+
+
 		parent::editAction();
 	}
 
