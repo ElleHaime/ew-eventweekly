@@ -31,22 +31,7 @@
 	    </div>
         <div class="row-fluid agreement-box">
              <div class="span6 offset2">
-                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Restore password</h3>
-                 <form class="form-horizontal" method="post">
-                     <div class="control-group">
-                         <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
-                         <div class="controls">
-                             {{ form.render('email') }}
-                             {{ form.messages('email') }}
-                         </div>
-                     </div>
-                     
-                     <div class="control-group">
-                     	<div class="controls">
-                     		<button type="submit" class="btn">Restore</button>
-                     	</div>
-                     </div>
-                </form>
+                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Please check your email</h3>
 	        </div>
 	    </div>      
 </div> 	
