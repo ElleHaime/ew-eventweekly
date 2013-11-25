@@ -145,13 +145,15 @@
                         <div class="span7">
                             <div class="event-one clearfix">
                                 <div class="event-one-img">
-                                <a href="event/show/{{ event['id'] }}"  class="name-link">
-                                    {% if event['logo'] is defined %}
-                                        <img src="/upload/img/event/{{ event['logo'] }}">
-                                    {% else %}
-                                        <img src="{{ event['pic_square'] }}">
-                                    {% endif %}
-                                    </a>
+                                    <div class="img-box">
+                                        <a href="event/show/{{ event['id'] }}"  class="name-link">
+                                            {% if event['logo'] is defined %}
+                                                <img src="/upload/img/event/{{ event['logo'] }}">
+                                            {% else %}
+                                                <img src="{{ event['pic_square'] }}">
+                                            {% endif %}
+                                            </a>
+                                    </div>
                                     <div class="like-box clearfix">
                                         <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
                                         <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>

@@ -665,8 +665,11 @@ hr {
 
 }
 .name-link , .name-link:hover {
-    font-size: 22px;
+    font-size: 15px;
     color:#1A1A1A;
+}
+.event-one-text {
+    padding-bottom: 10px;
 }
 
 .location-event {
@@ -796,6 +799,7 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 
 .sidebar {
+
     padding-top:74px;
 }
 
@@ -803,7 +807,7 @@ input[type="color"]:focus, .uneditable-input:focus
     padding: 11px 60px 11px 11px;
     border: 0;
     border-radius: 5px 0 0 5px;
-    width: 68%;
+    width: 71.7%;
 }
 .sidebar .input-append .btn {
     min-height: 45px;
@@ -1008,7 +1012,7 @@ input[type="color"]:focus, .uneditable-input:focus
     color: #4D4D4D;
     font-size: 13px;
     word-break: break-all;
-    height: 12px;
+    height: 10px;
     overflow: hidden;
     padding: 12px 0px 12px 12px;
 }
@@ -1634,9 +1638,6 @@ button.close {
     padding-bottom: 4px;
 }
 
-.event-one-text  .date-list {
-    margin: 6px 0;
-}
 .event-one-text p a {
     color:#0088C4;
 }
@@ -1665,9 +1666,11 @@ button.close {
 }
 
 .events-list {
-    padding: 8px 0;
+    padding: 18px 0 0 0 ;
     margin-bottom: 10px;
-
+}
+.events-list:hover {
+    background: #fff5ee;
 }
 .rating-icon {
     background: url(../img/demo/btn-m.png) no-repeat;
@@ -1678,6 +1681,7 @@ button.close {
     padding-right: 4px;
     vertical-align: middle;
 }
+
 
 
 .event-list-btn .map-place {
@@ -1733,7 +1737,7 @@ button.close {
     cursor: pointer;
     display: inline-block;
     float: right;
-
+    padding: 4px;
 }
 .like-box  span:first-child {
     float: left;
@@ -2205,4 +2209,12 @@ ul.days-events  {
     margin-left: -5px;
     border-width: 0 5px 5px;
     border-bottom-color: #29ABE2;
+}
+
+
+
+.img-box {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #cccccc;
 }
