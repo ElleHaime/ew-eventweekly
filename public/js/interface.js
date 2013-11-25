@@ -134,7 +134,7 @@ $( document ).ready(function() {
             url = 'http://'+url;
         var link =  '<div><a target="_blank" href="'+url+'">'+url+'</a>'+
             '<a href="#" class="icon-remove-sign"></a></div>';
-        $('#events-sites').append(link);
+        $('#event-sites').append(link);
     });
 
     $("#event-categories").on("click",".icon-remove-sign", function(){
