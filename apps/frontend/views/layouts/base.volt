@@ -14,11 +14,11 @@
     <meta property="og:title" content="EventWeekly"/>
     {% endif %}
 
-    {{ stylesheet_link('css/bootstrap.min.css') }}
-    {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
-    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('css/style.css') }}
-    {{ stylesheet_link('css/jake.css') }}
+    {{ stylesheet_link('/css/bootstrap.min.css') }}
+    {{ stylesheet_link('/css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
+    {{ stylesheet_link('/css/style.css') }}
+    {{ stylesheet_link('/css/jake.css') }}
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -34,22 +34,22 @@
     <script type="text/javascript"
             src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js"></script>
 
-    {{ javascript_include('js/project/vendors/underscore.js') }}
+    {{ javascript_include('/js/project/vendors/underscore.js') }}
 
-    {{ javascript_include('js/project/vendors/jquery.cookie.js') }}
+    {{ javascript_include('/js/project/vendors/jquery.cookie.js') }}
 
-    {{ javascript_include('js/bootstrap.min.js') }}
-    {{ javascript_include('js/bootstrap-datetimepicker.min.js') }}
+    {{ javascript_include('/js/bootstrap.min.js') }}
+    {{ javascript_include('/js/bootstrap-datetimepicker.min.js') }}
 
-    {{ javascript_include('js/main.js') }}
-    {{ javascript_include('js/project/map/gmap.js') }}
-    {{ javascript_include('js/project/map/gmap_events.js') }}
+    {{ javascript_include('/js/main.js') }}
+    {{ javascript_include('/js/project/map/gmap.js') }}
+    {{ javascript_include('/js/project/map/gmap_events.js') }}
 
-    {{ javascript_include('js/interface.js') }}
-    {{ javascript_include('js/fb.js') }}
+    {{ javascript_include('/js/interface.js') }}
+    {{ javascript_include('/js/fb.js') }}
 
-    {{ javascript_include('js/addressAutocomplete.js') }}
-    {{ javascript_include('js/top_panel.js') }}
+    {{ javascript_include('/js/addressAutocomplete.js') }}
+    {{ javascript_include('/js/top_panel.js') }}
 
     <script type="text/javascript">
         $(document).ready(function () {

@@ -8,7 +8,7 @@
             <div class="span4 user-block">
                 <span  class="line"></span>
 
-                {% if member.name is defined %}
+                {% if member.id is defined %}
                 <div class="user-box">
                     <a id="user-down-caret">{{ image('img/demo/user.jpg') }}
                         <span>{{ member.name }}</span><i class="caret"></i>
