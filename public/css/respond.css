@@ -228,6 +228,9 @@
     {
         height: 42px;
     }
+    .event-list-btn {
+        padding-left: 20px;
+    }
 }
 
 

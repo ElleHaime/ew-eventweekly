@@ -652,11 +652,17 @@ hr {
     border:1px solid #ccc;
 }
 
-.list-event-text  a , .list-event-text_more a {
+.list-event-text   a , .list-event-text_more a {
     color:#1A1A1A;
+    font-size: 14px;
+    text-decoration: underline;
+}
+.list-event-text  > a , .list-event-text_more > a
+{
+    line-height: 26px;
     font-size: 22px;
     padding-bottom: 10px;
-    line-height: 26px;
+
 }
 .name-link , .name-link:hover {
     font-size: 22px;
@@ -991,8 +997,20 @@ input[type="color"]:focus, .uneditable-input:focus
 .place-address {
     background: #E6E6E6;
     position: relative;
-    padding:12px 70px 12px 20px;
+    padding:0px 70px 0px 0px;
     border-radius: 5px;
+    height: 42px;
+    max-width: 100px;
+    min-width: 100px;
+    margin-bottom: 10px;
+}
+.place-address p {
+    color: #4D4D4D;
+    font-size: 13px;
+    word-break: break-all;
+    height: 12px;
+    overflow: hidden;
+    padding: 12px 0px 12px 12px;
 }
 .place-address .btn {
     padding: 10px 20px;
@@ -1609,9 +1627,7 @@ button.close {
     margin: 0 30px 10px 0;
     position: relative;
 }
-.event-one-img a img {
-    border:1px solid #ccc
-}
+
 .event-one-text p {
     color:#4D4D4D;
     font-size: 13px;
@@ -1640,6 +1656,8 @@ button.close {
     position: relative;
     margin-bottom: 10px;
     height: 28px;
+    width: 90px;
+    text-align: center;
 }
 
 .rating-active {
@@ -1952,6 +1970,7 @@ body {
     clear: both;
     position: relative;
     padding-top: 10px;
+    display: none;
 }
 .blue-color{
     background: #1B1464;
@@ -2081,4 +2100,109 @@ ul.days-events  {
     margin-top: 20px;
     z-index: 11;
     position: relative;
+}
+
+
+
+.opennedBlock .header-box {
+    display: block;
+}
+
+.img-box {
+    width: 160px;
+    height: 160px;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    margin: 0 auto;
+    display: block;
+    position: relative;
+}
+
+.img-box img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+
+
+
+/*---*/
+.tooltip {
+    position: absolute;
+    z-index: 1030;
+    display: block;
+    visibility: visible;
+    font-size: 11px;
+    line-height: 1.4;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.tooltip.in {
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.tooltip.top {
+    margin-top: -3px;
+    padding: 5px 0;
+}
+.tooltip.right {
+    margin-left: 3px;
+    padding: 0 5px;
+}
+.tooltip.bottom {
+    margin-top: 3px;
+    padding: 5px 0;
+}
+.tooltip.left {
+    margin-left: -3px;
+    padding: 0 5px;
+}
+.tooltip-inner {
+    max-width: 200px;
+    padding: 8px;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    background-color: #29ABE2;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+.tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+.tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px 5px 0;
+    border-top-color: #29ABE2;
+}
+.tooltip.right .tooltip-arrow {
+    top: 50%;
+    left: 0;
+    margin-top: -5px;
+    border-width: 5px 5px 5px 0;
+    border-right-color: #29ABE2;
+}
+.tooltip.left .tooltip-arrow {
+    top: 50%;
+    right: 0;
+    margin-top: -5px;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #29ABE2;
+}
+.tooltip.bottom .tooltip-arrow {
+    top: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 0 5px 5px;
+    border-bottom-color: #29ABE2;
 }
