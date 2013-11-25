@@ -96,7 +96,7 @@ class Extractor
 
   public function getEventsSimpleByLocation($accessToken, $loc)
   {
-    $limit  = 200;
+    $limit  = 50;
     $offset = 1.8;
     $lat = $loc -> latitude;
     $long = $loc -> longitude;
@@ -105,7 +105,7 @@ class Extractor
     $lngmo = str_replace('.',',', $long-$offset);
     $latpo = str_replace('.',',', $lat+$offset);
     $latmo = str_replace('.',',', $lat-$offset);
-
+    
     $fql = array(
       'my_id'=>
       'SELECT uid
@@ -132,8 +132,8 @@ class Extractor
             AND venue.longitude <\''.$lngpo.'\'  AND venue.longitude >\''.$lngmo.'\' AND venue.latitude <\''.$latpo.'\' AND venue.latitude > \''.$latmo.'\''.
             ' LIMIT '.$limit
     );
-
-    $data = $this->getFQL($fql,$accessToken);
+    
+    $data = $this -> getFQL($fql, $accessToken);
 
     if ($data['STATUS']==FALSE)
     {
