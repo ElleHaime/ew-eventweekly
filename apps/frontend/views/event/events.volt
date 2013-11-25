@@ -183,8 +183,8 @@
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
 
-                                    <div class=" place-address">
-                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location'] }}">{{ event['location']|truncate(20) }}</p>
+                                    <div class="place-address">
+                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|escape }}">{{ event['location']|truncate(20) }}</p>
                                         <button class="btn btn-primary">
                                             <i class="icon-map-marker"></i>
                                         </button>

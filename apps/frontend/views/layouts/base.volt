@@ -144,6 +144,8 @@
     $('.btn-row-down').click(function () {
         $('#back-to-top').slideToggle('slow');
     });
+
+    $('.tooltip-text').tooltip();
 </script>
 
 <script>
