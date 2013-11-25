@@ -52,7 +52,10 @@
                      	<div class="controls">
                      		<button type="submit" class="btn">Log in</button>
                      	</div>
+						<div class="controls"><a href="restore">asdasdadads? bububu</a></div>
+                     	</div>
                      </div>
+                    
                 </form>
 	        </div>
 	    </div>      
