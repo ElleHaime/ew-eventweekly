@@ -5,6 +5,7 @@ namespace Frontend\Controllers;
 use Frontend\Form\SignupForm,
 	Frontend\Form\LoginForm,
 	Frontend\Form\RestoreForm,
+	Frontend\Form\ResetForm,
 	Frontend\Models\Member,
 	Frontend\Models\MemberNetwork,
 	Core\Auth,
@@ -118,7 +119,7 @@ class AuthController extends \Core\Controller
 		    $this -> session -> set('user_token', $access_token);
 		    $this -> session -> set('role', Acl::ROLE_MEMBER);
 
-            $this->afterLogin();
+            $this -> afterLogin();
 
 		    $res['status'] = 'OK';
 		    $res['message'] = $access_token;
@@ -147,6 +148,7 @@ class AuthController extends \Core\Controller
 		    }
 
 			$member -> assign(array(
+					'pass' => md5(rand(0, 500) . '+' . microtime()),
 					'email' => $userData['email'],
 					'role' => Acl::ROLE_MEMBER,
 					'location_id' => $memberLocation -> id,
@@ -189,16 +191,74 @@ class AuthController extends \Core\Controller
     	$form = new RestoreForm();
 
     	if ($this -> request -> isPost()) {
+    		$email = $this -> request -> getPost('email', 'string');
+    		
     		if ($form -> isValid($this -> request -> getPost())) {
+    			$member = Member::findFirst(array('email = ?0',
+    											  'bind' => (array)$email));
+    			if (!$member) {
+    				$this -> flash -> error('Use with such email doesn\'t exists');
+    				$this -> view -> form = $form;
+    				return false;
+    			}
+    			$resetUri =  md5(rand(0, 500) . '+' . $member -> id . '+' . microtime());
+				$this -> session -> set('reset_uri', $resetUri);
+				$this -> session -> set('reset_member', $member);
+				$resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri; 
+				
+				$template = "Here is your link for new password \n
+" . $resetLink. "\nDon't lose it again";
+				$subject = 'Reset password';
+				$to = $email;
+
+				if (mail($to, $subject, $template)) {
+					$this -> view -> pick('auth/reseted'); 
+				} 
     		}
     	}
+    	
     	$this -> view -> form = $form;
     }
 
     
     /**
+     * @Route("/reset/{hash}", methods={"GET"})
+     * @Acl(roles={'guest', 'member'});
+     */    
+    public function resetAction($hash = false)
+    {
+		if ($hash) {
+			if ($hash == $this -> session -> get('reset_uri')) {
+				$form = new ResetForm();
+
+				if ($this -> request -> isPost()) {
+					$password = $this -> request -> getPost('password', 'string');
+	        
+					if ($form -> isValid($this -> request -> getPost())) {
+						if ($this -> session -> has('reset_member')) {
+							$member = $this -> session -> get('reset_member');
+							$member -> assign(array(
+								'pass' => $this -> security -> hash($this -> request -> getPost('password'))
+							));
+							if ($member -> save()) {
+								$this -> session -> remove('reset_uri');
+								$this -> session -> remove('reset_member');
+			
+								$this -> response -> redirect('login');
+							}
+						}
+					}
+				}
+				
+				$this -> view -> form = $form;				
+			}
+		}
+	}
+    
+    
+    /**
      * @Route("/logout", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});     
+	 * @Acl(roles={'guest','member'});     
      */
     public function logoutAction()
     {
