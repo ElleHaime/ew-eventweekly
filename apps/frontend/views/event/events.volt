@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name'] }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -42,7 +42,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}
                                     </div>
-                                    <p>{{ event['anon']}}</p>
+                                    <p>{{ event['anon']|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>
@@ -161,7 +161,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name'] }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -172,7 +172,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}#}
                                     </div>
-                                    <p>{{ event['anon']}}</p>
+                                    <p>{{ event['anon']|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>

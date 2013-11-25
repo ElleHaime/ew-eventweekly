@@ -39,6 +39,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initMail($di);
 		$this -> _initSession($di);
 		$this -> _initModels($di);
+        $this->initCoreTag($di);
 	}
 
 	protected function _initView($di)
@@ -164,6 +165,14 @@ abstract class Bootstrap implements ModuleDefinitionInterface
                 }
 
                 return $res;
+            });
+    }
+
+    public function initCoreTag($di)
+    {
+        $config = $this->_config;
+        $di->set('tag', function() use ($config) {
+                return new \Core\CoreTag($config);
             });
     }
 
