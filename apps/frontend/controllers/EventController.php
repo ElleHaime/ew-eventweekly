@@ -29,8 +29,8 @@ class EventController extends \Core\Controllers\CrudController
 
 	/**
 	 * @Route("/eventmap", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat}/{lan}", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat}/{lan}/{city}", methods={"GET", "POST"})*
+	 * @Route("/eventmap/{lat:[0-9\.]+}/{lng:[0-9\.]+}", methods={"GET", "POST"})
+	 * @Route("/eventmap/{lat:[0-9\.]+}/{lng:[0-9\.]+}/{city:[a-zA-Z ]+}", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 	 	 
 	 */
 	public function eventmapAction($lat = null, $lng = null, $city = null)
@@ -94,6 +94,7 @@ class EventController extends \Core\Controllers\CrudController
 
 			// user registered via facebook and has facebook account
 			$events = $eventModel -> grabEventsByFbToken($this -> session -> get('user_token'), $this -> session -> get('location'));
+
 			if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE)) {
 				echo $events['MESSAGE'];
 				die;
@@ -193,7 +194,7 @@ class EventController extends \Core\Controllers\CrudController
 				$event['answer'] = (int)$eventMember -> member_status;
 			} 
 		}
-//_U::dump($event);		 
+
 		$this -> view -> setVar('logo', $event['logo']);
 		$this -> view -> setVar('event', $event);
 	}
@@ -254,9 +255,6 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function editAction()
 	{
-
-
-
 		parent::editAction();
 	}
 

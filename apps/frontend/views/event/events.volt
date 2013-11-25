@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -42,7 +42,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}
                                     </div>
-                                    <p>{{ event['anon']|truncate(350) }}</p>
+                                    <p>{{ event['anon']|striptags|escape|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
                                     <div class=" place-address">
-                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location'] }}">{{ event['location'] }}</p>
+                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|striptags|escape }}">{{ event['location'] }}|striptags|escape</p>
                                         <button class="btn btn-primary">
                                             <i class="icon-map-marker"></i>
                                         </button>
@@ -161,7 +161,7 @@
                                 </div>
                                 <div class="event-one-text">
                                     {#{{ link_to ('event/show/' ~ event['id'], event['name']) }}#}
-                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|truncate(160) }}</a>
+                                    <a href="event/show/{{ event['id'] }}"  class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
                                     <div class="date-list">
                                         <i class="icon-time"></i>
                                         {% if event['start_time'] is defined %}
@@ -172,7 +172,7 @@
                                             <span class="date-time">{{ event['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
                                         {% endif %}#}
                                     </div>
-                                    <p>{{ event['anon']|truncate(350) }}</p>
+                                    <p>{{ event['anon']|striptags|escape|truncate(350) }}</p>
                                     {#<p>web-site: <a href="#"> http://www.dpdp.com</a></p>#}
                                 </div>
                             </div>
@@ -184,7 +184,7 @@
                                     <span class="small-text">show on map</span>
 
                                     <div class="place-address">
-                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|escape }}">{{ event['location']|truncate(20) }}</p>
+                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|striptags|escape }}">{{ event['location']|striptags|escape|truncate(20) }}</p>
                                         <button class="btn btn-primary">
                                             <i class="icon-map-marker"></i>
                                         </button>

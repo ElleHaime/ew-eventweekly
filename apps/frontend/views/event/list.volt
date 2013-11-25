@@ -12,7 +12,7 @@
 					<div class="list-event-img">
 						<a href="#">
 							{% if event.fb_uid != '' %}
-								{{ image('/upload/img/event/' ~ event.logo ) }}
+								{{ image('upload/img/event/' ~ event.logo ) }}
 							{% endif %}
 						</a>
 					</div>
