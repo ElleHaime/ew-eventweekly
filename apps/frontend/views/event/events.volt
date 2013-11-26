@@ -17,7 +17,7 @@
                                      <div class="img-box">
                                           <a href="#">
                                            {% if event['logo'] is defined %}
-                                              <img src="{{ event['logo'] }}">
+                                              <img src="/upload/img/event/{{ event['logo'] }}">
 
                                             {% else %}
                                                 <img src="{{ event['pic_square'] }}">
@@ -53,7 +53,7 @@
                                 <div class="map-place">
                                     <span class="small-text">show on map</span>
                                     <div class=" place-address">
-                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|striptags|escape }}">{{ event['location'] }}|striptags|escape</p>
+                                        <p class="tooltip-text" rel="tooltip" title="{{ event['location']|striptags|escape }}">{{ event['location']|striptags|escape }}</p>
                                         <button class="btn btn-primary">
                                             <i class="icon-map-marker"></i>
                                         </button>
@@ -65,7 +65,7 @@
                                     <span class="rating-icon"></span>
                                     <span class="rating-text">34</span>
                                 </div>
-                                <button class="btn btn-more">More</button>
+                                <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }}';">More</button>
                             </div>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                                 <span class="rating-icon"></span>
                                 <span class="rating-text">34</span>
                             </div>
-                            <button class="btn btn-more">
+                            <button class="btn btn-more" onclick="javascript: window.location.href = 'event/show/{{ event['id'] }}';">
                                 More
                             </button>
                         </div>
