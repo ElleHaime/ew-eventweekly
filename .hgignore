@@ -3,8 +3,5 @@ config/config.php
 .idea
 public/.htaccess
 public/upload
-<<<<<<< local
 ^var/compiled/(?!empty$)
 ^\.project
-.idea
-.hgignore
