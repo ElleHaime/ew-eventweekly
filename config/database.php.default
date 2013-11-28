@@ -1,0 +1,10 @@
+<?php 
+
+$cfg_database = array(
+    'adapter' => 'Mysql',
+    'host' => 'localhost',
+    'username' => 'username',
+    'password' => 'password',
+    'dbname' => 'database_name',
+    'charset' =>'utf8'
+);
