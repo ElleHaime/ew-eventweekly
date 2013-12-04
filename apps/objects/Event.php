@@ -5,7 +5,7 @@ namespace Objects;
 use Core\Model,
 	Core\Utils as _U;
 
-class Event extends Model
+class   Event extends Model
 {
 	public $id;
 	public $fb_uid;
@@ -32,6 +32,7 @@ class Event extends Model
 		$this -> hasOne('id', '\Objects\Location', 'location_id', array('alias' => 'location'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
 	}
 	
 	public function beforeValidationOnCreate()

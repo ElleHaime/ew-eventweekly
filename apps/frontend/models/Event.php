@@ -2,6 +2,7 @@
 
 namespace Frontend\Models;
 
+use Categoryzator\Categoryzator;
 use Objects\Event as EventObject,
 	Core\Utils as _U,
 	Thirdparty\Facebook\Extractor,
@@ -9,7 +10,9 @@ use Objects\Event as EventObject,
 	Frontend\Models\Venue,	
 	Frontend\Models\MemberNetwork,
 	Objects\EventImage,
-	Objects\EventMember;
+	Objects\EventMember,
+    Objects\Category,
+    Objects\EventCategory;
 
 class Event extends EventObject
 {
@@ -37,6 +40,7 @@ class Event extends EventObject
 
 	public function grabEventsByEwId($eventId)
 	{
+        $this -> hasManyToMany('id', '\Objects\EventCategory', 'event_id', 'category_id', '\Objects\Category', 'id',  array('alias' => 'event_category'));
 		$eventObj = self::findFirst(array('id = ' . $eventId));
 
 		return $eventObj;
@@ -226,9 +230,32 @@ class Event extends EventObject
 								$result['address'] = $venuesScope[$ev['venue']['id']]['address'];	
 								$result['location_id'] = $venuesScope[$ev['venue']['id']]['location_id'];	
 							}
-						} 
-						
-						$eventObj = new self; 
+						}
+
+                        $categoryzator = new Categoryzator($result['name']);
+                        $titleText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
+
+                        $categoryzator2 = new Categoryzator($result['description']);
+                        $descriptionText = $categoryzator2->analiz(Categoryzator::MULTI_CATEGORY);
+
+                        $titleCategory = $titleText->category;
+
+                        $descriptionCategory = $descriptionText->category;
+
+                        if (!empty($titleCategory) || !empty($descriptionCategory)) {
+                            $categories = array_unique(array_merge($titleCategory, $descriptionCategory));
+
+                            $cats = array();
+                            foreach ($categories as $key => $c) {
+                                $cat = Category::findFirst("key = '".$c."'");
+                                $cats[$key] = new EventCategory();
+                                $cats[$key]->category_id = $cat->id;
+                            }
+
+                            $result['event_category'] = $cats;
+                        }
+
+                        $eventObj = new self;
 						$eventObj -> assign($result);
 						if ($eventObj -> save()) {
 							$images = new EventImage();
