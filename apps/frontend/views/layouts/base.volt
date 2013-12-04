@@ -51,8 +51,11 @@
     {{ javascript_include('/js/addressAutocomplete.js') }}
     {{ javascript_include('/js/top_panel.js') }}
 
+    {{ javascript_include('/js/project/singles/suggestCategory.js') }}
+
     <script type="text/javascript">
         $(document).ready(function () {
+            app.SuggestCategory.init();
             topPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });

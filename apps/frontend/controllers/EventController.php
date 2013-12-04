@@ -7,6 +7,8 @@ use Core\Utils as _U,
 	Frontend\Models\Location,
 	Frontend\Models\Venue as Venue,	
 	Frontend\Models\MemberNetwork,
+	Frontend\Models\Category,
+	Frontend\Models\EventCategory,
 	Frontend\Models\Event as Event,
 	Objects\EventImage,
 	Objects\EventMember;
@@ -171,7 +173,8 @@ class EventController extends \Core\Controllers\CrudController
 			'description' => $eventObj -> description,
 			'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
 			'end_time' => date('F, l d, H:i', strtotime($eventObj -> end_date)),
-			'logo' => $eventObj -> logo
+			'logo' => $eventObj -> logo,
+            'categories' => $eventObj->event_category->toArray()
 		);
 		
 		if ($event['eid'] != '' && $eventObj -> is_description_full != 1) { 
@@ -197,7 +200,35 @@ class EventController extends \Core\Controllers\CrudController
 
 		$this -> view -> setVar('logo', $event['logo']);
 		$this -> view -> setVar('event', $event);
+        $categories = Category::find();
+        $this->view->setVar('categories', $categories->toArray());
 	}
+
+    /**
+     * @Route("/suggest-event-category/{eventId:[0-9]+}/{categoryId:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function setEventCategoryAction($eventId, $categoryId)
+    {
+        $status = false;
+
+        if ($this->session->has('member')) {
+            $CategoryEvent = new EventCategory();
+
+            if ($CategoryEvent->save(array(
+                    'event_id' => $eventId,
+                    'category_id' => $categoryId
+                ))) {
+                $status = true;
+            }
+        }
+
+        if ($this->request->isAjax()) {
+            exit(json_encode(array('status' => $status)));
+        }
+
+        return $status;
+    }
 
 
 	/**
