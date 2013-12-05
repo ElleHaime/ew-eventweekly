@@ -39,8 +39,8 @@ var topPanel = {
             var list = addressAutoComplete('topSearchCity');
 
             app.__GoogleApi.maps.event.addListener(list, 'place_changed', function() {
-                var lat = list.getPlace().geometry.location.ob;
-                var lng = list.getPlace().geometry.location.pb;
+                var lat = list.getPlace().geometry.location.lat();
+                var lng = list.getPlace().geometry.location.lng();
 
                 $this.__city = list.getPlace().vicinity;
 
