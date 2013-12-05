@@ -31,7 +31,7 @@
 	    </div>
         <div class="row-fluid agreement-box">
              <div class="span6 offset2">
-                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Log in</h3>
+                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Log in &nbsp;&nbsp;- or -&nbsp;&nbsp; <a href="/signup">Register</a></h4>
                  <form class="form-horizontal" method="post">
                      <div class="control-group">
                          <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
@@ -52,7 +52,7 @@
                      	<div class="controls">
                      		<button type="submit" class="btn">Log in</button>
                      	</div>
-						<div class="controls"><a href="restore">asdasdadads? bububu</a></div>
+						<div class="controls"><a href="restore">Forgot password?</a></div>
                      	</div>
                      </div>
                     
