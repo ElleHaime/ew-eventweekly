@@ -11,7 +11,7 @@ use Objects\Event as EventObject,
 	Frontend\Models\MemberNetwork,
 	Objects\EventImage,
 	Objects\EventMember,
-    Objects\Category,
+    Frontend\Models\Category,
     Objects\EventCategory;
 
 class Event extends EventObject
