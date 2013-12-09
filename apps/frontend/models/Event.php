@@ -12,6 +12,7 @@ use Objects\Event as EventObject,
 	Objects\EventImage,
 	Objects\EventMember,
     Frontend\Models\Category,
+    Frontend\Models\MemberFilter,
     Objects\EventCategory;
 
 class Event extends EventObject
@@ -66,16 +67,23 @@ class Event extends EventObject
 	
 
 
-	public function grabEventsByCoordinatesScale($scale)
+	public function grabEventsByCoordinatesScale($scale, $uId)
 	{
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($uId);
+
         $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
 					from \Frontend\Models\Event as event
 					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
 					left join \Frontend\Models\Location as location on event.location_id = location.id
-					where
-						venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
-					and
-						venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
+                    LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
+					where venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
+					and venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+
+        if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
+            $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
+        }
 
 		$eventsList = $this -> modelsManager -> executeQuery($query);
 
