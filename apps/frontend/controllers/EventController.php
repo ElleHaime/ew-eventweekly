@@ -122,7 +122,7 @@ class EventController extends \Core\Controllers\CrudController
 			// user registered via email
 			$events = array();
 			$scale = $this -> geo -> buildCoordinateScale($loc -> latitude , $loc -> longitude);
-			$eventsList = $eventModel -> grabEventsByCoordinatesScale($scale);
+			$eventsList = $eventModel -> grabEventsByCoordinatesScale($scale, $this->session->get('memberId'));
 
 			if ($eventsList -> count() > 0) {
 				$events[0] = array();

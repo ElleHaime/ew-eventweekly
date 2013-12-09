@@ -2,7 +2,9 @@
 
 namespace Frontend\Controllers;
 
-use Core\Utils as _U;
+use Core\Utils as _U,
+    Frontend\Models\Category,
+    Frontend\Models\MemberFilter;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -23,7 +25,14 @@ class MemberController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
 
-		$this -> view -> setVar('member', $list);
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($list->id);
+
+		$this->view->setVars(array(
+                'member', $list,
+                'categories' => Category::find()->toArray(),
+                'member_categories' => $member_categories
+            ));
 	}
 
 
@@ -100,4 +109,47 @@ class MemberController extends \Core\Controllers\CrudController
 			echo json_encode($res);
 		}	
 	}
+
+    /**
+     * @Route("/member/save-filters", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function saveFiltersAction()
+    {
+        $Member = $this->session->get('member');
+        if (!$Member) {
+            return;
+        }
+
+        $postData = $this->request->getPost();
+
+        $elemExists = function($elem) use (&$postData) {
+            if (!is_array($postData[$elem])) {
+                $postData[$elem] = trim(strip_tags($postData[$elem]));
+            }
+            return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
+        };
+
+        $MemberFilter = new MemberFilter();
+
+        if ($elemExists('category')) {
+
+            $toSave = array(
+                'member_id' => $Member->id,
+                'key' => 'category',
+                'value' => $postData['category']
+            );
+
+            if ($elemExists('member_filter_category_id')) {
+                $toSave['id'] = $postData['member_filter_category_id'];
+            }
+
+            $MemberFilter->save($toSave);
+        }else {
+            $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
+            $filters->delete();
+        }
+
+        $this->response->redirect('profile');
+    }
 }
