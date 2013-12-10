@@ -22,7 +22,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	public function __construct()
 	{  
-		$this -> _di = DI::getDefault(); 
+		$this -> _di = DI::getDefault();
 		$this -> _config = $this -> _di -> getConfig();
 	}
 		
@@ -39,7 +39,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initMail($di);
 		$this -> _initSession($di);
 		$this -> _initModels($di);
-        $this->initCoreTag($di);
+        $this -> initCoreTag($di);
 	}
 
 	protected function _initView($di)
@@ -96,14 +96,14 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	
 	protected function _initModels($di)
 	{
-		$di -> setShared('modelsManager', function() {
+		$di -> set('modelsManager', function() {
 			return new \Phalcon\Mvc\Model\Manager();
 		});
 	}
 	
 	protected function _initAuth($di)
 	{
-		$di -> setShared('auth', function() use ($di) {
+		$di -> set('auth', function() use ($di) {
 			return new Auth($di);
 		});
 	}
@@ -120,16 +120,18 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	protected function _initMail($di)
 	{
-		$di -> setShared('mail', function() {
+		$di -> set('mail', function() {
 			return new Mail();
 		});
 	}
 
 	protected function _initGeoApi($di)
 	{
-		$di -> setShared('geo', function() use ($di) {
-			return new Geo($di);
-		});
+		if (!$di -> has('geo')) {
+			$di -> set('geo', function() use ($di) {
+				return new Geo($di);
+			});
+		}
 	}
 	
 	public function getModule()

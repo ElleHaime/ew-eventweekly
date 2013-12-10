@@ -735,7 +735,7 @@ input[type="color"]:focus, .uneditable-input:focus
     position: relative;
 }
 .arrow_box {
-    background:#F2DEDE;
+    background:#DCC67B;
     border-radius: 4px;
     padding: 5px 15px;
     min-width: 80px;
@@ -745,7 +745,12 @@ input[type="color"]:focus, .uneditable-input:focus
     display: inline-block;
     margin-left: 20px;
     margin-top: 10px;
-
+    right: -118px;
+    text-align: center;
+    top: -4px;
+}
+.input-div {
+    position: relative;
 }
 .arrow_box:after, .arrow_box:before {
     border: medium solid rgba(0, 0, 0, 0);
@@ -757,7 +762,7 @@ input[type="color"]:focus, .uneditable-input:focus
     width: 0;
 }
 .arrow_box:after {
-    border-color: rgba(136, 183, 213, 0) #F2DEDE rgba(136, 183, 213, 0) rgba(136, 183, 213, 0);
+    border-color: rgba(136, 183, 213, 0) #DCC67B rgba(136, 183, 213, 0) rgba(136, 183, 213, 0);
     border-width: 7px;
     margin-top: -7px;
     top: 50%;
@@ -771,7 +776,6 @@ input[type="color"]:focus, .uneditable-input:focus
     color:#B94A48;
 }
 
-
 .map-box {
     background: url(../img/demo/bg-body.jpg) repeat;
     height: 100%;
@@ -780,8 +784,6 @@ input[type="color"]:focus, .uneditable-input:focus
     left:0;
     top:0;
 }
-
-
 
 .content_noBorder {
     border: 0;

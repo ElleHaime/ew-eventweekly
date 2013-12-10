@@ -16,10 +16,10 @@ class Event extends EventObject
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 
-	public static $eventRecurring = array('0' => 'one time',
-										  '1' => 'every day',
-										  '7' => 'every week');
-	protected $locator = false; 
+	public static $eventRecurring = array('0' => 'Once',
+										  '1' => 'Daily',
+										  '7' => 'Weekly');
+	protected $locator = false;
 
 
 	public function grabEventsByFbId($token, $eventId)
@@ -85,8 +85,9 @@ class Event extends EventObject
 		$eventsList = self::find();
 		$locationsList = Location::find();
 		$venuesList = Venue::find();
-		$cfg = $this -> di -> get('config');
-		$locator = new Location(); 
+		$locator = new Location();
+		$cfg = $this -> getConfig();		
+		$geo = $this -> getGeo();
 
 		if ($membersList) {
 			$membersScope = array();
@@ -177,7 +178,7 @@ class Event extends EventObject
 
 								// check location by venue coordinates
 								if ($eventLocation == '') {
-									$scale = $this -> geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
+									$scale = $geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
 									foreach ($locationsScope as $loc_id => $coords) {
 										if ($scale['latMin'] <= $coords['lat'] && $coords['lat'] <= $scale['latMax'] &&
 											$scale['lonMin'] <= $coords['lon'] && $coords['lon'] <= $scale['lonMax'])
@@ -190,7 +191,7 @@ class Event extends EventObject
 
 								// create new location from coordinates
 								if ($eventLocation == '') {
-									$locationArgs = $this -> geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
+									$locationArgs = $geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
 																			 		  'longitude' => $ev['venue']['longitude']));
 									$loc = $locator -> createOnChange($locationArgs);
 									$eventLocation = $loc -> id;

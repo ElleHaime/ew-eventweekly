@@ -249,7 +249,7 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 	/**
-	 * @Route("/event/add", methods={"GET", "POST"})
+	 * @Route("/event/edit", methods={"GET", "POST"})
 	 * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});   	 
 	 */
@@ -267,4 +267,122 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		parent::deleteAction();
 	}
+	
+	
+	public function processForm($form) 
+	{
+		_U::dump($form -> getFormValues(), true);
+		_U::dump($this -> request -> getUploadedFiles(), true);
+		
+		$event = $form -> getFormValues();
+		$loc = new Location();
+		$venue = new Venue();
+		$coords = array();
+		$locationId = false;
+		$venueId = false;
+		$newEvent = array();
+
+		// process name and descirption
+		$newEvent['name'] = $event['name'];
+		$newEvent['description'] = $event['description'];
+		$newEvent['member_id'] = $this -> session -> get('memberId');
+		$newEvent['is_description_full'] = 1;
+		$newEvent['event_status'] = 1;
+		$newEvent['recurring'] = $event['recurring'];
+		if (isset($this -> session -> get('member') -> network)) {
+			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
+		}
+		
+		// process location
+		if (!empty($event['location-coords'])) {
+			// check location by coordinates
+			$coords = explode(';', $event['location-coords']);
+			
+			$location = $loc -> createOnChange(array('latitude' => $coords[0], 'longitude' => $coords[1]), array('latitude', 'longitude'));
+			$newEvent['location_id'] = $location -> id;
+		} 
+		// location coordinates wasn't set. Try to get location from venue or address coordinates 
+		if (!isset($newEvent['location_id'])) {
+			if (!empty($event['venue-coords'])) {
+				$coords = explode(';', $event['venue-coords']); 
+			} elseif(!empty($event['address-coords'])) {
+				$coords = explode(';', $event['address-coords']);
+			} 
+			
+			if (!empty($coords)) {
+				$scale = $geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);
+				$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
+									and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+				$location =  $loc::findFirst($query);
+				$newEvent['location_id'] = $location -> id;
+			}
+		}
+		// venue/address coordinates wasn't set or location wasn't found
+		if (!isset($newEvent['location_id'])) {
+			if (!empty($event['location-input'])) {
+				$location = $loc -> createOnChange(array('city' => $event['location-input']), array('city'));
+				$newEvent['location_id'] = $location -> id; 
+			}
+		}
+
+		// process venue
+		if (!empty($event['venue-coords'])) {
+			$coords = explode(';', $event['venue-coords']);
+			$venueInfo = array('latitude' => $coords[0],
+						       'longitude' => $coords[1]);
+		}
+		if ($newEvent['location_id']) {
+			$venueInfo['location_id'] = $newEvent['location_id'];
+		}
+		$venueInfo['name'] = $event['venue-input'];
+		$venueInfo['address'] = $event['address-input'];
+
+		$vn = $venue -> createOnChange($venueInfo);
+		$newEvent['venue_id'] = $vn -> id;
+
+		// process address
+		$newEvent['address'] = $event['address-input'];
+
+		// process date and time
+		if (!empty($event['start_date'])) {
+			$newEvent['start_date'] = implode('-', array_reverse(explode('/', $event['start_date'])));  
+			if (!empty($event['start_time'])) {
+				$newEvent['start_date'] = $newEvent['start_date'] . ' ' . $event['start_time'];  
+			} 
+		}
+		
+		if (!empty($event['end_date'])) {
+			$newEvent['end_date'] = implode('-', array_reverse(explode('/', $event['end_date'])));
+			if (!empty($event['end_time'])) {
+				$newEvent['end_date'] = $newEvent['end_date'] . ' ' . $event['end_time'];
+			}
+		}
+
+		//process image
+		foreach ($this -> request -> getUploadedFiles() as $file) {
+			$newEvent['logo'] = $file -> getName();
+			$logo = $file;
+		}
+		
+_U::dump($newEvent);		
+			
+		if ($newEvent -> save()) {
+			// save image
+			$logo -> moveTo($this -> config -> application -> uploadDir . 'event/' . $logo -> getName());
+
+			// process site
+			if (!empty($event['event_site'])) 
+			{
+
+			}
+
+			// process categories
+			if (!empty($event['event_category_real'])) {
+
+			}
+
+			
+		}
+	}
+
 }		

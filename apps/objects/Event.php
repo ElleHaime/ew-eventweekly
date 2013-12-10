@@ -16,7 +16,6 @@ class Event extends Model
 	public $venue_id;
 	public $name;
 	public $description;
-	public $tickets_url;
 	public $start_date;
 	public $end_date;
 	public $recurring;
@@ -24,7 +23,7 @@ class Event extends Model
 	public $coordinates;
 	public $address;
 	public $logo;
-	public $is_description_full = 0; 
+	public $is_description_full = 0;
 
 
 	public function initialize()
@@ -32,6 +31,7 @@ class Event extends Model
 		$this -> hasOne('id', '\Objects\Location', 'location_id', array('alias' => 'location'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
 	}
 	
 	public function beforeValidationOnCreate()

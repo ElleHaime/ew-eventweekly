@@ -17,6 +17,7 @@ class Application extends BaseApplication
 	protected $_annotations		= null;
 	public static $defModule	= 'frontend';
 	public static $defNamespace	= '';
+	public static $defBaseUri	= '/';
 	
 	
 	public function __construct()
@@ -60,30 +61,32 @@ class Application extends BaseApplication
 	}
 
 	protected function _initLoader(\Phalcon\DI $di) {
-		$this -> _loader = new Loader();
-
-		$namespaces = array();
-
-		$appNamespaces = $this -> _config -> application -> namespaces;
-		if ($appNamespaces) {
-			foreach ($appNamespaces as $ns => $npath) {
-				$namespaces[$ns] = $npath;
-			}
-		}
-
-		$modules = $di -> get('modules');
-		foreach($modules as $module) {
-			if ($module -> namespaces) {
-				foreach ($module -> namespaces as $ns => $npath) {
+		if (!$di -> has('loader')) {
+			$this -> _loader = new Loader();
+	
+			$namespaces = array();
+	
+			$appNamespaces = $this -> _config -> application -> namespaces;
+			if ($appNamespaces) {
+				foreach ($appNamespaces as $ns => $npath) {
 					$namespaces[$ns] = $npath;
 				}
-			} 			
+			}
+	
+			$modules = $di -> get('modules');
+			
+			foreach($modules as $module) {
+				if ($module -> namespaces) {
+					foreach ($module -> namespaces as $ns => $npath) {
+						$namespaces[$ns] = $npath;
+					}
+				} 			
+			}
+			$this -> _initNamespaces($namespaces);
+	
+			$this -> _loader -> register();
+			$di -> set('loader', $this -> _loader);
 		}
-		$this -> _initNamespaces($namespaces);
-
-		$this -> _loader -> register();
-		$di -> set('loader', $this -> _loader);
-
 	}
 
 	
@@ -146,7 +149,11 @@ class Application extends BaseApplication
 	
 	protected function _initUrl(\Phalcon\DI $di)
 	{
-		$bu = $this -> _config -> application -> baseUri ? $this -> _config -> application -> baseUri : '/';
+		if ($this -> _config -> application -> baseUri !== false) {
+			$bu = $this -> _config -> application -> baseUri;
+		} else {
+			$bu = self::$defBaseUri;
+		}
 		
 		$di -> set('url', 
 			function() use ($bu) {
@@ -161,22 +168,24 @@ class Application extends BaseApplication
 	
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
-		$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _config -> database -> adapter;
-		$config = $this -> _config;
-		
-		$di -> set('db',
-			function () use ($config, $adapter) {
-				$connection = new $adapter(
-					array('host' => $config -> database -> host,
-						  'username' => $config -> database -> username,
-						  'password' => $config -> database -> password, 
-						  'dbname' => $config -> database -> dbname
-					)
-				);
-
-				return $connection;
-			} 
-		);
+		if (!$di -> has('db')) {
+			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _config -> database -> adapter;
+			$config = $this -> _config;
+			
+			$di -> set('db',
+				function () use ($config, $adapter) {
+					$connection = new $adapter(
+						array('host' => $config -> database -> host,
+							  'username' => $config -> database -> username,
+							  'password' => $config -> database -> password, 
+							  'dbname' => $config -> database -> dbname
+						)
+					);
+	
+					return $connection;
+				} 
+			);
+		}
 	}
 
 	protected function _initCache(\Phalcon\DI $di)

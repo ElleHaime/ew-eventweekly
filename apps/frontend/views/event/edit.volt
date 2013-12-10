@@ -3,7 +3,8 @@
 {% block content %}
     <div class="padd_70"></div>
     <div class="container content_noBorder">
-
+    
+	<form method="post" enctype="multipart/form-data">
         <div class="row-fluid ">
             <div class="span12">
                 <div class="row-fluid ">
@@ -14,58 +15,60 @@
                             <div class="row-fluid">
                                 <div class="span3">
                                     <div class="add-img">
-                                        <a  href=""><img src="img/demo/q1.jpg" alt=""></a>
-                                        <button class="btn" type="button">add image</button>
+                                        <a href=""><img  id='img-box'src="/img/demo/q1.jpg" alt=""></a>
+                                        <button class="btn" id ="add-img-btn" type="button">{{ form.label('logo')}}</button>
+                                        <input id="add-img-upload" type="file" value="upload" style="display:none;">
                                     </div>
                                 </div>
+                                {{ form.render('logo')}}
+
                                 <div class="span9">
+                                
                                     <div class="input-div clearfix">
-                                        <input  type="text" value=""  placeholder="main title">
-                                        {#<span>description / example</span>#}
+                                        {{ form.render('name')}}
                                     </div>
+                                    
                                     <div class="input-div_date clearfix">
-                                        <div id="date-picker" class="input-div_small">
-                                            <input id="date-input" data-format="dd/MM/yyyy" type="text">
-                                                <span class="add-on">
-                                                    <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                                </span>
+                                    
+                                        <div id="date-picker-start" class="input-div_small">
+                                            {{ form.render('start_date')}}
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                            </span>
                                         </div>
-                                        <div id="time-picker" class="input-div_small">
-                                            <input data-format="hh:mm:ss" type="text" value="00:00:00"/>
-                                                <span class="add-on">
-                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                                </span>
+                                        <div id="time-picker-start" class="input-div_small">
+                                            {{ form.render('start_time') }}
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
                                         </div>
-                                        {#
-                                        <div class="input-div_small">
-                                            <input type="text" placeholder=""><i class="icon-calendar"></i>
+                                        
+                                        <div id="date-picker-end" class="input-div_small">
+                                            {{ form.render('end_date')}}
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                            </span>
                                         </div>
-                                        <div class="input-div_small">
-                                            <input type="text" placeholder=""><i class="icon-time"></i>
+                                        <div id="time-picker-end" class="input-div_small">
+                                            {{ form.render('end_time') }}
+                                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
                                         </div>
-                                        #}
-                                        <div class="date-box" id="time-string">
-                                            <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start" class="date-time">00:00:00</span>
-                                            <span id="days-count" class="day-title">Event happens - today</span>
+									                                        
+                                        
+                                        <div class="date-box" id="time-string" style="display:none;">
+                                            <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start" class="date-time">00:00:00</span><br>
+                                            <span id="days-count" class="day-title">Event happens today</span>
                                         </div>
                                     </div>
-                                    {#
-                                    <select>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                        <option>only for my Facebook friends</option>
-                                    </select>
-                                    #}
+                                    
                                     <div class="clear"></div>
-                                    <textarea class="field-big"  placeholder="add description"> </textarea>
+                                    {{ form.render('description') }}
                                     <div class="btn-add_group clearfix">
-                                        <button class="btn btn-cancel">Cancel</button>
-                                        <button class="btn" type="button">Preview</button>
-                                        <button class="btn" type="button">Save and publish</button>
+                                        <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
+                                        <button class="btn" type="button" id="btn-preview">Preview</button>
+                                        <button class="btn" type="submit" id="btn-submit">Save and publish</button>
                                     </div>
 
                                 </div>
@@ -76,63 +79,33 @@
                     <div class="span3">
                         <div class="sidebar">
                             <div class="input-append">
-                                <input type="text" placeholder="Choose location" id="location-input" value="{{ location.city }}, {{ location.country }}">
-                                {#<button class="btn btn-primary" type="button">Ok</button>#}
+                                {{ form.render('location-input')}}
+                                {{ form.render('location-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="locations-list">
-                                        <li>Text1</li>
-                                        <li>Text2</li>
-                                        <li>Text3</li>
-                                        <li>Text4</li>
-                                        <li>Text5</li>
                                     </ul>
                                 </div>
                                 {#<i class="icon-map-marker"></i></button>#}
                             </div>
                             <div class="input-append">
-                                <input type="text" placeholder="Choose address" id="address-input">
-                                {#
-                                <button class="btn btn-primary" type="button">
-                                <button class="btn btn-primary" type="button">Ok</button>
-                                #}
+                                {{ form.render('address-input')}}
+                                {{ form.render('address-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="addresses-list">
-                                        <li>Text1</li>
-                                        <li>Text2</li>
-                                        <li>Text3</li>
-                                        <li>Text4</li>
-                                        <li>Text5</li>
                                     </ul>
                                 </div>
                                 {#<i class="icon-map-marker"></i></button>#}
                             </div>
 
                             <div class="input-append">
-                                <input type="text" placeholder="Choose venue" id="venue-input">
-                                {#
-                                <button class="btn btn-primary" type="button">
-                                <button class="btn btn-primary" type="button">Ok</button>
-                                #}
+                                  {{ form.render('venue-input')}}
+								  {{ form.render('venue-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="venues-list">
-                                        <li>Text1</li>
-                                        <li>Text2</li>
-                                        <li>Text3</li>
-                                        <li>Text4</li>
-                                        <li>Text5</li>
                                     </ul>
                                 </div>
                                 {#<i class="icon-map-marker"></i></button>#}
                             </div>
-
-                            {#
-                            <div class=" place-address">
-                                Smock Alley Theatre
-                                <button class="btn btn-primary">
-                                    <i class="icon-map-marker"></i>
-                                </button>
-                            </div>
-                            #}
 
                             <div class="input-append change-input">
                                 {#
@@ -143,28 +116,24 @@
                             </div>
 
                             <div class="input-append">
-                                <input  type="text" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
+                                <input type="text" id="sites" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
+                                {{ form.render('event_site') }}
                             </div>
-                            <div id="event-sites" class="event-site clearfix">
+                            <div id="event-site-selected" class="event-site clearfix" style="display:none;">
                                 <p>Event web-sites :</p>
                             </div>
 
-                            <select id="categories">
-                                <option>Suggest category</option>
-                                <option>Music</option>
-                                <option>Sport</option>
-                                <option>Outdoors</option>
-                                <option>Arts</option>
-                                <option>Business</option>
-                                <option>Shopping</option>
-                                <option>Night life</option>
-                                <option>Other</option>
-                                {#<option>Custom</option>#}
-                            </select>
-                            <div id="event-categories" class="event-site clearfix">
-                                <p>Event categories :</p>
-                            </div>
 
+
+							<div class="event-site">
+								<p> {{ form.label('event_category') }}</p>
+									{{ form.render('event_category') }}
+	                            <div id="event-category-selected" class="event-site clearfix" style="display:none;">
+	                            	{{ form.render('event_category_real') }}
+	                                <p>Event categories :</p>
+	                            </div>
+							</div>
+							
                             <div class="type-box">
                                 <div class="event-site">
                                     <p>Type:</p>
@@ -203,15 +172,8 @@
                             </div>
 
                             <div class="radio-box">
-                                <p>Reacuring event</p>
-                                <label class="radio">
-                                    <input type="radio" name="reacuring"  value="1" checked="checked">Once</label>
-                                <label class="radio">
-                                    <input type="radio" name="reacuring"  value="2">Daily</label>
-                                <label class="radio">
-                                    <input type="radio" name="reacuring" value="3">Weekly</label>
-                                <label class="radio">
-                                    <input type="radio" name="reacuring" value="4">Monthly</label>
+                                <p> {{ form.label('recurring') }}</p>
+                                	{{ form.render('recurring') }}
                                 <hr>
                                 <div class="checkbox-block">
                                     <label class="checkbox">
@@ -220,12 +182,7 @@
                                     </label>
 
                                     <p> Choose from existing</p>
-                                    <select  disabled="disabled" >
-                                        <option>Select existing</option>
-                                        <option>Select existing</option>
-                                        <option>Select existing</option>
-                                        <option>Select existing</option>
-                                    </select>
+                                    {{ form.render('campaign_id') }}
                                 </div>
                             </div>
                         </div>
@@ -233,6 +190,8 @@
                 </div>
             </div>
         </div>
+        
+    </form>
     </div>
 
 {% endblock %}

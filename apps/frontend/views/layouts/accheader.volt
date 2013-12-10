@@ -9,8 +9,8 @@
                 <span  class="line"></span>
 
                 {% if member.id is defined %}
-                <div class="user-box">
-                    <a id="user-down-caret">{{ image('img/demo/user.jpg') }}
+                <div class="user-box" id="user-box">
+                    <a id="user-down-caret">{{ image('/img/demo/user.jpg') }}
                         <span>{{ member.name }}</span><i class="caret"></i>
                     </a>
 
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-add" onclick="location.href='/event/add'"> <span class="icon-plus-sign"></span><span class="text-btn">Add Event</span></button>
+                <button class="btn btn-add" onclick="location.href='/event/edit'"> <span class="icon-plus-sign"></span><span class="text-btn">Add Event</span></button>
                 {% else %}
                 <div class="user-box">
                     <a href="/signup" style=" margin-top:2px;"><span>Sign Up</span></a>
