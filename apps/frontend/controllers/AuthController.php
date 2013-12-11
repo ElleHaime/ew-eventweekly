@@ -3,15 +3,15 @@
 namespace Frontend\Controllers;
 
 use Frontend\Form\SignupForm,
-	Frontend\Form\LoginForm,
-	Frontend\Form\RestoreForm,
-	Frontend\Form\ResetForm,
-	Frontend\Models\Member,
-	Frontend\Models\MemberNetwork,
+    Frontend\Form\LoginForm,
+    Frontend\Form\RestoreForm,
+    Frontend\Form\ResetForm,
+    Frontend\Models\Member,
+    Frontend\Models\MemberNetwork,
     Frontend\Events\MemberListener,
-	Core\Auth,
-	Core\Acl,
-	Core\Utils as _U;
+    Core\Auth,
+    Core\Acl,
+    Core\Utils as _U;
 
 /**
  * @RouteRule(useCrud = false)
@@ -24,129 +24,129 @@ class AuthController extends \Core\Controller
         $this->eventsManager->attach('App.Auth.Member', new MemberListener());
     }
 
-	/**
-	 * @Route("/login", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   
-	 */
- 	public function loginAction()
+    /**
+     * @Route("/login", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function loginAction()
     {
-    	$form = new LoginForm();
+        $form = new LoginForm();
 
-		if ($this -> request -> isPost()) {
-			$email = $this -> request -> getPost('email', 'string');
-			$pass = $this -> request -> getPost('password', 'string');
-					
-			if ($form -> isValid($this -> request -> getPost())) {
-				$member = Member::findFirst(array('email = ?0',
-												   'bind' => (array)$email));
-				
-				if (!$member) {
-					$this -> flash -> error('No such member');
-					$this -> view -> form = $form;
-					return false;
-				}
-				if (!$this -> security -> checkHash($pass, $member -> pass)) { 
-					$this -> flash -> error('Incorrect password');
-					return false;
-				}
+        if ($this -> request -> isPost()) {
+            $email = $this -> request -> getPost('email', 'string');
+            $pass = $this -> request -> getPost('password', 'string');
+
+            if ($form -> isValid($this -> request -> getPost())) {
+                $member = Member::findFirst(array('email = ?0',
+                        'bind' => (array)$email));
+
+                if (!$member) {
+                    $this -> flash -> error('No such member');
+                    $this -> view -> form = $form;
+                    return false;
+                }
+                if (!$this -> security -> checkHash($pass, $member -> pass)) {
+                    $this -> flash -> error('Incorrect password');
+                    return false;
+                }
 
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
 
                 $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
-				$this -> response -> redirect('map');
-				
-			} else {
-				$this -> response -> setStatusCode(401, 'Unauthorized')
-								  -> setContent('Not authorized')
-								  -> send();
-			}
-		}
-   		$this -> view -> form = $form;
-    }
-	
+                $this -> response -> redirect('map');
 
-	
-	/**
-	 * @Route("/signup", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   
-	 */
+            } else {
+                $this -> response -> setStatusCode(401, 'Unauthorized')
+                    -> setContent('Not authorized')
+                    -> send();
+            }
+        }
+        $this -> view -> form = $form;
+    }
+
+
+
+    /**
+     * @Route("/signup", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
     public function signupAction()
     {
-		$form = new SignupForm();
+        $form = new SignupForm();
 
-		if ($this -> request -> isPost()) {
-			if ($form -> isValid($this -> request -> getPost())) {
-				$member = new Member();
-				if (!$member -> validation()) {
-					$this -> flash -> error("Email already exists");
-					$this -> view -> form = $form;
-					return;
-				}
+        if ($this -> request -> isPost()) {
+            if ($form -> isValid($this -> request -> getPost())) {
+                $member = new Member();
+                if (!$member -> validation()) {
+                    $this -> flash -> error("Email already exists");
+                    $this -> view -> form = $form;
+                    return;
+                }
 
-				$email = $this -> request -> getPost('email');
-				$password = $this -> request -> getPost('password');
-				$location = $this -> session -> get('location');
-				$member -> assign(array(
-					'email' => $email,
-					'pass' => $this -> security -> hash($password),
-					'role' => Acl::ROLE_MEMBER,
-					'location_id' => $location -> id 
-				));
-	
-				if ($member -> save()) {
+                $email = $this -> request -> getPost('email');
+                $password = $this -> request -> getPost('password');
+                $location = $this -> session -> get('location');
+                $member -> assign(array(
+                        'email' => $email,
+                        'pass' => $this -> security -> hash($password),
+                        'role' => Acl::ROLE_MEMBER,
+                        'location_id' => $location -> id
+                    ));
+
+                if ($member -> save()) {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-					$this -> response -> redirect('map');
-				} else {
-					echo 'Sad =/'; die();
-				}
-				$this -> flash -> error($member -> getMessages());
-			} 
-		} 
-		$this -> view -> form = $form;
+                    $this -> response -> redirect('map');
+                } else {
+                    echo 'Sad =/'; die();
+                }
+                $this -> flash -> error($member -> getMessages());
+            }
+        }
+        $this -> view -> form = $form;
     }
 
 
 
     /**
      * @Route("/fblogin", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});     
+     * @Acl(roles={'guest', 'member'});
      */
     public function fbloginAction()
     {
-		$access_token = $this -> request -> getPost('access_token', 'string');
-		$uid = $this -> request -> getPost('uid', 'string');
+        $access_token = $this -> request -> getPost('access_token', 'string');
+        $uid = $this -> request -> getPost('uid', 'string');
 
-	    if (!empty($access_token)) {
-	    	$memberNetwork = MemberNetwork::findFirst(array('account_uid = "' . $uid . '"'));
+        if (!empty($access_token)) {
+            $memberNetwork = MemberNetwork::findFirst(array('account_uid = "' . $uid . '"'));
 
-	    	if ($memberNetwork) {
+            if ($memberNetwork) {
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-	    	}
-		    $this -> session -> set('user_token', $access_token);
-		    $this -> session -> set('role', Acl::ROLE_MEMBER);
+            }
+            $this -> session -> set('user_token', $access_token);
+            $this -> session -> set('role', Acl::ROLE_MEMBER);
 
             $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
-		    $res['status'] = 'OK';
-		    $res['message'] = $access_token;
-		    echo json_encode($res);
-	    } else {
-		    $res['status'] = 'ERROR';
-		    $res['message'] = 'Token is empty';
-		    echo json_encode($res);
-	    }
+            $res['status'] = 'OK';
+            $res['message'] = $access_token;
+            echo json_encode($res);
+        } else {
+            $res['status'] = 'ERROR';
+            $res['message'] = 'Token is empty';
+            echo json_encode($res);
+        }
     }
 
     /**
      * @Route("/fbregister", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   
+     * @Acl(roles={'guest', 'member'});
      */
     public function fbregisterAction()
     {
-    	if (!$this -> session -> has('member')) {
-	    	$userData =  $this -> request -> getPost();
-	    	$member = new Member();
+        $userData =  $this -> request -> getPost();
+        if (!$this -> session -> has('member')) {
+            $member = new Member();
 
             $locationByIp = $this->session->get('location');
 
@@ -161,121 +161,129 @@ class AuthController extends \Core\Controller
 
             $memberLocation = $locationByIp;
 
-			$member -> assign(array(
-					'pass' => md5(rand(0, 500) . '+' . microtime()),
-					'email' => $userData['email'],
-					'role' => Acl::ROLE_MEMBER,
-					'location_id' => $memberLocation -> id,
-					'name' => $userData['first_name'] . ' ' . $userData['last_name'],
-					'auth_type' => 'facebook',
-					'address' => $userData['address'],
-					'logo' => $userData['logo']
-			));
+            $member -> assign(array(
+                    'pass' => md5(rand(0, 500) . '+' . microtime()),
+                    'email' => $userData['email'],
+                    'role' => Acl::ROLE_MEMBER,
+                    'location_id' => $memberLocation -> id,
+                    'name' => $userData['first_name'] . ' ' . $userData['last_name'],
+                    'auth_type' => 'facebook',
+                    'address' => $userData['address'],
+                    'logo' => $userData['logo']
+                ));
 
-			if ($member -> save()) {
-				$memberNetwork = new MemberNetwork();
-			
-				$memberNetwork -> assign(array(
-					'member_id' => $member -> id,
-					'network_id' => 1,
-					'account_uid' => $userData['uid'],
-					'account_id' => $userData['username']
-				));
+            if ($member -> save()) {
+                $memberNetwork = new MemberNetwork();
 
-				if ($memberNetwork -> save()) {
+                $memberNetwork -> assign(array(
+                        'member_id' => $member -> id,
+                        'network_id' => 1,
+                        'account_uid' => $userData['uid'],
+                        'account_id' => $userData['username']
+                    ));
+
+                if ($memberNetwork -> save()) {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-				} else {
-					echo 'Sad =/'; die();
-				}
-			}
+                } else {
+                    echo 'Sad =/'; die();
+                }
+            }
 
-		}
-		
-		$res['status'] = 'OK';
-		echo json_encode($res);
+        }else {
+            $member = Member::findFirst('id = '. $this->session->get('memberId'));
+
+            $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                    'member' => $member,
+                    'uid' => $userData['uid'],
+                    'token' => $userData['token']
+                ));
+        }
+
+        $res['status'] = 'OK';
+        echo json_encode($res);
     }
 
-    
+
     /**
      * @Route("/restore", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});     
+     * @Acl(roles={'guest', 'member'});
      */
     public function restoreAction()
     {
-    	$form = new RestoreForm();
+        $form = new RestoreForm();
 
-    	if ($this -> request -> isPost()) {
-    		$email = $this -> request -> getPost('email', 'string');
-    		
-    		if ($form -> isValid($this -> request -> getPost())) {
-    			$member = Member::findFirst(array('email = ?0',
-    											  'bind' => (array)$email));
-    			if (!$member) {
-    				$this -> flash -> error('Use with such email doesn\'t exists');
-    				$this -> view -> form = $form;
-    				return false;
-    			}
-    			$resetUri =  md5(rand(0, 500) . '+' . $member -> id . '+' . microtime());
-				$this -> session -> set('reset_uri', $resetUri);
-				$this -> session -> set('reset_member', $member);
-				$resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri; 
-				
-				$template = "Here is your link for new password: http://" . $resetLink. "\n\nDon't lose it again";
-				$subject = 'Reset password';
-				$to = $email;
+        if ($this -> request -> isPost()) {
+            $email = $this -> request -> getPost('email', 'string');
 
-				if (mail($to, $subject, $template)) {
-					$this -> view -> pick('auth/reseted'); 
-				} 
-    		}
-    	}
-    	
-    	$this -> view -> form = $form;
+            if ($form -> isValid($this -> request -> getPost())) {
+                $member = Member::findFirst(array('email = ?0',
+                        'bind' => (array)$email));
+                if (!$member) {
+                    $this -> flash -> error('Use with such email doesn\'t exists');
+                    $this -> view -> form = $form;
+                    return false;
+                }
+                $resetUri =  md5(rand(0, 500) . '+' . $member -> id . '+' . microtime());
+                $this -> session -> set('reset_uri', $resetUri);
+                $this -> session -> set('reset_member', $member);
+                $resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri;
+
+                $template = "Here is your link for new password: http://" . $resetLink. "\n\nDon't lose it again";
+                $subject = 'Reset password';
+                $to = $email;
+
+                if (mail($to, $subject, $template)) {
+                    $this -> view -> pick('auth/reseted');
+                }
+            }
+        }
+
+        $this -> view -> form = $form;
     }
 
-    
+
     /**
      * @Route("/reset/{hash}", methods={"GET"})
      * @Acl(roles={'guest', 'member'});
-     */    
+     */
     public function resetAction($hash = false)
     {
-		if ($hash) {
-			if ($hash == $this -> session -> get('reset_uri')) {
-				$form = new ResetForm();
+        if ($hash) {
+            if ($hash == $this -> session -> get('reset_uri')) {
+                $form = new ResetForm();
 
-				if ($this -> request -> isPost()) {
-					$password = $this -> request -> getPost('password', 'string');
-	        
-					if ($form -> isValid($this -> request -> getPost())) {
-						if ($this -> session -> has('reset_member')) {
-							$member = $this -> session -> get('reset_member');
-							$member -> assign(array(
-								'pass' => $this -> security -> hash($this -> request -> getPost('password'))
-							));
-							if ($member -> save()) {
-								$this -> session -> remove('reset_uri');
-								$this -> session -> remove('reset_member');
-			
-								$this -> response -> redirect('login');
-							}
-						}
-					}
-				}
-				
-				$this -> view -> form = $form;				
-			}
-		}
-	}
-    
-    
+                if ($this -> request -> isPost()) {
+                    $password = $this -> request -> getPost('password', 'string');
+
+                    if ($form -> isValid($this -> request -> getPost())) {
+                        if ($this -> session -> has('reset_member')) {
+                            $member = $this -> session -> get('reset_member');
+                            $member -> assign(array(
+                                    'pass' => $this -> security -> hash($this -> request -> getPost('password'))
+                                ));
+                            if ($member -> save()) {
+                                $this -> session -> remove('reset_uri');
+                                $this -> session -> remove('reset_member');
+
+                                $this -> response -> redirect('login');
+                            }
+                        }
+                    }
+                }
+
+                $this -> view -> form = $form;
+            }
+        }
+    }
+
+
     /**
      * @Route("/logout", methods={"GET", "POST"})
-	 * @Acl(roles={'guest','member'});     
+     * @Acl(roles={'guest','member'});
      */
     public function logoutAction()
     {
-		$this -> session -> destroy();
-		return $this -> response -> redirect();
+        $this -> session -> destroy();
+        return $this -> response -> redirect();
     }
 }
