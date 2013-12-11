@@ -3,6 +3,7 @@
         <div class="row">
             <div class="span2">
                 <span class="line"></span>
+                <span class="notiBtn" style="color: #ffffff">Test</span>
                 <a href="/" class="logo"></a>
             </div>
             <div class="span4 user-block">
@@ -177,6 +178,17 @@
                 <span class="line"></span>
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="notiBlock">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <span id="notiText">qwe</span>
+                <span class="notiBtnArea"></span>
+                <a href="#" class="notiHide">&times;</a>
+            </div>
         </div>
     </div>
 </div>
