@@ -72,7 +72,7 @@ class AuthController extends \Core\Controller
 	 * @Acl(roles={'guest', 'member'});   
 	 */
     public function signupAction()
-    { 
+    {
 		$form = new SignupForm();
 
 		if ($this -> request -> isPost()) {
@@ -147,12 +147,19 @@ class AuthController extends \Core\Controller
     	if (!$this -> session -> has('member')) {
 	    	$userData =  $this -> request -> getPost();
 	    	$member = new Member();
-	    	
-	    	if (!isset($userData['location']) || empty($userData['location'])) {
-	    		$memberLocation = $this -> session -> get('location');
-		    } else {
-			    $memberLocation = $this -> locator -> createOnChange($userData['location']);
-		    }
+
+            $locationByIp = $this->session->get('location');
+
+            if (isset($userData['location']) || !empty($userData['location'])) {
+                $locationByFb = $userData['location'];
+
+                if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) || (strtolower($locationByFb['city']) != strtolower($locationByIp->city))) {
+                    $this->session->set('location_conflict', true);
+                    $this->session->set('location_conflict_profile_flag', true);
+                }
+            }
+
+            $memberLocation = $locationByIp;
 
 			$member -> assign(array(
 					'pass' => md5(rand(0, 500) . '+' . microtime()),

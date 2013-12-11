@@ -4,7 +4,8 @@ namespace Core;
 
 use Phalcon\Filter,
 	Core\Acl,
-	Core\Utils as _U;
+	Core\Utils as _U,
+    Frontend\Models\Location;
 
 class Controller extends \Phalcon\Mvc\Controller
 {
@@ -32,13 +33,25 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this -> plugLocator();
 		}
 
-		if (!$this -> session -> has('location')) {
-			$location = $this -> locator -> createOnChange();
+        $member = $this -> session -> get('member');
+        $loc = $this -> session -> get('location');
+
+		if (!$loc || !is_object($member) || ($loc->id != $member->location_id)) {
+            if ($member) {
+                $location = Location::findFirst('id = '.$member->location_id);
+            }else {
+                $location = $this -> locator -> createOnChange();
+            }
 			$this -> session -> set('location', $location);
 		}
 
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+		}
+
+        if ($this->session->has('location_conflict')) {
+			$this->view->setVar('location_conflict', $this->session->get('location_conflict'));
+            $this->session->remove('location_conflict');
 		}
 
 		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {

@@ -44,8 +44,11 @@
     {{ javascript_include('/js/bootstrap-datetimepicker.min.js') }}
 
     {{ javascript_include('/js/main.js') }}
-    {{ javascript_include('/js/project/map/gmap.js') }}
-    {{ javascript_include('/js/project/map/gmap_events.js') }}
+
+    {% if router.getRewriteUri()  == '/map' or router.getRewriteUri()  == '/list' %}
+        {{ javascript_include('/js/project/map/gmap.js') }}
+        {{ javascript_include('/js/project/map/gmap_events.js') }}
+    {% endif %}
 
     {{ javascript_include('/js/interface.js') }}
     {{ javascript_include('/js/fb.js') }}
@@ -58,11 +61,18 @@
     {{ javascript_include('/js/project/notification/noti.js') }}
 
     <script type="text/javascript">
+        {% if location_conflict is defined %}
+        window.onload = function() {
+            var noti = new Noti();
+            noti.createNotification('Your location from Facebook does not match to location from IP. Please confirm your location in <a href="/profile">profile</a> settings.', 'warning');
+        };
+        {% endif %}
         $(document).ready(function () {
             app.SuggestCategory.init();
             topPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });
+            {% if router.getRewriteUri()  == '/map' or router.getRewriteUri()  == '/list' %}
             app.Gmap.init({
                 mapCenter: {
                     lat: '{{ location.latitude }}',
@@ -70,6 +80,7 @@
                 }
             });
             app.GmapEvents.init();
+            {% endif %}
         });
     </script>
 </head>

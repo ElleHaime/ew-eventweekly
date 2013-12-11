@@ -3,6 +3,7 @@
 {% block content %}
 
 	<div class="container content">
+        <div class="padd_70"></div>
 	    <div class="row-fluid top-about">
 	        <div class="span4">
 	           {{ image('img/demo/img1.jpg', 'alt': 'Guard') }}
