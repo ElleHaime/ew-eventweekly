@@ -13,22 +13,22 @@ require([
 	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=423750634398167'
 	], 
 	function($, frontTopPanel, fb, gmap, gmapEvents, utils) {
-		frontTopPanel.init({
-					searchCityBlock: '.searchCityBlock'	
-				});
-		fb.init({
-		            appId: '303226713112475', //'423750634398167',
-		            status: true
-		        }); 
-
 		var locationElem = $('#current_location');
 		gmap.init({
 	                mapCenter: {
 	                    lat: locationElem.attr('latitude'),
 	                    lng: locationElem.attr('longitude')
 	                }
-            	}); 
-
+	        	});  
+	
 		gmapEvents.init();
+
+		frontTopPanel.init({
+					searchCityBlock: '.searchCityBlock'
+				});
+		fb.init({
+		            appId: '303226713112475', //'423750634398167',
+		            status: true
+		        }); 
 	}
 );

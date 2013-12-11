@@ -12,7 +12,8 @@ use \Phalcon\Mvc\Url;
 class Application extends BaseApplication
 {
 	private $_config 			= null;
-	private $_router 			= null;	
+	private $_databaseConfig 	= null;
+	private $_router 			= null;
 	protected $_loader			= null;
 	protected $_annotations		= null;
 	public static $defModule	= 'frontend';
@@ -23,8 +24,11 @@ class Application extends BaseApplication
 	public function __construct()
 	{
 		include_once(CONFIG_SOURCE);
-		$this -> _config = new Config($cfg_settings); 
-		
+		include_once(DATABASE_CONFIG_SOURCE);
+
+		$this -> _config = new Config($cfg_settings);
+		$this -> _databaseConfig = new Config($cfg_database);
+
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
 		
@@ -169,16 +173,17 @@ class Application extends BaseApplication
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
 		if (!$di -> has('db')) {
-			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _config -> database -> adapter;
-			$config = $this -> _config;
+
+			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfig -> adapter;
+			$config = $this -> _databaseConfig;
 			
 			$di -> set('db',
 				function () use ($config, $adapter) {
 					$connection = new $adapter(
-						array('host' => $config -> database -> host,
-							  'username' => $config -> database -> username,
-							  'password' => $config -> database -> password, 
-							  'dbname' => $config -> database -> dbname
+						array('host' => $config -> host,
+							  'username' => $config -> username,
+							  'password' => $config -> password,
+							  'dbname' => $config -> dbname
 						)
 					);
 	

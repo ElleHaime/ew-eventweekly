@@ -30,7 +30,7 @@
 	    </div>
         <div class="row-fluid agreement-box">
              <div class="span6 offset2">
-             	<h4 style="color: white; padding-top: 10px; padding-left: 110px;">Registration</h3>
+             	<h4 style="color: white; padding-top: 10px; padding-left: 110px;">Registration</h4>
                  <form class="form-horizontal" method="post">
                      <div class="control-group">
                          <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
@@ -49,7 +49,7 @@
 
                     <div class="control-group">
                      	<div class="controls">
-                     		<button type="submit" class="btn">Sign in</button>
+                     		<button type="submit" class="btn">Sign Up</button>
                      	</div>
                      </div>
                 </form>

@@ -41,7 +41,8 @@
                 <button class="btn btn-add" onclick="location.href='/event/edit'"> <span class="icon-plus-sign"></span><span class="text-btn">Add Event</span></button>
                 {% else %}
                 <div class="user-box">
-                    <a href="/signup" style=" margin-top:2px;"><span>Sign Up</span></a>
+                    {#<a href="/signup" style=" margin-top:2px;"><span>Sign Up</span></a>#}
+                    <a href="/" style=" margin-top:2px;"><span>Sign In</span></a>
                 </div>
                 {% endif %}
 

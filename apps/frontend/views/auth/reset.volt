@@ -31,13 +31,21 @@
      </div>
         <div class="row-fluid agreement-box">
              <div class="span6 offset2">
-                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Reset your password</h3>
+                 <h4 style="color: white; padding-top: 10px; padding-left: 110px;">Reset your password</h4>
                  <form class="form-horizontal" method="post">
                      <div class="control-group">
                          <label class="control-label" for="inputEmail">{{ form.label('password') }}</label>
                          <div class="controls">
                              {{ form.render('password') }}
                              {{ form.messages('password') }}
+                         </div>
+                     </div>
+
+                     <div class="control-group">
+                         <label class="control-label" for="inputEmail">{{ form.label('conf_password') }}</label>
+                         <div class="controls">
+                             {{ form.render('conf_password') }}
+                             {{ form.messages('conf_password') }}
                          </div>
                      </div>
                      

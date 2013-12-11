@@ -11,11 +11,21 @@
                     <div class="span9">
 
                         <div class="add-event">
-                            <h3 class="title-page">Create event</h3>
+                            <h3 class="title-page">
+                            	{% if event.id %}
+                            		Edit event
+                            	{% else %}
+                            		Create event
+                            	{% endif %}
+                            </h3>
                             <div class="row-fluid">
                                 <div class="span3">
                                     <div class="add-img">
-                                        <a href=""><img  id='img-box'src="/img/demo/q1.jpg" alt=""></a>
+                                    	{% if event.logo %}
+                                        	<a href=""><img id='img-box' src="/upload/img/event/{{ event.logo }}" alt=""></a>
+                                        {% else %}
+											<a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
+                                        {% endif %}
                                         <button class="btn" id ="add-img-btn" type="button">{{ form.label('logo')}}</button>
                                         <input id="add-img-upload" type="file" value="upload" style="display:none;">
                                     </div>
@@ -79,7 +89,7 @@
                     <div class="span3">
                         <div class="sidebar">
                             <div class="input-append">
-                                {{ form.render('location-input')}}
+                                {{ form.render('location') }}
                                 {{ form.render('location-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="locations-list">
@@ -88,7 +98,7 @@
                                 {#<i class="icon-map-marker"></i></button>#}
                             </div>
                             <div class="input-append">
-                                {{ form.render('address-input')}}
+                                {{ form.render('address') }}
                                 {{ form.render('address-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="addresses-list">
@@ -98,7 +108,7 @@
                             </div>
 
                             <div class="input-append">
-                                  {{ form.render('venue-input')}}
+                                  {{ form.render('venue') }}
 								  {{ form.render('venue-coords')}}
                                 <div class="search-queries hidden">
                                     <ul id="venues-list">
@@ -119,8 +129,16 @@
                                 <input type="text" id="sites" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
                                 {{ form.render('event_site') }}
                             </div>
-                            <div id="event-site-selected" class="event-site clearfix" style="display:none;">
+                            <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
                                 <p>Event web-sites :</p>
+                                {% if event.site %}
+                                	{% for site in event.site %}
+                                		<div class = "esite_elem">
+                                			<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
+                                			<a href="#" class="icon-remove-sign"></a>
+                                		</div>
+                                	{% endfor %}
+                                {% endif %}
                             </div>
 
 
@@ -128,9 +146,19 @@
 							<div class="event-site">
 								<p> {{ form.label('event_category') }}</p>
 									{{ form.render('event_category') }}
-	                            <div id="event-category-selected" class="event-site clearfix" style="display:none;">
-	                            	{{ form.render('event_category_real') }}
+	                            <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
+	                            	<input type="hidden" id="event_category_real" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
 	                                <p>Event categories :</p>
+	                                {% if event.category %}
+	                                	{% for key, name in event.category %}
+	                                		<div class = "ecat_elem">
+	                                			<div>
+	                                				<label>{{ name }}</label>
+	                                				<a href="#" class="icon-remove-sign" catid="{{ key }}"></a>
+	                                			</div>
+	                                		</div>
+	                                	{% endfor %}
+	                                {% endif %}
 	                            </div>
 							</div>
 							

@@ -32,15 +32,15 @@ class EventForm extends Form
 		$this -> addElement('radio', 'recurring', 'Recurring', 
 								array('options' => \Frontend\Models\Event::$eventRecurring)); 
 		
-		$this -> addElement('text', 'location-input', 'Location',
+		$this -> addElement('text', 'location', 'Location',
 								array('placeholder' => 'Choose location'));
 		$this -> addElement('hidden', 'location-coords');
 		
-		$this -> addElement('text', 'address-input', 'Address', 
+		$this -> addElement('text', 'address', 'Address', 
 								array('placeholder' => 'Choose Address'));
 		$this -> addElement('hidden', 'address-coords');		
 
-		$this -> addElement('text', 'venue-input', 'Venue', 
+		$this -> addElement('text', 'venue', 'Venue',
 								array('placeholder' => 'Choose Venue'));
 		$this -> addElement('hidden', 'venue-coords');
 

@@ -1,9 +1,8 @@
 define('frontTopPanel',
-	['jquery', 'utils', 'domReady'],
-	function($, utils) {
+	['jquery', 'utils', 'gmapEvents', 'domReady'],
+	function($, utils, gmapEvents) {
 
-		function frontTopPanel($, utils) {
-
+		function frontTopPanel($, utils, gmapEvents) {
 			var self = this;
 
 			self.settings = {
@@ -36,7 +35,6 @@ define('frontTopPanel',
 
 		        // initialize clicks
 		        self.__bindClicks();
-
 		    }
 		    
 		    self.__bindClicks = function()
@@ -56,11 +54,10 @@ define('frontTopPanel',
 		            var list = utils.addressAutocomplete($(self.settings.searchCityInput)[0]);
 
 		            google.maps.event.addListener(list, 'place_changed', function() {
-		                var lat = list.getPlace().geometry.location.ob;
-		                var lng = list.getPlace().geometry.location.pb;
+		                var lat = list.getPlace().geometry.location.lat();
+		                var lng = list.getPlace().geometry.location.lng();
 
 		                self.__city = list.getPlace().vicinity;
-
 		                $(self.settings.searchCityBtn).find('span').text(self.__city);
 
 		                self.__sendCoords(lat, lng);
@@ -108,11 +105,8 @@ define('frontTopPanel',
 		    
 		    self.__sendCoords = function(lat, lng)
 		    {
-	    		$.cookie('lastLat', lat, {expires: 1, path: '/'});
-	        	$.cookie('lastLng', lng, {expires: 1, path: '/'});
-		        self.__changeVisibility('city');
-
-	        	window.location.href = '/map';
+		    	self.__changeVisibility('city');
+		    	gmapEvents.getEvents(lat, lng, self.__city);
 		    }
 
 		    self.__userControl = function()
@@ -129,6 +123,6 @@ define('frontTopPanel',
 		    }
 		}; 
 		
-		return new frontTopPanel($, utils); 
+		return new frontTopPanel($, utils, gmapEvents); 
 	}
 ); 

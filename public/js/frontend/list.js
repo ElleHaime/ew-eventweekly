@@ -15,11 +15,8 @@ require([
 					searchCityBlock: '.searchCityBlock'	
 				});
 		fb.init({
-		            appId: '303226713112475',
+		            appId: '303226713112475', //'423750634398167',
 		            status: true
 		        }); 
 	}
 );
-
-
-

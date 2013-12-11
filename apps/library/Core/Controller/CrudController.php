@@ -20,8 +20,8 @@ class CrudController extends \Core\Controller
 		$object = $this -> getObj();
 		$filters = $this -> getListFilters();
 		$list = $object::find((array)$filters);
-	
-		if (count($list) != 0) {
+		
+		if ($list -> count()) {
     		   $this -> view -> setVar('object', $list);
 		} 
 	}
@@ -34,11 +34,11 @@ class CrudController extends \Core\Controller
 		$this -> loadObject();
 		$this -> obj -> member_id = $this -> memberId;
 
-		if (isset($this -> queryGetVals[$model])) {
-			$this -> obj = $object::findFirstById((int)$this -> queryGetVals[$model]);
-			$this -> setDependencyProperty($this -> obj -> getDependency());			
+		$param = $this -> dispatcher -> getParam('id');
+		if ($param !== null) {
+			$this -> obj = $object::findFirstById((int)$param);
+			$this -> setDependencyProperty($this -> obj -> getDependency());
 		} 
-
 		$form = $this -> loadForm();
 
 		if ($this -> request -> isPost()) {

@@ -19,7 +19,7 @@ class Venue extends Model
 	public function initialize()
 	{
 		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
-		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'event'));
+		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
 	}
 	
 	public function createOnChange($argument = array())

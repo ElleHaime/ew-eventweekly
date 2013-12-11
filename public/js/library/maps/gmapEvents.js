@@ -210,6 +210,7 @@ define('gmapEvents',
 
 		        window.location.href = '/map';
 		    },
+		    
 
 		    self.__setCookies = function(lat, lng, path) {
 		        if (this.debug) {

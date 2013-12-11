@@ -2,6 +2,7 @@
 
 namespace Frontend\Models;
 
+use Categoryzator\Categoryzator;
 use Objects\Event as EventObject,
 	Core\Utils as _U,
 	Thirdparty\Facebook\Extractor,
@@ -9,7 +10,10 @@ use Objects\Event as EventObject,
 	Frontend\Models\Venue,	
 	Frontend\Models\MemberNetwork,
 	Objects\EventImage,
-	Objects\EventMember;
+	Objects\EventMember,
+    Frontend\Models\Category,
+    Frontend\Models\MemberFilter,
+    Objects\EventCategory;
 
 class Event extends EventObject
 {
@@ -20,6 +24,15 @@ class Event extends EventObject
 										  '1' => 'Daily',
 										  '7' => 'Weekly');
 	protected $locator = false;
+
+	
+	public function afterFetch()
+	{
+		$this -> start_time = date('H:i', strtotime($this -> start_date));
+		$this -> end_time = date('H:i', strtotime($this -> end_date));
+		$this -> start_date = date('d/m/Y', strtotime($this -> start_date));
+		$this -> end_date = date('d/m/Y', strtotime($this -> end_date));
+	}
 
 
 	public function grabEventsByFbId($token, $eventId)
@@ -37,6 +50,7 @@ class Event extends EventObject
 
 	public function grabEventsByEwId($eventId)
 	{
+        $this -> hasManyToMany('id', '\Objects\EventCategory', 'event_id', 'category_id', '\Objects\Category', 'id',  array('alias' => 'event_category'));
 		$eventObj = self::findFirst(array('id = ' . $eventId));
 
 		return $eventObj;
@@ -62,18 +76,25 @@ class Event extends EventObject
 	
 
 
-	public function grabEventsByCoordinatesScale($scale)
+	public function grabEventsByCoordinatesScale($scale, $uId)
 	{
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($uId);
+
         $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
 					from \Frontend\Models\Event as event
 					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
 					left join \Frontend\Models\Location as location on event.location_id = location.id
-					where
-						venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
-					and
-						venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
+                    LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
+					where venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
+					and venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
 
-		$eventsList = $this -> modelsManager -> executeQuery($query);
+        if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
+            $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
+        }
+
+		$eventsList = $this -> getModelsManager() -> executeQuery($query);
 
 		return $eventsList;
 	}
@@ -227,9 +248,32 @@ class Event extends EventObject
 								$result['address'] = $venuesScope[$ev['venue']['id']]['address'];	
 								$result['location_id'] = $venuesScope[$ev['venue']['id']]['location_id'];	
 							}
-						} 
-						
-						$eventObj = new self; 
+						}
+
+                        $categoryzator = new Categoryzator($result['name']);
+                        $titleText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
+
+                        $categoryzator2 = new Categoryzator($result['description']);
+                        $descriptionText = $categoryzator2->analiz(Categoryzator::MULTI_CATEGORY);
+
+                        $titleCategory = $titleText->category;
+
+                        $descriptionCategory = $descriptionText->category;
+
+                        if (!empty($titleCategory) || !empty($descriptionCategory)) {
+                            $categories = array_unique(array_merge($titleCategory, $descriptionCategory));
+
+                            $cats = array();
+                            foreach ($categories as $key => $c) {
+                                $cat = Category::findFirst("key = '".$c."'");
+                                $cats[$key] = new EventCategory();
+                                $cats[$key]->category_id = $cat->id;
+                            }
+
+                            $result['event_category'] = $cats;
+                        }
+
+                        $eventObj = new self;
 						$eventObj -> assign($result);
 						if ($eventObj -> save()) {
 							$images = new EventImage();

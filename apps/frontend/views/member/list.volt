@@ -43,7 +43,34 @@
                  / login through facebook</p>
             </div>
         </div>
-        
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>Filters:</h2>
+
+            <h4>Categories:</h4>
+            <form action="/member/save-filters" method="post">
+                {% if member_categories['category']['id'] is defined %}
+                    <input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>
+                {% endif %}
+                {% for index, node in categories %}
+                    <label for="cat{{ index }}">
+                        {% set checked = false %}
+                        {% if member_categories['category'] is defined %}
+                            {% for indx, id in member_categories['category']['value'] %}
+                                {% if id == node['id'] %}
+                                    {% set checked = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <input type="checkbox" name="category[]" id="cat{{ index }}" value="{{ node['id'] }}" {% if checked %}checked{% endif %}/> - {{ node['name'] }}
+                    </label>
+                {% endfor %}
+                <input type="submit" value="Save"/>
+            </form>
+
+        </div>
     </div>
 </div>
 

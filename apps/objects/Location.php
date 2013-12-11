@@ -21,10 +21,10 @@ class Location extends Model
 
 	public function initialize()
 	{
-		$this -> belongsTo('location_id', '\Objects\Member', 'id');
-		$this -> belongsTo('location_id', '\Objects\Event', 'id');
+		$this -> hasMany('id', '\Objects\Member', 'location_id', array('alias' => 'member'));
+		$this -> hasMany('id', '\Objects\Event', 'location_id', array('alias' => 'event'));
 		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaign'));
-		$this -> belongsTo('location_id', '\Objects\Venue', 'id', array('alias' => 'venue'));
+		$this -> hasMany('id', '\Objects\Venue', 'location_id', array('alias' => 'venue'));
 	}
 	
 	
@@ -54,7 +54,6 @@ class Location extends Model
 		}
 
 		$query = implode(' and ', $query);
-_U::dump($query, true);		
 		$isLocationExists = self::findFirst($query);
 
 		if (!$isLocationExists) {
@@ -62,7 +61,6 @@ _U::dump($query, true);
 			{
 				$geo = $this -> getGeo();
 				$argument = $geo -> getLocation($argument);
-_U::dump($argument, true);					
 				$argument['latitude'] = (float)$argument['latitude'];
 				$argument['longitude'] = (float)$argument['longitude'];
 			}
@@ -78,7 +76,7 @@ _U::dump($argument, true);
 				$argument['alias'] = $argument['name'];
 				unset($argument['name']);
 			} 
-_U::dump($argument, true);				
+				
 			$this -> assign($argument);
 			$this -> save();
 			

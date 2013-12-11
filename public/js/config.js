@@ -33,7 +33,8 @@ require.config({
 
 		//frontend
 		'frontTopPanel': 'frontend/topPanel',
-		'frontEventControl': 'frontend/eventControls'
+		'frontEventEditControl': 'frontend/eventEditControl',
+		'frontEventListControl': 'frontend/eventListControl'
 	},
 
 	shim: {
@@ -46,21 +47,27 @@ require.config({
         }
 	},
 
-	waitSeconds: 10,
+	//waitSeconds: 10,
 	deps: ['require'],
 
 	callback: function(require) {
         'use strict';
 
-        var fileName = location.pathname.match(/(\/\w*)*$/),
-            moduleName;
+        var moduleName,
+        	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/;
+        if (re.test(location.pathname) != 'undefined') {
+			var fileName = location.pathname.replace(/(\/\d+)?$/, '');
+        } else {
+        	var fileName = location.pathname.match(/(\/\w+)*?$/)
+        }
+//console.log(fileName);
 
-        if (!fileName || fileName[0] == '/' || fileName[0] == '') {
+        if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
         } else {
-        	moduleName = 'frontend' + fileName[0];
+        	moduleName = 'frontend' + fileName;
         };
-
+//console.log(moduleName);
   		require([moduleName]);
     }	
 });

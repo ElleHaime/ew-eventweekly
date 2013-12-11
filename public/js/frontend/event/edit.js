@@ -2,7 +2,7 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
-	'frontEventControl',
+	'frontEventEditControl',
 	'datetimepicker',
 	'utils',
 	'domReady',		
@@ -11,7 +11,7 @@ require([
 	'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
 	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=423750634398167'
 	], 
-	function($, frontTopPanel, fb, frontEventControl, datetimepicker, utils) {
+	function($, frontTopPanel, fb, frontEventEditControl, datetimepicker, utils) {
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
@@ -19,7 +19,7 @@ require([
 		            appId: '303226713112475', //'423750634398167',
 		            status: true
 		        }); 
-		frontEventControl.init();
+		frontEventEditControl.init();
 	}
 );
 

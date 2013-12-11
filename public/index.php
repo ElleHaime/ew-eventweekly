@@ -15,6 +15,9 @@ if (!defined('ROOT_LIB')) {
 if (!defined('CONFIG_SOURCE')) {
 	define('CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'config.php');
 }
+if (!defined('DATABASE_CONFIG_SOURCE')) {
+	define('DATABASE_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'database.php');
+}
 
 require_once ROOT_LIB . 'Application.php';
 
