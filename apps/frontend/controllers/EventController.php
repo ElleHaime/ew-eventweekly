@@ -111,10 +111,15 @@ class EventController extends \Core\Controllers\CrudController
 				return $events;
 
 			} else {
+                $this -> session -> set('eventsTotal', 0);
 				$res['status'] = 'ERROR';
 				$res['message'] = 'no events';
-				echo json_encode($res);
-				die();
+                if ($this->request->isAjax()) {
+                    echo json_encode($res);
+                    die();
+                }else {
+                    return array($events[0], $events[1]);
+                }
 			} 
 
 		} else {

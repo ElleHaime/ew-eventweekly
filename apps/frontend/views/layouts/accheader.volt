@@ -3,7 +3,6 @@
         <div class="row">
             <div class="span2">
                 <span class="line"></span>
-                <span class="notiBtn" style="color: #ffffff">Test</span>
                 <a href="/" class="logo"></a>
             </div>
             <div class="span4 user-block">

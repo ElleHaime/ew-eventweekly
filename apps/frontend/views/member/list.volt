@@ -47,6 +47,58 @@
 
     <div class="row-fluid">
         <div class="span12">
+            <h2>Your account information:</h2>
+
+            <form action="/update-profile" method="post">
+                <label for="uLocation">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
+                {% if conflict is defined %}
+                    <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
+                {% endif %}
+                <input type="text" id="uLocation"/>
+
+                {#<input type="submit" value="Save"/>#}
+            </form>
+
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    var addr = addressAutoComplete('uLocation');
+
+                    app.__GoogleApi.maps.event.addListener(addr, 'place_changed', function() {
+                        var place = addr.getPlace();
+                        var lat = place.geometry.location.lat();
+                        var lng = place.geometry.location.lng();
+                        var city = place.vicinity;
+                        var country = $('.country-name', '<div>'+place.adr_address+'</div>').text();
+
+                        var data = {
+                            lat: lat,
+                            lng: lng,
+                            city: city,
+                            country: country
+                        };
+
+                        $.post('/member/update-location', data, function(response){
+                            if (response.status == true) {
+                                console.log('all is OK');
+
+                                $('#mLocation').text(city);
+                                $('#uLocation').val('');
+
+                                $('#lConflict').remove();
+                                // write last map positions in to cookie
+                                $.cookie('lastLat', lat, {expires: 1, path: '/'});
+                                $.cookie('lastLng', lng, {expires: 1, path: '/'});
+                            }
+                            console.log(response);
+                        }, 'json');
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
             <h2>Filters:</h2>
 
             <h4>Categories:</h4>
@@ -82,12 +134,5 @@
 	<input type='hidden' name='acc_difference' id='acc_username' ew_val="MemberNetwork.account_id" value='{{ acc_external.account_id }}'>
 	<input type='hidden' name='acc_difference' id='acc_current_address' ew_val="Member.address" value='{{ member.address }}'>
 {% endif %}
-
-
-<script type="text/javascript">
-	$('#member_name').click(function () { 
-		
-	});
-</script>
 
 {% endblock %}

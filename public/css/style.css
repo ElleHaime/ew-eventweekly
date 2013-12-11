@@ -84,7 +84,7 @@ body {
 
 .content {
     border-top: 1px solid #29abe2;
-    margin-top: 70px;
+    /*margin-top: 70px;*/
     z-index: 9;
     position: relative;
     height: auto;
@@ -789,7 +789,7 @@ input[type="color"]:focus, .uneditable-input:focus
     height: auto;
     padding-bottom: 20px;
     position: relative;
-    z-index: 10;
+    z-index: 9;
 }
 /*---category---*/
 

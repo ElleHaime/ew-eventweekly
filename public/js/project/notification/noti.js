@@ -29,7 +29,7 @@ function Noti(options) {
     self.settings = {
         notiBtn: '.notiBtn',
         notiBlock: '.notiBlock',
-        timeOut: 4000,
+        timeOut: 9000,
         defaultHeight: 50,
         defaultSpeed: 300,
         yesText: 'Ok',
@@ -73,7 +73,7 @@ function Noti(options) {
      */
     self.createNotification = function(text, type, promptOption) {
 
-        self.window.find('#notiText').text(text);
+        self.window.find('#notiText').html(text);
 
         var cssClass = 'Info';
 
@@ -101,8 +101,6 @@ function Noti(options) {
         if (type !== 'prompt') {
             _.delay(self.__hideWindow(), self.settings.timeOut);
         }
-
-        return true;
     };
 
     /**
@@ -126,6 +124,7 @@ function Noti(options) {
      * @private
      */
     self.__showWindow = function() {
+        console.log('show');
         self.window.animate({
             height: self.settings.defaultHeight+'px'
         }, self.settings.defaultSpeed);
@@ -157,5 +156,3 @@ function Noti(options) {
     }
 
 }
-
-var noti = new Noti();
