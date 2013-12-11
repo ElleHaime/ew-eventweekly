@@ -8,6 +8,7 @@ use Frontend\Form\SignupForm,
 	Frontend\Form\ResetForm,
 	Frontend\Models\Member,
 	Frontend\Models\MemberNetwork,
+    Frontend\Events\MemberListener,
 	Core\Auth,
 	Core\Acl,
 	Core\Utils as _U;
@@ -17,6 +18,12 @@ use Frontend\Form\SignupForm,
  */
 class AuthController extends \Core\Controller
 {
+
+    public function onConstruct()
+    {
+        $this->eventsManager->attach('App.Auth.Member', new MemberListener());
+    }
+
 	/**
 	 * @Route("/login", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   
@@ -42,10 +49,10 @@ class AuthController extends \Core\Controller
 					$this -> flash -> error('Incorrect password');
 					return false;
 				}
-				
-				$this -> _registerMemberSession($member);
 
-                $this->afterLogin();
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+
+                $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
 				$this -> response -> redirect('map');
 				
@@ -88,7 +95,7 @@ class AuthController extends \Core\Controller
 				));
 	
 				if ($member -> save()) {
-					$this -> _registerMemberSession($member);
+                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
 					$this -> response -> redirect('map');
 				} else {
 					echo 'Sad =/'; die();
@@ -114,12 +121,12 @@ class AuthController extends \Core\Controller
 	    	$memberNetwork = MemberNetwork::findFirst(array('account_uid = "' . $uid . '"'));
 
 	    	if ($memberNetwork) {
-	    		$this -> _registerMemberSession($memberNetwork -> member);
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
 	    	}
 		    $this -> session -> set('user_token', $access_token);
 		    $this -> session -> set('role', Acl::ROLE_MEMBER);
 
-            $this -> afterLogin();
+            $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
 		    $res['status'] = 'OK';
 		    $res['message'] = $access_token;
@@ -169,7 +176,7 @@ class AuthController extends \Core\Controller
 				));
 
 				if ($memberNetwork -> save()) {
-					$this -> _registerMemberSession($member);
+                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
 				} else {
 					echo 'Sad =/'; die();
 				}
@@ -263,19 +270,5 @@ class AuthController extends \Core\Controller
     {
 		$this -> session -> destroy();
 		return $this -> response -> redirect();
-    }
-    
-
-    private function _registerMemberSession($params) {
-    	$this -> session -> set('member', $params);
-    	$this -> session -> set('role', $params -> role);
-    	$this -> session -> set('memberId', $params -> id);
-    	
-    	return;
-    }
-
-    private function afterLogin() {
-        $this -> cookies -> get('lastLat') -> delete();
-        $this -> cookies -> get('lastLng') -> delete();
     }
 }
