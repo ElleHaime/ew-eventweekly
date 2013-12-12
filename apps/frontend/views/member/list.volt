@@ -99,6 +99,13 @@
 
     <div class="row-fluid">
         <div class="span12">
+            <h2>Change password:</h2>
+            <a href="/profile/change-password" class="btn">Change Password</a>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
             <h2>Filters:</h2>
 
             <h4>Categories:</h4>

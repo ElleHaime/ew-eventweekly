@@ -61,6 +61,12 @@
     {{ javascript_include('/js/project/notification/noti.js') }}
 
     <script type="text/javascript">
+        {% if flashMsgText is defined %}
+        window.onload = function() {
+            var noti = new Noti();
+            noti.createNotification('{{ flashMsgText }}', '{{ flashMsgType }}');
+        };
+        {% endif %}
         {% if location_conflict is defined %}
         window.onload = function() {
             var noti = new Noti();
