@@ -6,7 +6,8 @@ use Core\Utils as _U,
     Frontend\Models\Category,
     Frontend\Models\MemberFilter,
     Frontend\Models\Member,
-    Frontend\Models\Location;
+    Frontend\Models\Location,
+    Frontend\Form\ChangePassForm;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -225,5 +226,40 @@ class MemberController extends \Core\Controllers\CrudController
 
         exit(json_encode($result));
 
+    }
+
+    /**
+     * @Route("/profile/change-password", methods={"get","post"})
+     * @Acl(roles={'member'});
+     */
+    public function changePasswordAction() {
+        $form = new ChangePassForm();
+
+        if ($this->request->ispost()) {
+            if ($form->isValid($this->request->getPost())) {
+
+                $postData = $this->request->getPost();
+
+                $member = Member::findFirst('id = '.$this->session->get('memberId'));
+
+                if (!$this->security->checkHash($postData['old_password'], $member->pass)) {
+                    $this->setFlash('Wrong old password!', 'error');
+                }else {
+                    $member->pass = $this->security->hash($postData['password']);
+
+                    if (!$member->save()) {
+                        $this->setFlash('Error while saving your new password! Call to your admin!', 'error');
+                    }else {
+                        $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
+
+                        $this->setFlash('Your password was successfully changed!');
+
+                        $this->response->redirect('profile');
+                    }
+                }
+            }
+        }
+
+        $this->view->form = $form;
     }
 }

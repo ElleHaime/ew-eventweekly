@@ -40,28 +40,18 @@ class AuthController extends \Core\Controller
                 $member = Member::findFirst(array('email = ?0',
                         'bind' => (array)$email));
 
-                if (!$member) {
-                    $this -> flash -> error('No such member');
-                    $this -> view -> form = $form;
-                    return false;
+                if (!$member || !$this->security->checkHash($pass, $member->pass)) {
+                    $this->setFlash('Wrong login credentials!', 'error');
+                }else {
+                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+
+                    $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+
+                    $this -> response -> redirect('map');
                 }
-                if (!$this -> security -> checkHash($pass, $member -> pass)) {
-                    $this -> flash -> error('Incorrect password');
-                    return false;
-                }
-
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-
-                $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
-
-                $this -> response -> redirect('map');
-
-            } else {
-                $this -> response -> setStatusCode(401, 'Unauthorized')
-                    -> setContent('Not authorized')
-                    -> send();
             }
         }
+
         $this -> view -> form = $form;
     }
 
@@ -162,7 +152,7 @@ class AuthController extends \Core\Controller
             $memberLocation = $locationByIp;
 
             $member -> assign(array(
-                    'pass' => md5(rand(0, 500) . '+' . microtime()),
+                    'pass' => $this->security->hash(rand(0, 500) . '+' . microtime()), //md5(rand(0, 500) . '+' . microtime()),
                     'email' => $userData['email'],
                     'role' => Acl::ROLE_MEMBER,
                     'location_id' => $memberLocation -> id,
@@ -173,6 +163,9 @@ class AuthController extends \Core\Controller
                 ));
 
             if ($member -> save()) {
+
+                $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
+
                 $memberNetwork = new MemberNetwork();
 
                 $memberNetwork -> assign(array(

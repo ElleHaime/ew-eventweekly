@@ -143,4 +143,10 @@ class Controller extends \Phalcon\Mvc\Controller
 		$locPath = $this -> getModelPath() . $locModel;
 		$this -> locator = new $locPath;
 	}
+
+    protected function setFlash($text = '', $type = 'info') {
+        $this->session->set('flashMsgText', $text);
+        $this->session->set('flashMsgType', $type);
+        return $this;
+    }
 }
