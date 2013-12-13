@@ -26,8 +26,8 @@
                                     </div>
 
                                     <div class="like-box clearfix">
-                                        <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
-                                        <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
+                                        <span class="eventLikeBtn" data-status="1" data-id="{{ event['id'] }}"><img src="img/demo/like.png" alt="like" title="like"></span>
+                                        <span class="eventLikeBtn" data-status="0" data-id="{{ event['id'] }}"><img src="img/demo/dislike.png" alt="dislike" title="dislike"></span>
                                     </div>
                                 </div>
                                 <div class="event-one-text">
@@ -155,8 +155,8 @@
                                             </a>
                                     </div>
                                     <div class="like-box clearfix">
-                                        <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
-                                        <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
+                                        <span class="eventLikeBtn" data-status="1" data-id="{{ event['id'] }}"><img src="img/demo/like.png" alt="like" title="like"></span>
+                                        <span class="eventLikeBtn" data-status="0" data-id="{{ event['id'] }}"><img src="img/demo/dislike.png" alt="dislike" title="dislike"></span>
                                     </div>
                                 </div>
                                 <div class="event-one-text">
@@ -263,5 +263,12 @@
             </div>
         </div>
     </div>#}
+
+{{ javascript_include('/js/project/singles/eventLike.js') }}
+<script type="text/javascript">
+    $(document).ready(function(){
+        EventLike.init();
+    });
+</script>
 
 {% endblock %}

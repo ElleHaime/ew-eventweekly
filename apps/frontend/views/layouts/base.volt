@@ -78,7 +78,7 @@
             topPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });
-            {% if router.getRewriteUri()  == '/map' or router.getRewriteUri()  == '/list' %}
+            {% if router.getRewriteUri()  == '/map' %}
             app.Gmap.init({
                 mapCenter: {
                     lat: '{{ location.latitude }}',
