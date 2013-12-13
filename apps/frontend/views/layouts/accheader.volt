@@ -22,8 +22,9 @@
                         </div>
 
                         <div class="btn-list">
-                            <button class="btn btn-block"><span class="btn-count">21</span><span class="btn-text">Recommended for you</span></button>
-                            <button class="btn btn-block"><span class="btn-count">12</span><span class="btn-text">Shared by your friends</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/list?cond[liked]=true'"><span class="btn-count">5</span><span class="btn-text">Liked</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/list?cond[creator]=me'"><span class="btn-count">9</span><span class="btn-text">Created</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/list?cond[event_member]=me'"><span class="btn-count">3</span><span class="btn-text">Where I Go</span></button>
                         </div>
 
                         <div class="edit-btn">

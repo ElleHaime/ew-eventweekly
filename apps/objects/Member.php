@@ -27,8 +27,8 @@ class Member extends Model
 		$this -> hasOne('id', '\Objects\MemberNetwork', 'member_id', array('alias' => 'network'));
 		$this -> hasOne('id', '\Objects\EventMember', 'member_id', array('alias' => 'eventpart'));
         $this -> hasMany('id', '\Objects\MemberFilter', 'member_id', array('alias' => 'member_filter'));
+        $this -> hasMany('id', '\Objects\EventLike', 'member_id', array('alias' => 'event_like'));
 	}
-	
 	
 	public function getDependency()
 	{

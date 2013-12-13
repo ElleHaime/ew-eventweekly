@@ -149,4 +149,11 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->session->set('flashMsgType', $type);
         return $this;
     }
+
+    protected function sendAjax($data)
+    {
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setJsonContent($data);
+        $this->response->send();
+    }
 }

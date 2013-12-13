@@ -33,6 +33,7 @@ class   Event extends Model
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
 		$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
+		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
 	
 	public function beforeValidationOnCreate()

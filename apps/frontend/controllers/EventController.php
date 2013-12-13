@@ -11,7 +11,8 @@ use Core\Utils as _U,
 	Frontend\Models\EventCategory,
 	Frontend\Models\Event as Event,
 	Objects\EventImage,
-	Objects\EventMember;
+	Objects\EventMember,
+    Frontend\Models\EventLike;
 
 /**
  * @RouteRule(useCrud = true)
@@ -272,7 +273,32 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function listAction()
 	{
-		parent::listAction();
+        $getData = $this->request->getQuery('cond');
+
+        if (empty($getData)) {
+            $this->response->redirect('list');
+        }
+
+        $Event = new Event();
+
+        if (!empty($getData['creator']) && $getData['creator'] == 'me') {
+            $this->view->setvar('listName', 'My Events');
+            $Event->setCondition('event.member_id = '.$this->session->get('memberId'));
+        }
+
+        if (!empty($getData['liked'])) {
+            $this->view->setvar('listName', 'Liked Events');
+            $Event->setCondition('event_like.member_id = '.$this->session->get('memberId'));
+        }
+
+        if (!empty($getData['event_member']) && $getData['event_member'] == 'me') {
+            $this->view->setvar('listName', 'Where I Go');
+            $Event->setCondition('event_member.member_id = '.$this->session->get('memberId'));
+        }
+
+        $events = $Event->listEvent();
+
+        $this->view->setvar('events', $events);
 	}
 
 	/**
@@ -303,4 +329,35 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		parent::deleteAction();
 	}
+
+    /**
+     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET"})
+     * @Acl(roles={'member'});
+     */
+    public function likeAction($eventId, $status = 0)
+    {
+        $response = array(
+            'status' => false
+        );
+
+        $memberId = $this->session->get('memberId');
+
+        $EventLike = new EventLike();
+
+        if (!$EventLike->findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
+            $save = array(
+                'event_id' => $eventId,
+                'member_id' => $memberId,
+                'status' => $status
+            );
+
+            if ($EventLike->save($save)) {
+                $response['status'] = true;
+
+                $this->eventsManager->fire('App.Event:afterLike', $this);
+            }
+        }
+
+        $this->sendAjax($response);
+    }
 }		
