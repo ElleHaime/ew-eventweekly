@@ -313,7 +313,7 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		_U::dump($form -> getFormValues(), true);
 		_U::dump($this -> request -> getUploadedFiles(), true);
-		
+//die();
 		$event = $form -> getFormValues();
 		$loc = new Location();
 		$venue = new Venue();
@@ -327,7 +327,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['description'] = $event['description'];
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
-		$newEvent['event_status'] = 1;
+		$newEvent['event_status'] = $event['event_status'];
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		if (isset($this -> session -> get('member') -> network)) {
@@ -451,7 +451,7 @@ class EventController extends \Core\Controllers\CrudController
 			}
 		}
 		
-		$this -> response -> redirect('event/list');
+		$this -> response -> redirect('/event/list');
 	}
 
 }		

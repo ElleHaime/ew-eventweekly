@@ -29,7 +29,8 @@
 											<a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
                                         {% endif %}
                                         <button class="btn" id ="add-img-btn" type="button">{{ form.label('logo')}}</button>
-                                        <input id="add-img-upload" type="file" value="upload" style="display:none;">
+                                        <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
+                                        {{ form.render('add-img-upload') }}
                                     </div>
                                 </div>
                                 {{ form.render('logo')}}
@@ -75,12 +76,14 @@
                                         </div>
                                     </div>
                                     
+                                    Publish event immediately {{ form.render('event_status') }}
+                                    <br><br>
                                     <div class="clear"></div>
                                     {{ form.render('description') }}
                                     <div class="btn-add_group clearfix">
                                         <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
-                                        <button class="btn" type="button" id="btn-preview">Preview</button>
-                                        <button class="btn" type="submit" id="btn-submit">Save and publish</button>
+                                        <button class="btn" type="button" id="btn-preview" disabled="disabled">Preview</button>
+                                        <button class="btn" type="submit" id="btn-submit">Save</button>
                                     </div>
 
                                 </div>

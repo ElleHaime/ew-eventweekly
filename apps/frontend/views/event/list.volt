@@ -12,12 +12,12 @@
 					<div class="list-event-img">
 						<a href="#">
 							{% if event.logo != '' %}
-								{{ image('/upload/img/event/' ~ event.logo ) }}
+								<img src= '/upload/img/event/{{event.logo}}' width='159px' height='159px'>
 							{% endif %}
 						</a>
 					</div>
 					<div class="list-event-text">
-						{{ link_to ('/event/edit/' ~ event.id, event.name) }}
+						{{ link_to ('event/edit/' ~ event.id, event.name) }}
 						<p>{{ event.description}}</p>
 	                    <div class="date-list">
 	                        <i class="icon-time"></i> start

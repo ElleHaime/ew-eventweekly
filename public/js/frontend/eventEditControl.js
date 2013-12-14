@@ -6,6 +6,7 @@ define('frontEventEditControl',
 		{
 			var self = this;
 
+
 			self.settings = {
 				inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',
@@ -48,9 +49,12 @@ define('frontEventEditControl',
 
 				boxImg: '#img-box',
 				btnImg: '#add-img-btn',
-				btnImgUpload: '#logo',
+				btnImgUpload: '#add-img-upload',
+				inpLogo: '#logo',
 
-				inpCampaign: '#campaign_id'
+				inpCampaign: '#campaign_id',
+
+				btnCancel: '#btn-cancel'
 			},
 
 
@@ -68,6 +72,10 @@ define('frontEventEditControl',
 
 			self.bindEvents = function()
 			{
+				$(self.settings.btnImg).click(function() {
+					self.__imitateUpload();
+				});
+
 				$(self.settings.btnImgUpload).on('change', function(e) {
 					self.__loadImage(e);
 				});
@@ -121,6 +129,10 @@ define('frontEventEditControl',
 					e.preventDefault();
 					self.__removeSite($(this));
 				});
+
+				$(self.settings.btnCancel).click(function() {
+					window.location.replace = "/event/list";
+				})
 			}
 
 			self.__loadImage = function(content)
@@ -129,7 +141,7 @@ define('frontEventEditControl',
 				var file = content.target.files[0];
 
 				reader.onload = (function(f) {
-					$(self.settings.btnImgUpload).attr('value', f.name);
+					$(self.settings.inpLogo).attr('value', f.name);
 					return function(e) {
 						$(self.settings.boxImg).attr('src', e.target.result);
 					}
@@ -137,6 +149,33 @@ define('frontEventEditControl',
 
 				reader.readAsDataURL(file);
 			}
+
+
+			self.__makePreview = function(img, size)
+			{
+				var img = image,
+					w = img.width, h = img.height,
+					s = w / h;     
+ 
+					if(w > size && h > size) {
+						if(img.width > img.height) {
+							img.width = size;
+							img.height = size / s;
+						} else {
+							img.height = size;
+							img.width = size * s;
+						}
+					}
+ 
+  					return img;
+			}
+
+
+			self.__imitateUpload = function()
+			{
+				$(self.settings.btnImgUpload).click();
+			}
+
 
 			self.__addCategory = function()
 			{

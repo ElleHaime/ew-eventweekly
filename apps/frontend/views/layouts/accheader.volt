@@ -10,7 +10,7 @@
 
                 {% if member.id is defined %}
                 <div class="user-box" id="user-box">
-                    <a id="user-down-caret">{{ image('/img/demo/user.jpg') }}
+                    <a id="user-down-caret">{{ image('img/demo/user.jpg') }}
                         <span>{{ member.name }}</span><i class="caret"></i>
                     </a>
 
