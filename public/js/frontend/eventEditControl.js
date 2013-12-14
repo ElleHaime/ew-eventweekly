@@ -52,6 +52,7 @@ define('frontEventEditControl',
 				inpLogo: '#logo',
 
 				inpCampaign: '#campaign_id',
+				inpCampaignExists: '#is_campaign',
 
 				btnCancel: '#btn-cancel'
 			},
@@ -60,6 +61,11 @@ define('frontEventEditControl',
 			self.init = function()
 			{
 				utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'No campaign');
+				var camp = $(self.settings.inpCampaignExists).val();
+				console.log(camp);
+				if (camp != 0) {
+					$(self.settings.inpCampaign + ' option[value=' + camp + ']').attr('selected', true);
+				}
 
 				self.__presetDate($(self.settings.inpDateStart), $(self.settings.textDateStart), 'start');
 				self.__presetDate($(self.settings.inpDateEnd), $(self.settings.textDateEnd), 'end');

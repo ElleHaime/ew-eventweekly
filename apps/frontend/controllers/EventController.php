@@ -329,6 +329,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['event_status'] = $event['event_status'];
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
+		$newEvent['campaign_id'] = $event['campaign_id'];
 		if (isset($this -> session -> get('member') -> network)) {
 			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
 		}

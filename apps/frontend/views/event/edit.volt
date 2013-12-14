@@ -137,8 +137,8 @@
                                 {{ form.render('event_site') }}
                             </div>
                             <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
-                                <p>Event web-sites :</p>
-                                {% if event.site %}
+                                {% if event.site|length %}                            
+                                    <p>Event web-sites :</p>
                                 	{% for site in event.site %}
                                 		<div class = "esite_elem">
                                 			<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
@@ -148,15 +148,13 @@
                                 {% endif %}
                             </div>
 
-
-
 							<div class="event-site">
 								<p> {{ form.label('event_category') }}</p>
 									{{ form.render('event_category') }}
 	                            <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
 	                            	<input type="hidden" id="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+                                    {% if event.category|length %}
 	                                <p>Event categories :</p>
-	                                {% if event.category %}
 	                                	{% for key, name in event.category %}
 	                                		<div class = "ecat_elem">
 	                                			<div>
@@ -211,6 +209,8 @@
                                 	{{ form.render('recurring') }}
                                 <hr>
                                 <div class="checkbox-block">
+                                    <input type="hidden" id="is_campaign" 
+                                        {% if event.campaign_id|length %}value="{{ event.campaign_id }}"{% else %}value="0"{% endif %}>
                                     <p> Choose promoter</p>
                                     {{ form.render('campaign_id') }}
                                 </div>

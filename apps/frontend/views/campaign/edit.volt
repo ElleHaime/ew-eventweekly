@@ -70,6 +70,16 @@
                                     </ul>
                                 </div>
                             </div>
+                            <div class="event-site clearfix">
+                            {% if campaign.event|length %}                            
+                                <p>Events :</p>
+                                {% for event in campaign.event %}
+                                    <div>
+                                        <a href="/event/edit/{{ event.id }}">{{ event.name }}</a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
