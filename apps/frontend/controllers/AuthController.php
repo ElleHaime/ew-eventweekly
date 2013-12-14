@@ -182,14 +182,6 @@ class AuthController extends \Core\Controller
                 }
             }
 
-        }else {
-            $member = Member::findFirst('id = '. $this->session->get('memberId'));
-
-            $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-                    'member' => $member,
-                    'uid' => $userData['uid'],
-                    'token' => $userData['token']
-                ));
         }
 
         $res['status'] = 'OK';
