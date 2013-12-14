@@ -421,6 +421,7 @@ class EventController extends \Core\Controllers\CrudController
 					$es -> delete();
 				}
 			}
+			$eSites = new EventSite();
 			if (!empty($event['event_site'])) {
 				$aSites = explode(',', $event['event_site']);
 				foreach($aSites as $key => $value) {
