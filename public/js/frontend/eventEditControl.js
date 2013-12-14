@@ -6,7 +6,6 @@ define('frontEventEditControl',
 		{
 			var self = this;
 
-
 			self.settings = {
 				inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',

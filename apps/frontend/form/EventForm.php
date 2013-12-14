@@ -90,10 +90,6 @@ class EventForm extends Form
 								array('options' => $this -> session -> get('member') -> campaign,
 									  'using' => array('id', 'name')));
 		
-		
-		$this -> addElement('hidden', 'location_id');
-		$this -> addElement('hidden', 'prev_location');
-		
 		$this -> add(new Submit('Save and publish'));
 	}
 }

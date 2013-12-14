@@ -30,8 +30,7 @@ define('frontCampaignListControl',
 
 			self.__redirectEdit = function(elem)
 			{
-				console.log(elem);
-				window.location.href = '/event/edit/' + elem.attr('id');
+				window.location.href = '/campaign/edit/' + elem.attr('id');
 			},
 
 			self.__delete = function()

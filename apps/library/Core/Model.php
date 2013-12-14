@@ -22,17 +22,26 @@ class Model extends \Phalcon\Mvc\Model
 		if (!empty($relationsBelongs)) {
 			foreach ($relationsBelongs as $i => $rel) {
 				$refOptions = $rel -> getOptions();
-				
+
 				$alias = $this -> getRelationAlias($refOptions);
 				$aliasName = $this -> getRelationAliasName($refOptions);
-				
+			
 				if ($addons = $this -> getExtraRelations($alias)) {
 					foreach ($addons as $field => $val) {
 						$valName = $alias . '_' . $val;
-						$this -> $valName = $this -> $alias -> $val;
+						
+						if ($this -> $alias !== false) {
+							$this -> $valName = $this -> $alias -> $val;
+						} else {
+							$this -> $valName = '';
+						}
 					}
 				}
-				$this -> $alias = $this -> $alias -> $aliasName;
+				if ($this -> $alias !== false) {
+					$this -> $alias = $this -> $alias -> $aliasName;
+				} else {
+					$this -> $alias = '';
+				}
 			}
 		}
 		

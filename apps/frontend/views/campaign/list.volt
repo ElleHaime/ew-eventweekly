@@ -19,17 +19,11 @@
 					<div class="list-event-text">
 						{{ link_to ('campaign/edit/' ~ campaign.id, campaign.name) }}
 						<p>{{ campaign.description}}</p>
-	                    <div class="date-list">
-	                        <i class="icon-time"></i> start
-	                        <span class="date-start">20/03/23</span> finish
-	                        <span class="date-finish">30/03/23</span>
-	                    </div>
 
 	                    <button class="btn editCampaign" style="padding-left:5px; padding-right:10px;" id="{{ campaign.id }}">
 	                    	<span class="btn-text">edit</span>
 	                    </button>
-	                    <button class="btn" style="padding-left:5px; padding-right:10px;" onclick="javascript:dropCampaign();"><span class="btn-text">delete</span></button>
-	                    <button class="btn" style="padding-left:5px; padding-right:10px;" onclick="javascript:dropCampaign();"><span class="btn-text">stash events</span></button>
+	                    <button class="btn deleteCampaign" style="padding-left:5px; padding-right:10px;" ><span class="btn-text">delete</span></button>
 					</div>
 				</div>
 			{% endfor %}

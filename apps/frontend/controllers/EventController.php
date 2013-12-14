@@ -318,7 +318,6 @@ class EventController extends \Core\Controllers\CrudController
 		$loc = new Location();
 		$venue = new Venue();
 		$coords = array();
-		$locationId = false;
 		$venueId = false;
 		$newEvent = array();
 
