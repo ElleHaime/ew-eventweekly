@@ -421,8 +421,8 @@ class EventController extends \Core\Controllers\CrudController
 					$es -> delete();
 				}
 			}
-			$eSites = new EventSite();
 			if (!empty($event['event_site'])) {
+				$eSites = new EventSite();
 				$aSites = explode(',', $event['event_site']);
 				foreach($aSites as $key => $value) {
 					if (!empty($value)) {
@@ -441,6 +441,7 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 			if (!empty($event['category'])) {
+				$eCats = new EventCategory();
 				$aCats = explode(',', $event['category']);
 				foreach($aCats as $key => $value) {
 					if (!empty($value)) {
