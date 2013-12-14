@@ -23,7 +23,8 @@ define('frontEventEditControl',
 
 				inpLocation: '#location',
 				listLocation: '#locations-list',
-				coordsLocation: '#location-coords',
+				coordsLocationLat: '#location_latitude',
+				coordsLocationLng: '#location_longitude',
 
 				inpAddress: '#address',
 				listAddress: '#addresses-list',
@@ -31,10 +32,11 @@ define('frontEventEditControl',
 
 				inpVenue: '#venue',
 				listVenue: '#venues-list',
-				coordsVenue: '#venue-coords',
+				coordsVenueLat: '#venue_latitude',
+				coordsVenueLng: '#venue_longitude',
 
 				inpCategory: '#event_category',
-				inpCategoryReal: '#event_category_real',
+				inpCategoryReal: '#category',
 				listCategory: '#event-category-selected',
 
 				btnSite: $('#add-web-site'),
@@ -66,12 +68,6 @@ define('frontEventEditControl',
 
 			self.bindEvents = function()
 			{
-				// process image	
-				$(self.settings.btnImg).click(function(e) {
-					e.preventDefault();
-					self.__imitateUpload();
-				});
-
 				$(self.settings.btnImgUpload).on('change', function(e) {
 					self.__loadImage(e);
 				});
@@ -91,7 +87,10 @@ define('frontEventEditControl',
 
 				// process locations
 				$(self.settings.inpLocation).keyup(function() {
-					self.__inputFillList(self.settings.inpLocation, self.settings.listLocation, self.settings.coordsLocation);
+					self.__inputFillList(self.settings.inpLocation, 
+										 self.settings.listLocation, 
+										 self.settings.coordsLocationLat,
+										 self.settings.coordsLocationLng);
 				});
 
 				// process address
@@ -130,17 +129,13 @@ define('frontEventEditControl',
 				var file = content.target.files[0];
 
 				reader.onload = (function(f) {
+					$(self.settings.btnImgUpload).attr('value', f.name);
 					return function(e) {
 						$(self.settings.boxImg).attr('src', e.target.result);
 					}
 				})(file);
 
 				reader.readAsDataURL(file);
-			}
-
-			self.__imitateUpload = function()
-			{
-				$(self.settings.btnImgUpload).click();
 			}
 
 			self.__addCategory = function()
@@ -259,7 +254,7 @@ define('frontEventEditControl',
 
 			// input -- input element (usualy type == text)
 			// list -- destination element (found values will be rendered here)
-			self.__inputFillList = function(input, list, coords)
+			self.__inputFillList = function(input, list, coordsLat, coordsLng)
 			{
 				if (self.__checkInputFill(input, list))	{
 		           	var locs = utils.addressAutocomplete($(input)[0]);
@@ -269,7 +264,8 @@ define('frontEventEditControl',
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
 			                
-			                $(self.settings.coordsLocation).val(lat + ';' + lng);
+			                $(self.settings.coordsLocationLat).val(lat);
+			                $(self.settings.coordsLocationLng).val(lng);
 			            });
 		           	}
 		           	

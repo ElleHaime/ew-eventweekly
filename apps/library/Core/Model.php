@@ -6,12 +6,15 @@ use Core\Utils as _U;
 
 class Model extends \Phalcon\Mvc\Model
 {
+	public $extraOptions;
+
+
 	public function onConstruct()
 	{
 		$di = $this -> getDi();
 	}
 
-	public function getDependency()
+	public function getDependencyProperty()
 	{
 		$relationsBelongs = $this -> getModelsManager() -> getBelongsTo($this);		
 		$relationsManyToMany = $this -> getModelsManager() -> getHasManyToMany($this);
@@ -20,12 +23,13 @@ class Model extends \Phalcon\Mvc\Model
 			foreach ($relationsBelongs as $i => $rel) {
 				$refOptions = $rel -> getOptions();
 				
-				$alias = $this -> _getRelationAlias($refOptions);
-				$aliasName = $this -> _getRelationAliasName($refOptions);
+				$alias = $this -> getRelationAlias($refOptions);
+				$aliasName = $this -> getRelationAliasName($refOptions);
 				
-				if ($addons = $this -> _getRelationAdditional($refOptions)) {
+				if ($addons = $this -> getExtraRelations($alias)) {
 					foreach ($addons as $field => $val) {
-						$this -> $val = $this -> $alias -> $val;
+						$valName = $alias . '_' . $val;
+						$this -> $valName = $this -> $alias -> $val;
 					}
 				}
 				$this -> $alias = $this -> $alias -> $aliasName;
@@ -41,8 +45,8 @@ class Model extends \Phalcon\Mvc\Model
 				_U::dump($rel -> getIntermediateReferencedFields(), true); */
 				$refOptions = $rel -> getOptions();
 
-				$alias = $this -> _getRelationAlias($refOptions);
-				$aliasName = $this -> _getRelationAliasName($refOptions);
+				$alias = $this -> getRelationAlias($refOptions);
+				$aliasName = $this -> getRelationAliasName($refOptions);
 				
 				$aliasList = [];
 				foreach ($this -> $alias as $a) {
@@ -52,12 +56,12 @@ class Model extends \Phalcon\Mvc\Model
 				$this -> $alias = $aliasList; 				
 			}
 		}
-//die();		
+
 		return;
 	}
 	
 	
-	private function _getRelationAlias($refOptions)
+	private function getRelationAlias($refOptions)
 	{
 		if (isset($refOptions['alias'])) {
 			$alias = $refOptions['alias'];
@@ -69,7 +73,7 @@ class Model extends \Phalcon\Mvc\Model
 		return $alias;;
 	}
 	
-	private function _getRelationAliasName($refOptions)
+	private function getRelationAliasName($refOptions)
 	{
 		if (isset($refOptions['baseField'])) {
 			$aliasName = $refOptions['baseField'];
@@ -80,17 +84,26 @@ class Model extends \Phalcon\Mvc\Model
 		return $aliasName;
 	}
 	
-	private function _getRelationAdditional($refOptions)
+	private function getExtraRelations($relName)
 	{
-		$additional = false;
+		$extra = false;
 		
-		if (isset($refOptions['additionalFields'])) {
-			$additional = $refOptions['additionalFields'];
+		if (isset($this -> extraOptions[$relName])) {
+			$extra = $this -> extraOptions[$relName];
 		}
 	
-		return $additional;
+		return $extra;
+	}
+
+
+	public function setExtraRelations($addOptions = false)
+	{
+		$this -> extraOptions = $addOptions;
+
+		return $this;
 	}
 	
+
 	public function createOnChange($argument)
 	{
 		return false;

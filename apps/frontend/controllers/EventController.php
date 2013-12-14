@@ -286,8 +286,16 @@ class EventController extends \Core\Controllers\CrudController
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-	{
+	{	
 		parent::editAction();
+	}
+
+	public function setEditExtraRelations()
+	{
+		$this -> editExtraRelations = array(
+			'location' => array('latitude', 'longitude'),
+			'venue' => array('latitude', 'longitude')
+		);
 	}
 
 
@@ -321,59 +329,56 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['is_description_full'] = 1;
 		$newEvent['event_status'] = 1;
 		$newEvent['recurring'] = $event['recurring'];
+		$newEvent['logo'] = $event['logo'];
 		if (isset($this -> session -> get('member') -> network)) {
 			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
 		}
 		
 		// process location
-		if (!empty($event['location-coords'])) {
+		if (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
 			// check location by coordinates
-			$coords = explode(';', $event['location-coords']);
-			
-			$location = $loc -> createOnChange(array('latitude' => $coords[0], 'longitude' => $coords[1]), array('latitude', 'longitude'));
+			$location = $loc -> createOnChange(array('latitude' => $event['location_latitude'], 
+													 'longitude' => $event['location_longitude']), 
+													 array('latitude', 'longitude'));
 			$newEvent['location_id'] = $location -> id;
+
 		} 
 		// location coordinates wasn't set. Try to get location from venue or address coordinates 
 		if (!isset($newEvent['location_id'])) {
-			if (!empty($event['venue-coords'])) {
-				$coords = explode(';', $event['venue-coords']); 
-			} elseif(!empty($event['address-coords'])) {
-				$coords = explode(';', $event['address-coords']);
-			} 
-			
-			if (!empty($coords)) {
-				$scale = $geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);
-				$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
-									and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
-				$location =  $loc::findFirst($query);
-				$newEvent['location_id'] = $location -> id;
+			if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+				if (!empty($coords)) {
+					$scale = $geo -> buildCoordinateScale($event['venue_latitude'], $event['venue_longitude']);
+					$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
+										and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+					$location =  $loc::findFirst($query);
+					$newEvent['location_id'] = $location -> id;
+				}
 			}
 		}
 		// venue/address coordinates wasn't set or location wasn't found
 		if (!isset($newEvent['location_id'])) {
-			if (!empty($event['location-input'])) {
-				$location = $loc -> createOnChange(array('city' => $event['location-input']), array('city'));
+			if (!empty($event['location'])) {
+				$location = $loc -> createOnChange(array('city' => $event['location']), array('city'));
 				$newEvent['location_id'] = $location -> id; 
 			}
 		}
 
 		// process venue
-		if (!empty($event['venue-coords'])) {
-			$coords = explode(';', $event['venue-coords']);
-			$venueInfo = array('latitude' => $coords[0],
-						       'longitude' => $coords[1]);
+		if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+			$venueInfo = array('latitude' => $event['venue_latitude'],
+						       'longitude' => $event['venue_longitude']);
 		}
 		if ($newEvent['location_id']) {
 			$venueInfo['location_id'] = $newEvent['location_id'];
 		}
-		$venueInfo['name'] = $event['venue-input'];
-		$venueInfo['address'] = $event['address-input'];
+		$venueInfo['name'] = $event['venue'];
+		$venueInfo['address'] = $event['address'];
 
 		$vn = $venue -> createOnChange($venueInfo);
 		$newEvent['venue_id'] = $vn -> id;
 
 		// process address
-		$newEvent['address'] = $event['address-input'];
+		$newEvent['address'] = $event['address'];
 
 		// process date and time
 		if (!empty($event['start_date'])) {
@@ -395,19 +400,29 @@ class EventController extends \Core\Controllers\CrudController
 			$newEvent['logo'] = $file -> getName();
 			$logo = $file;
 		}
-			
-		$ev = new Event();
+//_U::dump($newEvent);	
+
+		if (!empty($event['id'])) {
+			$ev = Event::findFirst($event['id']);
+		} else {
+			$ev = new Event();
+		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
 			// save image
-			$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
+			if (isset($logo)) {
+				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
+			}
 
 			// process site
-			if (!empty($event['event_site'])) 
-			{
+			$eSites = EventSite::find(array('event_id' => $ev -> id));
+			if ($eSites) {
+				foreach ($eSites as $es) {
+					$es -> delete();
+				}
+			}
+			if (!empty($event['event_site'])) {
 				$aSites = explode(',', $event['event_site']);
-				$eSites = new EventSite();
-
 				foreach($aSites as $key => $value) {
 					if (!empty($value)) {
 						$eSites -> assign(array('event_id' => $ev -> id,
@@ -418,21 +433,25 @@ class EventController extends \Core\Controllers\CrudController
 			}
 
 			// process categories
-			if (!empty($event['event_category_real'])) {
-				$aCats = explode(',', $event['event_category_real']);
-				$evCats = new EventCategory();
-				
+			$eCats = EventCategory::find(array('event_id' => $ev -> id));
+			if ($eCats) {
+				foreach ($eCats as $ec) {
+					$ec -> delete();
+				}
+			}
+			if (!empty($event['category'])) {
+				$aCats = explode(',', $event['category']);
 				foreach($aCats as $key => $value) {
 					if (!empty($value)) {
-						$evCats -> assign(array('event_id' => $ev -> id,
+						$eCats -> assign(array('event_id' => $ev -> id,
 											   'category_id' => $value));
-						$evCats -> save();
+						$eCats -> save();
 					}
 				}
 			}
 		}
 		
-		$this -> response -> redirect('/event/list');
+		$this -> response -> redirect('event/list');
 	}
 
 }		

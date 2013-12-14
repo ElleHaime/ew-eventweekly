@@ -18,9 +18,9 @@ class EventForm extends Form
 	
 	public function init()
 	{
-		$this -> addElement('file', 'logo', 'add image',
-								array('style' => 'display:none;',
-									  'value' => 'upload'));		
+		$this -> addElement('hidden', 'id');		
+
+		$this -> addElement('hidden', 'logo', 'add image');		
 
 		$nameValidators = array(
 				'PresenceOf' => array('message' => 'Name is required')
@@ -34,7 +34,8 @@ class EventForm extends Form
 		
 		$this -> addElement('text', 'location', 'Location',
 								array('placeholder' => 'Choose location'));
-		$this -> addElement('hidden', 'location-coords');
+		$this -> addElement('hidden', 'location_latitude');
+		$this -> addElement('hidden', 'location_longitude');
 		
 		$this -> addElement('text', 'address', 'Address', 
 								array('placeholder' => 'Choose Address'));
@@ -42,7 +43,8 @@ class EventForm extends Form
 
 		$this -> addElement('text', 'venue', 'Venue',
 								array('placeholder' => 'Choose Venue'));
-		$this -> addElement('hidden', 'venue-coords');
+		$this -> addElement('hidden', 'venue_latitude');
+		$this -> addElement('hidden', 'venue_longitude');
 
 		$this -> addElement('text', 'event_site', 'Event sites', 
 								array('style' => 'display:none;'));	

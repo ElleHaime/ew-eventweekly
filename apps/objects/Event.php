@@ -29,11 +29,9 @@ class Event extends Model
 	public function initialize()
 	{
 		$this -> belongsTo('venue_id', '\Objects\Venue', 'id', array('alias' => 'venue',
-																	 'baseField' => 'name',
-																	 'additionalFields' => array('latitude', 'longitude')));
+																	 'baseField' => 'name'));
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
-																	 	   'baseField' => 'alias',
-																		   'additionalFields' => array('latitude', 'longitude')));
+																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));

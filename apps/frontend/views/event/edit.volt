@@ -17,6 +17,8 @@
                             	{% else %}
                             		Create event
                             	{% endif %}
+
+                                {{ form.render('id') }}
                             </h3>
                             <div class="row-fluid">
                                 <div class="span3">
@@ -90,7 +92,8 @@
                         <div class="sidebar">
                             <div class="input-append">
                                 {{ form.render('location') }}
-                                {{ form.render('location-coords')}}
+                                {{ form.render('location_latitude')}}
+                                {{ form.render('location_longitude')}}
                                 <div class="search-queries hidden">
                                     <ul id="locations-list">
                                     </ul>
@@ -109,7 +112,8 @@
 
                             <div class="input-append">
                                   {{ form.render('venue') }}
-								  {{ form.render('venue-coords')}}
+								  {{ form.render('venue_latitude')}}
+                                  {{ form.render('venue_longitude')}}
                                 <div class="search-queries hidden">
                                     <ul id="venues-list">
                                     </ul>
@@ -147,7 +151,7 @@
 								<p> {{ form.label('event_category') }}</p>
 									{{ form.render('event_category') }}
 	                            <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
-	                            	<input type="hidden" id="event_category_real" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+	                            	<input type="hidden" id="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
 	                                <p>Event categories :</p>
 	                                {% if event.category %}
 	                                	{% for key, name in event.category %}
@@ -204,12 +208,7 @@
                                 	{{ form.render('recurring') }}
                                 <hr>
                                 <div class="checkbox-block">
-                                    <label class="checkbox">
-                                        <input type="checkbox" value="">
-                                        Create Promoter
-                                    </label>
-
-                                    <p> Choose from existing</p>
+                                    <p> Choose promoter</p>
                                     {{ form.render('campaign_id') }}
                                 </div>
                             </div>

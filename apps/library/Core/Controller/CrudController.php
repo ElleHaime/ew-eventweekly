@@ -10,6 +10,7 @@ use Phalcon\Mvc\ModelInterface,
 class CrudController extends \Core\Controller
 {
 	protected $formData	= array();
+	protected $editExtraRelations = false;
 	
 	public function indexAction()
 	{
@@ -30,6 +31,7 @@ class CrudController extends \Core\Controller
 	{
 		$object = $this -> getObj();
 		$model = strtolower($this -> getModel());
+		$this -> setEditExtraRelations();
 
 		$this -> loadObject();
 		$this -> obj -> member_id = $this -> memberId;
@@ -37,7 +39,9 @@ class CrudController extends \Core\Controller
 		$param = $this -> dispatcher -> getParam('id');
 		if ($param !== null) {
 			$this -> obj = $object::findFirstById((int)$param);
-			$this -> setDependencyProperty($this -> obj -> getDependency());
+			$this -> obj -> setExtraRelations($this -> getEditExtraRelations());
+			$this -> obj -> getDependencyProperty();
+			//$this -> setDependencyProperty($this -> obj -> getDependency());
 		} 
 		$form = $this -> loadForm();
 
@@ -101,7 +105,7 @@ class CrudController extends \Core\Controller
 
 		if ($form -> isValid($this -> request -> getPost())) {
 			$this -> formData = $form -> getFormValues();
-			$this -> processDependencyProperty($dependencies);
+			//$this -> processDependencyProperty($dependencies);
 
 			$this -> obj -> assign($this -> formData);
 			if (!$this -> obj -> save()) {
@@ -117,7 +121,7 @@ class CrudController extends \Core\Controller
 	}
 
 
-	public function setDependencyProperty($deps = false)
+	/*public function setDependencyProperty($deps = false)
 	{
 		if ($deps) {
 			foreach ($deps as $dep => $settings) {
@@ -156,12 +160,21 @@ class CrudController extends \Core\Controller
 		}
 
 		return;
-	}
+	} */
 
 
 	public function getListFilters()
 	{
 	    $filter = 'member_id = ' . $this -> memberId;
 	    return $filter;
+	}
+
+	public function setEditExtraRelations()
+	{
+	}
+
+	public function getEditExtraRelations()
+	{
+		return $this -> editExtraRelations;
 	}
 }
