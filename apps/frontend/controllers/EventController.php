@@ -246,23 +246,27 @@ class EventController extends \Core\Controllers\CrudController
 	public function answerAction()
 	{
 		if ($this -> session -> has('member')) {
+			$data = $this -> request -> getPost();
 			$member = $this -> session -> get('member');
 
-			switch ($this -> request -> getPost('answer', 'string'))
+			switch ($data['answer'])
 			{
 				case 'JOIN': $status = EventMember::JOIN; break;
 				case 'MAYBE': $status = EventMember::MAYBE; break;
 				case 'DECLINE': $status = EventMember::DECLINE; break;
 			}
-			$event_id = $this -> request -> getPost('event_id', 'string');
 
 			$eventMember = new EventMember();
-			$eventMember -> member_id =  $member -> id;
-			$eventMember -> event_id  =  $event_id;
-			$eventMember -> member_status = $status;
-			$eventMember -> save();
-
-			$ret['STATUS']='OK';
+			$eventMember -> assign(array(
+					'member_id' => $member -> id,
+					'event_id' => $data['event_id'],
+					'member_status' => $status
+			));
+			if ($eventMember -> save()) {
+				$ret['STATUS']='OK';
+			} else {
+				$ret['STATUS']='ERROR';
+			}
 			echo json_encode($ret);
 			die;
 		}

@@ -165,7 +165,7 @@ define('fb',
 				$(self.settings.btnEventMaybe).hide();
 				$(self.settings.btnEventDecline).hide();
 
-				self.__request('/event/answer', { answer: status, event_id : $('#event_id').val() }, 'post');
+				self.__request('post', '/event/answer', { answer: status, event_id : $('#event_id').val() });
 				$('#categ-' + status.toLowerCase()).show();
 			}
 
