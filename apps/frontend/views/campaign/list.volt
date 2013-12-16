@@ -6,7 +6,7 @@
     <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your campaigns</h3>
     <div class="row-fluid ">
         <div class="span12">
-		{% if object is defined %}
+		{% if object|length %}
 			{% for campaign in object %}
 				<div class="list-event clearfix">
 					<div class="list-event-img">
