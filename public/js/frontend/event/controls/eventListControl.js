@@ -14,6 +14,7 @@ define('frontEventListControl',
 				classStatus: '.btn.eventStatus',
 				classElement: '.list-event.clearfix'
 			},
+			self.processedElement = null,
 			
 			self.init = function()
 			{
@@ -74,6 +75,7 @@ define('frontEventListControl',
 					event_status: event_status
 				};
 
+				self.processedElement = elem;
 				$.when(utils.request('post', '/event/' + method, params)).then(function(data) {
 					data = $.parseJSON(data);
 		            if (data.status == 'OK') {
@@ -85,17 +87,15 @@ define('frontEventListControl',
 
 			self.__changePublishStatus = function(elemId, status)
 			{
-				var elem = $('#' + elemId).find(self.settings.classStatus);
-
-console.log($(elem).closest('span'));
-return false;
 				if (status == 0) {
-					$($(elem).context.activeElement).removeClass('unpublishEvent').addClass('publishEvent');
-					$($(elem).context.activeElement).children().text('publish');
+					self.processedElement.removeClass('unpublishEvent').addClass('publishEvent');
+					self.processedElement.children().text('publish');
 				} else {
-					$($(elem).context.activeElement).removeClass('publishEvent').addClass('unpublishEvent');
-					$($(elem).context.activeElement).children().text('unpublish');
-				} 
+					self.processedElement.removeClass('publishEvent').addClass('unpublishEvent');
+					self.processedElement.children().text('unpublish');
+				}
+
+				self.processedElement = null;
 			},
 
 
