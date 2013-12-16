@@ -35,8 +35,8 @@ require.config({
 		'frontTopPanel': 'frontend/topPanel',
 		'frontEventEditControl': 'frontend/eventEditControl',
 		'frontEventListControl': 'frontend/eventListControl',
-		'frontCampaignEditControl': 'frontend/CampaignEditControl',
-		'frontCampaignListControl': 'frontend/CampaignListControl'
+		'frontCampaignEditControl': 'frontend/campaignEditControl',
+		'frontCampaignListControl': 'frontend/campaignListControl'
 	},
 
 	shim: {

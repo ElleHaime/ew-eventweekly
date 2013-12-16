@@ -14,11 +14,11 @@
     <meta property="og:title" content="EventWeekly"/>
     {% endif %}
 
-    {{ stylesheet_link('/css/bootstrap.min.css') }}
-    {{ stylesheet_link('/css/bootstrap-responsive.min.css') }}
-    {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('/css/style.css') }}
-    {{ stylesheet_link('/css/jake.css') }}
+    {{ stylesheet_link('css/bootstrap.min.css') }}
+    {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
+    {{ stylesheet_link('css/style.css') }}
+    {{ stylesheet_link('css/jake.css') }}
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>

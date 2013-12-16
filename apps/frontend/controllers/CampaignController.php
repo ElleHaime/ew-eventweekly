@@ -27,6 +27,7 @@ class CampaignController extends \Core\Controllers\CrudController
 
 	/**
 	 * @Route("/campaign/add", methods={"GET", "POST"})
+	 * @Route("/campaign/edit", methods={"GET", "POST"})
 	 * @Route("/campaign/edit/{id:[0-9]+}", methods={"GET"})
 	 * @Acl(roles={'member'});  	 
 	 */
