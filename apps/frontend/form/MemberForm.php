@@ -18,16 +18,22 @@ class MemberForm extends Form
 	public function init()
 	{
 		$emailValidators = array(
-				'PresenceOf' => array('message' => 'Email is required'),
 				'Email' => array('message' => 'Email is not valid')
 		);
-		$this -> addElement('text', 'email', 'Email', array('validators' => $emailValidators));
-		$this -> addElement('text', 'name', 'You name');
+        $this -> addElement('text', 'extra_email', 'Additional email', array('validators' => $emailValidators));
+
+        $nameValidators = array(
+            'PresenceOf' => array('message' => 'Name is required')
+        );
+		$this -> addElement('text', 'name', 'You name', array('validators' => $nameValidators));
+
 		$this -> addElement('text', 'address', 'Address');
 		$this -> addElement('text', 'phone', 'Phone');
 		$this -> addElement('text', 'current_location', 'Location');
 		$this -> addElement('hidden', 'prev_location');
 		$this -> addElement('hidden', 'location_id');
+
+        $this -> addElement('file', 'logo', 'Logo');
 
 		$this -> add(new Submit('Save'));
 	}

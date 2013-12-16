@@ -7,7 +7,8 @@ use Core\Utils as _U,
     Frontend\Models\MemberFilter,
     Frontend\Models\Member,
     Frontend\Models\Location,
-    Frontend\Form\ChangePassForm;
+    Frontend\Form\ChangePassForm,
+    Frontend\Form\MemberForm;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -48,9 +49,56 @@ class MemberController extends \Core\Controllers\CrudController
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-	{
-		parent::editAction();
-	}
+    {
+        $cfg = $this -> di -> get('config');
+        $member = Member::findFirst('id = '.$this->session->get('memberId'));
+
+        $form = new MemberForm($member);
+
+        if ($this->request->isPost()) {
+            $formValues = $this->request->getPost();
+
+            if ($form->isValid($formValues)) {
+                $member->extra_email = $formValues['extra_email'];
+                $member->name = $formValues['name'];
+                $member->address = $formValues['address'];
+                $member->phone = $formValues['phone'];
+                $member->location_id = $formValues['location_id'];
+
+                if ($this->request->hasFiles() == true) {
+                    $file = array_shift($this->request->getUploadedFiles());
+
+                    $imgExts = array('image/jpeg', 'image/png');
+
+                    if (in_array($file->getType(), $imgExts)) {
+                        $parts = pathinfo($file->getName());
+
+                        $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
+                        $file->moveTo($cfg -> application -> uploadDir . 'img/logos/' . $filename);
+
+                        $oldFile = ROOT_APP . 'public' . $member->logo;
+                        if (file_exists($oldFile)) {
+                            unlink($oldFile);
+                        }
+                        $member->logo = '/upload/img/logos/' . $filename;
+                    }
+                }
+
+                if (!$member->save()) {
+                    $this->setFlash('Error while saving your profile data password! Call to your admin!', 'error');
+                } else {
+                    $this->setFlash('Your data was successfully changed!');
+
+                    $this->session->set('member', $member);
+                    $this->response->redirect('profile');
+                }
+            } else {
+                $form->setFormValues($formValues);
+            }
+        }
+
+        $this->view->form = $form;
+    }
 
 
 	public function loadObject()

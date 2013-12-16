@@ -42,6 +42,9 @@
                 <p>import interests from facebook <br>
                  / login through facebook</p>
             </div>
+            <div class="profile-btn">
+                <a href="/member/edit" class="btn">Edit Profile</a>
+            </div>
         </div>
     </div>
 

@@ -5,15 +5,15 @@
 <div class="container content">
 <h1>Profile</h1>
 <div align="left">
-	{{ form() }}
+	{{ form('member/edit', 'method': 'post', 'enctype': 'multipart/form-data') }}
 		<table>
-			<tr>
-				<td>{{ form.label('email') }}</td>
-				<td>
-					{{ form.render('email') }}	
-					{{ form.messages('email') }}
-				</td>
-			</tr>
+            <tr>
+                <td>{{ form.label('extra_email') }}</td>
+                <td>
+                    {{ form.render('extra_email') }}
+                    {{ form.messages('extra_email') }}
+                </td>
+            </tr>
 
 			<tr>
 				<td>{{ form.label('name') }}</td>
@@ -43,8 +43,8 @@
 				<td>{{ form.label('current_location') }}</td>
 				<td>
 					{{ form.render('prev_location') }}
-					{{ form.render('location_id') }}	
-					{{ form.render('current_location') }}	
+					{{ form.render('location_id') }}
+					{{ form.render('current_location') }}
 					{{ form.messages('current_location') }}
 					
 					<div id="results" hidden="hidden">
@@ -54,7 +54,16 @@
 			      </div>
 			      
 				</td>
-			</tr>			
+			</tr>
+
+            <tr>
+                <td>{{ form.label('logo') }}</td>
+                <td>
+                    {{ form.render('logo') }}
+                    {{ form.messages('logo') }}
+                </td>
+            </tr>
+
 			<tr>
 				<td colspan="2">{{ form.render('Save') }}</td>
 			</tr>
