@@ -5,38 +5,11 @@
 
     <div class="container content_noBorder">
         <div class="row-fluid">
-            <div class="span12">
-                <form action="/search" method="post">
-
-                    <label>By Title</label>
-                    {{ form.render('title') }}
-
-                    <label>By Location</label>
-                    {{ form.render('location') }}
-
-                    <label>From Date</label>
-                    {{ form.render('start_date') }}
-
-                    <label>To Date</label>
-                    {{ form.render('end_date') }}
-
-                    {% for index, node in categories %}
-                        <label for="cat{{ index }}">
-                            {{ check_field('category[]', 'value': node['id'], 'id': 'cat'~index) }} - {{ node['name'] }}
-                        </label>
-                    {% endfor %}
-
-                    <input type="submit" value="Search"/>
-                </form>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            {% if result is defined %}
+            {% if events is defined %}
                 <div class="span12">
-                    <h3 class="title-page">Search results:</h3>
+                    <h3 class="title-page">{{ listName }}</h3>
 
-                    {% for index, node in result %}
+                    {% for index, node in events %}
                         <div class="row-fluid events-list">
                             <div class="span7">
                                 <div class="event-one clearfix">
@@ -50,11 +23,6 @@
                                                     <img src="{{ node['event']['pic_square'] }}">
                                                 {% endif %}
                                             </a>
-                                        </div>
-
-                                        <div class="like-box clearfix">
-                                            <span class=""><img src="img/demo/like.png" alt="like" title="like"> </span>
-                                            <span class=""><img src="img/demo/dislike.png" alt="dislike" title="dislike"> </span>
                                         </div>
                                     </div>
                                     <div class="event-one-text">

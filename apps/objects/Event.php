@@ -40,6 +40,7 @@ class Event extends Model
 							   'event_id', 'category_id', 
 							   '\Objects\Category', 'id', array('alias' => 'category',
 							   		 							'baseField' => 'name'));
+		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
 
 	public function beforeValidationOnCreate()

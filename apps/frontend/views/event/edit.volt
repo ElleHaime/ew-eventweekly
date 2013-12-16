@@ -134,10 +134,10 @@
 
                             <div class="input-append">
                                 <input type="text" id="sites" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
-                                {{ form.render('event_site') }}
+                                {#{ form.render('event_site') }#}
                             </div>
                             <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
-                                <input type="hidden" id="event_site" name="event_site" value="{% if event.site %}{% for key, val in event.site %}{{ val }},{% endfor %}{% endif %}">
+                                <input type="hidden" id="event_site" name="event_site" value="{% if event.site %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
                                 {% if event.site|length %}                            
                                     <p>Event web-sites :</p>
                                 	{% for site in event.site %}

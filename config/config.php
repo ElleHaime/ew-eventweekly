@@ -77,6 +77,7 @@ $cfg_settings = array(
 				'Frontend\Models' => ROOT_FRONT . 'models/',
 				'Frontend' => ROOT_FRONT,
 				'Frontend\Form' => ROOT_FRONT . 'form/',
+				'Frontend\Events' => ROOT_FRONT . 'events/',
 			),
 			'bootstrapNs' => 'Frontend\Bootstrap',
 			'bootstrapPath' => ROOT_FRONT . 'Bootstrap.php',

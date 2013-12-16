@@ -12,7 +12,9 @@ use Core\Utils as _U,
 	Frontend\Models\Event as Event,
 	Objects\EventImage,
 	Objects\EventSite,
-	Objects\EventMember;
+	Objects\EventMember,
+    Frontend\Models\EventLike;
+
 
 /**
  * @RouteRule(useCrud = true)
@@ -112,10 +114,15 @@ class EventController extends \Core\Controllers\CrudController
 				return $events;
 
 			} else {
+                $this -> session -> set('eventsTotal', 0);
 				$res['status'] = 'ERROR';
 				$res['message'] = 'no events';
-				echo json_encode($res);
-				die();
+                if ($this->request->isAjax()) {
+                    echo json_encode($res);
+                    die();
+                } else {
+                    return array($events[0], $events[1]);
+                }
 			} 
 
 		} else {
@@ -261,25 +268,50 @@ class EventController extends \Core\Controllers\CrudController
 		}
 	}
 
+	/**
+	 * @Route("/event/liked", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function listLikedAction() 
+	{
+        $event = new Event();
+
+		$this -> view -> setvar('listName', 'Liked Events');
+		$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
+
+		$events = $event -> listEvent();
+
+        $this -> view -> setvar('events', $events);
+        $this -> view -> pick('event/userlist');
+	}
+
+	/**
+	 * @Route("/event/joined", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function listJoinedAction()
+	{
+		$event = new Event();
+		$this -> view -> setvar('listName', 'Where I Go');
+		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
+
+		$events = $event->listEvent();
+		
+		$this -> view -> setvar('events', $events);
+		$this -> view -> pick('event/userlist');		
+	}
+
 
 	/**
 	 * @Route("/event/list", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 	 	 
+	 * @Acl(roles={'member'});
 	 */
 	public function listAction()
 	{
 		parent::listAction();
 	}
-
-	/**
-	 * @Route("/event/getLocations", methods={"POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function getLocations()
-	{
-
-	}
-
+	
+	
 	/**
 	 * @Route("/event/edit", methods={"GET", "POST"})
 	 * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
@@ -321,7 +353,34 @@ class EventController extends \Core\Controllers\CrudController
 	}
 
 
-
+    /**
+     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET"})
+     * @Acl(roles={'member'});
+     */
+    public function likeAction($eventId, $status = 0)
+    {
+        $response = array(
+            'status' => false
+        );
+        $memberId = $this -> session -> get('memberId');
+        $eventLike = new EventLike();
+        
+        if (!$eventLike -> findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
+        	$save = array(
+        			'event_id' => $eventId,
+        			'member_id' => $memberId,
+        			'status' => $status
+        	);
+        	
+        	if ($eventLike->save($save)) {
+        		$response['status'] = true;
+        		$this->eventsManager->fire('App.Event:afterLike', $this);
+        	}
+        }
+        
+        $this->sendAjax($response);
+	}
+        
 	/**
 	 * @Route("/event/publish", methods={"GET", "POST"})
 	 * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
@@ -340,7 +399,6 @@ class EventController extends \Core\Controllers\CrudController
 
 		echo json_encode($result);
 	}
-
 	
 	/**
 	 * @Route("/event/unpublish", methods={"GET", "POST"})
@@ -526,5 +584,4 @@ class EventController extends \Core\Controllers\CrudController
 		
 		$this -> response -> redirect('/event/list');
 	}
-
 }		

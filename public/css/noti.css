@@ -1,0 +1,61 @@
+.notiBlock {
+    position: absolute;
+    width: 100%;
+    /*top: -999px;*/
+    margin-top: 67px;
+    z-index: 10;
+    line-height: 50px;
+    height: 0;
+    overflow: hidden;
+    background: #FFFFFF;
+    text-align: right;
+    border-top: 1px solid #313131;
+    border-bottom: 2px solid #008de8;
+    -webkit-box-shadow:inset 0 3px 3px 0 rgba(51,51,51,1);
+    box-shadow:inset 0 3px 3px 0 rgba(51,51,51,1);
+}
+
+.notiBlock a {
+    color: #008de8 !important;
+    font-weight: bold !important;
+}
+
+.notiWindowTypeInfo {
+    background: #FFFFFF;
+}
+
+.notiWindowTypeError {
+    background: #ff9e9d;
+}
+
+.notiWindowTypeWarning {
+    background: #ffce7d;
+}
+
+.notiHide {
+    display: inline-block;
+    margin-left: 20px;
+    background: #b3b3b3;
+    color: #ffffff;
+    line-height: 15px;
+    padding: 1px 3px;
+}
+
+.notiHide:hover {
+    background: #9a9a9a;
+    text-decoration: none;
+}
+
+.notiABtn {
+    display: inline-block;
+    margin-left: 20px;
+    background: #6170b3;
+    color: #ffffff;
+    line-height: 15px;
+    padding: 1px 3px;
+}
+
+.notiABtn:hover {
+    text-decoration: none;
+    background: #4a5992;
+}

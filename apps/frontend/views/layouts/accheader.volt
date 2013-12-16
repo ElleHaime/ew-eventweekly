@@ -18,12 +18,12 @@
                         <div class="edit-btn">
                             <button class="btn btn-block" onclick="location.href='/profile'"><span class="edit-icon"></span><span class="btn-text">edit profile</span></button>
                             <button class="btn btn-block" onclick="location.href='/campaign/list'"><span class="edit-icon"></span><span class="btn-text">manage campaigns</span></button>
-                            <button class="btn btn-block" onclick="location.href='/event/list'"><span class="edit-icon"></span><span class="btn-text">manage events</span></button>
                         </div>
 
                         <div class="btn-list">
-                            <button class="btn btn-block"><span class="btn-count">21</span><span class="btn-text">Recommended for you</span></button>
-                            <button class="btn btn-block"><span class="btn-count">12</span><span class="btn-text">Shared by your friends</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/liked'"><span class="btn-count">5</span><span class="btn-text">Liked</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/list'"><span class="btn-count">9</span><span class="btn-text">Created</span></button>
+                            <button class="btn btn-block" onclick="location.href='/event/joined'"><span class="btn-count">3</span><span class="btn-text">Where I Go</span></button>
                         </div>
 
                         <div class="edit-btn">
@@ -177,6 +177,17 @@
                 <span class="line"></span>
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="notiBlock">
+    <div class="container">
+        <div class="row">
+            <div class="span12">
+                <span id="notiText">qwe</span>
+                <span class="notiBtnArea"></span>
+                <a href="#" class="notiHide">&times;</a>
+            </div>
         </div>
     </div>
 </div>

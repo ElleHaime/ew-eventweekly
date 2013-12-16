@@ -5,6 +5,7 @@ require([
 	'frontCampaignListControl',
 	'datetimepicker',
 	'utils',
+	'noti',
 	'domReady',		
 	'underscore',
 	'jCookie',	
@@ -20,5 +21,10 @@ require([
 		            status: true
 		        }); 
 		frontCampaignListControl.init();
+		
+		if ($('#splash_messages').length > 0) {
+			var fMessage = $('#splash_messages');
+			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+		}
 	}
 );

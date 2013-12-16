@@ -67,6 +67,25 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                             $that->initViewFilters($volt);
 
+                            $eventsManager = $di->getShared('eventsManager');
+
+                            $eventsManager->attach('view:beforeRender', function($event, $view) use ($di) {
+                                    $session = $di->getShared('session');
+
+                                    if ($session->has('flashMsgText')) {
+                                        $view->setVar('flashMsgText', $session->get('flashMsgText'));
+                                        $session->remove('flashMsgText');
+                                    }
+
+                                    if ($session->has('flashMsgType')) {
+                                        $view->setVar('flashMsgType', $session->get('flashMsgType'));
+                                        $session->remove('flashMsgType');
+                                    }
+
+                                });
+
+                            $view->setEventsManager($eventsManager);
+
 							return $volt;
 						},
 					'.phtml' => 'Phalcon\Mvc\View\Engine\Volt'

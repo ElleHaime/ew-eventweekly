@@ -28,11 +28,11 @@
                         <span>So, whats your plan?</span>
                         <div class="btn-hide clearfix">
                             <div class="event-site">
-                                    <div class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
+                                    <div id="categ-join" class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
                                         <span class="color-type green">Im going!</span>
                                         <span class="arrow arrow_green"></span>
                                     </div>
-                                    <div class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
+                                    <div id="categ-maybe" class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
                                         <span class="color-type yellow">Its interesting, maybe im going</span>
                                         <span class="arrow arrow_yellow"></span>
                                     </div>

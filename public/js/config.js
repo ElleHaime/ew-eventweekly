@@ -32,11 +32,14 @@ require.config({
 		'fb': 'library/facebook/fb',
 
 		//frontend
-		'frontTopPanel': 'frontend/topPanel',
-		'frontEventEditControl': 'frontend/eventEditControl',
-		'frontEventListControl': 'frontend/eventListControl',
-		'frontCampaignEditControl': 'frontend/campaignEditControl',
-		'frontCampaignListControl': 'frontend/campaignListControl'
+		'noti': 'frontend/general/noti',
+		'frontListEventLike': 'frontend/list/eventLike',
+		'frontListSuggestCategory': 'frontend/list/suggestCategory',
+		'frontTopPanel': 'frontend/general/topPanel',
+		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
+		'frontEventListControl': 'frontend/event/controls/eventListControl',
+		'frontCampaignEditControl': 'frontend/campaign/controls/campaignEditControl',
+		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl'
 	},
 
 	shim: {

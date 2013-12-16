@@ -2,6 +2,7 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
+	'noti',	
 	'utils',
 	'domReady',
 	'underscore',
@@ -17,7 +18,11 @@ require([
 		fb.init({
 		            appId: '303226713112475',
 		            status: true
-		        }); 
+		        });
+		if ($('#splash_messages').length > 0) {
+			var fMessage = $('#splash_messages');
+			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+		}
 	}
 );
 

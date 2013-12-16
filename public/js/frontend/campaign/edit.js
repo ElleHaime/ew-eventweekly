@@ -4,7 +4,8 @@ require([
 	'fb',
 	'frontCampaignEditControl',
 	'datetimepicker',
-	'utils',
+	'utils',	
+	'noti',
 	'domReady',		
 	'underscore',
 	'jCookie',	
@@ -20,5 +21,10 @@ require([
 		            status: true
 		        }); 
 		frontCampaignEditControl.init();
+		
+		if ($('#splash_messages').length > 0) {
+			var fMessage = $('#splash_messages');
+			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+		}
 	}
 );

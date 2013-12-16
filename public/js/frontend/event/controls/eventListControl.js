@@ -87,6 +87,8 @@ define('frontEventListControl',
 			{
 				var elem = $('#' + elemId).find(self.settings.classStatus);
 
+console.log($(elem).closest('span'));
+return false;
 				if (status == 0) {
 					$($(elem).context.activeElement).removeClass('unpublishEvent').addClass('publishEvent');
 					$($(elem).context.activeElement).children().text('publish');

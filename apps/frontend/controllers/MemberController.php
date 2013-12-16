@@ -4,7 +4,10 @@ namespace Frontend\Controllers;
 
 use Core\Utils as _U,
     Frontend\Models\Category,
-    Frontend\Models\MemberFilter;
+    Frontend\Models\MemberFilter,
+    Frontend\Models\Member,
+    Frontend\Models\Location,
+    Frontend\Form\ChangePassForm;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -33,6 +36,10 @@ class MemberController extends \Core\Controllers\CrudController
                 'categories' => Category::find()->toArray(),
                 'member_categories' => $member_categories
             ));
+
+        if ($this->session->has('location_conflict_profile_flag')) {
+            $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
+        }
 	}
 
 
@@ -151,5 +158,108 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->response->redirect('profile');
+    }
+
+    /**
+     * @Route("/member/update-location", methods={"post"})
+     * @Acl(roles={'member'});
+     */
+    public function updateLocationAction()
+    {
+        $process = true;
+
+        $member = null;
+
+        $postData = $this->request->getPost();
+
+        $Location = new Location();
+
+        $isLocationExists = $Location::findFirst('city like "%' . trim($postData['city']) . '%" AND country like "%' . trim($postData['country']) . '%"');
+
+
+        if (!$isLocationExists) {
+            $Location->city = $postData['city'];
+            $Location->alias = $postData['city'];
+            $Location->country = $postData['country'];
+            $Location->latitude = $postData['lat'];
+            $Location->longitude = $postData['lng'];
+
+            if (!$Location->save()) {
+                $process = false;
+            }
+
+            $id = $Location->id;
+        }else {
+            $id = $isLocationExists->id;
+            $Location = $isLocationExists;
+        }
+
+        if ($process) {
+            $sMember = $this->session->get('member');
+            $member = Member::findFirst('id = '.$sMember->id);
+
+            if (!$member) {
+                $process = false;
+            }
+        }
+
+        if ($process) {
+            $member->location_id = $id;
+
+            if (!$member->save()) {
+                $process = false;
+            }
+        }
+
+        if ($process) {
+
+            $this->session->remove('location_conflict_profile_flag');
+
+            $sMember->location_id = $id;
+            $this->session->set('member', $sMember);
+
+            $this->session->set('location', $Location);
+            $result = array('status' => true);
+        }else {
+            $result = array('status' => false);
+        }
+
+        exit(json_encode($result));
+
+    }
+
+    /**
+     * @Route("/profile/change-password", methods={"get","post"})
+     * @Acl(roles={'member'});
+     */
+    public function changePasswordAction() {
+        $form = new ChangePassForm();
+
+        if ($this->request->ispost()) {
+            if ($form->isValid($this->request->getPost())) {
+
+                $postData = $this->request->getPost();
+
+                $member = Member::findFirst('id = '.$this->session->get('memberId'));
+
+                if (!$this->security->checkHash($postData['old_password'], $member->pass)) {
+                    $this->setFlash('Wrong old password!', 'error');
+                }else {
+                    $member->pass = $this->security->hash($postData['password']);
+
+                    if (!$member->save()) {
+                        $this->setFlash('Error while saving your new password! Call to your admin!', 'error');
+                    }else {
+                        $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
+
+                        $this->setFlash('Your password was successfully changed!');
+
+                        $this->response->redirect('profile');
+                    }
+                }
+            }
+        }
+
+        $this->view->form = $form;
     }
 }

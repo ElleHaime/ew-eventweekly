@@ -13,17 +13,21 @@ use Objects\Event as EventObject,
 	Objects\EventMember,
     Frontend\Models\Category,
     Frontend\Models\MemberFilter,
-    Objects\EventCategory;
+    Objects\EventCategory,
+    Phalcon\Mvc\Model\Resultset;
 
 class Event extends EventObject
 {
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 
+
 	public static $eventRecurring = array('0' => 'Once',
 										  '1' => 'Daily',
 										  '7' => 'Weekly');
 	protected $locator = false;
+	private $conditions = [];
+
 
 	
 	public function afterFetch()
@@ -33,7 +37,6 @@ class Event extends EventObject
 		$this -> start_date = date('d/m/Y', strtotime($this -> start_date));
 		$this -> end_date = date('d/m/Y', strtotime($this -> end_date));
 	}
-
 
 	public function grabEventsByFbId($token, $eventId)
 	{
@@ -310,4 +313,45 @@ class Event extends EventObject
 
 		return $data;
 	}
+
+    public function setCondition($condition)
+    {
+        if (!empty($condition)) {
+            $this -> conditions[] = (string)$condition;
+        }
+       
+        return $this;
+    }
+
+    public function listEvent()
+    {
+        $query = '
+                SELECT event.*, category.*, location.*, venue.name AS venue
+                FROM \Frontend\Models\Event AS event
+                LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
+                LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
+                LEFT JOIN \Frontend\Models\Location AS location ON (event.location_id = location.id)
+                LEFT JOIN \Frontend\Models\Venue AS venue ON (location.id = venue.location_id AND event.fb_creator_uid = venue.fb_uid)
+                LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event.id = event_like.event_id AND event_like.status = 1)
+                LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
+            ';
+
+        if (!empty($this -> conditions)) {
+            $query .= ' WHERE';
+            $count = count($this -> conditions);
+            for ($i = 0; $i < $count; $i++) {
+                if ($i !== 0) {
+                	$query .= ' AND';
+               	}
+                $query .= " " . $this -> conditions[$i];
+            }
+
+            $query .= ' GROUP BY event.id';
+            $result = $this -> getModelsManager() -> executeQuery($query);
+            $result -> setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+            $result = $result->toArray();
+        }
+        return $result;
+    }
 } 
