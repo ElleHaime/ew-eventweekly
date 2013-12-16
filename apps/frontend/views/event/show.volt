@@ -122,8 +122,10 @@
 
                 <div class="event-site">
                     <p>Category :</p>
-                    {% for index, node in event['categories'] %}
-                        <span class="btn" style="padding: 5px 10px; min-height: 0;">{{ node['name'] }}</span>
+                    {% if event['categories']|length %}
+                    	{% for index, node in event['categories'] %}
+                        	<span class="btn" style="padding: 5px 10px; min-height: 0;">{{ node['name'] }}</span>
+                        {% endfor %}
                     {% else %}
                         <span class="btn uncategorized_label" style="padding: 5px 10px; min-height: 0;">Uncategorized</span>
                         <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
@@ -132,7 +134,7 @@
                             <li><a href="/suggest-event-category/{{ event['id'] }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
                         {% endfor %}
                         </ul>
-                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
         </div>
