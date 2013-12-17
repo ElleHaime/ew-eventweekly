@@ -48,9 +48,6 @@ class EventForm extends Form
 		$this -> addElement('hidden', 'venue_latitude');
 		$this -> addElement('hidden', 'venue_longitude');
 
-		$this -> addElement('text', 'event_site', 'Event sites', 
-								array('style' => 'display:none;'));	
-
 		$this -> addElement('check', 'event_status', 'Publish event immediately',
 								array('value' => '1'));
 
