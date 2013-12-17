@@ -5,6 +5,7 @@
     <div class="container-fluid" id="container-box">
         <div class="row-fluid">
             <div class="span12">
+
                 <div class="agreement-box">
                     <form class="form-horizontal" method="post">
 
