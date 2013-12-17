@@ -58,9 +58,9 @@
                                                                 <span class="arrow arrow_yellow"></span>
                                                             </div>
                                                         {% if !event['answer'] %}
-                                                            <button class="btn">I`m going!</button>
-                                                            <button class="btn">I`m interested!</button>
-                                                            <button class="btn">Don`t like</button>
+                                                            <button class="btn" id="event-join">I`m going!</button>
+                                                            <button class="btn" id="event-maybe">I`m interested!</button>
+                                                            <button class="btn" id="event-decline">Don`t like</button>
                                                         {% endif %}
                                                     </div>
                                                 </div>
@@ -79,6 +79,7 @@
                                             </div>
                                         {% endif %}
                                         <div class="event-list-category">
+
 	                                        {% if event['categories']|length %}
 	                    						{% for index, node in event['categories'] %}
 	                    						    <span class="category-title">{{ node['name'] }}</span>
