@@ -3152,6 +3152,7 @@ i.icon-map {
     height: 29px;
     display: block;
     text-indent: -9999px;
+    padding: 5px 10px 4px; 
 }
 
 .header-main {
@@ -3289,3 +3290,5 @@ i.icon-map {
     width: 14px;
     background-position: -433px -96px;
 }
+
+

@@ -46,6 +46,7 @@ define('frontListEventLike',
 		     * @private
 		     */
 		    self.__clickHandler = function(elem) {
+		    	
 	            var status = elem.data('status'),
 	                eventId = elem.data('id');
 
@@ -66,7 +67,7 @@ define('frontListEventLike',
 		     */
 		    self.__sendStatus = function(eventId, status) {
 		        var url = self.settings.likeUrl+'/'+eventId+'/'+status;
-		        
+        
 		        return $.ajax({
 		            url: url,
 		            type: 'GET',
@@ -84,7 +85,11 @@ define('frontListEventLike',
 		        if (data.status == true) {
 		            $(self.target).closest(self.settings.likeBlock).html(self.settings.thank);
 		        } else {
-		            noti.createNotification('Oops! Error occurred. Can\'t save you choice.', 'error');
+		        	if (data.error  == 'not_logged') {
+		        		window.location.href = 'login';
+		        	} else {
+			            noti.createNotification('Oops! Error occurred. Can\'t save you choice.', 'error');		        		
+		        	}
 		        }
 		    }
 

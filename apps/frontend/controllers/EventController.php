@@ -365,31 +365,37 @@ class EventController extends \Core\Controllers\CrudController
 
 
     /**
-     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET"})
-     * @Acl(roles={'member'});
+     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET","POST"})
+     * @Acl(roles={'member','guest'});
      */
     public function likeAction($eventId, $status = 0)
     {
         $response = array(
             'status' => false
         );
-        $memberId = $this -> session -> get('memberId');
-        $eventLike = new EventLike();
         
-        if (!$eventLike -> findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
-        	$save = array(
-        			'event_id' => $eventId,
-        			'member_id' => $memberId,
-        			'status' => $status
-        	);
+        if ($this -> session -> has('member')) {
+        	$memberId = $this -> session -> get('memberId');
+        	$eventLike = new EventLike();
         	
-        	if ($eventLike->save($save)) {
-        		$response['status'] = true;
-        		$this->eventsManager->fire('App.Event:afterLike', $this);
+        	if (!$eventLike -> findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
+        		$save = array(
+        				'event_id' => $eventId,
+        				'member_id' => $memberId,
+        				'status' => $status
+        		);
+        		 
+        		if ($eventLike->save($save)) {
+        			$response['status'] = true;
+        			$this->eventsManager->fire('App.Event:afterLike', $this);
+        		}
         	}
+        } else {
+        	$response['error'] = 'not_logged';
         }
         
-        $this->sendAjax($response);
+        
+        $this -> sendAjax($response);
 	}
         
 	/**

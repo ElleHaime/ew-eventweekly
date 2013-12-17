@@ -14,8 +14,7 @@
         <meta property="og:title" content="EventWeekly"/>
     {% endif %}
 
-    {{ stylesheet_link('/css/bootstrap.min.css') }}
-    {{ stylesheet_link('/css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('/css/bootstrap.css') }}
     {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
     {{ stylesheet_link('/css/old.css') }}
     {{ stylesheet_link('/css/jake.css') }}    
