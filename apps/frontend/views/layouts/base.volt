@@ -16,9 +16,9 @@
 
     {{ stylesheet_link('/css/bootstrap.css') }}
     {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('/css/old.css') }}
+    {{ stylesheet_link('/css/styles.css') }}   
     {{ stylesheet_link('/css/jake.css') }}    
-    {{ stylesheet_link('/css/styles.css') }}
+	{{ stylesheet_link('/css/old.css') }}
     {{ stylesheet_link('/css/noti.css') }}
     {{ stylesheet_link('/css/responsive-new.css') }}
 

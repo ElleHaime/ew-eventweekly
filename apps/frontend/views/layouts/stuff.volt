@@ -1,4 +1,4 @@
-<div id="fb-root"></div>
+<div id="fb-root" display="none;"></div>
 
 <div style="display:none;" id="current_location" latitude="{{ location.latitude }}" longitude="{{ location.longitude }}"></div>
 
@@ -11,7 +11,7 @@
 {% endif %}
 
 {% if external_logged is defined %}
-    <div id="external_logged" extname="{{ external_logged }}"></div>
+    <div id="external_logged" extname="{{ external_logged }}" display="none;"></div>
 {% endif %}
 
 {% if acc_external is defined %}
