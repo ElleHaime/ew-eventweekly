@@ -10,15 +10,18 @@
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if logo is defined %}
-    <meta property="og:image" content="http://events.apppicker.com/upload/img/event/{{ logo }}"/>
-    <meta property="og:title" content="EventWeekly"/>
+        <meta property="og:image" content="http://events.apppicker.com/upload/img/event/{{ logo }}"/>
+        <meta property="og:title" content="EventWeekly"/>
     {% endif %}
 
-    {{ stylesheet_link('css/bootstrap.min.css') }}
-    {{ stylesheet_link('css/bootstrap-responsive.min.css') }}
-    {{ stylesheet_link('css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('css/style.css') }}
-    {{ stylesheet_link('css/noti.css') }}
+    {{ stylesheet_link('/css/bootstrap.min.css') }}
+    {{ stylesheet_link('/css/bootstrap-responsive.min.css') }}
+    {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
+    {{ stylesheet_link('/css/old.css') }}
+    {{ stylesheet_link('/css/jake.css') }}    
+    {{ stylesheet_link('/css/styles.css') }}
+    {{ stylesheet_link('/css/noti.css') }}
+    {{ stylesheet_link('/css/responsive-new.css') }}
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
