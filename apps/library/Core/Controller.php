@@ -39,7 +39,8 @@ class Controller extends \Phalcon\Mvc\Controller
 		if (!$loc || !is_object($member) || ($loc->id != $member->location_id)) {
             if ($member) {
                 $location = Location::findFirst('id = '.$member->location_id);
-            }else {
+            }
+            if (!$location) {
                 $location = $this -> locator -> createOnChange();
             }
 			$this -> session -> set('location', $location);

@@ -62,11 +62,18 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function eventlistAction()
 	{
+		/*$event = new Event();
+		$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
+		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
+		$event -> setCondition('event.member_id = '.$this->session->get('memberId'));
+		$event -> setSelector(' OR');
+		$dbEvents = $event -> listEvent();
+//_U::dump($dbEvents); */
+		
 		$events = $this -> searchAction();
 
 		if (isset($events[0]) || isset($events[1])) {
-			$this -> view -> setVar('userEvents', $events[0]);
-			$this -> view -> setVar('friendEvents', $events[1]);
+			$this -> view -> setVar('events', array_merge($events[0], $events[1]));
 			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
 			$this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
 		} 

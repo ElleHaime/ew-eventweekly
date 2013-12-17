@@ -27,6 +27,7 @@ class Event extends EventObject
 										  '7' => 'Weekly');
 	protected $locator = false;
 	private $conditions = [];
+	private $selector = ' AND';
 
 
 	
@@ -322,6 +323,15 @@ class Event extends EventObject
        
         return $this;
     }
+    
+    public function setSelector($selector)
+    {
+    	if (!empty($selector)) {
+    		$this -> selector = (string)$selector;
+    	}
+    	 
+    	return $this;
+    }
 
     public function listEvent()
     {
@@ -341,7 +351,7 @@ class Event extends EventObject
             $count = count($this -> conditions);
             for ($i = 0; $i < $count; $i++) {
                 if ($i !== 0) {
-                	$query .= ' AND';
+                	$query .= $this -> selector;
                	}
                 $query .= " " . $this -> conditions[$i];
             }
