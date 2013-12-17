@@ -165,19 +165,35 @@ define('fb',
 				$(self.settings.btnEventMaybe).hide();
 				$(self.settings.btnEventDecline).hide();
 
-				self.__request('post', '/event/answer', { answer: status, event_id : $('#event_id').val() });
-				$('#categ-' + status.toLowerCase()).show();
+				var params = { 
+						answer: status, 
+						event_id : $('#event_id').val() 
+				};
+				
+				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
+					data = $.parseJSON(data);
+					if (data.status == 'OK') {
+						$('#categ-' + data.event_mamber_status.toLowerCase()).show();
+						return true;
+					} else {
+						if (data.error == 'not_logged') {
+							window.location.href = '/login';	
+							return false;
+						}
+					}
+				});
 			}
 
 			self.__goingEvent = function()
 			{
-				self.__changeUserEventState(self.eventStatuses.join);
-		        FB.ui({
-		            picture: window.location.host + self.shareImg,
-		            method: 'feed',
-		            link:   window.location.href,
-		            caption: 'You are joined event'
-		        }, function(response) {});
+				if (self.__changeUserEventState(self.eventStatuses.join)) {
+			        FB.ui({
+			            picture: window.location.host + self.shareImg,
+			            method: 'feed',
+			            link:   window.location.href,
+			            caption: 'You are joined event'
+			        }, function(response) {});
+				}
 			}
 
 			self.__request = function(method, url, params)
