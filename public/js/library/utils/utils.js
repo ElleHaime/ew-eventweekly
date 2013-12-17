@@ -37,8 +37,8 @@ define('utils',
 				} 
 				var call = { url: url, type: method };
 
-				if (params.length) {
-					call[data] = params;
+				if (params) {
+					call.data = params;
 				}
 
 				return $.ajax(call);

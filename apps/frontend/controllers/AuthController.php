@@ -262,7 +262,7 @@ class AuthController extends \Core\Controller
     public function logoutAction()
     {
 		$this -> session -> destroy();
-		return $this -> response -> redirect('/');
+		return $this -> response -> redirect('');
     }
     
 

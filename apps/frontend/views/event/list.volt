@@ -8,7 +8,7 @@
         <div class="span12">
 	    {% if object is defined %}
         	{% for event in object %}
-        		<div class="list-event clearfix">
+        		<div class="list-event clearfix" id="element_{{ event.id }}">
 					<div class="list-event-img">
 						<a href="#">
 							{% if event.logo != '' %}
@@ -35,11 +35,11 @@
 	                    </button>
 
 	                    {% if event.event_status == 1 %}
-	                    	<button class="btn unpublishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
+	                    	<button class="btn eventStatus unpublishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
 	                     		<span class="btn-text">unpublish</span>
 	                     	</button>
 	                    {% else %}
-	                    	<button class="btn publishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
+	                    	<button class="btn eventStatus publishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
 								<span class="btn-text">publish</span>
 							</button>
 	                    {% endif %}

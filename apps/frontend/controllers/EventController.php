@@ -300,15 +300,86 @@ class EventController extends \Core\Controllers\CrudController
 
 
 	/**
+	 * @Route("/event/delete}", methods={"GET"})
 	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function deleteAction()
 	{
-		parent::deleteAction();
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
+
+		if (isset($data['id']) && !empty($data['id'])) {
+			$event = Event::findFirst((int)$id);
+			if ($event) {
+				$event -> delete();
+				$result['status'] = 'OK';
+			} 
+		}
+
+		echo json_encode($result);
+	}
+
+
+
+	/**
+	 * @Route("/event/publish", methods={"GET", "POST"})
+	 * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function publishAction()
+	{
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
+
+		if (isset($data['id']) && !empty($data['id'])) {
+			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
+				$result = array_merge($res, array('status' => 'OK'));
+			}
+		}
+
+		echo json_encode($result);
+	}
+
+	
+	/**
+	 * @Route("/event/unpublish", methods={"GET", "POST"})
+	 * @Route("/event/unpublish/{id:[0-9]+}", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function unpublishAction()
+	{
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
+
+		if (isset($data['id']) && !empty($data['id'])) {
+			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
+				/* delete sites, event members, send mails etc */
+				$result = array_merge($res, array('status' => 'OK'));
+			}
+		}
+
+		echo json_encode($result);
+	}
+
+
+	private function updateStatus($id, $status)
+	{
+		$event = Event::findFirst((int)$id);
+		$result = false;
+
+		if ($event) {
+			$event -> assign(array('event_status' => $status));
+			if ($event -> save()) {
+				$result = array('id' => $event -> id,
+								'event_status' => $event -> event_status);
+			} 
+		} 
+
+		return $result;
 	}
 	
-	
+
 	public function processForm($form) 
 	{
 		_U::dump($form -> getFormValues(), true);
