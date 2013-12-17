@@ -2,13 +2,14 @@
 
 {% block content %}
 
-    <div class="container" id="container-box">
-        <div class="agreement-box">
-            <div class="row-fluid ">
-                <div class="span6 offset1">
-                    <h4>Log in &nbsp;&nbsp;- or -&nbsp;&nbsp; <a href="/signup">Register</a></h4>
-
+    <div class="container-fluid" id="container-box">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="agreement-box">
                     <form class="form-horizontal" method="post">
+
+                        <h4>Log in &nbsp;&nbsp;- or -&nbsp;&nbsp; <a href="/signup">Register</a></h4>
+
                         <div class="control-group">
                             <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
 
@@ -33,9 +34,10 @@
                             <div class="controls"><a href="restore">Forgot password?</a></div>
                         </div>
                     </form>
+
                 </div>
             </div>
-        </div>
+         </div>
     </div>
 
 {% endblock %}
