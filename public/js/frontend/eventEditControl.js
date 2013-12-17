@@ -62,7 +62,6 @@ define('frontEventEditControl',
 			{
 				utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'No campaign');
 				var camp = $(self.settings.inpCampaignExists).val();
-				console.log(camp);
 				if (camp != 0) {
 					$(self.settings.inpCampaign + ' option[value=' + camp + ']').attr('selected', true);
 				}
@@ -189,7 +188,6 @@ define('frontEventEditControl',
 				var item = '<div><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
 						'<a href="#" class="icon-remove-sign" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
-
 		        $(self.settings.inpCategory + ' :selected').remove();
 
 		       	list.append(item);

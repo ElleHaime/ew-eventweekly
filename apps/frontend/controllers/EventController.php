@@ -493,10 +493,10 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 			if (!empty($event['event_site'])) {
-				$eSites = new EventSite();
 				$aSites = explode(',', $event['event_site']);
 				foreach($aSites as $key => $value) {
 					if (!empty($value)) {
+						$eSites = new EventSite();						
 						$eSites -> assign(array('event_id' => $ev -> id,
 										 		'url' => $value));
 						$eSites -> save();
@@ -512,10 +512,10 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 			if (!empty($event['category'])) {
-				$eCats = new EventCategory();
 				$aCats = explode(',', $event['category']);
 				foreach($aCats as $key => $value) {
 					if (!empty($value)) {
+						$eCats = new EventCategory();
 						$eCats -> assign(array('event_id' => $ev -> id,
 											   'category_id' => $value));
 						$eCats -> save();

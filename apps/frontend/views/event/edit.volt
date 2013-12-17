@@ -152,7 +152,7 @@
 								<p> {{ form.label('event_category') }}</p>
 									{{ form.render('event_category') }}
 	                            <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
-	                            	<input type="hidden" id="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+	                            	<input type="hidden" id="category" name="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
                                     {% if event.category|length %}
 	                                <p>Event categories :</p>
 	                                	{% for key, name in event.category %}

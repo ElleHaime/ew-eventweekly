@@ -51,7 +51,8 @@ class EventForm extends Form
 		$this -> addElement('text', 'event_site', 'Event sites', 
 								array('style' => 'display:none;'));	
 
-		$this -> addElement('check', 'event_status', 'Publish event immediately');
+		$this -> addElement('check', 'event_status', 'Publish event immediately',
+								array('value' => '1'));
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'add description',
@@ -84,7 +85,7 @@ class EventForm extends Form
 								array('options' => \Frontend\Models\Category::find(),
 									  'using' => array('id', 'name')));
 		
-		$this -> addElement('hidden', 'event_category_real');		
+		$this -> addElement('hidden', 'category');	
 
 		$this -> addElement('select', 'campaign_id', 'Campaign', 
 								array('options' => $this -> session -> get('member') -> campaign,
