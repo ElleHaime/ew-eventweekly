@@ -12,7 +12,7 @@ define('frontEventListControl',
 				btnPublish: '.publishEvent',
 				btnUnpublish: '.unpublishEvent',
 				classStatus: '.btn.eventStatus',
-				classElement: '.list-event.clearfix'
+				classElement: '.row-fluid.eventListing'
 			},
 			self.processedElement = null,
 			

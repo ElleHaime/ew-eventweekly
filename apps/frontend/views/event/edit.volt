@@ -1,228 +1,244 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-    <div class="padd_70"></div>
-    <div class="container content_noBorder">
+    <!-- content -->
+    <div class="container " id="content_noBorder">
     
-	<form method="post" enctype="multipart/form-data">
-        <div class="row-fluid ">
-            <div class="span12">
-                <div class="row-fluid ">
-                    <div class="span9">
+    <form method="post" enctype="multipart/form-data">
+    
+    <div class="row">
+    <div class="span12">
+    <div class="add-event_i clearfix">
+    <div class="padd_30"></div>
 
-                        <div class="add-event">
-                            <h3 class="title-page">
-                            	{% if event.id %}
-                            		Edit event
-                            	{% else %}
-                            		Create event
-                            	{% endif %}
 
-                                {{ form.render('id') }}
-                            </h3>
-                            <div class="row-fluid">
-                                <div class="span3">
-                                    <div class="add-img">
-                                    	{% if event.logo %}
-                                        	<a href=""><img id='img-box' src="/upload/img/event/{{ event.logo }}" alt=""></a>
-                                        {% else %}
-											<a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
-                                        {% endif %}
-                                        <button class="btn" id ="add-img-btn" type="button">{{ form.label('logo')}}</button>
-                                        <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
-                                        {{ form.render('add-img-upload') }}
-                                    </div>
-                                </div>
-                                {{ form.render('logo')}}
+    <div class="add-event clearfix">
+        <div class="add-img">
+            <div class="event-one-img">
+                <h3 class="title-page">
+                	{% if event.id %}
+                    		Edit event
+                   	{% else %}
+                    		Create event
+                   	{% endif %}
 
-                                <div class="span9">
-                                
-                                    <div class="input-div clearfix">
-                                        {{ form.render('name')}}
-                                    </div>
-                                    
-                                    <div class="input-div_date clearfix">
-                                    
-                                        <div id="date-picker-start" class="input-div_small">
-                                            {{ form.render('start_date')}}
-                                            <span class="add-on">
-                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                            </span>
-                                        </div>
-                                        <div id="time-picker-start" class="input-div_small">
-                                            {{ form.render('start_time') }}
-                                            <span class="add-on">
-                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                            </span>
-                                        </div>
-                                        
-                                        <div id="date-picker-end" class="input-div_small">
-                                            {{ form.render('end_date')}}
-                                            <span class="add-on">
-                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                            </span>
-                                        </div>
-                                        <div id="time-picker-end" class="input-div_small">
-                                            {{ form.render('end_time') }}
-                                            <span class="add-on">
-                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                            </span>
-                                        </div>
-									                                        
-                                        
-                                        <div class="date-box" id="time-string" style="display:none;">
-                                            <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start" class="date-time">00:00:00</span><br>
-                                            <span id="days-count" class="day-title">Event happens today</span>
-                                        </div>
-                                    </div>
-                                    
-                                    Publish event immediately {{ form.render('event_status') }}
-                                    <br><br>
-                                    <div class="clear"></div>
-                                    {{ form.render('description') }}
-                                    <div class="btn-add_group clearfix">
-                                        <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
-                                        <button class="btn" type="button" id="btn-preview" disabled="disabled">Preview</button>
-                                        <button class="btn" type="submit" id="btn-submit">Save</button>
-                                    </div>
+                    {{ form.render('id') }}
+                </h3>
 
-                                </div>
-                            </div>
+                <div class="all-img clearfix">
+                    {% if event.logo %}
+                        <a href=""><img id='img-box' src="/upload/img/event/{{ event.logo }}" alt=""></a>
+                    {% else %}
+                        <a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
+                    {% endif %}
+                    <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file"
+                            id="add-img-btn" type="button">{{ form.label('logo') }}</button>
+                    <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
+                    {{ form.render('add-img-upload') }}
+                </div>
 
-                        </div>
-                    </div>
-                    <div class="span3">
-                        <div class="sidebar">
-                            <div class="input-append">
-                                {{ form.render('location') }}
-                                {{ form.render('location_latitude')}}
-                                {{ form.render('location_longitude')}}
-                                <div class="search-queries hidden">
-                                    <ul id="locations-list">
-                                    </ul>
-                                </div>
-                                {#<i class="icon-map-marker"></i></button>#}
-                            </div>
-                            <div class="input-append">
-                                {{ form.render('address') }}
-                                {{ form.render('address-coords')}}
-                                <div class="search-queries hidden">
-                                    <ul id="addresses-list">
-                                    </ul>
-                                </div>
-                                {#<i class="icon-map-marker"></i></button>#}
-                            </div>
+                {{ form.render('logo') }}
 
-                            <div class="input-append">
-                                  {{ form.render('venue') }}
-								  {{ form.render('venue_latitude')}}
-                                  {{ form.render('venue_longitude')}}
-                                <div class="search-queries hidden">
-                                    <ul id="venues-list">
-                                    </ul>
-                                </div>
-                                {#<i class="icon-map-marker"></i></button>#}
-                            </div>
-
-                            <div class="input-append change-input">
-                                {#
-                                <button class="btn btn-primary" type="button">
-                                    <i class="icon-map-marker"></i></button>
-                                <input  type="text" placeholder="change location">
-                                #}
-                            </div>
-
-                            <div class="input-append">
-                                <input type="text" id="sites" placeholder="Event web site"><button class="btn btn-primary" id="add-web-site" type="button">+</button>
-                                {#{ form.render('event_site') }#}
-                            </div>
-                            <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
-                                <input type="hidden" id="event_site" name="event_site" value="{% if event.site %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
-                                {% if event.site|length %}                            
-                                    <p>Event web-sites :</p>
-                                	{% for site in event.site %}
-                                		<div class = "esite_elem">
-                                			<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
-                                			<a href="#" class="icon-remove-sign"></a>
-                                		</div>
-                                	{% endfor %}
-                                {% endif %}
-                            </div>
-
-							<div class="event-site">
-								<p> {{ form.label('event_category') }}</p>
-									{{ form.render('event_category') }}
-	                            <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
-	                            	<input type="hidden" id="category" name="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
-                                    {% if event.category|length %}
-	                                <p>Event categories :</p>
-	                                	{% for key, name in event.category %}
-	                                		<div class = "ecat_elem">
-	                                			<div>
-	                                				<label>{{ name }}</label>
-	                                				<a href="#" class="icon-remove-sign" catid="{{ key }}"></a>
-	                                			</div>
-	                                		</div>
-	                                	{% endfor %}
-	                                {% endif %}
-	                            </div>
-							</div>
-							
-                            <div class="type-box">
-                                <div class="event-site">
-                                    <p>Type:</p>
-                                    <div class="event-category clearfix">
-                                        <span class="color-type gray ">festival</span>
-                                        <span class="arrow"></span>
-                                    </div>
-
-                                </div>
-                                <div class="event-site">
-                                    <p>Genres:</p>
-                                    <div class="event-category clearfix">
-                                        <span class="color-type yellow">rock</span>
-                                        <span class="arrow arrow_yellow"></span>
-                                    </div>
-                                    <div class="event-category clearfix">
-                                        <span class="color-type yellow">gothic</span>
-                                        <span class="arrow arrow_yellow"></span>
-                                    </div>
-                                </div>
-
-                                <div class="event-site">
-                                    <p>Venue:</p>
-                                    <div class="event-category clearfix">
-                                        <span class="color-type light_yellow">gothic</span>
-                                        <span class="arrow arrow_light-yellow"></span>
-                                    </div>
-                                </div>
-
-                                <div class="event-site tags-box clearfix">
-                                    <div class="input-append">
-                                        <input  type="text" placeholder="Tags">
-                                        <button class="btn btn-primary" type="button">Ok</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="radio-box">
-                                <p> {{ form.label('recurring') }}</p>
-                                	{{ form.render('recurring') }}
-                                <hr>
-                                <div class="checkbox-block">
-                                    <input type="hidden" id="is_campaign" 
-                                        {% if event.campaign_id|length %}value="{{ event.campaign_id }}"{% else %}value="0"{% endif %}>
-                                    <p> Choose promoter</p>
-                                    {{ form.render('campaign_id') }}
-                                </div>
-                            </div>
-                        </div>
+                <!-- modal window -->
+                <div class="modal" id="myModal" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel" aria-hidden="true">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                    </button>
+                    <div class="modal-body">
+                        <img src="img/bgs/img.jpg" alt="">
                     </div>
                 </div>
+                <!-- end modal -->
             </div>
         </div>
+        <div class="form-center clearfix">
+            <div class="input-div clearfix">
+                {{ form.render('name') }}
+
+                <div class="arrow_box"> arrow</div>
+                <span>description / example</span>
+            </div>
+
+            <div class="input-div_date clearfix">
+
+                <div id="date-picker-start" class="input-div_small">
+                    {{ form.render('start_date') }}<i class="icon-calendar"></i>
+                            <span class="add-on">
+                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                            </span>
+                </div>
+                <div id="time-picker-start" class="input-div_small">
+                    {{ form.render('start_time') }}<i class="icon-time"></i>
+                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
+                </div>
+
+                <div id="date-picker-end" class="input-div_small">
+                    {{ form.render('end_date') }}<i class="icon-calendar"></i>
+                            <span class="add-on">
+                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                            </span>
+                </div>
+                <div id="time-picker-end" class="input-div_small">
+                    {{ form.render('end_time') }}<i class="icon-time"></i>
+                            <span class="add-on">
+                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                            </span>
+                </div>
+
+
+                <div class="date-box" id="time-string" style="display:none;">
+                    <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start"
+                                                                                                 class="date-time">00:00:00</span><br>
+                    <span id="days-count" class="day-title">Event happens today</span>
+                </div>
+            </div>
+            
+            {{ form.render('description') }}
+
+            <div class="btn-add_group clearfix">
+                <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
+                <button class="btn" type="button" id="btn-preview" disabled="disabled">Preview</button>
+                <button class="btn" type="submit" id="btn-submit">Save and publish</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="input-append">
+            {{ form.render('location') }}
+            <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+            {{ form.render('location_latitude') }}
+            {{ form.render('location_longitude') }}
+            <div class="search-queries hidden">
+                <ul id="locations-list">
+                </ul>
+            </div>
+        </div>
+
+        <div class="input-append">
+            {{ form.render('address') }}
+            <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+            {{ form.render('address-coords') }}
+            <div class="search-queries hidden">
+                <ul id="addresses-list">
+                </ul>
+            </div>
+        </div>
+
+        <div class="input-append">
+            {{ form.render('venue') }}
+            <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+            {{ form.render('venue_latitude') }}
+            {{ form.render('venue_longitude') }}
+            <div class="search-queries hidden">
+                <ul id="venues-list">
+                </ul>
+            </div>
+        </div>
+
+        <div class="input-append">
+            <input type="text" id="sites" placeholder="Event web site"/>
+            <button class="btn btn-primary" id="add-web-site" type="button">+</button>
+
+            <div class="warning-box"
+                 style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
+            </div>
+
+        </div>
+        <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
+        	<input type="hidden" id="event_site" name="event_site" value="{% if event.site %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
         
-    </form>
+            <p>Event web-sites :</p>
+            {% if event.site|length %}  
+	            {% for site in event.site %}
+	            	<div class = "esite_elem">
+		            	<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
+		            	<a href="#" class="btn btn-sm icon-remove-sign"></a>
+	        		</div>
+	        	{% endfor %}
+	        {% endif %}
     </div>
 
+    <p> 
+    	{{ form.label('event_category') }}
+    </p>
+    {{ form.render('event_category') }}
+    
+    <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
+        <input type="hidden" id="category" name="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+
+        <p>Event categories :</p>
+     	{% if event.category|length %}
+            {% for key, name in event.category %}
+                <div class="ecat_elem">
+                    <div>
+                        <label>{{ name }}</label>
+                        <a href="#" class="icon-remove-sign" catid="{{ key }}"></a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="type-box">
+        <div class="event-site">
+            <p>Type:</p>
+
+            <div class="event-category clearfix">
+                <span class="color-type gray ">festival</span>
+                <span class="arrow"></span>
+            </div>
+
+        </div>
+        <div class="event-site">
+            <p>Genres:</p>
+
+            <div class="event-category clearfix">
+                <span class="color-type yellow">rock</span>
+                <span class="arrow arrow_yellow"></span>
+            </div>
+            <div class="event-category clearfix">
+                <span class="color-type yellow">gothic</span>
+                <span class="arrow arrow_yellow"></span>
+            </div>
+
+        </div>
+
+        <div class="event-site">
+            <p>Venue:</p>
+
+            <div class="event-category clearfix">
+                <span class="color-type light_yellow">gothic</span>
+                <span class="arrow arrow_light-yellow"></span>
+            </div>
+
+        </div>
+        <div class="event-site tags-box clearfix">
+            <div class="input-append">
+                <input type="text" placeholder="Tags">
+                <button class="btn btn-primary" type="button">Ok</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="radio-box">
+        <p> {{ form.label('recurring') }}</p>
+        {{ form.render('recurring') }}
+        <hr>
+        <div class="checkbox-block">
+            <input type="checkbox" value="">
+            Create Promoter
+
+            <p> Choose promoter</p>
+            {{ form.render('campaign_id') }}
+        </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </form>
+    </div>
 {% endblock %}

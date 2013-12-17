@@ -1,57 +1,61 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
+    <div class="container" id="content_noBorder">
+        <div class=" profile-box">
+            <div class="profile-body">
+                <div class="events-list">
+                    {% if object is defined %}
+                    
+                        {% for event in object %}
+                            <div class="row-fluid eventListing" id="element_{{ event.id }}>
+                                <div class="span12">
+                                    <div class="event-one-img">
+                                        <a href="#">
+											{% if event.logo != '' %}
+												<img src= '/upload/img/event/{{event.logo}}' width='159px' height='159px'>
+											{% endif %}
+										</a>
+                                    </div>
 
-<div class="container content">
-    <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your events</h3>
-    <div class="row-fluid ">
-        <div class="span12">
-	    {% if object is defined %}
-        	{% for event in object %}
-        		<div class="list-event clearfix" id="element_{{ event.id }}">
-					<div class="list-event-img">
-						<a href="#">
-							{% if event.logo != '' %}
-								<img src= '/upload/img/event/{{event.logo}}' width='159px' height='159px'>
-							{% endif %}
-						</a>
-					</div>
-					<div class="list-event-text">
-						{{ link_to ('event/edit/' ~ event.id, event.name) }}
-						<p>{{ event.description}}</p>
-	                    <div class="date-list">
-	                        <i class="icon-time"></i> start
-	                        	<span class="date-start">{{ event.start_date }} at {{ event.start_time }}</span><br>
-	                        <i class="icon-time"></i> finish
-	                        	<span class="date-start">{{ event.end_date }} at {{ event.end_time }}</span>
-	                    </div>
+                                    <div class="event-one-text">
+                                        {{ link_to ('event/edit/' ~ event.id, event.name) }}
 
-	                    <button class="btn editEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
-	                    	<span class="btn-text">edit</span>
-	                    </button>
-
-	                    <button class="btn deleteEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
-	                    	<span class="btn-text">delete</span>
-	                    </button>
-
-	                    {% if event.event_status == 1 %}
-	                    	<button class="btn eventStatus unpublishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
-	                     		<span class="btn-text">unpublish</span>
-	                     	</button>
-	                    {% else %}
-	                    	<button class="btn eventStatus publishEvent" style="padding-left:5px; padding-right:10px;" id="{{ event.id }}">
-								<span class="btn-text">publish</span>
-							</button>
-	                    {% endif %}
-	                    </button>
-					</div>
-				</div>
-        	{% endfor %}
-	    {% else %}
-		You didn't create events yet.
-	    {% endif %}
+                                        <div class="date-list">
+                                            <i class="icon-time"></i>
+                                            <span class="date-start">{{ event.start_date }}</span> start at
+                                            <span class="date-time">{{ event.start_time }}</span>
+                                        </div>
+                                        <div class="event-text">
+                                            {{ event.description|striptags|escape|truncate(300) }}
+                                            <span class="hide-span"></span>
+                                        </div>
+                                    </div>
+                                    <div class="event-list-btn clearfix">
+                                        <div class="status-btn clearfix">
+                                            {% if event.event_status == 1 %}
+                                                <button class="btn btn-block unpublishEvent" id="{{ event.id }}">
+                                                    <span class="btn-text">unpublish</span>
+                                                </button>
+                                            {% else %}
+                                                <button class="btn btn-block publishEvent" id="{{ event.id }}">
+                                                    <span class="btn-text">publish</span>
+                                                </button>
+                                            {% endif %}
+                                            <button class="btn btn-block editEvent" id="{{ event.id }}"><span class="btn-text">edit</span></button>
+                                            <button class="btn btn-block deleteEvent" id="{{ event.id }}"><span class="btn-text">archive</span></button>
+                                        </div>
+                                    </div>
+                            	</div>
+                            	<hr/>
+                        	{% endfor %}
+                    {% else %}
+                        You didn't create events yet.
+                    {% endif %}
+                </div>
+                <div class="padd_30"></div>
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}

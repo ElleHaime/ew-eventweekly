@@ -15,13 +15,13 @@ class SearchForm extends Form
         $this->addElement('text', 'title', 'By Title');
 
         // search by location
-        $this->addElement('text', 'location', 'By Location');
+        $this->addElement('text', 'locationSearch', 'By Location');
 
         // start date
-        $this->addElement('text', 'start_date', 'Start Date');
+        $this->addElement('text', 'start_dateSearch', 'Start Date');
 
         // end date
-        $this->addElement('text', 'end_date', 'End Date');
+        $this->addElement('text', 'end_dateSearch', 'End Date');
 
         // search by category
         $categories = Category::find();
