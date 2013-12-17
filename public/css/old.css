@@ -386,7 +386,7 @@ body {
 .user-down .edit-btn .btn-line .btn {
     float: left;
     margin-right: 4px;
-    padding-right: 27px;
+    padding-right: 22px;
 }
 .btn-logout {
     display:inline-block;
@@ -526,8 +526,7 @@ a.location-city  {
     color:#212121;
     font-size: 12px;
     font-weight: bold;
-
-    padding:5px 12px 4px;
+    padding:0;
 }
 
 .btn-show  span {
@@ -767,7 +766,6 @@ input[type="color"]:focus, .uneditable-input:focus
     padding-right: 60px;
 }
 .event-one-text {
-    padding-bottom: 10px;
     max-width: 650px;
     margin-right: 10px;
     float: left;
@@ -857,6 +855,9 @@ input[type="color"]:focus, .uneditable-input:focus
     float: right;
 }
 
+.share-box-icon a {
+    display: inline-block;
+}
 
 .comment-box {
     margin: 10px 10px 0 10px;
@@ -2104,6 +2105,13 @@ ul.days-events  {
     width: 31px;
     height: 18px;
     display: inline-block;
+    margin: 9px;
+}
+.event-list-btn {
+    display: inline-block;
+    float: right;
+    margin: 4px 4px 0 0;
+    width: 240px;
 }
 
 .event-one  {
@@ -2885,7 +2893,7 @@ a.table-box-row:focus {
     width:60px;
     float: right;
     text-align: center;
-    margin-top: 20px;
+    margin-top: 21px;
 }
 
 .container-fluid {
@@ -2902,6 +2910,8 @@ a.table-box-row:focus {
     border: 0;
 }
 
+
+.event-list_i {background: #ffffff;}
 .all-img {
     clear: both;
     padding-top: 4px;
@@ -3017,7 +3027,8 @@ a.table-box-row:focus {
 .switch {
     width: 180px;
     border: 1px solid #eee;
-    float: left;
+    float: right;
+    margin-right: -4px;
 }
 .switch button{
     border: 0;
@@ -3034,6 +3045,14 @@ a.table-box-row:focus {
     color:#fff;
 }
 
+.content-bg {
+    background: #ffffff;
+}
+
+
+.big-top {
+    font: 2.5em "Open Sans";
+}
 /*--------------------------------------------------------------END switch box--------------------------------------------*/
 
 
@@ -3063,16 +3082,17 @@ a.table-box-row:focus {
 
 .date-picker {
     margin:  0 0 10px 0;
+    width: 101%;
 }
 .date-picker .input-div {
     float: left;
-    margin-left: 10px;
+    margin-left: 12px;
 }
 .input-div:first-child {
   margin-left: 0;
 }
 #from {
-    width: 218px;
+    width: 219px;
 }
 #to {
     width: 219px;

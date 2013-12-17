@@ -300,6 +300,11 @@ footer .login-variants div.read-more {
 	color: #fff;
 	padding: 22% 22%;
 	display: block;
+
+}
+
+.big-top span {
+    font-size: 25px;
 }
 
 .big-top .square {
