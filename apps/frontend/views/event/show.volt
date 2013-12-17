@@ -30,16 +30,7 @@
                                             <a href="/event/show/{{ event['id'] }}">
                                                 <img src="/upload/img/event/{{ event['logo'] }}">
                                             </a>
-                                        {% else %}
-                                            <img src="{{ event['pic_square'] }}" />
                                         {% endif %}
-
-                                        <!-- div class="all-img clearfix">
-                                            <img src="/img/bgs/small-pic.jpg" alt="">
-                                            <img src="/img/bgs/small-pic2.jpg" alt="">
-                                            <a href="#" class="btn-all-img">54<span class="icon-all-img"></span></a>
-                                        </div -->
-
                                     </div>
 
                                     <div class="event-one-text">
@@ -68,7 +59,7 @@
                                                             </div>
                                                         {% if !event['answer'] %}
                                                             <button class="btn">I`m going!</button>
-                                                            <button class="btn">I`m intered!</button>
+                                                            <button class="btn">I`m interested!</button>
                                                             <button class="btn">Don`t like</button>
                                                         {% endif %}
                                                     </div>
