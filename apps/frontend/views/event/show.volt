@@ -79,21 +79,19 @@
                                             </div>
                                         {% endif %}
                                         <div class="event-list-category">
-                                            {% for category in event['categories'] %}
-                                                <span class="category-title">{{ category['name'] }}</span>
-                                                <div class="sub_category clearfix">
-                                                    <div>
-                                                        <a href="#"><span>pop rock</span></a>
-                                                    </div>
-                                                    <div>
-                                                        <a href="#"><span>new album</span></a>
-                                                    </div>
-                                                    <div>
-                                                        <a href="#"><span>event of the year 2014</span></a>
-                                                    </div>
-                                                </div>
-                                                <a href="#" class="show-all">show all tags</a>
-                                            {% endfor %}
+	                                        {% if event['categories']|length %}
+	                    						{% for index, node in event['categories'] %}
+	                    						    <span class="category-title">{{ node['name'] }}</span>
+	                    						{% endfor %}
+	                    					{% else %}
+												 <span class="btn uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
+						                        <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
+						                        <ul id="suggestCategoriesBlock" style="padding: 10px; margin: 10px 0 0 15px; list-style: none; background: #67ADDA; width: 140px; display: none;">
+						                        {% for index, node in categories %}
+						                            <li><a href="/suggest-event-category/{{ event['id'] }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
+						                        {% endfor %}
+						                        </ul>	                    					
+	                    					{% endif %}
                                         </div>
                                     </div>
                                 </div>

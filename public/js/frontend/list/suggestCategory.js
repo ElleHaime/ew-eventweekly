@@ -35,7 +35,7 @@ define('frontListSuggestCategory',
 
 		    self.__setCategory = function(linkObj) {
 		        var url = linkObj.attr('href');
-		        
+	        
 		        self.selectedCategory = linkObj.text();
 		        $.when(self.__sendRequest(url)).then(function(response){
 		            self.__responseHandler(response);
@@ -51,13 +51,16 @@ define('frontListSuggestCategory',
 		    },
 
 		    self.__responseHandler = function(response){
-
-		        if (response.status == true) {
+		        if (response[0].status == true) {
 		            $(self.settings.uncategorizedLabel).text(self.selectedCategory);
 		            $(self.settings.btn).remove();
 		            $(self.settings.categoriesBlock).remove();
 		        } else {
-		            alert('Oops! Some error occurred. Call to administrator');
+		        	if (response[0].error == 'not_logged') {
+		        		window.location.href = '/login';
+		        	} else {
+		        		alert('Oops! Some error occurred. Call to administrator');
+		        	}
 		        }
 		    }
 

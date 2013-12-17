@@ -221,11 +221,11 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/suggest-event-category/{eventId:[0-9]+}/{categoryId:[0-9]+}", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
+     * @Acl(roles={'member','guest'});
      */
     public function setEventCategoryAction($eventId, $categoryId)
     {
-        $status = false;
+        $status['status'] = false;
 
         if ($this->session->has('member')) {
             $CategoryEvent = new EventCategory();
@@ -234,12 +234,14 @@ class EventController extends \Core\Controllers\CrudController
                     'event_id' => $eventId,
                     'category_id' => $categoryId
                 ))) {
-                $status = true;
+                $status['status'] = true;
             }
+        } else {
+        	$status['error'] = 'not_logged';
         }
 
         if ($this->request->isAjax()) {
-            exit(json_encode(array('status' => $status)));
+            exit(json_encode(array($status)));
         }
 
         return $status;
