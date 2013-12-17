@@ -1,19 +1,19 @@
 <form action="/search" method="post" class="form-horizontal">
     <div class="input-append" style="float: none">
-        {{ searchForm.render('title', {'name':'title', 'id':'title', 'class':'input-search input-large', 'size':'16', 'placeholder':'Title'}) }}
+        {{ searchForm.render('title', {'class':'input-search input-large', 'placeholder':'Title'}) }}
     </div>
 
     <div class="input-append" style="float: none">
-        {{ searchForm.render('location', {'name':'location', 'id':'location', 'class':'input-search input-large', 'size':'16', 'placeholder':'Location'}) }}
+        {{ searchForm.render('locationSearch', {'class':'input-search input-large', 'placeholder':'Location'}) }}
     </div>
 
     <div class="date-picker clearfix">
         <div class="input-div ">
-            {{ searchForm.render('start_date', {'name':'start_date', 'id':'from', 'placeholder':'From Date'}) }}
+            {{ searchForm.render('start_dateSearch', {'placeholder':'From Date'}) }}
             <i class="icon-calendar"></i>
         </div>
         <div class="input-div ">
-            {{ searchForm.render('end_date', {'name':'end_date', 'id':'to', 'placeholder':'End Date'}) }}
+            {{ searchForm.render('end_dateSearch', {'placeholder':'End Date'}) }}
             <i class="icon-calendar"></i>
         </div>
         <div class="hidden-categories" style="display: none">
