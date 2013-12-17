@@ -139,3 +139,4 @@
         </div>
     </div>
 </div>
+<div class="notiBlock">text</div>
