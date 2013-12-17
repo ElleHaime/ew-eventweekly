@@ -248,10 +248,12 @@ class EventController extends \Core\Controllers\CrudController
 
 	/**
 	 * @Route("/event/answer", methods={"GET", "POST"})
-	 * @Acl(roles={'member'}); 
+	 * @Acl(roles={'member','guest'}); 
 	 */
 	public function answerAction()
 	{
+		$ret['status']='ERROR';
+		
 		if ($this -> session -> has('member')) {
 			$data = $this -> request -> getPost();
 			$member = $this -> session -> get('member');
@@ -270,13 +272,15 @@ class EventController extends \Core\Controllers\CrudController
 					'member_status' => $status
 			));
 			if ($eventMember -> save()) {
-				$ret['STATUS']='OK';
-			} else {
-				$ret['STATUS']='ERROR';
-			}
-			echo json_encode($ret);
-			die;
+				$ret = array('status' => 'OK',
+							 'event_member_status' => $data['answer']);
+			} 
+		} else {
+			$ret['error'] = 'not_logged';	
 		}
+		
+		echo json_encode($ret);
+		//die;
 	}
 
 	/**
