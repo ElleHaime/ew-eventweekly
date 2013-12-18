@@ -140,18 +140,17 @@
 
         <div class="input-append">
             <input type="text" id="sites" placeholder="Event web site"/>
-            <button class="btn btn-primary" id="add-web-site" type="button">+</button>
+            <button class="btn btn-primary" id="add-web-site" type="button">OK</button>
 
             <div class="warning-box"
                  style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
             </div>
 
         </div>
-        <div id="event-site-selected" class="event-site clearfix" {% if event.site is empty %}style="display:none;"{% endif %}>
-        	<input type="hidden" id="event_site" name="event_site" value="{% if event.site %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
-        
-            <p>Event web-sites :</p>
-            {% if event.site|length %}  
+        <div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
+        	<input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
+            <p>Event web-sites :</p>        
+        	{% if event.site|length %}  
 	            {% for site in event.site %}
 	            	<div class = "esite_elem">
 		            	<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
@@ -159,17 +158,17 @@
 	        		</div>
 	        	{% endfor %}
 	        {% endif %}
-    </div>
+    	</div>
 
     <p> 
     	{{ form.label('event_category') }}
     </p>
     {{ form.render('event_category') }}
     
-    <div id="event-category-selected" class="event-site clearfix" {% if event.category is empty %}style="display:none;"{% endif %}>
-        <input type="hidden" id="category" name="category" value="{% if event.category %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+    <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
+        <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
 
-        <p>Event categories :</p>
+		<p>Event categories :</p>     	
      	{% if event.category|length %}
             {% for key, name in event.category %}
                 <div class="ecat_elem">
