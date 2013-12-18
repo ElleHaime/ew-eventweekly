@@ -13,9 +13,9 @@
                     <div class="add-img">
 						<div class="event-one-img">
                             {% if campaign.logo %}
-                                <a href="#myModal" role="button" data-toggle="modal"><img id='img-box' src="/upload/img/campaign/{{ campaign.logo }}" alt=""></a>
+                                <a><img id='img-box' src="/upload/img/campaign/{{ campaign.logo }}" alt=""></a>
                             {% else %}
-                                <a href="#myModal" role="button" data-toggle="modal"><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
+                                <a><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
                             {% endif %}
 
                             {{ form.render('logo')}}
@@ -24,14 +24,6 @@
                                 <div>{{ form.label('logo')}}</div>
                                 {{ form.render('add-img-upload') }}
                             </div>
-                            <!-- modal window
-                            <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <div class="modal-body">
-                                    <img src="img/bgs/img.jpg" alt="">
-                                </div>
-                            </div>
-                            end modal -->
                         </div>
                     </div>
 
