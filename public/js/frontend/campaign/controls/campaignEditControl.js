@@ -62,9 +62,11 @@ define('frontCampaignEditControl',
 				var file = content.target.files[0];
 
 				reader.onload = (function(f) {
-					$(self.settings.inpLogo).attr('value', f.name);
-					return function(e) {
-						$(self.settings.boxImg).attr('src', e.target.result);
+					if (f) {
+						$(self.settings.inpLogo).attr('value', f.name);
+						return function(e) {
+							$(self.settings.boxImg).attr('src', e.target.result);
+						}
 					}
 				})(file);
 

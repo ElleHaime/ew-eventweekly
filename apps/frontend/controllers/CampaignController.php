@@ -52,7 +52,7 @@ class CampaignController extends \Core\Controllers\CrudController
 		parent::deleteAction();
 	}
 
-		public function processForm($form) 
+	public function processForm($form) 
 	{
 		_U::dump($form -> getFormValues(), true);
 		_U::dump($this -> request -> getUploadedFiles(), true);
@@ -65,9 +65,6 @@ class CampaignController extends \Core\Controllers\CrudController
 		$newCamp['description'] = $campaign['description'];
 		$newCamp['member_id'] = $this -> session -> get('memberId');
 		$newCamp['logo'] = $campaign['logo'];
-		if (isset($this -> session -> get('member') -> network)) {
-			$newCamp['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
-		}
 		$newCamp['address'] = $campaign['address'];
 		
 		// process location

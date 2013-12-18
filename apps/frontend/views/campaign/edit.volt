@@ -3,6 +3,7 @@
 {% block content %}
     <div class="container " id="content_noBorder">
 
+	<form method="post" enctype="multipart/form-data">
     <div class="row">
         <div class="span12">
             <div class="add-event_i clearfix">
@@ -22,10 +23,11 @@
 
                             <div style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file "id ="add-img-btn">
                                 <div>{{ form.label('logo')}}</div>
-                                {{ form.render('add-img-upload') }}
+
                             </div>
                         </div>
                     </div>
+					{{ form.render('add-img-upload') }}
 
                     <div class="form-center clearfix">
                         <div class="input-div clearfix">
@@ -55,6 +57,7 @@
                         </div>
 
                         {{ form.render('description') }}
+                        
                         <div class="btn-add_group clearfix">
                             <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
                             <button class="btn" id="btn-submit" type="submit">Save</button>
@@ -87,5 +90,6 @@
             </div>
         </div>
 	</div>
+	</form>
 </div>
 {% endblock %}
