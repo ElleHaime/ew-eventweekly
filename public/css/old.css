@@ -869,7 +869,7 @@ input[type="color"]:focus, .uneditable-input:focus
     clear: both;
     padding: 7px 13px 7px 17px;
     background: #ffffff;
-    margin: 0 10px;
+    margin: 0 12px;
 }
 
 .share-box-title {
@@ -888,7 +888,7 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 
 .comment-box {
-    margin: 10px 10px 0 10px;
+    margin: 10px 12px 0 12px;
 }
 
 
@@ -921,7 +921,6 @@ input[type="color"]:focus, .uneditable-input:focus
     float: left;
     display: block;
     width: auto!important;
-
 }
 
 .gray {
@@ -1829,7 +1828,6 @@ input[type="checkbox"]  {
     min-width: 174px;
 }
 .plans-box span {
-    padding-bottom: 10px;
     color: #494949;
     font-size: 13px;
     font-weight: bold;
@@ -3387,4 +3385,13 @@ i.icon-map {
 .event-list-btn .btn_invite img {
     display: inline-block;
     vertical-align: middle;
+}
+
+.select-category {
+    padding: 10px;
+    margin: 3px 0 0 0px;
+    list-style: none;
+    background: #67ADDA;
+    width:auto;
+    display: none;
 }

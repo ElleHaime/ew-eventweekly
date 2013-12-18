@@ -34,7 +34,7 @@
                                     </div>
 
                                     <div class="event-one-text">
-                                        <a href="/event/show/{{ event['id'] }}" class="name-link">{{ event['name'] }}</a>
+                                        <h4 class="name-link">{{ event['name'] }}</h4>
 
                                         <div class="date-list">
                                             <i class="icon-time"></i>
@@ -91,7 +91,7 @@
 	                    					{% else %}
 												 <span class="btn uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
 						                        <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
-						                        <ul id="suggestCategoriesBlock" style="padding: 10px; margin: 10px 0 0 15px; list-style: none; background: #67ADDA; width: 140px; display: none;">
+						                        <ul id="suggestCategoriesBlock"  class="select-category">
 						                        {% for index, node in categories %}
 						                            <li><a href="/suggest-event-category/{{ event['id'] }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
 						                        {% endfor %}
