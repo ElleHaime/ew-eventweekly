@@ -7,9 +7,8 @@
     overflow: hidden;
     background: #f3f3f3;
     border-bottom: 2px solid #ccc;
-    left:0;
     display: none;
-
+    left:0
 }
 
 .notiBlock p {
