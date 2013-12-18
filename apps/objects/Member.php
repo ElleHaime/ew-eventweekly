@@ -10,6 +10,7 @@ class Member extends Model
 {
 	public $id;
 	public $email;
+    public $extra_email;
 	public $pass;
 	public $phone;
 	public $name;

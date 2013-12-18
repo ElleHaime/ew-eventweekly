@@ -40,7 +40,9 @@ require.config({
 		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
 		'frontEventListControl': 'frontend/event/controls/eventListControl',
 		'frontCampaignEditControl': 'frontend/campaign/controls/campaignEditControl',
-		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl'
+		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl',
+        'frontMemberEditControl': 'frontend/member/controls/memberEditControl'
+
 	},
 
 	shim: {
