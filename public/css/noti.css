@@ -1,14 +1,13 @@
 .notiBlock {
     position: absolute;
     width: 100%;
-    /*top: -999px;*/
     z-index: 1;
     line-height: 50px;
     height: 60px;
     overflow: hidden;
     background: #f3f3f3;
     border-bottom: 2px solid #ccc;
-
+    display: none;
 }
 
 .notiBlock p {
