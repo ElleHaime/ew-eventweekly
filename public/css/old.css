@@ -95,7 +95,8 @@ body {
     width: 100%;
     z-index: 11;
     box-shadow: 0 0 4px #000;
-    position: relative;
+    position: fixed;
+    top:0;
     height: 79px;
 }
 
@@ -1900,7 +1901,7 @@ i.icon-chevron-down {
     padding-top: 20px;
 }
 .padd_70 {
-    padding: 70px 0 0 0;
+    padding: 79px 0 0 0;
 }
 
 .add-event  {
