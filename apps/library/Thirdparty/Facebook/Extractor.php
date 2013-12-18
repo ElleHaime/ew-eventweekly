@@ -14,8 +14,8 @@ class Extractor
     //require_once 'facebook.php';
 
 	  $config = array(
-		  'appId'  => '423750634398167',
-		  'secret' => '3ce97fc65389b3a67bd5cfad27168ada',
+		  'appId'  => '166657830211705',
+		  'secret' => 'e917842e47a57adb93a1e9761af4117a',
 	  );
     $this->facebook = new \Thirdparty\Facebook\Facebook($config);
   }

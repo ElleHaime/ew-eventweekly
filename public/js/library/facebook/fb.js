@@ -49,7 +49,7 @@ define('fb',
 
 				if (_.isNull(FB)) {
 					FB.init({
-			            appId: self.settings.appId, //'423750634398167',
+			            appId: self.settings.appId,
 			            status: self.settings.status
 			        });
 			    }

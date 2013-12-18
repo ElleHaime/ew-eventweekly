@@ -27,9 +27,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 
-    <script src="https://code.jquery.com/jquery.js"></script>
     <script data-main="/js/config" src="/js/requirePlugins/require.js"></script>
-    <script  src="/js/bootstrap.min.js"></script>
 </head>
 
 <body>
