@@ -6,6 +6,7 @@ function ErrorLog (msg, url, line) {
 
 require.config({
 	baseUrl: '/js',
+    urlArgs: "bust=" + (new Date()).getTime(),
 	paths: {
 		// plugins
 		'async': 'requirePlugins/async',
