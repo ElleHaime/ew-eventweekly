@@ -1,7 +1,8 @@
+^config/database.php$
 .htaccess
 .idea
 public/.htaccess
 public/upload
 ^var/compiled/(?!empty$)
 ^\.project
-config/database.php
+
