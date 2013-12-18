@@ -88,7 +88,7 @@ define('gmapEvents',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
-                gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
+                //gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
 		        if (data.status == "OK") {
 
 		            if (_.isNull(gmap.Map) || _.isNull(gmap.MC)) {
@@ -123,6 +123,7 @@ define('gmapEvents',
 		            // write last map positions in to cookie
 		            self.__setCookies(self.__lastLat, self.__lastLng);
 
+		            gmap.Map.setCenter(new google.maps.LatLng(self.__lastLat, self.__lastLng));
 		            // add markers to clusterer
 		            gmap.MC.addMarkers(gmap.markers);
 		            // redraw clusterer

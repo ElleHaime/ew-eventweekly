@@ -14,8 +14,8 @@ require([
 	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'
 	], 
 	function($, frontTopPanel, fb, gmap, gmapEvents, utils, noti) {
+		noti.init();
 		var locationElem = $('#current_location');
-        noti.init();
 		gmap.init({
 	                mapCenter: {
 	                    lat: locationElem.attr('latitude'),

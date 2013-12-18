@@ -45,14 +45,14 @@ define('fb',
 
 			self.init = function(options)
 			{
-				self.settings = $.extend(self.settings, options);
+				/*self.settings = $.extend(self.settings, options);
 
 				if (_.isNull(FB)) {
 					FB.init({
 			            appId: self.settings.appId,
 			            status: self.settings.status
 			        });
-			    }
+			    }*/
 
 			    self.bindEvents();
 			}

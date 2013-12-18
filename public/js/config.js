@@ -6,7 +6,7 @@ function ErrorLog (msg, url, line) {
 
 require.config({
 	baseUrl: '/js',
-    urlArgs: "bust=" + (new Date()).getTime(),
+   // urlArgs: "bust=" + (new Date()).getTime(),
 	paths: {
 		// plugins
 		'async': 'requirePlugins/async',
@@ -55,7 +55,6 @@ require.config({
         }
 	},
 
-	//waitSeconds: 10,
 	deps: ['require'],
 
 	callback: function(require) {
@@ -68,14 +67,13 @@ require.config({
         } else {
         	var fileName = location.pathname.match(/(\/\w+)*?$/)
         }
-//console.log(fileName);
 
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
         } else {
         	moduleName = 'frontend' + fileName;
         };
-//console.log(moduleName);
+
   		require([moduleName]);
     }	
 });

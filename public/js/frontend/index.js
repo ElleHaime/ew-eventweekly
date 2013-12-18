@@ -15,10 +15,7 @@ require([
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
-		fb.init({
-					appId: '166657830211705',
-		            status: true
-		        });
+		fb.init();
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');
 			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
