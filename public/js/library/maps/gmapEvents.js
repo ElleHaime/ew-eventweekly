@@ -1,8 +1,8 @@
 define('gmapEvents',
-	['jquery', 'gmap', 'underscore'],
-	function($, gmap) {
+	['jquery', 'gmap', 'noti', 'underscore'],
+	function($, gmap, noti) {
 		
-		function gmapEvents($, gmap)
+		function gmapEvents($, gmap, noti)
 		{
 		    var self = this;
 
@@ -14,7 +14,9 @@ define('gmapEvents',
 		    },
 		    self.__lastLat = null,
 		    self.__lastLng = null,
-		    
+
+            self.__newLat = null,
+		    self.__newLng = null,
 
 		    self.init = function(options)
 		    {
@@ -41,6 +43,8 @@ define('gmapEvents',
 		     * @param city
 		     */
 		    self.getEvents = function(lat, lng, city) {
+                self.__newLat = lat;
+                self.__newLng = lng;
 		        $.when(self.__request(lat, lng, city)).then(function(response) {
 		            self.__responseHandler(response);
 		        });
@@ -83,6 +87,7 @@ define('gmapEvents',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
+                gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
 		        if (data.status == "OK") {
 
 		            if (_.isNull(gmap.Map) || _.isNull(gmap.MC)) {
@@ -117,12 +122,14 @@ define('gmapEvents',
 		            // write last map positions in to cookie
 		            self.__setCookies(self.__lastLat, self.__lastLng);
 
-		            gmap.Map.setCenter(new google.maps.LatLng(self.__lastLat, self.__lastLng));
 		            // add markers to clusterer
 		            gmap.MC.addMarkers(gmap.markers);
 		            // redraw clusterer
 		            gmap.MC.redraw();
-		        }
+		        }else {
+                    $(self.settings.eventsCounter).html(0);
+                    noti.createNotification('No event in this area!', 'warning');
+                }
 		    },
 
 		    /**
@@ -238,6 +245,6 @@ define('gmapEvents',
 		    }
 		};
 		
-		return new gmapEvents($, gmap);
+		return new gmapEvents($, gmap, noti);
 	}
 )
