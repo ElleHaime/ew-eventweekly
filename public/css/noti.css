@@ -3,12 +3,13 @@
     width: 100%;
     z-index: 1;
     line-height: 50px;
-    height: 60px;
+    min-height:50px;
     overflow: hidden;
     background: #f3f3f3;
     border-bottom: 2px solid #ccc;
-    display: none;
-    display: none;
+    display: block;
+    left:0
+
 }
 
 .notiBlock p {
@@ -33,18 +34,14 @@
 
 .notiHide {
     display: inline-block;
-    margin-left: 20px;
-    background: #b3b3b3;
-    color: #ffffff;
     line-height: 15px;
-    padding: 1px 3px;
+    position: absolute;
+    right:10px;
+    top:19px;
 }
-
-.notiHide:hover {
-    background: #9a9a9a;
-    text-decoration: none;
+#notiText {
+    padding: 0 0 0 20px;
 }
-
 .notiABtn {
     display: inline-block;
     margin-left: 20px;
@@ -57,4 +54,8 @@
 .notiABtn:hover {
     text-decoration: none;
     background: #4a5992;
+}
+
+.notiBlock .span12 {
+    position: relative;
 }

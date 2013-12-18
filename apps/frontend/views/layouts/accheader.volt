@@ -147,7 +147,9 @@
             <div class="container-fluid">
                 <div class="row-fluid">
                     <div class="span12">
-                        <p>Warning message</p>
+                        <span id="notiText">Warning message</span>
+                        <span class="notiBtnArea"></span>
+                        <a href="#" class="  icon-remove notiHide"></a>
                     </div>
                 </div>
             </div>
