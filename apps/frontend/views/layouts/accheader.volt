@@ -18,7 +18,13 @@
                                         src='/img/demo/h_back_1.jpg'
                                     {% endif %}
                                 >
-                                <span>{{ member.name }}</span><i class="caret"></i>
+                                <span>
+                                    {% if member.name|length %}
+                                        {{ member.name }}
+                                    {% else %}
+                                        {{ member.email }}
+                                    {% endif %}
+                                </span><i class="caret"></i>
                             </a>
                             <div class="user-down" id="user-down" style="display:none;">
                                 <div class="edit-btn clearfix">
@@ -31,9 +37,6 @@
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/campaign/list'">
                                         <span class="edit-icon"></span><span class="btn-text">manage campaigns</span>
-                                    </button>
-                                    <button class="btn btn-block" onclick="location.href='/event/list'">
-                                        <span class="edit-icon"></span><span class="btn-text">manage events</span>
                                     </button>
                                 </div>
                                 <div class="btn-list">
@@ -137,5 +140,17 @@
                 </div>
             </div>
         </div>
+        <div class="notiBlock">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <span id="notiText">Warning message</span>
+                        <span class="notiBtnArea"></span>
+                        <a href="#" class="  icon-remove notiHide"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<div class="padd_70"></div>

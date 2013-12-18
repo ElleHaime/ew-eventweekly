@@ -49,7 +49,7 @@ define('fb',
 
 				if (_.isNull(FB)) {
 					FB.init({
-			            appId: self.settings.appId, //'423750634398167',
+			            appId: self.settings.appId,
 			            status: self.settings.status
 			        });
 			    }
@@ -88,6 +88,7 @@ define('fb',
 			{
 			 	FB.login(
 		            function(response) {
+		            	console.log(response);
 		                if (response.authResponse) {
 		                    self.accessToken = response.authResponse.accessToken;
 		                    self.accessUid = response.authResponse.userID;

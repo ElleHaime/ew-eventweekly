@@ -16,7 +16,7 @@ class Model extends \Phalcon\Mvc\Model
 
 	public function getDependencyProperty()
 	{
-		$relationsBelongs = $this -> getModelsManager() -> getBelongsTo($this);		
+		$relationsBelongs = $this -> getModelsManager() -> getBelongsTo($this);
 		$relationsManyToMany = $this -> getModelsManager() -> getHasManyToMany($this);
 
 		if (!empty($relationsBelongs)) {

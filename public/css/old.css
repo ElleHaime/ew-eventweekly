@@ -69,7 +69,7 @@ p {
 hr {
     height: 1px;
     padding: 0;
-    margin: 10px 0 5px 0;
+    margin: 10px 0 10px 0;
     border: 0;
     border-bottom: 1px solid #cccccc;
 
@@ -95,7 +95,8 @@ body {
     width: 100%;
     z-index: 11;
     box-shadow: 0 0 4px #000;
-    position: relative;
+    position: fixed;
+    top:0;
     height: 79px;
 }
 
@@ -151,6 +152,12 @@ body {
     padding: 30px 0 15px 0;
     background: #ffffff;
 }
+.agreement-box form {
+    padding-left: 70px;
+}
+.agreement-box form h4 {
+    padding-bottom: 10px;
+}
 .agreement-box p {
     text-align: left;
     line-height: 22px;
@@ -178,6 +185,11 @@ body {
     *display: inline;
     display: inline-block;
 }
+
+.agreement-box a:hover, .agreement-box a:active, .agreement-box a:focus {
+    color: #427FC0;
+}
+
 .agreement-box .btn {
     text-transform: capitalize;
 }
@@ -332,6 +344,7 @@ body {
     width: 238px;
     padding: 22px 0 7px 0;
     box-shadow: 1px 2px 3px #777777;
+    z-index: 11;
 }
 
 .user-down {
@@ -763,7 +776,6 @@ input[type="color"]:focus, .uneditable-input:focus
 .name-link , .name-link:hover {
     color:#464646;
     font: 400 22px "Open Sans";
-    padding-right: 60px;
 }
 .event-one-text {
     max-width: 650px;
@@ -1017,6 +1029,12 @@ background: #9556BE ;
     float: left;
     font: 400 26px "Open Sans";
 }
+
+.title-add {
+    color:#3b3b3b;
+    padding: 0 0 10px 18px;
+    font: 400 26px "Open Sans";
+}
 .input-div input   {
     width: 98%;
 
@@ -1045,11 +1063,9 @@ background: #9556BE ;
     float: left;
     margin-right: 10px;
 }
-.add-img  img {
-    margin-bottom: 8px;
-}
+
 .add-img {
-    max-width: 270px;
+    max-width: 170px;
 }
 
 .btn-file input {
@@ -1067,10 +1083,6 @@ background: #9556BE ;
 }
 .add-img .event-one-img {float: none;margin-right: 0}
 
-.input-div_date {
-    padding-bottom: 6px;
-    padding-top: 12px;
-}
 .input-div_small input {
     padding-right: 20px;
 }
@@ -1084,6 +1096,9 @@ background: #9556BE ;
 .date-box {
     clear: both;
     padding-bottom: 10px;
+}
+input[type="checkbox"]  {
+    margin-top: 0;
 }
 
 .input-append .btn {
@@ -1662,11 +1677,31 @@ background: #9556BE ;
     float: left;
     margin: 0 20px 0px 0;
     position: relative;
+    width: 160px;
+    height: 160px;
+    border: 1px solid #ccc;;
+}
+.event-one-img a {
+    text-align: center;
+    margin: 0 auto 20px;
+    display: block;
+    width: 160px;
+    height: 160px;
+    position: relative;
+    padding: 0;
+
 
 }
-.event-one-img a img {
-    border:1px solid #ccc;
+.event-one-img img {
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
 }
+
 .event-one-text p {
     color:#4D4D4D;
     padding: 10px 0;
@@ -1866,7 +1901,7 @@ i.icon-chevron-down {
     padding-top: 20px;
 }
 .padd_70 {
-    padding: 70px 0 0 0;
+    padding: 79px 0 0 0;
 }
 
 .add-event  {
@@ -1876,7 +1911,7 @@ i.icon-chevron-down {
    margin-bottom: 10px;
 }
 .form-center {
-    padding-left: 300px;
+    padding-left:190px;
 }
 .sidebar {
     padding-top: 0;
@@ -1887,6 +1922,9 @@ i.icon-chevron-down {
     margin-bottom: 10px;
 }
 
+.date-picker_one {
+    padding-bottom: 10px;
+}
 .form-center .input-div_date {
     clear: none;
     float: left;
@@ -2510,6 +2548,7 @@ ul.days-events  {
 }
 .small-img{
     width: 103%;
+
 }
 .small-img  a {
     display: inline-block;
@@ -2893,7 +2932,7 @@ a.table-box-row:focus {
     width:60px;
     float: right;
     text-align: center;
-    margin-top: 21px;
+    margin-top: 20px;
 }
 
 .container-fluid {
@@ -2914,10 +2953,9 @@ a.table-box-row:focus {
 .event-list_i {background: #ffffff;}
 .all-img {
     clear: both;
-    padding-top: 4px;
+
 }
 .all-img img {
-    margin-right:4px;
     float: left;
 }
 .btn-all-img {
@@ -3159,7 +3197,7 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 /*--------------------------------------------------------------END no_user box--------------------------------------------*/
 
 .status-btn {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
     clear: both;
 }
 .status-btn .btn {

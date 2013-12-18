@@ -11,7 +11,7 @@ require([
 	'jCookie',	
 	'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
 	'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js',
-	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=423750634398167'
+	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'
 	], 
 	function($, frontTopPanel, fb, gmap, gmapEvents, utils, noti) {
 		var locationElem = $('#current_location');
@@ -29,7 +29,7 @@ require([
 					searchCityBlock: '.searchCityBlock'
 				});
 		fb.init({
-		            appId: '303226713112475', //'423750634398167',
+            		appId: '166657830211705',
 		            status: true
 		        }); 
 

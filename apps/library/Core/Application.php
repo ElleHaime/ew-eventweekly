@@ -57,6 +57,13 @@ class Application extends BaseApplication
 		$this -> _initModules($di);
 
 		$di -> setShared('app', $this);
+		
+/*echo '<pre>';
+$router =  $di -> get('router');
+var_dump($router -> getActionName());
+echo '</pre>';
+die();*/
+		
 	}
 	
 	public function getOutput()
@@ -133,15 +140,27 @@ class Application extends BaseApplication
 		$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
 		$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
 		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
-		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);		
-
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction); 		
+		
 		$routes = $this -> _annotations -> getRoutes();
+
 		if (!empty($routes)) {
 			foreach($routes as $link => $route) {
 				$this -> _router -> add($link, $route);
 			}
 		}
-
+		
+		/*$this -> _router -> handle();
+		$defModule = $this -> _router -> getModuleName();
+		if ($defModule === null) {
+			$defModule = 'frontend';
+		}
+		//var_dump($defModule); die();		
+		$this -> _router -> setDefaultModule($defModule);
+		$this -> _router -> setDefaultNamespace($this -> _config -> modules -> $defModule -> defaultNameSpace);
+		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction); */
+		 
 		$di -> set('router', $this -> _router);
 	}
 	
