@@ -53,7 +53,7 @@ class EventForm extends Form
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'add description',
-									  'class' => 'field-big')); 
+									  'class' => 'resizable field-big'));
 
 		$this -> addElement('text', 'event_site', 'Event web site',
 								array('style' => 'display:none;'));

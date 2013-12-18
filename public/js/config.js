@@ -21,6 +21,7 @@ require.config({
 		'jquery': 'https://code.jquery.com/jquery',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'underscore': 'library/vendors/underscore',
+		'resizer': 'library/vendors/resizer',
 		'bootstrap': 'library/vendors/bootstrap.min',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 

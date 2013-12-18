@@ -5,6 +5,7 @@ require([
 	'frontEventEditControl',
 	'datetimepicker',
 	'utils',
+	'resizer',
 	'noti',
 	'domReady',		
 	'underscore',
@@ -28,5 +29,7 @@ require([
 		}
 	}
 );
+
+$('textarea.resizable:not(.processed)').TextAreaResizer();
 
 

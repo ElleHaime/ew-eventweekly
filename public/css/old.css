@@ -677,9 +677,20 @@ input[type="color"]:focus, .uneditable-input:focus
     float: right;
 }
 .field-big {
-    width:98%;
-    min-height: 200px;
+    resize: none;
+    margin-bottom: 0;
+    color:#8AAAD2;
 }
+div.grippie {
+    background:#EEEEEE url(../img/bgs/grippie.png) no-repeat scroll center 2px;
+    border-color:#9cc3f4;
+    border-style:solid;
+    border-width:0pt 1px 1px;
+    cursor:s-resize;
+    height:9px;
+    overflow:hidden;
+}
+
 
 .user-form {
     top:65px;
@@ -712,7 +723,7 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 .btn-add_group
 {
-    margin: 20px 0;
+    margin:4px 0;
 }
 .btn-add_group .btn {
     padding: 10px 40px;
@@ -1049,7 +1060,6 @@ background: #9556BE ;
 .input-div span  {
     color:#999999;
     font-size: 11px;
-    clear: both;
     float: right;
     display: inline-block;
     zoom: 1;
@@ -1057,6 +1067,7 @@ background: #9556BE ;
 }
 .form-center .input-div input {
     margin-bottom: 3px;
+    float: left;
 }
 .input-div_small {
     position: relative;
@@ -1911,7 +1922,7 @@ i.icon-chevron-down {
    margin-bottom: 10px;
 }
 .form-center {
-    padding-left:190px;
+    padding-left:179px;
 }
 .sidebar {
     padding-top: 0;
@@ -1922,8 +1933,8 @@ i.icon-chevron-down {
     margin-bottom: 10px;
 }
 
-.date-picker_one {
-    padding-bottom: 10px;
+.date-picker_one input {
+    margin-bottom: 10px;
 }
 .form-center .input-div_date {
     clear: none;
@@ -2224,7 +2235,7 @@ ul.days-events  {
 .add-event {
     float: left;
     width:71%;
-    margin-right: 2%;
+    margin-right: 16px;
     margin-left: 1%;
     padding-left: 0;
 }
@@ -3062,13 +3073,13 @@ a.table-box-row:focus {
     margin-right: 10px;
     margin-top: 5px;
 }
-.switch {
+.switch-btn {
     width: 180px;
     border: 1px solid #eee;
     float: right;
     margin-right: -4px;
 }
-.switch button{
+.switch-btn button{
     border: 0;
     padding:5px 7px;
     background: #d3d3d3;
@@ -3078,7 +3089,7 @@ a.table-box-row:focus {
     font: 300 13px "Open Sans";
 }
 
-.switch .active {
+.switch-btn .active {
     background:#4E98E3;
     color:#fff;
 }
@@ -3088,6 +3099,16 @@ a.table-box-row:focus {
 }
 
 
+
+.table-condensed .separator {
+    width: 0;
+    padding: 0;
+}
+
+.bootstrap-datetimepicker-widget td, .bootstrap-datetimepicker-widget th
+{
+    vertical-align: middle;
+}
 .big-top {
     font: 2.5em "Open Sans";
 }
@@ -3350,3 +3371,8 @@ i.icon-map {
 }
 
 
+
+
+#end_dateSearch, #start_dateSearch {
+    width: 219px;
+}
