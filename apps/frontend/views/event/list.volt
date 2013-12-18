@@ -19,7 +19,7 @@
                                     </div>
 
                                     <div class="event-one-text">
-                                        {{ link_to ('event/edit/' ~ event.id, event.name) }}
+                                        <a href="/event/show/{{ event.id }}" class="name-link">{{ event.name }}</a>
 
                                         <div class="date-list">
                                             <i class="icon-time"></i>
