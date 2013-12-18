@@ -38,9 +38,6 @@
                                     <button class="btn btn-block" onclick="location.href='/campaign/list'">
                                         <span class="edit-icon"></span><span class="btn-text">manage campaigns</span>
                                     </button>
-                                    <button class="btn btn-block" onclick="location.href='/event/list'">
-                                        <span class="edit-icon"></span><span class="btn-text">manage events</span>
-                                    </button>
                                 </div>
                                 <div class="btn-list">
                                     <div class="btn-line clearfix">
