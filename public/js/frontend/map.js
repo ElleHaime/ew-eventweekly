@@ -31,7 +31,7 @@ require([
 		fb.init({
             		appId: '166657830211705',
 		            status: true
-		        }); 
+		        });
 
 		if ($('#conflict_location').length > 0) {
 			noti.createNotification('Your location from Facebook does not match to location from IP. Please confirm your location in <a href="/profile">profile</a> settings.', 'warning');

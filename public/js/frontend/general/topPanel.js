@@ -23,7 +23,7 @@ define('frontTopPanel',
 					container: '#userControlBox'
 				},
 
-				btnHz: '#back-to',
+				btnHz: '#back-to'
 		    },
 		    self.__city = null,
 		    
