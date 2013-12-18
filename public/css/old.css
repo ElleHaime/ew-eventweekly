@@ -1833,7 +1833,15 @@ input[type="checkbox"]  {
     font-weight: bold;
 }
 
-
+.event-list-btn {
+    float: right;
+}
+.event-site .btn {
+    margin-bottom: 10px;
+}
+.btn_invite {
+    padding: 0 10px;
+}
 
 /*------------------------------------------change box css----------------------------------------------------------*/
 .change-box {

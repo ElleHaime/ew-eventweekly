@@ -48,7 +48,7 @@
                                             <div class="plans-box clearfix">
                                                 <span>So, whats your plan?</span>
                                                 <div class="btn-hide clearfix">
-                                                    <div class="event-site">
+                                                    <div class="event-site clearfix">
                                                             <div id="categ-join" class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
                                                                 <span class="color-type green">Im going!</span>
                                                                 <span class="arrow arrow_green"></span>

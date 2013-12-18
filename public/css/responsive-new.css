@@ -50,6 +50,9 @@
     .event-one-text {
         max-width: 400px;
     }
+    .event-one   .event-one-text  {
+        max-width: 51%;
+    }
     .form-center {
         padding-left: 173px;
     }
@@ -79,9 +82,9 @@
     }
 
     .event-list-btn {
-        clear: both;
-        float: none;
-        padding-left: 182px;
+        /*clear: both;*/
+        /*float: none;*/
+        /*padding-left: 182px;*/
     }
 
     .location-place_country .location-search {
@@ -93,6 +96,11 @@
 }
 
 @media screen and (max-width: 890px) {
+
+    .event-list-btn {
+        float: none;
+        clear: both;
+    }
     .header .span7 {
         width: 55%;
     }
@@ -124,6 +132,10 @@
 }
 
 @media screen and (max-width: 780px) {
+
+    .event-one .event-one-text {
+        max-width: 68%;
+    }
 
     .input-div input {
         width: 97%;
