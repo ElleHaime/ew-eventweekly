@@ -1,8 +1,8 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'domReady', 'datetimepicker'],
-	function($, utils, datetimepicker) {
+	['jquery', 'utils', 'datetimepicker', 'noti', 'domReady'],
+	function($, utils, datetimepicker, noti) {
 
-		function frontEventEditControl($, utils, datetimepicker) 
+		function frontEventEditControl($, utils, datetimepicker, noti) 
 		{
 			var self = this;
 
@@ -336,6 +336,6 @@ define('frontEventEditControl',
 			}
 		};
 
-		return new frontEventEditControl($, utils, datetimepicker);
+		return new frontEventEditControl($, utils, datetimepicker, noti);
 	}
 );

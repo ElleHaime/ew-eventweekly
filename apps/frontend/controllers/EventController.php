@@ -313,7 +313,7 @@ class EventController extends \Core\Controllers\CrudController
 		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
 
 		$events = $event->listEvent();
-		
+		//_U::dump($events);		
 		$this -> view -> setvar('events', $events);
 		$this -> view -> pick('event/userlist');		
 	}
