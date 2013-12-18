@@ -140,15 +140,15 @@
                 </div>
             </div>
         </div>
-        <div class="notiBlock">
-            <div class="container-fluid">
-                <div class="row-fluid">
-                    <div class="span12">
-                        <span id="notiText">Warning message</span>
-                        <span class="notiBtnArea"></span>
-                        <a href="#" class="  icon-remove notiHide"></a>
-                    </div>
-                </div>
+    </div>
+</div>
+<div class="notiBlock">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <span id="notiText">Warning message</span>
+                <span class="notiBtnArea"></span>
+                <a href="#" class="  icon-remove notiHide"></a>
             </div>
         </div>
     </div>
