@@ -29,19 +29,15 @@
 
         <div class="add-img">
             <div class="event-one-img">
-
-
                 <div class="all-img clearfix">
                     {% if event.logo %}
                         <a href=""><img id='img-box' src="/upload/img/event/{{ event.logo }}" alt=""></a>
                     {% else %}
                         <a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
                     {% endif %}
-                    <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file"
-                            id="add-img-btn" type="button">{{ form.label('logo') }}</button>
-                    <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
-                    {{ form.render('add-img-upload') }}
+
                 </div>
+
 
                 {{ form.render('logo') }}
 
@@ -55,7 +51,13 @@
                     </div>
                 </div>
                 <!-- end modal -->
+
+
             </div>
+            <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file"
+                    id="add-img-btn" type="button">{{ form.label('logo') }}</button>
+            <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
+            {{ form.render('add-img-upload') }}
         </div>
         <div class="form-center clearfix">
             <div class="input-div clearfix">

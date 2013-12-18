@@ -51,6 +51,10 @@ input {
     vertical-align: middle;
 }
 
+select:focus, input[type="file"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus{
+    outline: none;
+}
+
 h1, h2,h3, h4,h5 {
     font-weight: normal;
     padding: 0;
@@ -677,8 +681,9 @@ input[type="color"]:focus, .uneditable-input:focus
     float: right;
 }
 .field-big {
+    width:98%;
+    min-height: 200px;
     resize: none;
-    margin-bottom: 0;
     color:#8AAAD2;
 }
 div.grippie {
@@ -1092,7 +1097,11 @@ background: #9556BE ;
     overflow: hidden;
     height: 42px;
 }
-.add-img .event-one-img {float: none;margin-right: 0}
+.add-img .event-one-img {
+    float: none;
+    margin-right: 0;
+    margin-bottom: 15px;
+}
 
 .input-div_small input {
     padding-right: 20px;
