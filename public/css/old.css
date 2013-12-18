@@ -3380,8 +3380,11 @@ i.icon-map {
 }
 
 
-
-
 #end_dateSearch, #start_dateSearch {
     width: 219px;
+}
+
+.event-list-btn .btn_invite img {
+    display: inline-block;
+    vertical-align: middle;
 }

@@ -71,6 +71,10 @@
                                         <div class=" place-address">
                                             <span>Smock Alley Theatre</span>
                                         </div>
+                                        <button class=" btn btn-block btn_invite" type="button">
+                                            <img alt="" src="/img/demo/btn-m.png">
+                                            Invite friends
+                                        </button>
                                         {% if event['site'] is defined %}
                                             <div class="event-site clearfix">
                                                 {% for key, val in event['site'] %}

@@ -81,6 +81,7 @@
     .event-list-btn {
         clear: both;
         float: none;
+        padding-left: 182px;
     }
 
     .location-place_country .location-search {
@@ -214,6 +215,10 @@
     }
     .category-list .table-box {
         width: 100%;
+    }
+
+    .event-list-btn {
+        padding-left: 0px;
     }
 
     .event-one-text {
