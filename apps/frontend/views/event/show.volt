@@ -16,6 +16,7 @@
 {% endif %}
 
 <div class="container" id="content_noBorder">
+
     <div class="row-fluid ">
         <div class="span12">
             <div class="event-list_i">
@@ -25,7 +26,7 @@
                         <div class="row-fluid ">
                             <div class="span12">
                                 <div class="event-one clearfix">
-                                    <div class="event-one-img">
+                                    <div class="event-one-img" id="current_event_id" event="{{ event['id'] }}">
                                         {% if event['logo'] is defined %}
                                             <a href="/event/show/{{ event['id'] }}">
                                                 <img src="/upload/img/event/{{ event['logo'] }}">
@@ -35,7 +36,7 @@
 
                                     <div class="event-one-text">
                                         <a href="/event/show/{{ event['id'] }}" class="name-link">{{ event['name'] }}</a>
-
+										
                                         <div class="date-list">
                                             <i class="icon-time"></i>
                                             <span class="date-start">20 Aug 2013</span> start at

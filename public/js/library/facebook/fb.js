@@ -45,14 +45,13 @@ define('fb',
 
 			self.init = function(options)
 			{
-				self.settings = $.extend(self.settings, options);
-
+				/*self.settings = $.extend(self.settings, options);
 				if (_.isNull(FB)) {
 					FB.init({
 			            appId: self.settings.appId,
 			            status: self.settings.status
 			        });
-			    }
+			    }*/
 
 			    self.bindEvents();
 			}
@@ -168,13 +167,14 @@ define('fb',
 
 				var params = { 
 						answer: status, 
-						event_id : $('#event_id').val() 
+						event_id : $('#current_event_id').attr('event') 
 				};
 				
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
 					if (data.status == 'OK') {
-						$('#categ-' + data.event_mamber_status.toLowerCase()).show();
+						$('#event-' + data.event_member_status.toLowerCase()).show();
+						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
