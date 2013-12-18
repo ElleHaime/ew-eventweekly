@@ -333,6 +333,7 @@ footer .login-variants div.read-more {
 	background: url(../img/hb-blue.png) 0 0 no-repeat; 
 	left: 71%;
 	background-size:100%;
+    width: 26.5%;
 }
 
 .big-top .square.white span {
@@ -466,6 +467,9 @@ footer .login-variants div.read-more {
 
 /* mobile */
 @media screen and (max-width: 768px) {
+    .big-top .square.blue {
+        width: 100%;
+    }
 
 	.logo-box  a {
 		width: 73px;
@@ -565,6 +569,10 @@ footer .login-variants div.read-more {
 
 /* tablet */
 @media screen and (min-width: 768px) and (max-width: 992px) {
+    .big-top .square span{
+        padding:16% 22%;
+        font-size: 0.6em;
+    }
 
 	.big-top {
 		height: 400px;
