@@ -137,6 +137,14 @@
                 </div>
             </div>
         </div>
+        <div class="notiBlock">
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span12">
+                        <p>Warning message</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="notiBlock">text</div>
