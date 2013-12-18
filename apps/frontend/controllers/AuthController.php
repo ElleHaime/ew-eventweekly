@@ -13,15 +13,13 @@ use Frontend\Form\SignupForm,
     Core\Acl,
     Core\Utils as _U;
 
-/**
- * @RouteRule(useCrud = false)
- */
+
 class AuthController extends \Core\Controller
 {
 
     public function onConstruct()
     {
-        $this->eventsManager->attach('App.Auth.Member', new MemberListener());
+        $this -> eventsManager -> attach('App.Auth.Member', new MemberListener());
     }
 
     /**
@@ -68,28 +66,24 @@ class AuthController extends \Core\Controller
         if ($this -> request -> isPost()) {
             if ($form -> isValid($this -> request -> getPost())) {
                 $member = new Member();
+                $member -> assign(array(
+                        'email' => $this -> request -> getPost('email', 'email'),
+                        'pass' => $this -> security -> hash($this -> request -> getPost('password')),
+                        'role' => Acl::ROLE_MEMBER,
+                        'location_id' => $this -> session -> get('location') -> id
+                    ));
+
                 if (!$member -> validation()) {
-                    $this -> flash -> error("Email already exists");
+                    $this -> flash -> error($member -> getMessages());
                     $this -> view -> form = $form;
                     return;
                 }
 
-                $email = $this -> request -> getPost('email');
-                $password = $this -> request -> getPost('password');
-                $location = $this -> session -> get('location');
-                $member -> assign(array(
-                        'email' => $email,
-                        'pass' => $this -> security -> hash($password),
-                        'role' => Acl::ROLE_MEMBER,
-                        'location_id' => $location -> id
-                    ));
-
                 if ($member -> save()) {
-                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                    $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this -> response -> redirect('map');
-                } else {
-                    echo 'Sad =/'; die();
-                }
+                } 
+                    
                 $this -> flash -> error($member -> getMessages());
             }
         }
@@ -116,7 +110,7 @@ class AuthController extends \Core\Controller
             $this -> session -> set('user_token', $access_token);
             $this -> session -> set('role', Acl::ROLE_MEMBER);
 
-            $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+            $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
             $res['status'] = 'OK';
             $res['message'] = $access_token;
@@ -135,6 +129,7 @@ class AuthController extends \Core\Controller
     public function fbregisterAction()
     {
         $userData =  $this -> request -> getPost();
+
         if (!$this -> session -> has('member')) {
             $member = new Member();
 
@@ -143,7 +138,9 @@ class AuthController extends \Core\Controller
             if (isset($userData['location']) || !empty($userData['location'])) {
                 $locationByFb = $userData['location'];
 
-                if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) || (strtolower($locationByFb['city']) != strtolower($locationByIp->city))) {
+                if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) 
+                        || (strtolower($locationByFb['city']) != strtolower($locationByIp->city))) 
+                {
                     $this->session->set('location_conflict', true);
                     $this->session->set('location_conflict_profile_flag', true);
                 }
@@ -203,11 +200,8 @@ class AuthController extends \Core\Controller
         $form = new RestoreForm();
 
         if ($this -> request -> isPost()) {
-            $email = $this -> request -> getPost('email', 'string');
-
             if ($form -> isValid($this -> request -> getPost())) {
-                $member = Member::findFirst(array('email = ?0',
-                        'bind' => (array)$email));
+                $member = Member::findFirst(array('email' => $this -> request -> getPost('email', 'email')));
                 if (!$member) {
                     $this -> flash -> error('Use with such email doesn\'t exists');
                     $this -> view -> form = $form;
@@ -266,6 +260,27 @@ class AuthController extends \Core\Controller
         }
     }
 
+   /**
+     * @Route("/auth/checkunique", methods={"POST"})
+     * @Acl(roles={'guest','member'});
+     */
+    public function checkuniqueAction()
+    {
+        $data =  $this -> request -> getPost();
+        $response['status'] = 'ERROR';
+
+        if ($data['email']) {
+            $isExists = Member::findFirst('email = "' . $data['email'] . '"');
+      
+            if ($isExists) {
+                $response['message'] = 'User already exists';
+            } else {
+                $response['status'] = 'OK';
+            }
+        }
+
+        echo json_encode($response); 
+    }
 
     /**
      * @Route("/logout", methods={"GET", "POST"})
@@ -274,7 +289,7 @@ class AuthController extends \Core\Controller
     public function logoutAction()
     {
 		$this -> session -> destroy();
-		return $this -> response -> redirect('');
+		return $this -> response -> redirect('/');
     }
     
 

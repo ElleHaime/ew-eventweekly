@@ -95,7 +95,7 @@ define('noti',
 		                    case 'warning': cssClass = 'Warning';
 		                        break;
 		                }
-		            }else {
+		            } else {
 		                return false;
 		            }
 		        }

@@ -88,6 +88,7 @@ define('fb',
 			{
 			 	FB.login(
 		            function(response) {
+		            	console.log(response);
 		                if (response.authResponse) {
 		                    self.accessToken = response.authResponse.accessToken;
 		                    self.accessUid = response.authResponse.userID;

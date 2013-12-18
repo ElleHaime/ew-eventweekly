@@ -40,6 +40,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initSession($di);
 		$this -> _initModels($di);
         $this -> initCoreTag($di);
+ 
 	}
 
 	protected function _initView($di)
@@ -98,7 +99,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	protected function _initDispatcher($di)
 	{
 		$config = $this -> _config;
-		 
+
 		$di -> set('dispatcher',
 			function() use ($config, $di) {
 				$eventsManager = $di -> getShared('eventsManager');

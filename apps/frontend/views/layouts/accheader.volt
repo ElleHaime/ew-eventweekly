@@ -18,7 +18,13 @@
                                         src='/img/demo/h_back_1.jpg'
                                     {% endif %}
                                 >
-                                <span>{{ member.name }}</span><i class="caret"></i>
+                                <span>
+                                    {% if member.name|length %}
+                                        {{ member.name }}
+                                    {% else %}
+                                        {{ member.email }}
+                                    {% endif %}
+                                </span><i class="caret"></i>
                             </a>
                             <div class="user-down" id="user-down" style="display:none;">
                                 <div class="edit-btn clearfix">

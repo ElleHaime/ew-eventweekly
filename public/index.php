@@ -24,7 +24,7 @@ require_once ROOT_LIB . 'Application.php';
 try {
 	$application = new Application();
 	$application -> run();
-
+	
 	echo $application -> getOutput();
 	
 } catch (Exception $e) {

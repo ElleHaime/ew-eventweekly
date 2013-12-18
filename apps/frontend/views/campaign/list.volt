@@ -2,36 +2,71 @@
 
 {% block content %}
 
-<div class="container content">
-    <h3 style="color: #FAF5F9; font-weight:bold; padding-left:15px;">Your campaigns</h3>
-    <div class="row-fluid ">
-        <div class="span12">
-		{% if object|length %}
-			{% for campaign in object %}
-				<div class="list-event clearfix">
-					<div class="list-event-img">
-						<a href="#">
-							{% if campaign.logo != '' %}
-								<img src= '/upload/img/campaign/{{campaign.logo}}' width='159px' height='159px'>
-							{% endif %}
-						</a>
-					</div>
-					<div class="list-event-text">
-						{{ link_to ('campaign/edit/' ~ campaign.id, campaign.name) }}
-						<p>{{ campaign.description}}</p>
+    <div class="container " id="content_noBorder">
 
-	                    <button class="btn editCampaign" style="padding-left:5px; padding-right:10px;" id="{{ campaign.id }}">
-	                    	<span class="btn-text">edit</span>
-	                    </button>
-	                    <button class="btn deleteCampaign" style="padding-left:5px; padding-right:10px;" ><span class="btn-text">delete</span></button>
-					</div>
-				</div>
-			{% endfor %}
-		{% else %}
-		    You didn't create campaigns yet
-		{% endif %}
+        <div class="padd_30"></div>
+        <div class="row-fluid">
+            <div class="span12">
+
+                <div class="event-list_i">
+                    <div class="row-fluid" style="background:#ffffff;">
+                        <div class="span12">
+                            <h3 class="title-name">Your campaigns</h3>
+                        </div>
+
+                        {% if object is defined %}
+                            {% for campaign in object %}
+                                <div class="events-list">
+                                    <div class="row-fluid ">
+                                        <div class="span12">
+                                            <div class="event-one clearfix">
+                                                <div class="event-one-img">
+                                                    <a href="#">
+														{% if campaign.logo != '' %}
+															<img src= '/upload/img/campaign/{{campaign.logo}}' width='159px' height='159px'>
+														{% endif %}
+													</a>
+                                                </div>
+
+                                                <div class="event-one-text">
+                                                    <a href="/campaign/edit/{{ campaign.id }}" class="name-link">{{ campaign.name }}</a>
+
+                                                    <div class="event-text">
+                                                        <p>{{ campaign.description}}</p>
+                                                        <span class="hide-span"></span>
+                                                    </div>
+                                                    <div class="plans-box clearfix">
+                                                        <button class="btn active editCampaign" id="{{ campaign.id }}">edit</button>
+									                    <button class="btn active deleteCampaign" {% if campaign.event|length %} disabled="true" {% endif %}>delete</button>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="event-list-btn clearfix">
+													{% if campaign.location_id %}		                                               
+														<div class=" place-address">
+					                                        <span>{{ campaign.location.alias }}</span>
+					                                    </div>
+					                                {% endif %}
+				                                    <div class="event-site clearfix">
+				                                      	{% if campaign.contact|length %}
+				                                      		{% for key, val in campaign.contact %}
+				                                        		<p>{{ val.value }}</p>
+				                                        	{% endfor %}
+				                                        {% endif %}
+				                                    </div>
+				                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            You didn't create campaigns yet
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
- </div>
 
 {% endblock %}

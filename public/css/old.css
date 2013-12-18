@@ -69,7 +69,7 @@ p {
 hr {
     height: 1px;
     padding: 0;
-    margin: 10px 0 5px 0;
+    margin: 10px 0 10px 0;
     border: 0;
     border-bottom: 1px solid #cccccc;
 
@@ -3192,7 +3192,7 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 /*--------------------------------------------------------------END no_user box--------------------------------------------*/
 
 .status-btn {
-    margin-top: 20px;
+    /*margin-top: 20px;*/
     clear: both;
 }
 .status-btn .btn {

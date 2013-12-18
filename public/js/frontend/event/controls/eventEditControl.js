@@ -112,7 +112,10 @@ define('frontEventEditControl',
 
 				// process venues
 				$(self.settings.inpVenue).keyup(function() {
-					self.__inputFillList(self.settings.inpVenue, self.settings.listVenue, self.settings.coordsVenue);
+					self.__inputFillList(self.settings.inpVenue, 
+										 self.settings.listVenue, 
+										 self.settings.coordsVenueLat,
+										 self.settings.coordsVenueLng);
 				});
 
 				// process categories
@@ -325,7 +328,8 @@ define('frontEventEditControl',
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
 			                
-			                $(self.settings.coordsVenue).val(lat + ';' + lng);
+			                $(self.settings.coordsVenueLat).val(lat);
+			                $(self.settings.coordsVenueLng).val(lng);
 			            });
 		           	}
 				}
