@@ -29,8 +29,8 @@ class CampaignForm extends Form
 		$this -> addElement('text', 'name', 'Name', array('validators' => $nameValidators));
 		$this -> addElement('textarea', 'description', 'Description',
 								array('placeholder' => 'add description',
-									  'class' => 'field-big'));		
-		$this -> addElement('text', 'address', 'Address', 
+									  'class' => 'resizable field-big'));
+		$this -> addElement('text', 'address', 'Address',
 								array('placeholder' => 'Choose Address'));
 		$this -> addElement('hidden', 'address-coords');	
 		$this -> addElement('text', 'location', 'Location',

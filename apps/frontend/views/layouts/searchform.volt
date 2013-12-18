@@ -26,7 +26,7 @@
     <div class="switch-box clearfix ">
         <h5>Change your settings</h5>
 
-        <div class="switch clearfix">
+        <div class="switch-btn clearfix">
             <button class="on" onclick="return false;">Personalize</button>
             <button class="off active " onclick="return false;">Global</button>
         </div>

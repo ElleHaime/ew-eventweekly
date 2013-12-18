@@ -50,6 +50,12 @@
     .event-one-text {
         max-width: 400px;
     }
+    .event-one   .event-one-text  {
+        max-width: 51%;
+    }
+    .form-center {
+        padding-left: 173px;
+    }
 }
 
 @media screen and (max-width: 1050px) {
@@ -76,8 +82,9 @@
     }
 
     .event-list-btn {
-        clear: both;
-        float: none;
+        /*clear: both;*/
+        /*float: none;*/
+        /*padding-left: 182px;*/
     }
 
     .location-place_country .location-search {
@@ -89,6 +96,11 @@
 }
 
 @media screen and (max-width: 890px) {
+
+    .event-list-btn {
+        float: none;
+        clear: both;
+    }
     .header .span7 {
         width: 55%;
     }
@@ -120,6 +132,10 @@
 }
 
 @media screen and (max-width: 780px) {
+
+    .event-one .event-one-text {
+        max-width: 68%;
+    }
 
     .input-div input {
         width: 97%;
@@ -170,9 +186,6 @@
     .location-place_ask .input-search {
         width: 73%;
     }
-    .form-center {
-        padding-left: 289px;
-    }
 
 
 }
@@ -214,6 +227,10 @@
     }
     .category-list .table-box {
         width: 100%;
+    }
+
+    .event-list-btn {
+        padding-left: 0px;
     }
 
     .event-one-text {
