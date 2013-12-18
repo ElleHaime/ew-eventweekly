@@ -181,13 +181,16 @@ class EventController extends \Core\Controllers\CrudController
 		$eventModel = new Event();
 
 		$eventObj = $eventModel -> grabEventsByEwId($eventId);
+//_U::dump($eventObj -> memberpart -> count());				
 		$event = array(
 			'id' => $eventObj -> id,
 			'eid' => $eventObj -> fb_uid,
 			'name' => $eventObj -> name,
 			'description' => $eventObj -> description,
-			'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
-			'end_time' => date('F, l d, H:i', strtotime($eventObj -> end_date)),
+			'start_time' => $eventObje -> start_time,
+			'start_date' => $eventObje -> start_date,
+			'end_time' => $eventObje -> end_time,
+			'end_date' => $eventObje -> end_date,
 			'logo' => $eventObj -> logo,
             'categories' => $eventObj->event_category->toArray()
 		);
@@ -202,16 +205,8 @@ class EventController extends \Core\Controllers\CrudController
 				$eventObj -> save();				
 			}
 		}
-		
-		$event['answer'] = 0;
-		if ($this -> session -> has('memberId')) {
-			$conditions = 'member_id = ' . $this -> session -> get('memberId') . ' AND event_id = ' . $eventId;
-			$eventMember = EventMember::findFirst($conditions);
-			
-			if ($eventMember) {
-				$event['answer'] = (int)$eventMember -> member_status;
-			} 
-		}
+
+//_U::dump($event);
 
 		$this -> view -> setVar('logo', $event['logo']);
 		$this -> view -> setVar('event', $event);
