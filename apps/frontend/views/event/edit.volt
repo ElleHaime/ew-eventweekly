@@ -11,19 +11,25 @@
     <div class="add-event_i clearfix">
     <div class="padd_30"></div>
 
+    <div class="row-fluid">
+        <div class="span12">
+            <h3 class="title-add">
+                {% if event.id %}
+                    Edit event
+                {% else %}
+                    Create event
+                {% endif %}
+
+                {{ form.render('id') }}
+            </h3>
+        </div>
+    </div>
 
     <div class="add-event clearfix">
+
         <div class="add-img">
             <div class="event-one-img">
-                <h3 class="title-page">
-                	{% if event.id %}
-                    		Edit event
-                   	{% else %}
-                    		Create event
-                   	{% endif %}
 
-                    {{ form.render('id') }}
-                </h3>
 
                 <div class="all-img clearfix">
                     {% if event.logo %}
@@ -60,33 +66,35 @@
             </div>
 
             <div class="input-div_date clearfix">
+                <div class="date-picker_one clearfix">
+                    <div id="date-picker-start" class="input-div_small">
+                        {{ form.render('start_date') }}<i class="icon-calendar"></i>
+                                <span class="add-on">
+                                                    <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                                </span>
+                    </div>
+                    <div id="time-picker-start" class="input-div_small">
+                        {{ form.render('start_time') }}<i class="icon-time"></i>
+                                <span class="add-on">
+                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                                </span>
+                    </div>
 
-                <div id="date-picker-start" class="input-div_small">
-                    {{ form.render('start_date') }}<i class="icon-calendar"></i>
-                            <span class="add-on">
-                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                            </span>
                 </div>
-                <div id="time-picker-start" class="input-div_small">
-                    {{ form.render('start_time') }}<i class="icon-time"></i>
-                            <span class="add-on">
-                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                            </span>
+                <div class="date-picker_one clearfix">
+                    <div id="date-picker-end" class="input-div_small">
+                        {{ form.render('end_date') }}<i class="icon-calendar"></i>
+                                <span class="add-on">
+                                                    <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                                </span>
+                    </div>
+                    <div id="time-picker-end" class="input-div_small">
+                        {{ form.render('end_time') }}<i class="icon-time"></i>
+                                <span class="add-on">
+                                                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                                </span>
+                    </div>
                 </div>
-
-                <div id="date-picker-end" class="input-div_small">
-                    {{ form.render('end_date') }}<i class="icon-calendar"></i>
-                            <span class="add-on">
-                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                            </span>
-                </div>
-                <div id="time-picker-end" class="input-div_small">
-                    {{ form.render('end_time') }}<i class="icon-time"></i>
-                            <span class="add-on">
-                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                            </span>
-                </div>
-
 
                 <div class="date-box" id="time-string" style="display:none;">
                     <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start"
@@ -140,7 +148,7 @@
 
         <div class="input-append">
             <input type="text" id="sites" placeholder="Event web site"/>
-            <button class="btn btn-primary" id="add-web-site" type="button">+</button>
+            <button class="btn btn-primary" id="add-web-site" type="button">Ok</button>
 
             <div class="warning-box"
                  style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
@@ -229,9 +237,9 @@
         {{ form.render('recurring') }}
         <hr>
         <div class="checkbox-block">
-            <input type="checkbox" value="">
+            <label><input type="checkbox" value="">
             Create Promoter
-
+            </label>
             <p> Choose promoter</p>
             {{ form.render('campaign_id') }}
         </div>

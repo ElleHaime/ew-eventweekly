@@ -1028,6 +1028,12 @@ background: #9556BE ;
     float: left;
     font: 400 26px "Open Sans";
 }
+
+.title-add {
+    color:#3b3b3b;
+    padding: 0 0 10px 18px;
+    font: 400 26px "Open Sans";
+}
 .input-div input   {
     width: 98%;
 
@@ -1056,11 +1062,9 @@ background: #9556BE ;
     float: left;
     margin-right: 10px;
 }
-.add-img  img {
-    margin-bottom: 8px;
-}
+
 .add-img {
-    max-width: 270px;
+    max-width: 170px;
 }
 
 .btn-file input {
@@ -1078,10 +1082,6 @@ background: #9556BE ;
 }
 .add-img .event-one-img {float: none;margin-right: 0}
 
-.input-div_date {
-    padding-bottom: 6px;
-    padding-top: 12px;
-}
 .input-div_small input {
     padding-right: 20px;
 }
@@ -1095,6 +1095,9 @@ background: #9556BE ;
 .date-box {
     clear: both;
     padding-bottom: 10px;
+}
+input[type="checkbox"]  {
+    margin-top: 0;
 }
 
 .input-append .btn {
@@ -1679,7 +1682,7 @@ background: #9556BE ;
 }
 .event-one-img a {
     text-align: center;
-    margin: 0 auto;
+    margin: 0 auto 20px;
     display: block;
     width: 160px;
     height: 160px;
@@ -1697,9 +1700,7 @@ background: #9556BE ;
     left: 0;
     margin: auto;
 }
-.event-one-img a img {
-    border:1px solid #ccc;
-}
+
 .event-one-text p {
     color:#4D4D4D;
     padding: 10px 0;
@@ -1909,7 +1910,7 @@ i.icon-chevron-down {
    margin-bottom: 10px;
 }
 .form-center {
-    padding-left: 300px;
+    padding-left:190px;
 }
 .sidebar {
     padding-top: 0;
@@ -1920,6 +1921,9 @@ i.icon-chevron-down {
     margin-bottom: 10px;
 }
 
+.date-picker_one {
+    padding-bottom: 10px;
+}
 .form-center .input-div_date {
     clear: none;
     float: left;
@@ -2543,6 +2547,7 @@ ul.days-events  {
 }
 .small-img{
     width: 103%;
+
 }
 .small-img  a {
     display: inline-block;
@@ -2947,10 +2952,9 @@ a.table-box-row:focus {
 .event-list_i {background: #ffffff;}
 .all-img {
     clear: both;
-    padding-top: 4px;
+
 }
 .all-img img {
-    margin-right:4px;
     float: left;
 }
 .btn-all-img {
