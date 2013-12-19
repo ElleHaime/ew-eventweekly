@@ -72,21 +72,6 @@
         width: 60%;
     }
 
-
-    /*---mesage box---*/
-    .massage-box {
-        left: -369%;
-    }
-    .massage-box_city {
-        left: -107px;
-    }
-
-    .event-list-btn {
-        /*clear: both;*/
-        /*float: none;*/
-        /*padding-left: 182px;*/
-    }
-
     .location-place_country .location-search {
         left: -208px;
     }
