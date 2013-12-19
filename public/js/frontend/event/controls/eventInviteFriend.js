@@ -14,7 +14,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 inviteBtn: '#fb-invite',
                 inviteAllBtn: '#fb-invite-all',
                 friendsBlock: '#friendsBlock',
-                friendClass: 'friendItem',
+                friendClass: 'friendItem clearfix',
                 eventLink: window.location.href,
                 wallText: 'Check out this awesome event!'
             },

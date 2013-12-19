@@ -187,7 +187,7 @@ hr {
 }
 /*------------------------------------------agreement css----------------------------------------------------------*/
 /*------------------------------------------btn css----------------------------------------------------------*/
-.btn {
+.btn, #fb-invite-all  {
     padding: 10px;
     text-align: center;
     display: inline-block;
@@ -202,6 +202,10 @@ hr {
     min-height: 39px;
     box-shadow: none;
     border-radius: 0;
+}
+
+#fb-invite-all {
+    width: 100%;
 }
 .btn:hover, .btn:active, .btn:focus, .location-place .location-search .btn:hover, .btn.active   {
     background: #427fc0;
@@ -3365,4 +3369,30 @@ i.icon-map {
     background: #67ADDA;
     width:auto;
     display: none;
+}
+
+/*---------------------------------------------invite block------------------------------------------------------*/
+
+#friendsBlock
+{
+    border:1px solid #5097E5;
+    border-top:0;
+}
+
+.friendItem {
+    padding:10px;
+    background: #ffffff;
+    border-bottom: 1px solid #5097E5;
+    float: none;
+    clear: both;
+    vertical-align: middle;
+}
+.friendItem  img  {
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+.friendItem  span {
+    vertical-align: top;
+    padding-top: 10px;
 }
