@@ -12,13 +12,13 @@
                     {{ form.render('title') }}
 
                     <label>By Location</label>
-                    {{ form.render('location') }}
+                    {{ form.render('locationSearch') }}
 
                     <label>From Date</label>
-                    {{ form.render('start_date') }}
+                    {{ form.render('start_dateSearch') }}
 
                     <label>To Date</label>
-                    {{ form.render('end_date') }}
+                    {{ form.render('end_dateSearch') }}
 
                     {% for index, node in categories %}
                         <label for="cat{{ index }}">

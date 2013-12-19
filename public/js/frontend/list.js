@@ -7,19 +7,14 @@ require([
 	'utils',
 	'domReady',
 	'underscore',
-	'jCookie',	
-	'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
-	'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'
+	'jCookie'
 	], 
 	function($, frontTopPanel, fb, frontListEventLike, noti) {
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
-		fb.init({
-					appId: '166657830211705',
-		            status: true
-		        }); 
+		fb.init(); 
 		frontListEventLike.init();
 		noti.init();
 		

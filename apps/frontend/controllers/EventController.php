@@ -179,18 +179,37 @@ class EventController extends \Core\Controllers\CrudController
 	public function showAction($eventId)
 	{
 		$eventModel = new Event();
-
 		$eventObj = $eventModel -> grabEventsByEwId($eventId);
+		
 		$event = array(
 			'id' => $eventObj -> id,
 			'eid' => $eventObj -> fb_uid,
 			'name' => $eventObj -> name,
 			'description' => $eventObj -> description,
-			'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
-			'end_time' => date('F, l d, H:i', strtotime($eventObj -> end_date)),
+			'start_time' => $eventObj -> start_time,
+			'start_date' => $eventObj -> start_date,
+			'end_time' => $eventObj -> end_time,
+			'end_date' => $eventObj -> end_date,
 			'logo' => $eventObj -> logo,
-            'categories' => $eventObj->event_category->toArray()
+            'categories' => $eventObj -> event_category -> toArray()
 		);
+//_U::dump($event);
+		if ($eventObj -> venue) {
+			$event['venue'] = $eventObj -> venue -> name;
+		}
+		if ($eventObj -> location) {
+			$event['location'] = $eventObj -> location -> alias;
+		}
+
+
+		if ($this -> session -> has('member') && $eventObj -> memberpart -> count() > 0) {
+			foreach ($eventObj -> memberpart as $mpart) {
+				if ($mpart -> member_id == $this -> memberId) {
+					$event['answer'] = $mpart -> member_status;
+					break;
+				}
+			}
+		} 
 		
 		if ($event['eid'] != '' && $eventObj -> is_description_full != 1) { 
 			$descFull = $eventModel -> grabEventsDescription($event['eid']);
@@ -202,18 +221,7 @@ class EventController extends \Core\Controllers\CrudController
 				$eventObj -> save();				
 			}
 		}
-		
-		$event['answer'] = 0;
-		if ($this -> session -> has('memberId')) {
-			$conditions = 'member_id = ' . $this -> session -> get('memberId') . ' AND event_id = ' . $eventId;
-			$eventMember = EventMember::findFirst($conditions);
-			
-			if ($eventMember) {
-				$event['answer'] = (int)$eventMember -> member_status;
-			} 
-		}
 
-		$this -> view -> setVar('logo', $event['logo']);
 		$this -> view -> setVar('event', $event);
         $categories = Category::find();
         $this->view->setVar('categories', $categories->toArray());
