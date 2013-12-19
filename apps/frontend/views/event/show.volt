@@ -78,6 +78,12 @@
                                             <div class=" place-address">
                                                 <span>{{ event['venue']|striptags|escape }}</span>
                                             </div>
+                                        {% else %}
+                                            {% if event['location'] is defined %}
+                                                <div class=" place-address">
+                                                    <span>{{ event['location']|striptags|escape }}</span>
+                                                </div>
+                                            {% endif %}
                                         {% endif %}
                                         
                                         <button class=" btn btn-block btn_invite" type="button">
@@ -114,7 +120,7 @@
                     </div>
 
                     {% include 'layouts/sharebar.volt' %}
-                    
+
                     <div class="row-fluid">
                         <div class="span12">
                             <div class="comment-box">

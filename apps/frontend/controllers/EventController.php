@@ -180,7 +180,7 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		$eventModel = new Event();
 		$eventObj = $eventModel -> grabEventsByEwId($eventId);
-			
+		
 		$event = array(
 			'id' => $eventObj -> id,
 			'eid' => $eventObj -> fb_uid,
@@ -193,6 +193,14 @@ class EventController extends \Core\Controllers\CrudController
 			'logo' => $eventObj -> logo,
             'categories' => $eventObj->event_category->toArray()
 		);
+
+		if ($eventObj -> venue) {
+			$event['venue'] = $eventObj -> venue -> name;
+		}
+		if ($eventObj -> location) {
+			$event['location'] = $eventObj -> location -> alias;
+		}
+
 
 		if ($this -> session -> has('member') && $eventObj -> memberpart -> count() > 0) {
 			foreach ($eventObj -> memberpart as $mpart) {
