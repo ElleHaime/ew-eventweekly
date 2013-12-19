@@ -107,7 +107,11 @@ define('frontTopPanel',
 		    {
 		    	self.__changeVisibility('city');
                 gmapEvents.resetLocation = true;
-		    	gmapEvents.getEvents(lat, lng, self.__city);
+
+                $.cookie('lastLat', lat, {expires: 1, path: '/'});
+                $.cookie('lastLng', lng, {expires: 1, path: '/'});
+                window.location.href = '/map';
+		    	//gmapEvents.getEvents(lat, lng, self.__city);
 		    }
 
 		    self.__userControl = function()
