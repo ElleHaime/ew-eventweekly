@@ -7,13 +7,18 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
     var memberChangeLocation = {
 
         settings: {
-            fieldId: '#uLocation'
+            fieldId: '#uLocation',
+            form: '#mLocationForm'
         },
 
         init: function(options) {
             var $this = this;
 
             $this.settings = $.extend($this.settings, options);
+
+            $('body').on('submit', $this.settings.form, function(e){
+                e.preventDefault();
+            });
 
             $this.__initializeAutoComplete();
         },
