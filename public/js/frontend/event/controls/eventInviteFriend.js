@@ -168,7 +168,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
             __getFriends: function() {
                 var $this = this;
                 if ($this.__issetFB()) {
-                    FB.api('/me/friends?fields=name,picture.type(small)', function(response) {
+                    FB.api('/me/friends?fields=name,picture.width(40).height(40)', function(response) {
                         console.log(response);
                         $this.__friends = response.data;
                         $this.__renderFriends();

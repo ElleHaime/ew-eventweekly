@@ -29,7 +29,7 @@
                                     <div class="event-one-img" id="current_event_id" event="{{ event['id'] }}">
                                         {% if event['logo'] is defined %}
                                             <a href="/event/show/{{ event['id'] }}">
-                                                <img src="/upload/img/event/{{ event['logo'] }}">
+                                                <img src="{{ event['logo'] }}">
                                             </a>
                                         {% endif %}
                                     </div>

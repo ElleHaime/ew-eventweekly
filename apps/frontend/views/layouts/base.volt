@@ -10,7 +10,7 @@
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if logo is defined %}
-        <meta property="og:image" content="http://events.apppicker.com/upload/img/event/{{ logo }}"/>
+        <meta property="og:image" content="{{ logo }}"/>
         <meta property="og:title" content="EventWeekly"/>
     {% endif %}
 
