@@ -41,7 +41,7 @@ class SearchController extends \Core\Controller
             ';
 
             $elemExists = function($elem) use (&$postData) {
-                if (!is_array($postData[$elem])) {
+                if (array_key_exists($elem, $postData) && !is_array($postData[$elem])) {
                     $postData[$elem] = trim(strip_tags($postData[$elem]));
                 }
                 return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
@@ -77,7 +77,7 @@ class SearchController extends \Core\Controller
 
                 $query .= ' GROUP BY event.id';
 
-                $result = $this->getModelsManager()->executeQuery($query);
+                $result = $this->modelsManager->executeQuery($query);
 
                 $result->setHydrateMode(Resultset::HYDRATE_ARRAYS);
 

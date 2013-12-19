@@ -3,13 +3,14 @@ require([
 	'frontTopPanel',
 	'fb',
 	'frontListSuggestCategory',
-	'noti',	
+	'noti',
+    'frontEventInviteFriend',
 	'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontListSuggestCategory, noti) {
+	function($, frontTopPanel, fb, frontListSuggestCategory, noti, frontEventInviteFriend) {
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
@@ -18,6 +19,8 @@ require([
 		
 		frontListSuggestCategory.init();
 		noti.init();
+
+        frontEventInviteFriend.init();
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');
