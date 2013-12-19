@@ -91,7 +91,7 @@ define('gmapEvents',
 		     */
 		    self.__responseHandler = function(data) {
                 if (self.resetLocation === true) {
-                    gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
+                    //gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
                 }
 		        if (data.status == "OK") {
 
