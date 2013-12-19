@@ -17,18 +17,27 @@ class MemberForm extends Form
 	
 	public function init()
 	{
-		$emailValidators = array(
-				'PresenceOf' => array('message' => 'Email is required'),
-				'Email' => array('message' => 'Email is not valid')
-		);
-		$this -> addElement('text', 'email', 'Email', array('validators' => $emailValidators));
-		$this -> addElement('text', 'name', 'You name');
-		$this -> addElement('text', 'address', 'Address');
-		$this -> addElement('text', 'phone', 'Phone');
-		$this -> addElement('text', 'current_location', 'Location');
-		$this -> addElement('hidden', 'prev_location');
-		$this -> addElement('hidden', 'location_id');
+        $this->setAttribute('class', 'form-horizontal');
 
-		$this -> add(new Submit('Save'));
-	}
+        $emailValidators = array(
+            'Email' => array('message' => 'Email is not valid')
+        );
+        $this -> addElement('text', 'extra_email', 'Additional email', array('validators' => $emailValidators));
+
+        $nameValidators = array(
+            'PresenceOf' => array('message' => 'Name is required')
+        );
+        $this -> addElement('text', 'name', 'Your name', array('validators' => $nameValidators));
+
+        $this -> addElement('text', 'address', 'Address');
+        $this -> addElement('text', 'phone', 'Phone');
+
+        /*$this -> addElement('text', 'current_location', 'Location');
+        $this -> addElement('hidden', 'prev_location');
+        $this -> addElement('hidden', 'location_id');*/
+
+        $this -> addElement('file', 'logo', 'Logo', array('style' => 'display:none;'));
+
+        $this -> add(new Submit('Save', array('class' => 'btn')));
+    }
 }
