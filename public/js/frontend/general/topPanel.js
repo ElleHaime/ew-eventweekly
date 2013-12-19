@@ -1,5 +1,5 @@
 define('frontTopPanel',
-	['jquery', 'utils', 'gmapEvents', 'domReady'],
+	['jquery', 'utils', 'gmapEvents', 'gmap', 'domReady'],
 	function($, utils, gmapEvents) {
 
 		function frontTopPanel($, utils, gmapEvents) {

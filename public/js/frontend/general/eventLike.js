@@ -1,15 +1,15 @@
-define('frontListEventLike',
-	['jquery', 'noti', 'underscore'],
-	function($, noti) {
-		function frontListEventLike($, noti) 
+define('frontEventLike',
+	['jquery', 'noti', 'utils', 'underscore'],
+	function($, noti, utils) {
+		function frontEventLike($, noti) 
 		{
 			var self = this;
 			
 			self.settings = {
 		        likeUrl: '/event/like',
 		        likeBtn: '.eventLikeBtn',
-		        likeBlock: '.like-box',
-		        thank: 'Thank!'
+		        dislikeBtn: '.eventDislikeBtn',
+		        eventElem: '.signleEventListElement'
 		    },
 
 		    self.target = null,
@@ -37,6 +37,11 @@ define('frontListEventLike',
 		        	event.preventDefault();
 		        	self.__clickHandler($(this));
 		        });
+		        
+		        $(self.settings.dislikeBtn).click(function(event) {
+		        	event.preventDefault();
+		        	self.__clickHandler($(this));
+		        });
 		    },
 
 		    /**
@@ -46,33 +51,16 @@ define('frontListEventLike',
 		     * @private
 		     */
 		    self.__clickHandler = function(elem) {
-		    	
 	            var status = elem.data('status'),
 	                eventId = elem.data('id');
 
 	            self.target = elem;
 
-	            $.when(self.__sendStatus(eventId, status)).then(function(response){
+	            var url = self.settings.likeUrl+'/'+eventId+'/'+status;
+	            
+	            $.when(utils.request('get', url)).then(function(response){
 	                self.__responseHandler(response);
 	            });
-		    },
-
-		    /**
-		     * Send request to server
-		     *
-		     * @param eventId
-		     * @param status
-		     * @returns {*}
-		     * @private
-		     */
-		    self.__sendStatus = function(eventId, status) {
-		        var url = self.settings.likeUrl+'/'+eventId+'/'+status;
-        
-		        return $.ajax({
-		            url: url,
-		            type: 'GET',
-		            dataType: 'json'
-		        });
 		    },
 
 		    /**
@@ -83,7 +71,15 @@ define('frontListEventLike',
 		     */
 		    self.__responseHandler = function(data) {
 		        if (data.status == true) {
-		            $(self.target).closest(self.settings.likeBlock).html(self.settings.thank);
+		        	var like = $('button' + self.settings.likeBtn + '[data-id=' + data.event_id + ']');
+		        	var dislike = $('button' + self.settings.dislikeBtn + '[data-id=' + data.event_id + ']');
+		        	
+		        	if (data.member_like == 1) {
+		        		like.prop('disabled', true);
+		        		dislike.prop('disabled', false);
+		        	} else {
+		        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
+		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
 		        		window.location.href = 'login';
@@ -95,5 +91,5 @@ define('frontListEventLike',
 
 		};
 		
-		return new frontListEventLike($, noti);
+		return new frontEventLike($, noti, utils);
 });
