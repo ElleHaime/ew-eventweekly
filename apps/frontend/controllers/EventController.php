@@ -222,7 +222,15 @@ class EventController extends \Core\Controllers\CrudController
 			}
 		}
 
-		$this -> view -> setVar('event', $event);
+        // TODO: refactor this. Get uploads dir and default logo url from config
+        $event['logo'] = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'.$eventId['logo'];
+        if (!file_exists($event['logo'])) {
+            $event['logo'] = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
+        }
+        $this -> view -> setVar('logo', $event['logo']);
+
+        $this -> view -> setVar('event', $event);
+
         $categories = Category::find();
         $this->view->setVar('categories', $categories->toArray());
 	}
