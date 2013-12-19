@@ -70,9 +70,12 @@
                                         {% endif %}
                                     </div>
                                     <div class="event-list-btn clearfix">
-                                        <div class=" place-address">
-                                            <span>Smock Alley Theatre</span>
-                                        </div>
+                                        {% if event['venue'] is defined %}
+                                            <div class=" place-address">
+                                                <span>{{ event['venue']|striptags|escape }}</span>
+                                            </div>
+                                        {% endif %}
+                                        
                                         <button class=" btn btn-block btn_invite" type="button">
                                             <img alt="" src="/img/demo/btn-m.png">
                                             Invite friends

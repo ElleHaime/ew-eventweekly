@@ -205,7 +205,7 @@ class EventController extends \Core\Controllers\CrudController
 				$eventObj -> save();				
 			}
 		}
-
+		$event['answer'] = [];
 //_U::dump($event);
 
 		$this -> view -> setVar('logo', $event['logo']);

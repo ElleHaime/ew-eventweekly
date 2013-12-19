@@ -1,5 +1,5 @@
 define('fb',
-	['jquery', 'utils'],
+	['jquery', 'utils', 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'],
 	function($, utils) {
 
 		function fb($, utils) 

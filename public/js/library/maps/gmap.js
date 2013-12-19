@@ -1,5 +1,5 @@
 define('gmap', 
-	['jquery', 'underscore', 'domReady'],
+	['jquery', 'underscore', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
 	function($) {	
 		function gmap($) {
 			var self = this;

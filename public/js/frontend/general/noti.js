@@ -82,7 +82,6 @@ define('noti',
 		     * @param promptOption
 		     */
 		    self.createNotification = function(text, type, promptOption) {
-
 		        self.window.find('#notiText').html(text);
 
 		        var cssClass = 'Info';
@@ -104,7 +103,7 @@ define('noti',
 		            self.__preparePrompt(promptOption);
 		        }
 
-		        self.window.addClass('notiWindowType'+cssClass);
+		        self.window.addClass('notiWindowType' + cssClass);
 
 		        self.__showWindow();
 
