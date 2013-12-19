@@ -106,6 +106,7 @@ define('frontTopPanel',
 		    self.__sendCoords = function(lat, lng)
 		    {
 		    	self.__changeVisibility('city');
+                gmapEvents.resetLocation = true;
 		    	gmapEvents.getEvents(lat, lng, self.__city);
 		    }
 

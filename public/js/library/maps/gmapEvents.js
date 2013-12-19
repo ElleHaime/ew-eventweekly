@@ -18,6 +18,8 @@ define('gmapEvents',
             self.__newLat = null,
             self.__newLng = null,
 
+            self.resetLocation = false,
+
 
 		    self.init = function(options)
 		    {
@@ -88,7 +90,9 @@ define('gmapEvents',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
-                //gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
+                if (self.resetLocation === true) {
+                    gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
+                }
 		        if (data.status == "OK") {
 
 		            if (_.isNull(gmap.Map) || _.isNull(gmap.MC)) {
