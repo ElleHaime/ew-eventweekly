@@ -7,7 +7,7 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
     var memberChangeLocation = {
 
         settings: {
-            fieldId: 'uLocation'
+            fieldId: '#uLocation'
         },
 
         init: function(options) {
@@ -20,7 +20,7 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
 
         __initializeAutoComplete: function() {
             var $this = this;
-            var addr = utils.addressAutocomplete($this.settings.fieldId);
+            var addr = utils.addressAutocomplete($($this.settings.fieldId)[0]);
             $this.__initializeListener(addr);
         },
 

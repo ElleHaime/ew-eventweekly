@@ -12,7 +12,7 @@ define('utils',
 			        return null;
 			    }
 
-			    var input = document.getElementById(selector), options = {};
+			    var input = selector, options = {};
 
 			    if (lat != '' && lat != undefined && lng != '' && lng != undefined) {
 			        options = {
