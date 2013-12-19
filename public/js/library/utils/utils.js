@@ -12,7 +12,7 @@ define('utils',
 			        return null;
 			    }
 
-			    var input = selector, options = {};
+			    var input = document.getElementById(selector), options = {};
 
 			    if (lat != '' && lat != undefined && lng != '' && lng != undefined) {
 			        options = {
@@ -22,7 +22,7 @@ define('utils',
 			    }
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
-			    return autocomplete;	
+			    return autocomplete;
 			},
 				
 			self.ucfirst = function(str) 
