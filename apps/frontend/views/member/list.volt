@@ -8,6 +8,7 @@
             <div class="row-fluid">
                 <div class="span9 profile-info-lf">
                     <div class="profile-img">
+                        <div class="profile-img-box">
                         <img alt=""
                                 {% if member.logo != '' %}
                                     src="{{ member.logo }}"
@@ -15,6 +16,7 @@
                                     src ='/img/demo/h_back_1.jpg'
                                 {% endif %}
                              id="member_logo">
+                        </div>
                         <div class="btn btn-block btn-file">
                             <div id="file">Change photo</div>
                             {#//<input id="file" type="file" size="1" name="file">#}
@@ -78,7 +80,7 @@
 
                                 <div class="control-group">
                                     <div class="controls">
-                                        {{ memberForm.render('Save') }}
+                                        {{ memberForm.render('Save',{'class':'btn btn-block'})}}
                                     </div>
                                 </div>
                             </form>
@@ -115,7 +117,7 @@
                                 <div class="control-group">
 
                                     <div class="controls">
-                                        <button class="btn"> Save</button>
+                                        <button class="btn btn-block"> Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -143,7 +145,6 @@
             <div class="profile-body">
                 <hr/>
                 <a href="#" class="edit-service"><span> customise your search event-profile </span></a>
-                <h4>Categories:</h4>
                 <form action="/member/save-filters" method="post" id="filters" style="display: none">
                     {% if member_categories['category']['id'] is defined %}
                         <input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>

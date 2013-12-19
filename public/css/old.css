@@ -1161,35 +1161,52 @@ input[type="checkbox"]  {
 /*-------------------------------------------------Profile ----------------------------------------------------------*/
 .profile-img {
     margin: 0px 0 20px 20px;
+    float: left;
+    margin-right: 20px;
 }
-.profile-info {
-    margin: 0px 0 20px 0px;
-    padding-top: 10px;
+
+.profile-img-box {
+    margin:  0 auto;
+    border: 1px solid #CCCCCC;
+    float: left;
+    height: 160px;
+    position: relative;
+    width: 160px;
+}
+
+.profile-img img {
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 .profile-btn {
     margin-right: 20px;
-
 }
 .profile-btn .btn {
     padding: 10px 20px;
     margin-bottom: 10px;
+
 }
 .profile-btn  p {
     color:#999999;
     font-size: 12px;
     padding-bottom: 10px;
 }
-.profile-img {
-    float: left;
-    margin-right: 20px;
 
-}
-.profile-img img {
-    border:3px solid #ccc;
-}
 .profile-info {
     float: left;
 }
+.profile-info label {
+    width: 120px;
+}
+
+.profile-info .controls {
+    margin-left: 120px;
+}
+
 .location-state {
     color:#999999;
     clear: both;
@@ -1255,9 +1272,24 @@ input[type="checkbox"]  {
     padding-top: 10px;
     width: 80px;
     display: block;
-
 }
 
+.profile-info-lf .profile-img {
+    width: 160px;
+}
+
+.profile-info-lf .profile-img .btn-file {
+    margin-top: 10px;
+}
+
+
+.profile-info  .form-horizontal {
+    padding: 0;
+}
+
+.profile-info  .controls .btn {
+    margin-top: 0px;
+}
 
 /*------------------------------------------category css----------------------------------------------------------*/
 
@@ -3117,13 +3149,6 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 
 /*--------------------------------------------------------------END date-picker box--------------------------------------------*/
 
-.profile-info-lf .profile-img {
-    width: 146px;
-}
-
-.profile-info-lf .profile-img .btn-file {
-    margin-top: 10px;
-}
 
 
 /*--------------------------------------------------------------no_user plaha box--------------------------------------------*/
