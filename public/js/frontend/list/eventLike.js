@@ -33,7 +33,7 @@ define('frontListEventLike',
 		     * @private
 		     */
 		    self.__bindClicks = function() {
-		        $(self.settings.likeBtn).click(function() {
+		        $(self.settings.likeBtn).click(function(event) {
 		        	event.preventDefault();
 		        	self.__clickHandler($(this));
 		        });
