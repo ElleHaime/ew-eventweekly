@@ -46,32 +46,28 @@
 
                                         {{ event['description']|nl2br }}
 
-                                        {% if event['answer'] is defined %}  
-                                            {% if event['answer'] != 3 %} 
-                                                <div class="plans-box clearfix">
-                                                    {% if not (event['answer'] is defined) %}
-                                                        <span>So, whats your plan?</span>
-                                                    {% endif %}
-                                                    <div class="btn-hide clearfix">
-                                                        <div class="event-site clearfix">
-                                                            {% if not (event['answer'] is defined) %}
-                                                                <button class="btn" id="event-join">I`m going!</button>
-                                                                <button class="btn" id="event-maybe">I`m interested!</button>
-                                                                <button class="btn" id="event-decline">Don`t like</button>
-                                                            {% else %}
-                                                                {% if event['answer'] == 1 %}
-                                                                    <button class="btn" id="event-join" disabled = true>I`m going!</button>
-                                                                {% endif %}
-
-                                                                {% if event['answer'] == 2 %}
-                                                                    <button class="btn" id="event-maybe" disabled = true>I`m interested!</button>
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            {% endif %}
+                                        {% if not (event['answer'] is defined) %}
+                                            <span>So, whats your plan?</span>
                                         {% endif %}
+
+                                        <div class="btn-hide clearfix">
+                                            <div class="event-site clearfix">
+                                                {% if not (event['answer'] is defined) %}
+                                                    <button class="btn" id="event-join">I`m going!</button>
+                                                    <button class="btn" id="event-maybe">I`m interested!</button>
+                                                    <button class="btn" id="event-decline">Don`t like</button>
+                                                {% else %}
+                                                    {% if event['answer'] == 1 %}
+                                                        <button class="btn" id="event-join" disabled = true>I`m going!</button>
+                                                    {% endif %}
+
+                                                    {% if event['answer'] == 2 %}
+                                                        <button class="btn" id="event-maybe" disabled = true>I`m interested!</button>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="event-list-btn clearfix">
                                         {% if event['venue'] is defined %}

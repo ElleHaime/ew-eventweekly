@@ -191,9 +191,9 @@ class EventController extends \Core\Controllers\CrudController
 			'end_time' => $eventObj -> end_time,
 			'end_date' => $eventObj -> end_date,
 			'logo' => $eventObj -> logo,
-            'categories' => $eventObj->event_category->toArray()
+            'categories' => $eventObj -> event_category -> toArray()
 		);
-
+//_U::dump($event);
 		if ($eventObj -> venue) {
 			$event['venue'] = $eventObj -> venue -> name;
 		}

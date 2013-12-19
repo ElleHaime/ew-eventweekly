@@ -56,15 +56,15 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('location')) {
-                $conditions[] = 'location.city LIKE "%'.$postData['location'].'%"';
+                $conditions[] = 'location.city LIKE "%'.$postData['locationSearch'].'%"';
             }
 
             if ($elemExists('start_date')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_date']).'"';
+                $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_dateSearch']).'"';
             }
 
             if ($elemExists('end_date')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) < "'.strtotime($postData['end_date']).'"';
+                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) < "'.strtotime($postData['end_dateSearch']).'"';
             }
 
             if (!empty($conditions)) {
