@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            {#<div class="row-fluid">
+            <div class="row-fluid">
                 <div class="span9 profile-info-lf">
                     <h2>Your account information:</h2>
 
@@ -137,10 +137,10 @@
                         {% endif %}
                         <input type="text" id="uLocation"/>
 
-                        &#123;&#35;<input type="submit" value="Save"/>&#35;&#125;
+                        {#<input type="submit" value="Save"/>#}
                     </form>
                 </div>
-            </div>#}
+            </div>
 
             <div class="profile-body">
                 <hr/>

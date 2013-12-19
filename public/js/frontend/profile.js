@@ -3,6 +3,7 @@ require([
     'frontTopPanel',
     'fb',
     'frontMemberEditControl',
+    'frontMemberChangeLocation',
     'noti',
     'utils',
     'domReady',
@@ -11,7 +12,7 @@ require([
     'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
     'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'
 ],
-    function($, frontTopPanel, fb, frontMemberEditControl) {
+    function($, frontTopPanel, fb, frontMemberEditControl, frontMemberChangeLocation) {
 
         frontTopPanel.init({
             searchCityBlock: '.searchCityBlock'
@@ -22,6 +23,8 @@ require([
         });
 
         frontMemberEditControl.init();
+
+        frontMemberChangeLocation.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
