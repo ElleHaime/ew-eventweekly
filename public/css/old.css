@@ -288,7 +288,6 @@ body {
 }
 
 .user-box a:active, a:focus  {
-    border: 0;
     text-decoration: none;
     color:#fff;
 }
