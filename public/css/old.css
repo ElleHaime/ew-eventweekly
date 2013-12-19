@@ -298,7 +298,7 @@ body {
     zoom: 1;
     *display: inline;
     float: left;
-    width: 94px;
+    width: 92px;
     text-align: left;
     color:#212121;
     height: 22px;
@@ -351,7 +351,7 @@ body {
 }
 
 .user-down {
-    padding: 20px  22px 8px 22px;
+    padding: 20px  18px 8px 18px;
     left:0px;
 }
 .user-down:last-child .edit-btn{
@@ -381,6 +381,7 @@ body {
     text-align: left;
     padding: 0 10px 0 0;
     margin: 0 0 10px  0;
+    height: 42px;
 }
 
 .user-down .btn:hover {
@@ -409,7 +410,7 @@ body {
     zoom: 1;
     *display: inline;
     background: url(../img/bgs/logout.png) no-repeat center center;
-    height: 19px;
+    height: 22px;
     float: right;
     padding: 8px 16px;
     width: 20px;
@@ -790,13 +791,18 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .name-link , .name-link:hover {
     color:#464646;
-    font: 400 22px "Open Sans";
+    font: 400 22px/22px "Open Sans";
+    margin-bottom: 10px;
+    display: inline-block;
 }
 .event-one-text {
     max-width: 650px;
     margin-right: 10px;
     float: left;
     position: relative;
+}
+.icon-time {
+    vertical-align: middle;
 }
 .date-list {
     padding-bottom: 5px;
@@ -1012,7 +1018,7 @@ background: #9556BE ;
 
 /*------------------------------------------plant box css----------------------------------------------------------*/
 .plans-box {
-    margin: 22px 0 0 0;
+    margin: 17px 0 0 0;
 }
 
 .plans-box  span {
@@ -1722,7 +1728,7 @@ input[type="checkbox"]  {
 
 .event-one-text p {
     color:#4D4D4D;
-    padding: 10px 0;
+    padding: 5px 0;
     line-height: 18px;
     font: 400 13px/18px "Open Sans";
 }
