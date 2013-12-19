@@ -44,7 +44,7 @@
                                             <span class="date-time">20:43</span> <span class="day-title"></span>
                                         </div>
 
-                                        {{ event['description']|nl2br }}
+                                        <p>{{ event['description']|nl2br }}</p>
 
                                         {% if not (event['answer'] is defined) %}
                                             <span>So, whats your plan?</span>
@@ -101,7 +101,7 @@
 	                    						    <span class="category-title">{{ node['name'] }}</span>
 	                    						{% endfor %}
 	                    					{% else %}
-												 <span class="btn uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
+												 <span class="btn  uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
 						                        <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
 						                        <ul id="suggestCategoriesBlock"  class="select-category">
 						                        {% for index, node in categories %}

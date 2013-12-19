@@ -80,6 +80,14 @@
     .location-search input {
         width: 57%;
     }
+
+    .event-one .event-list-btn {
+        float: left;
+        padding-left: 180px;
+    }
+    .event-site {
+        margin-bottom: 0;
+    }
 }
 
 @media screen and (max-width: 890px) {
@@ -121,7 +129,8 @@
 @media screen and (max-width: 780px) {
 
     .event-one .event-one-text {
-        max-width: 68%;
+        max-width: 100%;
+        margin-top: 10px;
     }
 
     .input-div input {
@@ -140,6 +149,9 @@
 
     .user-box a  .caret {
         display: none;
+    }
+    .event-one .event-list-btn{
+        padding-left: 0;
     }
 
     .header .span7 {

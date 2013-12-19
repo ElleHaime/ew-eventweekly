@@ -1607,21 +1607,21 @@ input[type="checkbox"]  {
     color:#ffffff;
 }
 
-.events-list.bussines-category  .sub_category div  {
+.events-list.business-category  .sub_category div  {
     border:1px solid #0071BC;
 }
-.events-list.bussines-category  .sub_category span {
+.events-list.business-category  .sub_category span {
     color:#0071BC;
 }
-.events-list.bussines-category  .sub_category div:hover {
+.events-list.business-category  .sub_category div:hover {
     background: #0071BC;
 }
-.events-list.bussines-category    .category-title {
+.events-list.business-category    .category-title {
     color:#0071BC;
 }
 
 
-.events-list.bussines-category     .sub_category div:hover a span  {
+.events-list.business-category     .sub_category div:hover a span  {
     color:#ffffff;
 }
 
@@ -2299,7 +2299,7 @@ ul.days-events  {
 
 .place-address span {
     color:#ffffff;
-    font: 400 13px "Open Sans";
+    font: 400 14px "Open Sans";
     display: inline-block;
     word-break: break-all;
     padding: 12px 40px 12px 40px;
@@ -3366,7 +3366,7 @@ i.icon-map {
     padding: 10px;
     margin: 3px 0 0 0px;
     list-style: none;
-    background: #67ADDA;
+    background: #5097E5;
     width:auto;
     display: none;
 }
