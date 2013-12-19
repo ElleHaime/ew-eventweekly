@@ -383,8 +383,8 @@ hr {
     margin-left: 13px;
     margin-right: 5px;
     vertical-align: middle;
-
 }
+
 .user-down .edit-btn .btn-line .btn {
     float: left;
     margin-right: 4px;
@@ -2104,7 +2104,8 @@ ul.days-events  {
 }
 
 .location-place_country  .location-search {
-    left:-57px
+    left:-57px;
+    padding: 22px 22px 13px 22px;
 }
 
 .location-search input {

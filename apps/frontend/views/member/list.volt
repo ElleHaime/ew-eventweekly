@@ -94,7 +94,7 @@
                 <div class="span3 profile-btn-rt">
                     <div class="profile-btn">
                         <button class="btn btn-block ">Facebook Sinc</button>
-                        <p>import interests from facebook <br>
+                        <p>import interests from facebook
                             / login through facebook</p>
 
                         <div class="change-box">
