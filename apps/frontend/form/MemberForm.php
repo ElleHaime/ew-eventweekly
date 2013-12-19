@@ -17,24 +17,19 @@ class MemberForm extends Form
 	
 	public function init()
 	{
-		$emailValidators = array(
-				'Email' => array('message' => 'Email is not valid')
-		);
-        $this -> addElement('text', 'extra_email', 'Additional email', array('validators' => $emailValidators));
+        $this->setAttribute('class', 'form-horizontal');
+        $this -> addElement('text', 'extra_email', 'Additional email', array(
+            'placeholder' => 'Additional Email'
+        ));
+        $this -> addElement('text', 'name', 'Your name', array(
+            'placeholder' => 'Your Name'
+        ));
 
-        $nameValidators = array(
-            'PresenceOf' => array('message' => 'Name is required')
-        );
-		$this -> addElement('text', 'name', 'You name', array('validators' => $nameValidators));
+        $this -> addElement('text', 'address', 'Address', array('placeholder' => 'Your Address'));
+        $this -> addElement('text', 'phone', 'Phone', array('placeholder' => 'Your Phone'));
 
-		$this -> addElement('text', 'address', 'Address');
-		$this -> addElement('text', 'phone', 'Phone');
-		$this -> addElement('text', 'current_location', 'Location');
-		$this -> addElement('hidden', 'prev_location');
-		$this -> addElement('hidden', 'location_id');
+        $this -> addElement('file', 'logo', 'Logo', array('style' => 'display:none;'));
 
-        $this -> addElement('file', 'logo', 'Logo');
-
-		$this -> add(new Submit('Save'));
-	}
+        $this -> add(new Submit('Save', array('id' => 'save-member', 'class' => 'btn')));
+    }
 }

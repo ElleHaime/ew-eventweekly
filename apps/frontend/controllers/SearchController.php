@@ -41,7 +41,7 @@ class SearchController extends \Core\Controller
             ';
 
             $elemExists = function($elem) use (&$postData) {
-                if (!is_array($postData[$elem])) {
+                if (array_key_exists($elem, $postData) && !is_array($postData[$elem])) {
                     $postData[$elem] = trim(strip_tags($postData[$elem]));
                 }
                 return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
@@ -56,15 +56,15 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('location')) {
-                $conditions[] = 'location.city LIKE "%'.$postData['location'].'%"';
+                $conditions[] = 'location.city LIKE "%'.$postData['locationSearch'].'%"';
             }
 
             if ($elemExists('start_date')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_date']).'"';
+                $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_dateSearch']).'"';
             }
 
             if ($elemExists('end_date')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) < "'.strtotime($postData['end_date']).'"';
+                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) < "'.strtotime($postData['end_dateSearch']).'"';
             }
 
             if (!empty($conditions)) {

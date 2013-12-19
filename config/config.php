@@ -12,7 +12,7 @@ if (!defined('ROOT_BACK')) {
 $cfg_settings = array(
 	'application' => array(
 		'debug' => true,
-		'baseUri' => '/',
+		'baseUri' => '',
 		'defaultModule' => 'frontend',
 		'defaultNamespace' => 'Frontend\Controllers',
 		'defaultController' => 'index',

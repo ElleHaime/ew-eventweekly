@@ -4,7 +4,8 @@ namespace Core;
 
 use Phalcon\Mvc\User\Plugin,
 	Phalcon\Mvc\Dispatcher,
-	Thirdparty\Geo\SxGeo as SGeo;
+	Thirdparty\Geo\SxGeo as SGeo,
+	Core\Utils as _U;
 
 
 class Geo extends Plugin
@@ -75,9 +76,13 @@ class Geo extends Plugin
 		if ($queryParams != '') {	
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
 			$result = json_decode(file_get_contents($url));
-			
+		
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
+//_U::dump((float)$coordinates['latitude'], true);				
+//_U::dump((float)$coordinates['longitude'], true);				
+//_U::dump($result -> results[0] ->  geometry);				
 				foreach ($result -> results[0] -> address_components as $level) {
+					
 					if ($level -> types[0] == 'country') {
 						$location['country'] = $level -> long_name;
 					}
@@ -98,10 +103,13 @@ class Geo extends Plugin
 						$location['street_number'] = $level -> long_name;
 					}
 				}
-				
-				if (!empty($result -> results[0] -> geometry)) {
-					$location['latitude'] = $result -> results[0] -> geometry -> location -> lat;
-					$location['longitude'] = $result -> results[0] -> geometry -> location -> lng;
+		
+				if (!empty($coordinates)) {
+					$location['latitude'] = (float)$coordinates['latitude'];
+					$location['longitude'] = (float)$coordinates['longitude'];
+				} elseif (!empty($result -> results[0] -> geometry)) {
+					$location['latitude'] = round($result -> results[0] -> geometry -> location -> lat, 5);
+					$location['longitude'] = round($result -> results[0] -> geometry -> location -> lng, 5);
 				}
 				
 				return $location;
@@ -122,7 +130,7 @@ class Geo extends Plugin
 		if ($countryCode) {
 			$result[] = 'region=' . $this -> _countryCode;
 		}
-		if ($this -> _locLat && $this -> _locLon) {
+		if ($lat && $lon) {
 			$result[] = 'latlng=' . $lat . ',' . $lon;
 		}
 		

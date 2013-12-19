@@ -57,8 +57,12 @@ class Member extends Model
 				'field' => 'email',
 				'message' => 'Email must be unique'
 		)));
-		
-		return !$this -> validationHasFailed();		
+
+		if ($this -> validationHasFailed() == true) {
+			return false;
+		} else {
+			return true;
+		}	
 	}
 	
 	public function beforeValidationOnCreate()

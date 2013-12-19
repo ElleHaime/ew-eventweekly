@@ -12,12 +12,13 @@ use \Phalcon\Mvc\Url;
 class Application extends BaseApplication
 {
 	private $_config 			= null;
-	private $_datavaseConfig 	= null;
+	private $_databaseConfig 	= null;
 	private $_router 			= null;
 	protected $_loader			= null;
 	protected $_annotations		= null;
 	public static $defModule	= 'frontend';
 	public static $defNamespace	= '';
+	public static $defBaseUri	= '/';
 	
 	
 	public function __construct()
@@ -26,7 +27,7 @@ class Application extends BaseApplication
 		include_once(DATABASE_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
-		$this -> _datavaseConfig = new Config($cfg_database);
+		$this -> _databaseConfig = new Config($cfg_database);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
@@ -56,6 +57,13 @@ class Application extends BaseApplication
 		$this -> _initModules($di);
 
 		$di -> setShared('app', $this);
+		
+/*echo '<pre>';
+$router =  $di -> get('router');
+var_dump($router -> getActionName());
+echo '</pre>';
+die();*/
+		
 	}
 	
 	public function getOutput()
@@ -64,30 +72,32 @@ class Application extends BaseApplication
 	}
 
 	protected function _initLoader(\Phalcon\DI $di) {
-		$this -> _loader = new Loader();
-
-		$namespaces = array();
-
-		$appNamespaces = $this -> _config -> application -> namespaces;
-		if ($appNamespaces) {
-			foreach ($appNamespaces as $ns => $npath) {
-				$namespaces[$ns] = $npath;
-			}
-		}
-
-		$modules = $di -> get('modules');
-		foreach($modules as $module) {
-			if ($module -> namespaces) {
-				foreach ($module -> namespaces as $ns => $npath) {
+		if (!$di -> has('loader')) {
+			$this -> _loader = new Loader();
+	
+			$namespaces = array();
+	
+			$appNamespaces = $this -> _config -> application -> namespaces;
+			if ($appNamespaces) {
+				foreach ($appNamespaces as $ns => $npath) {
 					$namespaces[$ns] = $npath;
 				}
-			} 			
+			}
+	
+			$modules = $di -> get('modules');
+			
+			foreach($modules as $module) {
+				if ($module -> namespaces) {
+					foreach ($module -> namespaces as $ns => $npath) {
+						$namespaces[$ns] = $npath;
+					}
+				} 			
+			}
+			$this -> _initNamespaces($namespaces);
+	
+			$this -> _loader -> register();
+			$di -> set('loader', $this -> _loader);
 		}
-		$this -> _initNamespaces($namespaces);
-
-		$this -> _loader -> register();
-		$di -> set('loader', $this -> _loader);
-
 	}
 
 	
@@ -130,15 +140,27 @@ class Application extends BaseApplication
 		$this -> _router -> setDefaultModule($this -> _config -> application -> defaultModule);
 		$this -> _router -> setDefaultNamespace($this -> _config -> application -> defaultNamespace);
 		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
-		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction);		
-
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction); 		
+		
 		$routes = $this -> _annotations -> getRoutes();
+
 		if (!empty($routes)) {
 			foreach($routes as $link => $route) {
 				$this -> _router -> add($link, $route);
 			}
 		}
-
+		
+		/*$this -> _router -> handle();
+		$defModule = $this -> _router -> getModuleName();
+		if ($defModule === null) {
+			$defModule = 'frontend';
+		}
+		//var_dump($defModule); die();		
+		$this -> _router -> setDefaultModule($defModule);
+		$this -> _router -> setDefaultNamespace($this -> _config -> modules -> $defModule -> defaultNameSpace);
+		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
+		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction); */
+		 
 		$di -> set('router', $this -> _router);
 	}
 	
@@ -150,7 +172,11 @@ class Application extends BaseApplication
 	
 	protected function _initUrl(\Phalcon\DI $di)
 	{
-		$bu = $this -> _config -> application -> baseUri ? $this -> _config -> application -> baseUri : '/';
+		if ($this -> _config -> application -> baseUri !== false) {
+			$bu = $this -> _config -> application -> baseUri;
+		} else {
+			$bu = self::$defBaseUri;
+		}
 		
 		$di -> set('url', 
 			function() use ($bu) {
@@ -165,22 +191,25 @@ class Application extends BaseApplication
 	
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
-		$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _datavaseConfig -> adapter;
-		$config = $this -> _datavaseConfig;
-		
-		$di -> set('db',
-			function () use ($config, $adapter) {
-				$connection = new $adapter(
-					array('host' => $config -> host,
-						  'username' => $config -> username,
-						  'password' => $config -> password,
-						  'dbname' => $config -> dbname
-					)
-				);
+		if (!$di -> has('db')) {
 
-				return $connection;
-			} 
-		);
+			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfig -> adapter;
+			$config = $this -> _databaseConfig;
+			
+			$di -> set('db',
+				function () use ($config, $adapter) {
+					$connection = new $adapter(
+						array('host' => $config -> host,
+							  'username' => $config -> username,
+							  'password' => $config -> password,
+							  'dbname' => $config -> dbname
+						)
+					);
+	
+					return $connection;
+				} 
+			);
+		}
 	}
 
 	protected function _initCache(\Phalcon\DI $di)

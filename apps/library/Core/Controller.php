@@ -5,6 +5,7 @@ namespace Core;
 use Phalcon\Filter,
 	Core\Acl,
 	Core\Utils as _U,
+	Frontend\Form\SearchForm,
     Frontend\Models\Location;
 
 class Controller extends \Phalcon\Mvc\Controller
@@ -32,6 +33,7 @@ class Controller extends \Phalcon\Mvc\Controller
 		if (!$this -> locator) {
 			$this -> plugLocator();
 		}
+		$this -> plugSearch();
 
         $member = $this -> session -> get('member');
         $loc = $this -> session -> get('location');
@@ -39,7 +41,8 @@ class Controller extends \Phalcon\Mvc\Controller
 		if (!$loc || !is_object($member) || ($loc->id != $member->location_id)) {
             if ($member) {
                 $location = Location::findFirst('id = '.$member->location_id);
-            }else {
+            }
+            if (!isset($location)) {
                 $location = $this -> locator -> createOnChange();
             }
 			$this -> session -> set('location', $location);
@@ -136,6 +139,17 @@ class Controller extends \Phalcon\Mvc\Controller
 		
 		return '\\' . $this -> config -> modules -> $module -> formNamespace . '\\';
 	}
+	
+	public function plugSearch()
+	{
+		$searchForm = new SearchForm();
+		$this -> view -> setVar('searchForm', $searchForm);
+	
+		$categories = \Frontend\Models\Category::find();
+		$categories = $categories -> toArray();
+		$this -> view -> setVar('formCategories', $categories);
+	}
+	
 	
 	public function plugLocator()
 	{

@@ -11,8 +11,10 @@ use Core\Utils as _U,
 	Frontend\Models\EventCategory,
 	Frontend\Models\Event as Event,
 	Objects\EventImage,
+	Objects\EventSite,
 	Objects\EventMember,
     Frontend\Models\EventLike;
+
 
 /**
  * @RouteRule(useCrud = true)
@@ -63,8 +65,7 @@ class EventController extends \Core\Controllers\CrudController
 		$events = $this -> searchAction();
 
 		if (isset($events[0]) || isset($events[1])) {
-			$this -> view -> setVar('userEvents', $events[0]);
-			$this -> view -> setVar('friendEvents', $events[1]);
+			$this -> view -> setVar('events', array_merge($events[0], $events[1]));
 			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
 			$this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
 		} 
@@ -118,7 +119,7 @@ class EventController extends \Core\Controllers\CrudController
                 if ($this->request->isAjax()) {
                     echo json_encode($res);
                     die();
-                }else {
+                } else {
                     return array($events[0], $events[1]);
                 }
 			} 
@@ -169,54 +170,46 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function showAction($eventId)
 	{
-		$eventModel = new Event();
-
-		$eventObj = $eventModel -> grabEventsByEwId($eventId);
-		$event = array(
-			'id' => $eventObj -> id,
-			'eid' => $eventObj -> fb_uid,
-			'name' => $eventObj -> name,
-			'description' => $eventObj -> description,
-			'start_time' => date('F, l d, H:i', strtotime($eventObj -> start_date)),
-			'end_time' => date('F, l d, H:i', strtotime($eventObj -> end_date)),
-			'logo' => $eventObj -> logo,
-            'categories' => $eventObj->event_category->toArray()
-		);
+		$event = Event::findFirst($eventId);
 		
-		if ($event['eid'] != '' && $eventObj -> is_description_full != 1) { 
-			$descFull = $eventModel -> grabEventsDescription($event['eid']);
-			
+		if ($event -> fb_uid != '' && $event -> is_description_full != 1) {
+			$descFull = $event -> grabEventsDescription($event -> fb_uid);
+				
 			if ($descFull && $descFull != '') {
-				$event['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$eventObj -> assign(array('description' => $event['description'],
-                                          'is_description_full' => 1));
-				$eventObj -> save();				
+				$description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
+				$event -> assign(array('description' => $description,
+									   'is_description_full' => 1));
+				$event -> save();
 			}
 		}
 		
-		$event['answer'] = 0;
-		if ($this -> session -> has('memberId')) {
-			$conditions = 'member_id = ' . $this -> session -> get('memberId') . ' AND event_id = ' . $eventId;
-			$eventMember = EventMember::findFirst($conditions);
-			
-			if ($eventMember) {
-				$event['answer'] = (int)$eventMember -> member_status;
-			} 
+		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
+			foreach ($event -> memberpart as $mpart) {
+				if ($mpart -> member_id == $this -> memberId) {
+					$event -> memberpart = $mpart -> member_status;
+					break;
+				}
+			}
 		}
 
-		$this -> view -> setVar('logo', $event['logo']);
+        // TODO: refactor this. Get uploads dir and default logo url from config
+        $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
+        if (!file_exists($logo)) {
+            $logo = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
+        }
+        $this -> view -> setVar('logo', $logo);
 		$this -> view -> setVar('event', $event);
         $categories = Category::find();
-        $this->view->setVar('categories', $categories->toArray());
+        $this -> view -> setVar('categories', $categories->toArray());
 	}
 
     /**
      * @Route("/suggest-event-category/{eventId:[0-9]+}/{categoryId:[0-9]+}", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
+     * @Acl(roles={'member','guest'});
      */
     public function setEventCategoryAction($eventId, $categoryId)
     {
-        $status = false;
+        $status['status'] = false;
 
         if ($this->session->has('member')) {
             $CategoryEvent = new EventCategory();
@@ -225,12 +218,14 @@ class EventController extends \Core\Controllers\CrudController
                     'event_id' => $eventId,
                     'category_id' => $categoryId
                 ))) {
-                $status = true;
+                $status['status'] = true;
             }
+        } else {
+        	$status['error'] = 'not_logged';
         }
 
         if ($this->request->isAjax()) {
-            exit(json_encode(array('status' => $status)));
+            exit(json_encode(array($status)));
         }
 
         return $status;
@@ -239,125 +234,365 @@ class EventController extends \Core\Controllers\CrudController
 
 	/**
 	 * @Route("/event/answer", methods={"GET", "POST"})
-	 * @Acl(roles={'member'}); 
+	 * @Acl(roles={'member','guest'}); 
 	 */
 	public function answerAction()
 	{
+		$ret['status']='ERROR';
+		
 		if ($this -> session -> has('member')) {
+			$data = $this -> request -> getPost();
 			$member = $this -> session -> get('member');
 
-			switch ($this -> request -> getPost('answer', 'string'))
+			switch ($data['answer'])
 			{
 				case 'JOIN': $status = EventMember::JOIN; break;
 				case 'MAYBE': $status = EventMember::MAYBE; break;
 				case 'DECLINE': $status = EventMember::DECLINE; break;
 			}
-			$event_id = $this -> request -> getPost('event_id', 'string');
 
 			$eventMember = new EventMember();
-			$eventMember -> member_id =  $member -> id;
-			$eventMember -> event_id  =  $event_id;
-			$eventMember -> member_status = $status;
-			$eventMember -> save();
-
-			$ret['STATUS']='OK';
-			echo json_encode($ret);
-			die;
+			$eventMember -> assign(array(
+					'member_id' => $member -> id,
+					'event_id' => $data['event_id'],
+					'member_status' => $status
+			));
+			if ($eventMember -> save()) {
+				$ret = array('status' => 'OK',
+							 'event_member_status' => $data['answer']);
+			} 
+		} else {
+			$ret['error'] = 'not_logged';	
 		}
+		
+		echo json_encode($ret);
+		//die;
+	}
+
+	/**
+	 * @Route("/event/liked", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function listLikedAction() 
+	{
+        $event = new Event();
+
+		$this -> view -> setvar('listName', 'Liked Events');
+		$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
+
+		$events = $event -> listEvent();
+
+		$this -> view -> setvar('list_type', 'like');
+        $this -> view -> setvar('events', $events);
+        $this -> view -> pick('event/userlist');
+	}
+
+	/**
+	 * @Route("/event/joined", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function listJoinedAction()
+	{
+		$event = new Event();
+		$this -> view -> setvar('listName', 'Where I Go');
+		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
+
+		$events = $event->listEvent();
+		
+		$this -> view -> setvar('list_type', 'join');		
+		$this -> view -> setvar('events', $events);
+		$this -> view -> pick('event/userlist');		
 	}
 
 
 	/**
 	 * @Route("/event/list", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 	 	 
+	 * @Acl(roles={'member'});
 	 */
 	public function listAction()
 	{
-        $getData = $this->request->getQuery('cond');
-
-        if (empty($getData)) {
-            $this->response->redirect('list');
-        }
-
-        $Event = new Event();
-
-        if (!empty($getData['creator']) && $getData['creator'] == 'me') {
-            $this->view->setvar('listName', 'My Events');
-            $Event->setCondition('event.member_id = '.$this->session->get('memberId'));
-        }
-
-        if (!empty($getData['liked'])) {
-            $this->view->setvar('listName', 'Liked Events');
-            $Event->setCondition('event_like.member_id = '.$this->session->get('memberId'));
-        }
-
-        if (!empty($getData['event_member']) && $getData['event_member'] == 'me') {
-            $this->view->setvar('listName', 'Where I Go');
-            $Event->setCondition('event_member.member_id = '.$this->session->get('memberId'));
-        }
-
-        $events = $Event->listEvent();
-
-        $this->view->setvar('events', $events);
+		parent::listAction();
 	}
-
+	
+	
 	/**
-	 * @Route("/event/getLocations", methods={"POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function getLocations()
-	{
-
-	}
-
-	/**
-	 * @Route("/event/add", methods={"GET", "POST"})
+	 * @Route("/event/edit", methods={"GET", "POST"})
 	 * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-	{
+	{	
 		parent::editAction();
+	}
+
+	public function setEditExtraRelations()
+	{
+		$this -> editExtraRelations = array(
+			'location' => array('latitude', 'longitude'),
+			'venue' => array('latitude', 'longitude')
+		);
 	}
 
 
 	/**
+	 * @Route("/event/delete}", methods={"GET"})
 	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function deleteAction()
 	{
-		parent::deleteAction();
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
+
+		if (isset($data['id']) && !empty($data['id'])) {
+			$event = Event::findFirst((int)$id);
+			if ($event) {
+				$event -> delete();
+				$result['status'] = 'OK';
+			} 
+		}
+
+		echo json_encode($result);
 	}
 
+
     /**
-     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET"})
-     * @Acl(roles={'member'});
+     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET","POST"})
+     * @Acl(roles={'member','guest'});
      */
     public function likeAction($eventId, $status = 0)
     {
         $response = array(
             'status' => false
         );
-
-        $memberId = $this->session->get('memberId');
-
-        $EventLike = new EventLike();
-
-        if (!$EventLike->findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
-            $save = array(
-                'event_id' => $eventId,
-                'member_id' => $memberId,
-                'status' => $status
-            );
-
-            if ($EventLike->save($save)) {
-                $response['status'] = true;
-
-                $this->eventsManager->fire('App.Event:afterLike', $this);
-            }
+        
+        if ($this -> session -> has('member')) {
+        	$memberId = $this -> session -> get('memberId');
+        	$eventLike = EventLike::findFirst('event_id = '.$eventId.' AND member_id = '.$memberId);
+        	if (!$eventLike) {
+        		$eventLike = new EventLike();
+        	}
+        	$eventLike -> assign(array(
+        		'event_id' => $eventId,
+        		'member_id' => $memberId,
+        		'status' => $status
+        	));
+        		 
+        	if ($eventLike -> save()) {
+       			$response['status'] = true;
+       			$response['member_like'] = $status;
+       			$response['event_id'] = $eventId;
+       			
+       			$this -> eventsManager -> fire('App.Event:afterLike', $this);
+        	}
+        } else {
+        	$response['error'] = 'not_logged';
         }
+        
+        $this -> sendAjax($response);
+	}
+        
+	/**
+	 * @Route("/event/publish", methods={"GET", "POST"})
+	 * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function publishAction()
+	{
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
 
-        $this->sendAjax($response);
-    }
+		if (isset($data['id']) && !empty($data['id'])) {
+			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
+				$result = array_merge($res, array('status' => 'OK'));
+			}
+		}
+
+		echo json_encode($result);
+	}
+	
+	/**
+	 * @Route("/event/unpublish", methods={"GET", "POST"})
+	 * @Route("/event/unpublish/{id:[0-9]+}", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});   	 
+	 */
+	public function unpublishAction()
+	{
+		$data =  $this -> request -> getPost();
+		$result['status'] = 'ERROR';
+
+		if (isset($data['id']) && !empty($data['id'])) {
+			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
+				/* delete sites, event members, send mails etc */
+				$result = array_merge($res, array('status' => 'OK'));
+			}
+		}
+
+		echo json_encode($result);
+	}
+
+
+	private function updateStatus($id, $status)
+	{
+		$event = Event::findFirst((int)$id);
+		$result = false;
+
+		if ($event) {
+			$event -> assign(array('event_status' => $status));
+			if ($event -> save()) {
+				$result = array('id' => $event -> id,
+								'event_status' => $event -> event_status);
+			} 
+		} 
+
+		return $result;
+	}
+	
+
+	public function processForm($form) 
+	{
+		_U::dump($form -> getFormValues(), true);
+		_U::dump($this -> request -> getUploadedFiles(), true);
+//die();
+		$event = $form -> getFormValues();
+		$loc = new Location();
+		$venue = new Venue();
+		$coords = array();
+		$venueId = false;
+		$newEvent = array();
+
+		// process name and descirption
+		$newEvent['name'] = $event['name'];
+		$newEvent['description'] = $event['description'];
+		$newEvent['member_id'] = $this -> session -> get('memberId');
+		$newEvent['is_description_full'] = 1;
+		$newEvent['event_status'] = $event['event_status'];
+		$newEvent['recurring'] = $event['recurring'];
+		$newEvent['logo'] = $event['logo'];
+		$newEvent['campaign_id'] = $event['campaign_id'];
+		if (isset($this -> session -> get('member') -> network)) {
+			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
+		}
+		
+		// process location
+		if (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
+			// check location by coordinates
+			$location = $loc -> createOnChange(array('latitude' => $event['location_latitude'], 
+													 'longitude' => $event['location_longitude']), 
+													 array('latitude', 'longitude'));
+			$newEvent['location_id'] = $location -> id;
+
+		} 
+		// location coordinates wasn't set. Try to get location from venue or address coordinates 
+		if (!isset($newEvent['location_id'])) {
+			if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+				if (!empty($coords)) {
+					$scale = $geo -> buildCoordinateScale($event['venue_latitude'], $event['venue_longitude']);
+					$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
+										and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+					$location =  $loc::findFirst($query);
+					$newEvent['location_id'] = $location -> id;
+				}
+			}
+		}
+		// venue/address coordinates wasn't set or location wasn't found
+		if (!isset($newEvent['location_id'])) {
+			if (!empty($event['location'])) {
+				$location = $loc -> createOnChange(array('city' => $event['location']), array('city'));
+				$newEvent['location_id'] = $location -> id; 
+			}
+		}
+
+		// process venue
+		if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+			$venueInfo = array('latitude' => $event['venue_latitude'],
+						       'longitude' => $event['venue_longitude']);
+		}
+		if ($newEvent['location_id']) {
+			$venueInfo['location_id'] = $newEvent['location_id'];
+		}
+		$venueInfo['name'] = $event['venue'];
+		$venueInfo['address'] = $event['address'];
+
+		$vn = $venue -> createOnChange($venueInfo);
+		$newEvent['venue_id'] = $vn -> id;
+
+		// process address
+		$newEvent['address'] = $event['address'];
+
+		// process date and time
+		if (!empty($event['start_date'])) {
+			$newEvent['start_date'] = implode('-', array_reverse(explode('/', $event['start_date'])));  
+			if (!empty($event['start_time'])) {
+				$newEvent['start_date'] = $newEvent['start_date'] . ' ' . $event['start_time'];  
+			} 
+		}
+		
+		if (!empty($event['end_date'])) {
+			$newEvent['end_date'] = implode('-', array_reverse(explode('/', $event['end_date'])));
+			if (!empty($event['end_time'])) {
+				$newEvent['end_date'] = $newEvent['end_date'] . ' ' . $event['end_time'];
+			}
+		}
+
+		//process image
+		foreach ($this -> request -> getUploadedFiles() as $file) {
+			$newEvent['logo'] = $file -> getName();
+			$logo = $file;
+		}
+//_U::dump($newEvent);	
+
+		if (!empty($event['id'])) {
+			$ev = Event::findFirst($event['id']);
+		} else {
+			$ev = new Event();
+		}
+		$ev -> assign($newEvent);
+		if ($ev -> save()) {
+			// save image
+			if (isset($logo)) {
+				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
+			}
+
+			// process site
+			$eSites = EventSite::find(array('event_id' => $ev -> id));
+			if ($eSites) {
+				foreach ($eSites as $es) {
+					$es -> delete();
+				}
+			}
+			if (!empty($event['event_site'])) {
+				$aSites = explode(',', $event['event_site']);
+				foreach($aSites as $key => $value) {
+					if (!empty($value)) {
+						$eSites = new EventSite();						
+						$eSites -> assign(array('event_id' => $ev -> id,
+										 		'url' => $value));
+						$eSites -> save();
+					}
+				}
+			}
+
+			// process categories
+			$eCats = EventCategory::find(array('event_id' => $ev -> id));
+			if ($eCats) {
+				foreach ($eCats as $ec) {
+					$ec -> delete();
+				}
+			}
+			if (!empty($event['category'])) {
+				$aCats = explode(',', $event['category']);
+				foreach($aCats as $key => $value) {
+					if (!empty($value)) {
+						$eCats = new EventCategory();
+						$eCats -> assign(array('event_id' => $ev -> id,
+											   'category_id' => $value));
+						$eCats -> save();
+					}
+				}
+			}
+		}
+		
+		$this -> response -> redirect('/event/list');
+	}
 }		

@@ -21,6 +21,8 @@ class MemberController extends \Core\Controllers\CrudController
 	{
 		$member = $this -> obj;
 		$list = $member::findFirst($this -> session -> get('memberId'));
+        $memberForm = new MemberForm($list);
+
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
@@ -41,6 +43,8 @@ class MemberController extends \Core\Controllers\CrudController
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
         }
+
+        $this->view->memberForm = $memberForm;
 	}
 
 
@@ -49,7 +53,7 @@ class MemberController extends \Core\Controllers\CrudController
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-    {
+	{
         $cfg = $this -> di -> get('config');
         $member = Member::findFirst('id = '.$this->session->get('memberId'));
 
@@ -63,7 +67,6 @@ class MemberController extends \Core\Controllers\CrudController
                 $member->name = $formValues['name'];
                 $member->address = $formValues['address'];
                 $member->phone = $formValues['phone'];
-                $member->location_id = $formValues['location_id'];
 
                 if ($this->request->hasFiles() == true) {
                     $file = array_shift($this->request->getUploadedFiles());
@@ -90,7 +93,7 @@ class MemberController extends \Core\Controllers\CrudController
                     $this->setFlash('Your data was successfully changed!');
 
                     $this->session->set('member', $member);
-                    $this->response->redirect('profile');
+                    $this->response->redirect('/profile');
                 }
             } else {
                 $form->setFormValues($formValues);
@@ -98,7 +101,7 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->view->form = $form;
-    }
+	}
 
 
 	public function loadObject()
@@ -205,7 +208,7 @@ class MemberController extends \Core\Controllers\CrudController
             $filters->delete();
         }
 
-        $this->response->redirect('profile');
+        $this->response->redirect('/profile');
     }
 
     /**

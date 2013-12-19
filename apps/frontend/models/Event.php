@@ -21,12 +21,34 @@ class Event extends EventObject
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 
-	public static $eventRecurring = array('0' => 'one time',
-										  '1' => 'every day',
-										  '7' => 'every week');
-	protected $locator = false;
 
-    private $conditions = [];
+	public static $eventRecurring = array('0' => 'Once',
+										  '1' => 'Daily',
+										  '7' => 'Weekly');
+	protected $locator = false;
+	private $conditions = [];
+	private $selector = ' AND';
+
+
+	
+	public function afterFetch()
+	{ 
+		if ($this -> start_date) {
+			$this -> start_time = date('H:i', strtotime($this -> start_date));
+			$this -> start_date = date('d/m/Y', strtotime($this -> start_date));
+		} else {
+			$this -> start_time = '00:00:00';
+			$this -> start_date = '0000-00-00';
+		}
+		
+		if ($this -> end_date) {
+			$this -> end_time = date('H:i', strtotime($this -> end_date));
+			$this -> end_date = date('d/m/Y', strtotime($this -> end_date));
+		} else {
+			$this -> end_time = '00:00:00';
+			$this -> end_date = '0000-00-00';
+		}
+	}
 
 	public function grabEventsByFbId($token, $eventId)
 	{
@@ -87,7 +109,7 @@ class Event extends EventObject
             $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
         }
 
-		$eventsList = $this -> modelsManager -> executeQuery($query);
+		$eventsList = $this -> getModelsManager() -> executeQuery($query);
 
 		return $eventsList;
 	}
@@ -99,8 +121,9 @@ class Event extends EventObject
 		$eventsList = self::find();
 		$locationsList = Location::find();
 		$venuesList = Venue::find();
-		$cfg = $this -> di -> get('config');
-		$locator = new Location(); 
+		$locator = new Location();
+		$cfg = $this -> getConfig();		
+		$geo = $this -> getGeo();
 
 		if ($membersList) {
 			$membersScope = array();
@@ -191,7 +214,7 @@ class Event extends EventObject
 
 								// check location by venue coordinates
 								if ($eventLocation == '') {
-									$scale = $this -> geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
+									$scale = $geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
 									foreach ($locationsScope as $loc_id => $coords) {
 										if ($scale['latMin'] <= $coords['lat'] && $coords['lat'] <= $scale['latMax'] &&
 											$scale['lonMin'] <= $coords['lon'] && $coords['lon'] <= $scale['lonMax'])
@@ -204,7 +227,7 @@ class Event extends EventObject
 
 								// create new location from coordinates
 								if ($eventLocation == '') {
-									$locationArgs = $this -> geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
+									$locationArgs = $geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
 																			 		  'longitude' => $ev['venue']['longitude']));
 									$loc = $locator -> createOnChange($locationArgs);
 									$eventLocation = $loc -> id;
@@ -306,9 +329,19 @@ class Event extends EventObject
     public function setCondition($condition)
     {
         if (!empty($condition)) {
-            $this->conditions[] = (string)$condition;
+            $this -> conditions[] = (string)$condition;
         }
+       
         return $this;
+    }
+    
+    public function setSelector($selector)
+    {
+    	if (!empty($selector)) {
+    		$this -> selector = (string)$selector;
+    	}
+    	 
+    	return $this;
     }
 
     public function listEvent()
@@ -324,19 +357,19 @@ class Event extends EventObject
                 LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
             ';
 
-        if (!empty($this->conditions)) {
+        if (!empty($this -> conditions)) {
             $query .= ' WHERE';
-            $count = count($this->conditions);
+            $count = count($this -> conditions);
             for ($i = 0; $i < $count; $i++) {
-                if ($i !== 0) {$query .= ' AND';}
-                $query .= " ".$this->conditions[$i];
+                if ($i !== 0) {
+                	$query .= $this -> selector;
+               	}
+                $query .= " " . $this -> conditions[$i];
             }
 
             $query .= ' GROUP BY event.id';
-
-            $result = $this->modelsManager->executeQuery($query);
-
-            $result->setHydrateMode(Resultset::HYDRATE_ARRAYS);
+            $result = $this -> getModelsManager() -> executeQuery($query);
+            $result -> setHydrateMode(Resultset::HYDRATE_ARRAYS);
 
             $result = $result->toArray();
         }

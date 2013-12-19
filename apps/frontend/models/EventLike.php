@@ -6,4 +6,5 @@ use Objects\EventLike as EventLikeObject;
 
 class EventLike extends EventLikeObject
 {
+
 } 

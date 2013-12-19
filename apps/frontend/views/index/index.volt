@@ -2,55 +2,72 @@
 
 {% block content %}
 
-	<div class="container content">
-        <div class="padd_70"></div>
-	    <div class="row-fluid top-about">
-	        <div class="span4">
-	           {{ image('img/demo/img1.jpg', 'alt': 'Guard') }}
-	                <div class="top-about-text">
-	                    <h4>Never miss an Event</h4>
-	                </div>
-	        </div>
-	        <div class="span4">
-	            {{ image('img/demo/img2.jpg', 'alt': 'Grab') }}
-	            <div class="top-about-text">
-	                <h4>Get personalised listing</h4>
-	            </div>
-	
-	        </div>
-	        <div class="span4">
-	            {{ image('img/demo/img3.jpg', 'alt': 'Know') }}
-	                <div class="top-about-text">
-	                  <h4>See which of your friends are going</h4>
-	                </div>
-	        </div>
-	    </div>
+<div class="content-bg">
+    <div class="big-top">
+        <div class="square red">
+            <span>Never<br/> miss<br/> an Event!</span>
+        </div>
+        <div class="square white">
+            <span>Get<br/> personalised<br/> listings</span>
+        </div>
+        <div class="square blue">
+            <span>See which<br/> of your friends<br/> are going</span>
+        </div>
+    </div>
+    <div class="how-it-works container-box">
+        <h2>How it works?</h2>
 
-		<div class="row-fluid link-about">
-	        <div class="span12">
-	            <a href="#">about us</a>
-	        </div>
-	    </div>
-	    <div class="row-fluid agreement-box">
-	        <div class="span8 offset2">
-	            <p>Войдите через Фейсбук, чтоб использовать наш сервис на полную. Вы увидете по-настоящему важные для вас события, а также открытые события своих друзей. Кроме того, вы запланировать свое событие, пригласив на него всех пользователей Event Weekly. </p>
-	            <button class="btn btn-fb" id="fb-login">facebook</button>
-	            <div class="agreement-box-text">
-	                {{ image('img/demo/bibl.jpg', 'alt': 'Grab') }}
-	                <p>Мы серьзено относимся к вопросам приватности — личные события останутся личными, пока вы напрямую не включите их. Также мы ничего не запостим на вашу стену. </p>
-	            </div>
-	
-	
-	        </div>
-	    </div>
-	    <div class="row-fluid sign-box">
-	        <div class="span2"><p>Sign in:</p></div>
-	        <div class="span1"> <button class="btn">twitter </button></div>
-	        <div class="span1">  <button class="btn">g+ </button></div>
-	        <div class="span3"> <button class="btn" onclick="location.href='login'">e-mail</button></div>
-	        <div class="span1"><span>or</span></div>
-	        <div class="span4"><button class="btn" onclick="location.href='map'">Register later</button></div>
-    	</div>
-	</div>
+        <div class="column">
+            <div class="number">1</div>
+            <div class="text">
+                <p>Войдите через Фейсбук, чтоб использовать наш сервис на полную. </p>
+            </div>
+        </div>
+        <div class="column">
+            <div class="number">2</div>
+            <div class="text">
+                <p>Посмотрите интереснейшие события в вашем городе. </p>
+            </div>
+        </div>
+        <div class="column">
+            <div class="number">3</div>
+            <div class="text">
+                <p>Запланируйте свое событие, пригласив на него более 100 000 пользователей по всему миру </p>
+            </div>
+        </div>
+    </div>
+    <div class="facebook-button">
+        <div class="container-box">
+            <div class="button">
+                <a href="#" onclick="return false;" id="fb-login">facebook</a>
+            </div>
+            <div class="tip clear">
+                <i class="fb-lock"></i>
+
+                <p>Мы серьзено относимся к вопросам приватности — личные события останутся личными, пока вы напрямую
+                    не включите их. Также мы ничего не запостим на вашу стену. </p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container-box">
+            <h2>No Facebook? Ok, try:</h2>
+
+            <div class="login-variants clearfix">
+                <div class="line-box clearfix">
+                    <div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>
+                    <div class="gplus icon"><a href="#" class="color-red">google+</a></div>
+                    <div class="link email"><a href="/login">e-mail</a></div>
+                </div>
+                <div class="line-box">
+                    <div class="label-or"><span>or</span></div>
+                    <div class="link register-later"><a href="/map">Register later</a></div>
+                </div>
+                <div class="link read-more"><a href="#">Read more about Event Weekly</a></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </footer>
+</div>
 
 {% endblock %}

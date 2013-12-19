@@ -18,45 +18,9 @@ class Campaign extends Model
 	
 	public function initialize()
 	{
-		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'member'));
-		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location'));
+		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
+																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\Event', 'campaign_id', array('alias' => 'event'));
+		$this -> hasMany('id', '\Objects\CampaignContact', 'campaign_id', array('alias' => 'contact'));
 	}
-
-	public function getDependency()
-	{
-		$dependency = array(
-			'location' => array(
-				'type' => 'belongsTo',
-				'createOnChange' => true,
-				'createOnChangeField' => 'name',
-				'createOnChangeRelation' => 'location_id'
-			),
-			'member' => array(
-				'type' => 'belongsTo'
-			),
-			'event' => array(
-				'type' => 'hasMany'
-			)
-		);
-
-		return $dependency;
-	}
-
-	public function beforeValidationOnCreate()
-	{
-	}
-	
-	public function afterSave()
-	{
-	}
-	
-	public function getContacts()
-	{
-	}
-	
-	public function validation()
-	{
-	}
-	
 }

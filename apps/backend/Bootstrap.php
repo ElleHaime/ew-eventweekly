@@ -1,8 +1,8 @@
 <?php
 
-namespace Ew\Backend;
+namespace Backend;
 
-class Bootstrap extends \Ew\Core\Bootstrap
+class Bootstrap extends \Core\Bootstrap
 {
 	protected $_moduleName = 'backend';
 

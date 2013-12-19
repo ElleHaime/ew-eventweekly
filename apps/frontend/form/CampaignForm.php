@@ -17,16 +17,32 @@ class CampaignForm extends Form
 	
 	public function init()
 	{
+		$this -> addElement('hidden', 'id');		
+
+		$this -> addElement('hidden', 'logo', 'add image');	
+		$this -> addElement('file', 'add-img-upload', 'upload',
+								array('style' => 'display:none;'));	
+
 		$nameValidators = array(
 				'PresenceOf' => array('message' => 'Name is required')
 		);
 		$this -> addElement('text', 'name', 'Name', array('validators' => $nameValidators));
-		$this -> addElement('textarea', 'description', 'Description');		
-		$this -> addElement('text', 'address', 'Address');
-		$this -> addElement('text', 'current_location', 'Location');
-		$this -> addElement('hidden', 'prev_location');
-		$this -> addElement('hidden', 'member_id');
-		$this -> addElement('hidden', 'location_id');
+		$this -> addElement('textarea', 'description', 'Description',
+								array('placeholder' => 'add description',
+									  'class' => 'resizable field-big'));
+		$this -> addElement('text', 'address', 'Address',
+								array('placeholder' => 'Choose Address'));
+		$this -> addElement('hidden', 'address-coords');	
+		$this -> addElement('text', 'location', 'Location',
+								array('placeholder' => 'Choose location'));
+		$this -> addElement('hidden', 'location_latitude');
+		$this -> addElement('hidden', 'location_longitude');
+
+		$this -> addElement('text', 'campaign_contacts', 'Contacts',
+								array('style' => 'display:none;'));
+
+		$this -> addElement('text', 'campaign_events', 'Events',
+								array('style' => 'display:none;'));		
 		
 		$this -> add(new Submit('Save'));
 	}
