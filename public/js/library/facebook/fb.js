@@ -173,8 +173,9 @@ define('fb',
 				
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
+                    console.log(data);
 					if (data.status == 'OK') {
-						$('#categ-' + data.event_mamber_status.toLowerCase()).show();
+						$('#categ-' + data.event_member_status.toLowerCase()).show();
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
