@@ -135,6 +135,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 container.html('');
                 var mfsForm = document.createElement('ul');
                 mfsForm.id = 'fbFriendList';
+                mfsForm.style = 'overflow-y: scroll; height: 300px';
 
                 // generate element with one friend
                 _.each($this.__friends, function(node, index){
