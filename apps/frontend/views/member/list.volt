@@ -17,18 +17,67 @@
                              id="member_logo">
                         <div class="btn btn-block btn-file">
                             <div id="file">Change photo</div>
-                            {#//<input id="file" type="file" size="1" name="file">#}
                         </div>
                     </div>
-                    <div class="profile-info clearfix">
 
-                            {#{{ form() }}#}
-                            <form action="/member/edit" enctype="multipart/form-data" method="post" class="form-horizontal">
+                    <form action="/member/edit" enctype="multipart/form-data" method="post">
+                        <div class="profile-info clearfix">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <p class="profile-name">{{ member.name }}</p>
+                                    {{ memberForm.messages('name') }}
+                                </div>
 
+                                <div class="controls" {% if member.name != "" %} style="display: none" {% endif %}>
+                                    {{ memberForm.render('name') }}
+                                </div>
+                            </div>
 
+                            <div class="control-group">
+                                <div class="controls">
+                                    <span class="location-state" style="display: inline">{{ member.address }}</span>
+                                    {{ memberForm.messages('address') }}
+                                </div>
 
+                                <div class="controls" {% if member.address != "" %} style="display: none" {% endif %}>
+                                    {{ memberForm.render('address') }}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="controls">
+                                    <span class="phone">{{ member.phone }}</span>
+                                    {{ memberForm.messages('phone') }}
+                                </div>
+
+                                <div class="controls" {% if member.phone != "" %} style="display: none" {% endif %}>
+                                    {{ memberForm.render('phone') }}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="controls">
+                                    <span class="mail extra-email">{{ member.extra_email }}</span>
+                                    {{ memberForm.messages('extra_email') }}
+                                </div>
+
+                                <div class="controls" {% if member.extra_email != "" %} style="display: none" {% endif %}>
+                                    {{ memberForm.render('extra_email') }}
+                                </div>
+                            </div>
+
+                            <div class="control-group">
+                                <div class="controls">
+                                    {{ memberForm.render('logo') }}
+                                    {{ memberForm.render('Save') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        {#<div class="profile-info clearfix" style="display: none">
+                            &#123;&#35;{{ form() }}&#35;&#125;
                                 <div class="control-group">
-                                    <label class="control-label" for="inputEmail">{{ memberForm.label('extra_email') }}</label>
+                                    {{ memberForm.label('extra_email') }}
 
                                     <div class="controls">
                                         {{ memberForm.render('extra_email') }}
@@ -37,7 +86,7 @@
                                 </div>
 
                                 <div class="control-group">
-                                    <label class="control-label" for="inputPassword">{{ memberForm.label('name') }}</label>
+                                    {{ memberForm.label('name') }}
 
                                     <div class="controls">
                                         {{ memberForm.render('name') }}
@@ -46,16 +95,7 @@
                                 </div>
 
                                 <div class="control-group">
-                                    <label class="control-label" for="inputPassword">{{ memberForm.label('address') }}</label>
-
-                                    <div class="controls">
-                                        {{ memberForm.render('address') }}
-                                        {{ memberForm.messages('address') }}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    <label class="control-label" for="inputPassword">{{ memberForm.label('phone') }}</label>
+                                    {{ memberForm.label('phone') }}
 
                                     <div class="controls">
                                         {{ memberForm.render('phone') }}
@@ -65,7 +105,7 @@
 
                                 {{ memberForm.render('logo') }}
 
-                                {#<div class="control-group">
+                                &#123;&#35;<div class="control-group">
                                     <label class="control-label" for="inputPassword">{{ memberForm.label('logo') }}</label>
                                     {{ memberForm.render('logo') }}
 
@@ -74,21 +114,21 @@
                                                 id="add-img-btn" type="button">Add Image</button>
                                         {{ memberForm.messages('logo') }}
                                     </div>
-                                </div>#}
+                                </div>&#35;&#125;
 
                                 <div class="control-group">
                                     <div class="controls">
                                         {{ memberForm.render('Save') }}
                                     </div>
                                 </div>
-                            </form>
-                            {{ endform() }}
-                        {#<h4 class="profile-name">{{ member.name }}</h4>
-                        <span class="location-state">{{ member.location.alias }} {{ member.address }}</span>
-                        <span class="mail">{{ member.email }}</span>#}
-                    </div>
 
+                            &#123;&#35;<h4 class="profile-name">{{ member.name }}</h4>
+                            <span class="location-state">{{ member.location.alias }} {{ member.address }}</span>
+                            <span class="mail">{{ member.email }}</span>&#35;&#125;
+                        </div>#}
+                    </form>
                 </div>
+
                 <div class="span3 profile-btn-rt">
                     <div class="profile-btn">
                         <button class="btn btn-block ">Facebook Sinc</button>

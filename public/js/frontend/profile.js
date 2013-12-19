@@ -11,7 +11,9 @@ require([
     'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
     'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'
 ],
-    function($, frontTopPanel, fb, frontMemberEditControl) {
+    function($, frontTopPanel, fb, frontMemberEditControl, noti) {
+
+        noti.init();
 
         frontTopPanel.init({
             searchCityBlock: '.searchCityBlock'
@@ -27,21 +29,5 @@ require([
             var fMessage = $('#splash_messages');
             noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
         }
-
-        $('.settings-box-one .checkbox').click(function () {
-            $(this).parent().toggleClass('active-box');
-        });
-
-        $('.settings-box-one').click(function () {
-            var val = $(this).find('.fieldId').attr('value');
-
-            var el = $("#filters input[value='" + val + "']");
-
-            el.prop('checked', !el.prop('checked'));
-        });
-
-        $('#saveFilter').click(function(){
-            $('#filters').submit();
-        });
     }
 );
