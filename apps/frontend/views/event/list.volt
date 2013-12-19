@@ -27,7 +27,7 @@
                                             <span class="date-time">{{ event.start_time }}</span>
                                         </div>
                                         <div class="event-text">
-                                            {{ event.description|striptags|escape|truncate(300) }}
+                                            <p> {{ event.description|striptags|escape|truncate(300) }}</p>
                                             <span class="hide-span"></span>
                                         </div>
                                     </div>

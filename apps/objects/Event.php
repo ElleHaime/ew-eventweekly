@@ -34,6 +34,7 @@ class Event extends Model
 																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
 		$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
 		$this -> hasManyToMany('id', '\Objects\EventCategory', 

@@ -62,14 +62,6 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function eventlistAction()
 	{
-		/*$event = new Event();
-		$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
-		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
-		$event -> setCondition('event.member_id = '.$this->session->get('memberId'));
-		$event -> setSelector(' OR');
-		$dbEvents = $event -> listEvent();
-//_U::dump($dbEvents); */
-		
 		$events = $this -> searchAction();
 
 		if (isset($events[0]) || isset($events[1])) {
@@ -178,53 +170,37 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function showAction($eventId)
 	{
-		$eventModel = new Event();
-		$eventObj = $eventModel -> grabEventsByEwId($eventId);
+		$event = Event::findFirst($eventId);
 		
-		$event = array(
-			'id' => $eventObj -> id,
-			'eid' => $eventObj -> fb_uid,
-			'name' => $eventObj -> name,
-			'description' => $eventObj -> description,
-			'start_time' => $eventObj -> start_time,
-			'start_date' => $eventObj -> start_date,
-			'end_time' => $eventObj -> end_time,
-			'end_date' => $eventObj -> end_date,
-			'logo' => $eventObj -> logo,
-            'categories' => $eventObj -> event_category -> toArray()
-		);
-//_U::dump($event);
-		if ($eventObj -> venue) {
-			$event['venue'] = $eventObj -> venue -> name;
+		if ($event -> fb_uid != '' && $event -> is_description_full != 1) {
+			$descFull = $event -> grabEventsDescription($event -> fb_uid);
+				
+			if ($descFull && $descFull != '') {
+				$description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
+				$event -> assign(array('description' => $description,
+									   'is_description_full' => 1));
+				$event -> save();
+			}
 		}
-		if ($eventObj -> location) {
-			$event['location'] = $eventObj -> location -> alias;
-		}
-
-
-		if ($this -> session -> has('member') && $eventObj -> memberpart -> count() > 0) {
-			foreach ($eventObj -> memberpart as $mpart) {
+		
+		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
+			foreach ($event -> memberpart as $mpart) {
 				if ($mpart -> member_id == $this -> memberId) {
-					$event['answer'] = $mpart -> member_status;
+					$event -> memberpart = $mpart -> member_status;
 					break;
 				}
 			}
-		} 
-		
-		if ($event['eid'] != '' && $eventObj -> is_description_full != 1) { 
-			$descFull = $eventModel -> grabEventsDescription($event['eid']);
-			
-			if ($descFull && $descFull != '') {
-				$event['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$eventObj -> assign(array('description' => $event['description'],
-                                          'is_description_full' => 1));
-				$eventObj -> save();				
-			}
 		}
 
+        // TODO: refactor this. Get uploads dir and default logo url from config
+        $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
+        if (!file_exists($logo)) {
+            $logo = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
+        }
+        $this -> view -> setVar('logo', $logo);
 		$this -> view -> setVar('event', $event);
         $categories = Category::find();
-        $this->view->setVar('categories', $categories->toArray());
+        $this -> view -> setVar('categories', $categories->toArray());
 	}
 
     /**
@@ -306,6 +282,7 @@ class EventController extends \Core\Controllers\CrudController
 
 		$events = $event -> listEvent();
 
+		$this -> view -> setvar('list_type', 'like');
         $this -> view -> setvar('events', $events);
         $this -> view -> pick('event/userlist');
 	}
@@ -321,7 +298,8 @@ class EventController extends \Core\Controllers\CrudController
 		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
 
 		$events = $event->listEvent();
-		//_U::dump($events);		
+		
+		$this -> view -> setvar('list_type', 'join');		
 		$this -> view -> setvar('events', $events);
 		$this -> view -> pick('event/userlist');		
 	}
@@ -390,24 +368,26 @@ class EventController extends \Core\Controllers\CrudController
         
         if ($this -> session -> has('member')) {
         	$memberId = $this -> session -> get('memberId');
-        	$eventLike = new EventLike();
-        	
-        	if (!$eventLike -> findFirst('event_id = '.$eventId.' AND member_id = '.$memberId)) {
-        		$save = array(
-        				'event_id' => $eventId,
-        				'member_id' => $memberId,
-        				'status' => $status
-        		);
+        	$eventLike = EventLike::findFirst('event_id = '.$eventId.' AND member_id = '.$memberId);
+        	if (!$eventLike) {
+        		$eventLike = new EventLike();
+        	}
+        	$eventLike -> assign(array(
+        		'event_id' => $eventId,
+        		'member_id' => $memberId,
+        		'status' => $status
+        	));
         		 
-        		if ($eventLike->save($save)) {
-        			$response['status'] = true;
-        			$this->eventsManager->fire('App.Event:afterLike', $this);
-        		}
+        	if ($eventLike -> save()) {
+       			$response['status'] = true;
+       			$response['member_like'] = $status;
+       			$response['event_id'] = $eventId;
+       			
+       			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
         } else {
         	$response['error'] = 'not_logged';
         }
-        
         
         $this -> sendAjax($response);
 	}

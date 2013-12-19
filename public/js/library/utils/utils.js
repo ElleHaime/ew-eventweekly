@@ -22,7 +22,7 @@ define('utils',
 			    }
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
-			    return autocomplete;	
+			    return autocomplete;
 			},
 				
 			self.ucfirst = function(str) 
@@ -30,12 +30,20 @@ define('utils',
 				return str.slice(0, 1).toUpperCase() + str.slice(1);
 			},
 
-			self.request = function(method, url, params)
+			self.request = function(method, url, params, dataType)
 			{
-				if (!method.length) {
+
+				if (typeof method == 'undefined') {
 					method = 'post';
-				} 
+				}
 				var call = { url: url, type: method };
+				
+				if (method == 'get') {
+					if (typeof dataType == 'undefined') {
+						dataType = 'json';
+					}
+					call.dataType = dataType;
+				}
 
 				if (params) {
 					call.data = params;

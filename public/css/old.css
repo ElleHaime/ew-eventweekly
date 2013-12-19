@@ -10,20 +10,21 @@ header, nav, section, article, aside, footer {
     display: block;
 }
 body {
-    font: 12px/18px Tahoma, Verdana, sans-serif;
-    font-family: 'Open Sans', sans-serif;
+   font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif;;
     width: 100%;
     height: 100%;
     position: relative;
     min-width: 480px;
+    color:#333333;
+    background: #f3f3f3;
+    padding: 0;
+    margin: 0;
 }
 
-body {
-    font: 400 14px "Open Sans";
-    color:#333333;
-}
 p {
     color:#333333;
+    margin:0;
+    font-size: 14px;
 }
 
 a {
@@ -35,15 +36,9 @@ a:hover {
     text-decoration: underline;
     color: #ffffff;
 }
-p {
-    margin:0;
-}
 
 img {
-
     display: block;
-
-
     border: none;
 }
 
@@ -66,24 +61,13 @@ label {
     padding: 0;
     margin: 0;
 }
-p {
-    font-size: 14px;
-}
-
 hr {
     height: 1px;
     padding: 0;
     margin: 10px 0 10px 0;
     border: 0;
     border-bottom: 1px solid #cccccc;
-
 }
-body {
-    background: #f3f3f3;
-    padding: 0;
-    margin: 0;
-}
-
 
 
 /*------------------------------------------logo css----------------------------------------------------------*/
@@ -93,7 +77,10 @@ body {
     height: 34px;
     background: url(../img/demo/logo.png) no-repeat center  ;
 }
+/*------------------------------------------end logo css----------------------------------------------------------*/
 
+
+/*------------------------------------------header css----------------------------------------------------------*/
 .out{
     background: #212121;
     width: 100%;
@@ -105,6 +92,7 @@ body {
 }
 
 
+/*------------------------------------------content css----------------------------------------------------------*/
 .content {
     z-index: 10;
     position: relative;
@@ -199,22 +187,25 @@ body {
 }
 /*------------------------------------------agreement css----------------------------------------------------------*/
 /*------------------------------------------btn css----------------------------------------------------------*/
-.btn {
+.btn, #fb-invite-all  {
     padding: 10px;
     text-align: center;
     display: inline-block;
     zoom: 1;
     *display: inline;
-    font-size: 17px;
     font-weight: normal;
     color:#ffffff;
     text-shadow: none;
     border: 0;
     background: #5097e5;
-    font-family: 'Open Sans', sans-serif;
+    font: 400 17px "Open Sans";
     min-height: 39px;
     box-shadow: none;
     border-radius: 0;
+}
+
+#fb-invite-all {
+    width: 100%;
 }
 .btn:hover, .btn:active, .btn:focus, .location-place .location-search .btn:hover, .btn.active   {
     background: #427fc0;
@@ -229,6 +220,11 @@ body {
     font-family: 'Open Sans', sans-serif;
 }
 
+.btn-fb {
+    width: 50%;
+    display: block;
+    margin: 20px auto;
+}
 
 /*------------------------------------------end btn css----------------------------------------------------------*/
 
@@ -252,13 +248,6 @@ body {
     display: block;
     margin-top: 7px;
 }
-
-.btn-fb {
-    width: 50%;
-    display: block;
-    margin: 20px auto;
-}
-
 
 /*------------------------------------------user css----------------------------------------------------------*/
 
@@ -298,7 +287,7 @@ body {
     zoom: 1;
     *display: inline;
     float: left;
-    width: 94px;
+    width: 92px;
     text-align: left;
     color:#212121;
     height: 22px;
@@ -351,7 +340,7 @@ body {
 }
 
 .user-down {
-    padding: 20px  22px 8px 22px;
+    padding: 20px  18px 8px 18px;
     left:0px;
 }
 .user-down:last-child .edit-btn{
@@ -381,6 +370,7 @@ body {
     text-align: left;
     padding: 0 10px 0 0;
     margin: 0 0 10px  0;
+    height: 42px;
 }
 
 .user-down .btn:hover {
@@ -397,8 +387,8 @@ body {
     margin-left: 13px;
     margin-right: 5px;
     vertical-align: middle;
-
 }
+
 .user-down .edit-btn .btn-line .btn {
     float: left;
     margin-right: 4px;
@@ -409,13 +399,12 @@ body {
     zoom: 1;
     *display: inline;
     background: url(../img/bgs/logout.png) no-repeat center center;
-    height: 19px;
+    height: 22px;
     float: right;
     padding: 8px 16px;
     width: 20px;
     border: 2px solid #5097e5;
 }
-
 
 .btn-text {
     display: inline-block;
@@ -438,7 +427,8 @@ body {
     background: #f15a24;
     width: 63px;
     height: 42px;
-    display: inline-block;zoom: 1;
+    display: inline-block;
+    zoom: 1;
     *display: inline;
     text-align: center;
     vertical-align: middle;
@@ -567,7 +557,6 @@ a.location-city  {
     background: url(../img/bgs/search-icon.png) no-repeat 10px 7px #DEEDFF;
 }
 
-
 .location-place_ask .location-search {
     width: 213%;
 }
@@ -695,7 +684,6 @@ div.grippie {
     overflow:hidden;
 }
 
-
 .user-form {
     top:65px;
 }
@@ -704,6 +692,7 @@ div.grippie {
     padding: 20px;
     margin: 0;
 }
+
 .form-horizontal .control-label,  .form-horizontal label
 {
     width:80px;
@@ -758,7 +747,6 @@ div.grippie {
     padding-top: 5px;
 }
 
-
 input, select:focus,a:focus, a:active ,
 select:active , option:focus,option:active,
 button:active, button:focus, input:focus,
@@ -769,7 +757,10 @@ input:active , textarea:focus,textarea:active,
     box-shadow: none;
 }
 textarea:focus, input[type="text"]:focus,
-input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus,
+input[type="password"]:focus, input[type="datetime"]:focus,
+input[type="datetime-local"]:focus, input[type="date"]:focus,
+input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus,
+input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus,
 input[type="search"]:focus, input[type="tel"]:focus,
 input[type="color"]:focus, .uneditable-input:focus
 {
@@ -790,13 +781,18 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .name-link , .name-link:hover {
     color:#464646;
-    font: 400 22px "Open Sans";
+    font: 400 22px/22px "Open Sans";
+    margin-bottom: 10px;
+    display: inline-block;
 }
 .event-one-text {
     max-width: 650px;
     margin-right: 10px;
     float: left;
     position: relative;
+}
+.icon-time {
+    vertical-align: middle;
 }
 .date-list {
     padding-bottom: 5px;
@@ -926,15 +922,13 @@ input[type="color"]:focus, .uneditable-input:focus
     background: #C7B299;
 }
 
-
-
-
 .color-type {
     margin-left: 19px;
     text-align: center;
     color:#ffffff;
     padding: 5px 10px;
 }
+
 .arrow {
     width: 0px;
     height: 0px;
@@ -1012,7 +1006,7 @@ background: #9556BE ;
 
 /*------------------------------------------plant box css----------------------------------------------------------*/
 .plans-box {
-    margin: 22px 0 0 0;
+    margin: 17px 0 0 0;
 }
 
 .plans-box  span {
@@ -1026,8 +1020,6 @@ background: #9556BE ;
     margin: 0 10px 0 0;
 }
 /*------------------------------------------END plant box css----------------------------------------------------------*/
-
-
 
 .type-box {
     display: none;
@@ -1135,8 +1127,6 @@ input[type="checkbox"]  {
 }
 
 
-
-
 .input-append input::-webkit-input-placeholder , .input-div input::-webkit-input-placeholder , .input-div_small  input::-webkit-input-placeholder
 { color:#8aaad2; opacity: 0.6;  padding-left: 5px; }
 .input-append input::-webkit-input-placeholder , .input-div_small  input::-webkit-input-placeholder , .input-div input::-webkit-input-placeholder{
@@ -1145,12 +1135,10 @@ input[type="checkbox"]  {
     padding-left: 5px;
 }
 
-
 .input-append input::-webkit-input-placeholder , .input-div input::-webkit-input-placeholder, .input-div_small input::-webkit-input-placeholder {
     color:#8aaad2; opacity: 0.6;
     padding-left: 5px;
 }
-
 
 .input-append input::-moz-placeholder , .input-div input::-moz-placeholder , .input-div_small input::-moz-placeholder
 { color:#8aaad2;   padding-left: 5px; opacity: 0.6;}
@@ -1173,37 +1161,56 @@ input[type="checkbox"]  {
     margin-top: 0;
 }
 
+
+/*-------------------------------------------------Profile ----------------------------------------------------------*/
 .profile-img {
     margin: 0px 0 20px 20px;
+    float: left;
+    margin-right: 20px;
 }
-.profile-info {
-    margin: 0px 0 20px 0px;
-    padding-top: 10px;
+
+.profile-img-box {
+    margin:  0 auto;
+    border: 1px solid #CCCCCC;
+    float: left;
+    height: 160px;
+    position: relative;
+    width: 160px;
+}
+
+.profile-img img {
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 .profile-btn {
     margin-right: 20px;
-
 }
 .profile-btn .btn {
     padding: 10px 20px;
     margin-bottom: 10px;
+
 }
 .profile-btn  p {
     color:#999999;
     font-size: 12px;
     padding-bottom: 10px;
 }
-.profile-img {
-    float: left;
-    margin-right: 20px;
 
-}
-.profile-img img {
-    border:3px solid #ccc;
-}
 .profile-info {
     float: left;
 }
+.profile-info label {
+    width: 120px;
+}
+
+.profile-info .controls {
+    margin-left: 120px;
+}
+
 .location-state {
     color:#999999;
     clear: both;
@@ -1269,9 +1276,24 @@ input[type="checkbox"]  {
     padding-top: 10px;
     width: 80px;
     display: block;
-
 }
 
+.profile-info-lf .profile-img {
+    width: 160px;
+}
+
+.profile-info-lf .profile-img .btn-file {
+    margin-top: 10px;
+}
+
+
+.profile-info  .form-horizontal {
+    padding: 0;
+}
+
+.profile-info  .controls .btn {
+    margin-top: 0px;
+}
 
 /*------------------------------------------category css----------------------------------------------------------*/
 
@@ -1585,21 +1607,21 @@ input[type="checkbox"]  {
     color:#ffffff;
 }
 
-.events-list.bussines-category  .sub_category div  {
+.events-list.business-category  .sub_category div  {
     border:1px solid #0071BC;
 }
-.events-list.bussines-category  .sub_category span {
+.events-list.business-category  .sub_category span {
     color:#0071BC;
 }
-.events-list.bussines-category  .sub_category div:hover {
+.events-list.business-category  .sub_category div:hover {
     background: #0071BC;
 }
-.events-list.bussines-category    .category-title {
+.events-list.business-category    .category-title {
     color:#0071BC;
 }
 
 
-.events-list.bussines-category     .sub_category div:hover a span  {
+.events-list.business-category     .sub_category div:hover a span  {
     color:#ffffff;
 }
 
@@ -1722,7 +1744,7 @@ input[type="checkbox"]  {
 
 .event-one-text p {
     color:#4D4D4D;
-    padding: 10px 0;
+    padding: 5px 0;
     line-height: 18px;
     font: 400 13px/18px "Open Sans";
 }
@@ -1790,8 +1812,7 @@ input[type="checkbox"]  {
     zoom: 1;
     *display: inline;
     text-decoration: none;
-    font-family: 'Open Sans',sans-serif;
-    font-size: 13px;
+    font: 400 13px "Open Sans";
 }
 .like-box  span {
     cursor: pointer;
@@ -1918,7 +1939,6 @@ i.icon-chevron-down {
     min-height:70px;
 }
 
-
 .list-event {
     margin: 20px;
 }
@@ -2026,7 +2046,6 @@ i.icon-chevron-down {
     margin: 0 4px 10px 0;
 }
 
-
 .count-category  {
     color:#ffffff;
     width: 30px;
@@ -2039,14 +2058,12 @@ i.icon-chevron-down {
     font-weight: bold;
 }
 
-
 .category-list .none_active {
     background: #B3B3B3;
 }
 .service-search  i {
     vertical-align: middle;
     cursor: pointer;
-
 }
 
 .service-search a {
@@ -2064,6 +2081,7 @@ i.icon-chevron-down {
     border-bottom: 1px dashed #ffffff;
     padding: 0;
 }
+
 .service-search .btn {
     clear: both;
     margin-top: 15px;
@@ -2079,8 +2097,8 @@ ul.days-events  {
     display: table-cell;
     text-align: center;
     color:#0088C4;
-
 }
+
 .days-events  li.activity {
     color:#ffffff;
 }
@@ -2090,14 +2108,15 @@ ul.days-events  {
 }
 
 .location-place_country  .location-search {
-    left:-57px
+    left:-57px;
+    padding: 22px 22px 13px 22px;
 }
 
 .location-search input {
     width: 68%;
 }
 
-
+/*----------------------------------------------------user down-------------------------------------------------------*/
 #user-down  .edit-btn {
     position: relative;
     z-index: 10;
@@ -2127,8 +2146,6 @@ ul.days-events  {
     z-index: 11;
     position: relative;
 }
-
-
 
 .img-box {
     max-width: 200px;
@@ -2194,16 +2211,16 @@ ul.days-events  {
     font: 700 16px "Open Sans";
     display: block;
     clear: both;
-
 }
+
 .sign_no a:hover {
     background: #ffffff;
 }
+
 .about-img-one {
     float: left;
     margin-right: -58px;
 }
-
 
 .add-img {
     float: left;
@@ -2220,6 +2237,7 @@ ul.days-events  {
     min-height: 19px;
     display: inline-block;
 }
+
 .settings-box-one label {
     display: inline-block;
     padding-left: 0;
@@ -2237,7 +2255,6 @@ ul.days-events  {
 .settings-box .active-box .hide-box {
     display: block;
 }
-
 
 .settings-box .active-box .icon-ok {
     display: block;
@@ -2271,7 +2288,6 @@ ul.days-events  {
     font-weight: bold;
 }
 
-
 .place-address {
     background: #5098e5;
     vertical-align: middle;
@@ -2283,13 +2299,11 @@ ul.days-events  {
 
 .place-address span {
     color:#ffffff;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 13px;
+    font: 400 14px "Open Sans";
     display: inline-block;
     word-break: break-all;
     padding: 12px 40px 12px 40px;
     background: url(../img/bgs/place-icon-white.png) no-repeat 16px 50% ;
-
 }
 
 .location-search {
@@ -2306,7 +2320,6 @@ ul.days-events  {
     padding-right: 70px;
 }
 
-
 .cities_box {
     padding-top: 30px;
 }
@@ -2314,8 +2327,7 @@ ul.days-events  {
 .cities_box h5 {
     padding-bottom: 5px;
     border-bottom: 1px solid #919191;
-    font-size: 18px;
-    font-family: 'Open Sans', sans-serif;
+    font: 400 18px "Open Sans";
     color:#3b3b3b;
 }
 
@@ -2500,8 +2512,7 @@ ul.days-events  {
 }
 .events-box .table-box .link-text {
     color:#464646;
-    font-size: 21px;
-    font-family: 'Open Sans', sans-serif;
+    font: 400 21px "Open Sans";;
     display: inline-block;
     clear: both;
     margin: 5px 0;
@@ -2602,8 +2613,7 @@ ul.days-events  {
 }
 .search-fields ul li a {
     color:#468cc8;
-    font-size: 16px;
-    font-family: 'Open Sans', sans-serif;
+    font: 400 16px "Open Sans";
     display: block;
 }
 
@@ -2621,7 +2631,6 @@ ul.days-events  {
     vertical-align: middle;
     text-align: center
 }
-
 
 .search-fields ul  li:hover   {
     background: #de4a34;
@@ -2670,12 +2679,9 @@ ul.days-events  {
     font-size: 16px;
 }
 
-
-
 .category-list h5 , .range h5 , .switch-box h5 {
     color:#000000;
     font: 300 14px "Open Sans";
-
 }
 
 .category-list .table-box-row > div {
@@ -2740,34 +2746,26 @@ ul.days-events  {
 }
 .category-list .other-border .location-name {
     border-left:3px solid #97a5a5;
-
 }
 
 .category-list .other-border:active , .category-list .other-border:focus , .category-list .active-line.other-border {
     background: #808c8d;
 }
 
-
-
 .category-list .other-border
 .number-events {
     color:#808c8d;
 }
 
-
 .category-list .outdoors-border .location-name {
     border-left:3px solid #5acd5c;
-
 }
 
 .category-list .outdoors-border:active  , .category-list .outdoors-border:focus, .category-list .active-line.outdoors-border  {
     background: #4caf51;
-
 }
 
-
-.category-list .outdoors-border
-.number-events {
+.category-list .outdoors-border .number-events {
     color:#5acd5c;
 }
 
@@ -2779,7 +2777,6 @@ ul.days-events  {
     border-left:3px solid #3a485f;
 }
 
-
 .category-list .night-lifes-border:focus .location-name {
     border-left:1px solid #3a485f;
 }
@@ -2787,18 +2784,13 @@ ul.days-events  {
     float: right;
 }
 
-
 category-list .night-lifes-border:active  , .category-list .night-lifes-border:focus, .category-list .active-line.night-lifes-border  {
     background: #303e52;
-
 }
 
-.category-list .night-lifes-border
-.number-events {
+.category-list .night-lifes-border .number-events {
     color:#3a485f;
 }
-
-
 
 .category-list .sport-border:active , .category-list .sport-border:focus ,  .category-list .active-line.sport-border {
     background: #c65500;
@@ -2808,11 +2800,9 @@ category-list .night-lifes-border:active  , .category-list .night-lifes-border:f
     border-left:3px solid #dc7f00;
 }
 
-.category-list .sport-border
-.number-events {
+.category-list .sport-border .number-events {
     color:#dc7f00;
 }
-
 
 .category-list .enter-border .location-name {
     border-left:3px solid #9556be;
@@ -2822,33 +2812,25 @@ category-list .night-lifes-border:active  , .category-list .night-lifes-border:f
     border-left-width: 1px;
 }
 
-
-.category-list .enter-border
-.number-events {
+.category-list .enter-border .number-events {
     color:#9556be;
 }
-
 
 .table-box-row > div.location-name {
     padding-left: 8px;
 }
 
-
-
 .category-list .enter-border:hover {
     background: #edf0f1;
     text-decoration: none;
 }
-.category-list .enter-border:active , .category-list .enter-border:focus, .category-list .active-line.enter-border{
+.category-list .enter-border:active , .category-list .enter-border:focus, .category-list .active-line.enter-border {
     background: #8942b6;
     text-decoration: none;
 }
 
-
-
-.category-list .outdoors-border:focus .location-name
-{   border-left:1px solid #5acd5c;
-
+.category-list .outdoors-border:focus .location-name {
+    border-left:1px solid #5acd5c;
 }
 .category-list .other-border:focus .location-name {
     border-left:1px solid #97a5a5;
@@ -2856,7 +2838,6 @@ category-list .night-lifes-border:active  , .category-list .night-lifes-border:f
 .category-list .music-border:focus  .location-name {
     border-left:1px solid #ebc500;
 }
-
 
 .category-list .enter-border:focus .location-name  {
     border-left-width: 1px;
@@ -2877,6 +2858,7 @@ a.table-box-row:focus {
     vertical-align: middle;
     background: url(../img/bgs/icons.png) no-repeat -20px -45px;
 }
+
 .category-list .table-box-row:hover .icon-device {
     display: none;
 }
@@ -2891,8 +2873,7 @@ a.table-box-row:focus {
     height: 13px;
 }
 
-.category-list .table-box-row:active > .cell,.category-list .active-line  .cell , .category-list .active-line:hover .cell
-{
+.category-list .table-box-row:active > .cell,.category-list .active-line  .cell , .category-list .active-line:hover .cell {
     color:#ffffff;
 }
 
@@ -2900,28 +2881,26 @@ a.table-box-row:focus {
     margin-bottom: 5px;
     padding: 0;
 }
-.popular_city .table-box-row:hover{
+.popular_city .table-box-row:hover {
     background: #de4a34;
 }
 .popular_city .table-box-row:hover .cell {
     color:#ffffff;
 }
-.popular_city .table-box-row  .number-events
-{
+.popular_city .table-box-row  .number-events {
     width: 30px;
     padding-right: 0;
     padding-left: 0;
 }
 
-
 .popular_city  .table-box-row .location-name {
     padding-left: 0;
 }
 
-
 .events-box .table-box-row:nth-child(1) .cell {
     float: left;
 }
+
 .events-box .table-box-row .cell:nth-child(2) {
     padding-left: 142px;
     float: none;
@@ -2931,6 +2910,7 @@ a.table-box-row:focus {
     background: none;
     color: #DE4A34;
 }
+
 .location-table  .table-box-row {
     display: inline-block;
 }
@@ -2941,8 +2921,6 @@ a.table-box-row:focus {
     display: block;
     clear: both;
 }
-
-
 
 .container-fluid {
     max-width: 1420px;
@@ -2964,7 +2942,6 @@ a.table-box-row:focus {
     min-width: 480px;
 }
 
-
 .sidebar .input-append input {
     padding: 4px 2%;
     width: 95%;
@@ -2974,8 +2951,8 @@ a.table-box-row:focus {
     border: 0;
 }
 
-
 .event-list_i {background: #ffffff;}
+
 .all-img {
     clear: both;
 
@@ -2987,8 +2964,7 @@ a.table-box-row:focus {
     background: #db4b2c;
     padding: 11px 0px 12px 0;
     color:#ffffff;
-    font-family: "Open Sans";
-    font-size: 24px;
+    font: 400 24px "Open Sans";
     float: left;
     text-align: center;
     width: 58px;
@@ -3031,8 +3007,6 @@ a.table-box-row:focus {
 .header .span7 {
     width: 55%;
 }
-
-
 
 .controls {
     position: relative;
@@ -3178,15 +3152,13 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 }
 
 
+.place-address
+{
+    cursor: default;
+}
+
 /*--------------------------------------------------------------END date-picker box--------------------------------------------*/
 
-.profile-info-lf .profile-img {
-    width: 146px;
-}
-
-.profile-info-lf .profile-img .btn-file {
-    margin-top: 10px;
-}
 
 
 /*--------------------------------------------------------------no_user plaha box--------------------------------------------*/
@@ -3232,7 +3204,6 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 /*--------------------------------------------------------------END no_user box--------------------------------------------*/
 
 .status-btn {
-    /*margin-top: 20px;*/
     clear: both;
 }
 .status-btn .btn {
@@ -3351,7 +3322,7 @@ i.icon-map {
 
 /*-----------------------------------------END TOOLTIP--------------------------------------------------------------------*/
 
-
+/*-----------------------------------------MODAL--------------------------------------------------------------------*/
 .modal {
     width: auto;
     display: none;
@@ -3364,8 +3335,10 @@ i.icon-map {
     right: 4px;
     top:0px;
     z-index: 90;
-    
 }
+
+/*-----------------------------------------END MODAL--------------------------------------------------------------------*/
+
 .input-div_hide {
     display: none;
     margin-top: 10px;
@@ -3398,7 +3371,33 @@ i.icon-map {
     padding: 10px;
     margin: 3px 0 0 0px;
     list-style: none;
-    background: #67ADDA;
+    background: #5097E5;
     width:auto;
     display: none;
+}
+
+/*---------------------------------------------invite block------------------------------------------------------*/
+
+#friendsBlock
+{
+    border:1px solid #5097E5;
+    border-top:0;
+}
+
+.friendItem {
+    padding:10px;
+    background: #ffffff;
+    border-bottom: 1px solid #5097E5;
+    float: none;
+    clear: both;
+    vertical-align: middle;
+}
+.friendItem  img  {
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+.friendItem  span {
+    vertical-align: top;
+    padding-top: 10px;
 }

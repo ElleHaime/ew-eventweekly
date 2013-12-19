@@ -1,3 +1,10 @@
+@media screen and (max-width: 1430px) {
+    .active-events {
+        padding: 0 1%;
+    }
+
+}
+
 @media screen and (max-width: 1290px) {
     .logo {
         background: url(../img/demo/logo-sm.png) no-repeat center center;
@@ -42,7 +49,9 @@
     .location {
         margin: 21px 11px 0 0;
     }
-
+    .show-list {
+          margin-top: 21px;
+    }
     .row-fluid .show-list {
         margin-right: 20px;
     }
@@ -72,26 +81,35 @@
         width: 60%;
     }
 
-
-    /*---mesage box---*/
-    .massage-box {
-        left: -369%;
-    }
-    .massage-box_city {
-        left: -107px;
-    }
-
-    .event-list-btn {
-        /*clear: both;*/
-        /*float: none;*/
-        /*padding-left: 182px;*/
-    }
-
     .location-place_country .location-search {
         left: -208px;
     }
     .location-search input {
         width: 57%;
+    }
+
+    .location-place .location-search .btn
+    {
+        margin-bottom: 18px;
+    }
+    .event-site {
+        margin-bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 980px) {
+    .event-one .event-list-btn {
+        float: left;
+        padding-left: 182px;
+    }
+    .event-one .event-one-text {
+        max-width: 74%;
+    }
+    .location-place_ask .location-search
+    {
+        height: 400px;
+        overflow-y: scroll;
     }
 }
 
@@ -131,11 +149,12 @@
 
 }
 
-@media screen and (max-width: 780px) {
+@media screen and (max-width: 790px) {
 
     .event-one .event-one-text {
-        max-width: 68%;
+        max-width: 66%;
     }
+
 
     .input-div input {
         width: 97%;
@@ -154,6 +173,7 @@
     .user-box a  .caret {
         display: none;
     }
+
 
     .header .span7 {
         width: 68%;
@@ -180,9 +200,9 @@
         top: 62px;
         left: 0px !important;
         width: 90% !important;
-        padding: 10% 5%;
-
+        padding: 6% 5%;
     }
+
     .location-place_ask .input-search {
         width: 73%;
     }
@@ -190,6 +210,10 @@
 
 }
 @media screen and (max-width: 640px) {
+
+    .event-one .event-list-btn{
+        padding-left: 0;
+    }
     .header-count {
         display: none;
     }
@@ -198,6 +222,11 @@
     }
     .header .span5 {
         width: 35%;
+    }
+
+    .event-one .event-one-text {
+        max-width: 100%;
+        margin-top: 10px;
     }
 
 /*---profile---*/
