@@ -21,7 +21,12 @@ define('frontMemberEditControl',
 
                 inpMemberName: ".profile-info input[name='name']",
                 inpMemberExtraEmail: ".profile-info input[name='extra_email']",
-                btnSaveMember: '#save-member'
+                btnSaveMember: '#save-member',
+
+                txtProfileName: '.profile-name',
+                txtLocationState: '.location-state',
+                txtExtraEmail: '.extra-email',
+                txtPhone: '.phone'
             },
 
             self.init = function()
@@ -55,10 +60,7 @@ define('frontMemberEditControl',
                     });
                 });
 
-
-
-
-                $(".profile-name").click(function(){
+                $(self.settings.txtProfileName).click(function(){
                     var val = $(this).text();
 
                     $(this).replaceWith(
@@ -66,7 +68,7 @@ define('frontMemberEditControl',
                     );
                 });
 
-                $(".location-state").click(function(){
+                $(self.settings.txtLocationState).click(function(){
                     var val = $(this).text();
 
                     $(this).replaceWith(
@@ -74,7 +76,7 @@ define('frontMemberEditControl',
                     );
                 });
 
-                $(".extra-email").click(function(){
+                $(self.settings.txtExtraEmail).click(function(){
                     var val = $(this).text();
 
                     $(this).replaceWith(
@@ -82,7 +84,7 @@ define('frontMemberEditControl',
                     );
                 });
 
-                $(".phone").click(function(){
+                $(self.settings.txtPhone).click(function(){
                     var val = $(this).text();
 
                     $(this).replaceWith(
