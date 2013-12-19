@@ -5,19 +5,22 @@
 <div class="container" id="content_noBorder">
     <div class="padd_30"></div>
 
-            <div class="row-fluid">
-                <div class="span12">
-                    <h3 class="title-page">New events</h3>
-                    <div class="events-result">
-                        search result:
-                        <span>123</span>
-                        from
-                        <span>2 334</span>
-                    </div>
-                </div>
-                    <div class="row-fluid active-events">
-                        <div class="span12">
 
+
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="active-events">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <h3 class="title-page">New events</h3>
+                                        <div class="events-result">
+                                            search result:
+                                            <span>123</span>
+                                            from
+                                            <span>2 334</span>
+                                        </div>
+                                    </div>
+                                </div>
                             {% for event in events %}
 
                                 <div class="events-list  music-category">
@@ -82,6 +85,7 @@
                                 <div style="margin-left: 50px"><i>Your friends don't have events!</i></div>
 
                             {% endfor %}
+                             </div>
                         </div>
                     </div>
                 </div>

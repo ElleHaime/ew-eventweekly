@@ -1,3 +1,10 @@
+@media screen and (max-width: 1430px) {
+    .active-events {
+        padding: 0 1%;
+    }
+
+}
+
 @media screen and (max-width: 1290px) {
     .logo {
         background: url(../img/demo/logo-sm.png) no-repeat center center;
@@ -81,12 +88,28 @@
         width: 57%;
     }
 
-    .event-one .event-list-btn {
-        float: left;
-        padding-left: 180px;
+    .location-place .location-search .btn
+    {
+        margin-bottom: 18px;
     }
     .event-site {
         margin-bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 980px) {
+    .event-one .event-list-btn {
+        float: left;
+        padding-left: 182px;
+    }
+    .event-one .event-one-text {
+        max-width: 74%;
+    }
+    .location-place_ask .location-search
+    {
+        height: 400px;
+        overflow-y: scroll;
     }
 }
 
@@ -126,12 +149,12 @@
 
 }
 
-@media screen and (max-width: 780px) {
+@media screen and (max-width: 790px) {
 
     .event-one .event-one-text {
-        max-width: 100%;
-        margin-top: 10px;
+        max-width: 66%;
     }
+
 
     .input-div input {
         width: 97%;
@@ -150,9 +173,7 @@
     .user-box a  .caret {
         display: none;
     }
-    .event-one .event-list-btn{
-        padding-left: 0;
-    }
+
 
     .header .span7 {
         width: 68%;
@@ -179,9 +200,9 @@
         top: 62px;
         left: 0px !important;
         width: 90% !important;
-        padding: 10% 5%;
-
+        padding: 6% 5%;
     }
+
     .location-place_ask .input-search {
         width: 73%;
     }
@@ -189,6 +210,10 @@
 
 }
 @media screen and (max-width: 640px) {
+
+    .event-one .event-list-btn{
+        padding-left: 0;
+    }
     .header-count {
         display: none;
     }
@@ -197,6 +222,11 @@
     }
     .header .span5 {
         width: 35%;
+    }
+
+    .event-one .event-one-text {
+        max-width: 100%;
+        margin-top: 10px;
     }
 
 /*---profile---*/

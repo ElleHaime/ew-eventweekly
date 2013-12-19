@@ -3152,6 +3152,11 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 }
 
 
+.place-address
+{
+    cursor: default;
+}
+
 /*--------------------------------------------------------------END date-picker box--------------------------------------------*/
 
 

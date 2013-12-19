@@ -15,9 +15,9 @@
                         <span>2 334</span>
                     </div>
                 </div>
-                    <div class="row-fluid active-events">
+                    <div class="row-fluid">
                         <div class="span12">
-
+                            <div class=" active-events">
                            {% for index, node in events %}
 
                                 <div class="events-list  music-category">
@@ -84,6 +84,7 @@
 
                             {% endfor %}
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
