@@ -20,7 +20,7 @@
                             <div class=" active-events">
                            {% for index, node in events %}
 
-                                <div class="events-list  music-category">
+                                <div class="events-list music-category signleEventListElement" event-id="{{ node['event']['id'] }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
                                             <div class="event-one clearfix">
@@ -51,7 +51,9 @@
                                                     </p>
 
                                                     <div class="plans-box clearfix">
-                                                        <button class="btn eventLikeBtn" data-status="1" data-id="{{ node['event']['id'] }}">Like</button>
+                                                    	{% if list_type != 'like' %}
+                                                        	<button class="btn eventLikeBtn" data-status="1" data-id="{{ node['event']['id'] }}">Like</button> 
+                                                        {% endif %}
                                                         <button class="btn eventLikeBtn" data-status="0" data-id="{{ node['event']['id'] }}">Don`t like</button>
                                                     </div>
                                                 </div>
