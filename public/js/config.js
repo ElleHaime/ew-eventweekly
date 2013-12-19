@@ -41,6 +41,7 @@ require.config({
 		'frontTopPanel': 'frontend/general/topPanel',
 		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
 		'frontEventListControl': 'frontend/event/controls/eventListControl',
+		'frontEventInviteFriend': 'frontend/event/controls/eventInviteFriend',
 		'frontCampaignEditControl': 'frontend/campaign/controls/campaignEditControl',
 		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl'
 	},

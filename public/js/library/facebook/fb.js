@@ -63,9 +63,9 @@ define('fb',
 					self.__login();
 				});
 
-				$(self.settings.btnInvite).click(function(e) { 
+				/*$(self.settings.btnInvite).click(function(e) {
 					self.__inviteFriends();
-				});
+				});*/
 
 				$(self.settings.btnEventGoing).click(function(e) {
 					self.__goingEvent();

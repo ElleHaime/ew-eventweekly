@@ -82,10 +82,11 @@
                                             {% endif %}
                                         {% endif %}
                                         
-                                        <button class=" btn btn-block btn_invite" type="button">
+                                        <button class="btn btn-block btn_invite" type="button" id="fb-invite">
                                             <img alt="" src="/img/demo/btn-m.png">
                                             Invite friends
                                         </button>
+                                        <div id="friendsBlock"></div>
                                         {% if event['site'] is defined %}
                                             <div class="event-site clearfix">
                                                 {% for key, val in event['site'] %}
