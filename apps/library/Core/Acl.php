@@ -113,8 +113,8 @@ class Acl extends Plugin
 		if ($allowed != PhAcl::ALLOW) {
 			$dispatcher -> forward(array(
 				'module' => $dispatcher -> getModuleName(),
-				'controller' => 'index',
-				'action' => 'denied'
+				'controller' => 'auth',
+				'action' => 'login'
 			)); 
 
 			return false;

@@ -35,8 +35,8 @@ require.config({
 
 		//frontend
 		'noti': 'frontend/general/noti',
+		'frontEventLike': 'frontend/general/eventLike',		
 		'signupControl': 'frontend/signup/signupControl',
-		'frontListEventLike': 'frontend/list/eventLike',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
 		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
