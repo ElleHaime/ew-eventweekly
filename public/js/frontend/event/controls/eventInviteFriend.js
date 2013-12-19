@@ -14,7 +14,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 inviteBtn: '#fb-invite',
                 inviteAllBtn: '#fb-invite-all',
                 friendsBlock: '#friendsBlock',
-                friendClass: 'friendItem clearfix',
+                friendClass: 'friendItem',
                 eventLink: window.location.href,
                 wallText: 'Check out this awesome event!'
             },
@@ -143,6 +143,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                     friendItem.id = 'friend_' + node.id;
                     friendItem.setAttribute('data-id', node.id);
                     friendItem.setAttribute('class', $this.settings.friendClass);
+                    friendItem.setAttribute('class', friendItem.getAttribute('class')+' clearfix');
                     friendItem.style = 'cursor: pointer;';
                     friendItem.title = node.name;
                     friendItem.innerHTML = '<img src="'+node.picture.data.url+'" alt="'+node.name+'"><span>'+node.name+'</span>';
