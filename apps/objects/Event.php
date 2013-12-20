@@ -5,7 +5,7 @@ namespace Objects;
 use Core\Model,
 	Core\Utils as _U;
 
-class   Event extends Model
+class Event extends Model
 {
 	public $id;
 	public $fb_uid;
@@ -16,7 +16,6 @@ class   Event extends Model
 	public $venue_id;
 	public $name;
 	public $description;
-	public $tickets_url;
 	public $start_date;
 	public $end_date;
 	public $recurring;
@@ -24,18 +23,27 @@ class   Event extends Model
 	public $coordinates;
 	public $address;
 	public $logo;
-	public $is_description_full = 0; 
+	public $is_description_full = 0;
 
 
 	public function initialize()
 	{
-		$this -> hasOne('id', '\Objects\Location', 'location_id', array('alias' => 'location'));
+		$this -> belongsTo('venue_id', '\Objects\Venue', 'id', array('alias' => 'venue',
+																	 'baseField' => 'name'));
+		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
+																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
+		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
 		$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
+		$this -> hasManyToMany('id', '\Objects\EventCategory', 
+							   'event_id', 'category_id', 
+							   '\Objects\Category', 'id', array('alias' => 'category',
+							   		 							'baseField' => 'name'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
-	
+
 	public function beforeValidationOnCreate()
 	{
 	}

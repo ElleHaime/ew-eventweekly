@@ -22,14 +22,17 @@ class MemberFilter extends MemberFilterObject
     public function getById($id)
     {
         $return = array();
+
         if (!empty($id)) {
             $result = $this->find('member_id = '.$id)->toArray();
-            foreach ($result as $node) {
-                if (self::isJson($node['value'])) {
-                    $return[$node['key']]['value'] = json_decode($node['value'], true);
-                }
-                $return[$node['key']]['id'] = $node['id'];
-            }
+            if ($result) {
+	            foreach ($result as $node) {
+	                if (self::isJson($node['value'])) {
+	                    $return[$node['key']]['value'] = json_decode($node['value'], true);
+	                }
+	                $return[$node['key']]['id'] = $node['id'];
+	            }
+           }
         }
         return $return;
     }

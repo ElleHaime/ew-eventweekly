@@ -21,13 +21,19 @@ class SignupForm extends Form
 				'PresenceOf' => array('message' => 'Email is required'),
 				'Email' => array('message' => 'Email is not valid')
 		);
-		$this -> addElement('text', 'email', 'Email', array('validators' => $emailValidators));
+		$this -> addElement('text', 'email', 'Email', 
+										array('validators' => $emailValidators));
 		
 		$passwordValidators = array(
 				'PresenceOf' => array('message' => 'Password is required'),
 				'StringLength' => array('min' => 2)
 		);
-		$this -> addElement('password', 'password', 'Password', array('validators' => $passwordValidators));		
+		$this -> addElement('password', 'password', 'Password', 
+										array('validators' => $passwordValidators));	
+
+
+		$this -> addElement('password', 'confirm_password', 'Confirm password', 
+										array('validators' => $passwordValidators));	
 
 		$this -> add(new Submit('Sign Up'));
 	}

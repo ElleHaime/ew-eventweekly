@@ -107,14 +107,14 @@ class Acl extends Plugin
 		$module = ucfirst(strtolower($dispatcher -> getModulename()));
 		$controller = ucfirst(strtolower($dispatcher -> getControllerName()));
 		$resource = $module . $controller;
-
+		
 		$allowed = $this -> _acl -> isAllowed($role, $resource, $dispatcher -> getActionName());
-
+		
 		if ($allowed != PhAcl::ALLOW) {
 			$dispatcher -> forward(array(
 				'module' => $dispatcher -> getModuleName(),
-				'controller' => 'index',
-				'action' => 'denied'
+				'controller' => 'auth',
+				'action' => 'login'
 			)); 
 
 			return false;

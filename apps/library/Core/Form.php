@@ -73,7 +73,7 @@ class Form extends \Phalcon\Forms\Form
 			}
 			$element -> addValidators($validators);
 		}
-		
+	
 		$this -> _elementsData[$name] = array('type' => $type,
 										  	  'element' => $element,
 										  	  'params' => $params,

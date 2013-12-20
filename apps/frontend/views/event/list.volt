@@ -1,72 +1,60 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-    <div class="padd_70"></div>
-
-    <div class="container content_noBorder">
-        <div class="row-fluid">
-            {% if events is defined %}
-                <div class="span12">
-                    <h3 class="title-page">{{ listName }}</h3>
-
-                    {% for index, node in events %}
-                        <div class="row-fluid events-list">
-                            <div class="span7">
-                                <div class="event-one clearfix">
+    <div class="container" id="content_noBorder">
+        <div class=" profile-box">
+            <div class="profile-body">
+                <div class="events-list">
+                    {% if object is defined %}
+                    
+                        {% for event in object %}
+                            <div class="row-fluid eventListing" id="element_{{ event.id }}>
+                                <div class="span12">
                                     <div class="event-one-img">
-                                        <div class="img-box">
-                                            <a href="#">
-                                                {% if node['event']['logo'] is defined %}
-                                                    <img src="/upload/img/event/{{ node['event']['logo'] }}">
-
-                                                {% else %}
-                                                    <img src="{{ node['event']['pic_square'] }}">
-                                                {% endif %}
-                                            </a>
-                                        </div>
+                                        <a href="#">
+											{% if event.logo != '' %}
+												<img src= '/upload/img/event/{{event.logo}}' width='159px' height='159px'>
+											{% endif %}
+										</a>
                                     </div>
+
                                     <div class="event-one-text">
-                                        <a href="/event/show/{{ node['event']['id'] }}"  class="name-link">{{ node['event']['name']|striptags|escape|truncate(160) }}</a>
+                                        <a href="/event/show/{{ event.id }}" class="name-link">{{ event.name }}</a>
+
                                         <div class="date-list">
                                             <i class="icon-time"></i>
-                                            {% if node['event']['start_time'] is defined %}
-                                                <span class="date-start">{{ node['event']['start_time'] }}</span> start at
-                                            {% endif %}
-                                            {% if node['event']['end_time'] is defined %}
-                                                <span class="date-time">{{ node['event']['end_time'] }}</span> <span class="day-title"> - tomorrow</span>
-                                            {% endif %}
+                                            <span class="date-start">{{ event.start_date }}</span> start at
+                                            <span class="date-time">{{ event.start_time }}</span>
                                         </div>
-                                        <p>{{ node['event']['description']|striptags|escape|truncate(350) }}</p>
+                                        <div class="event-text">
+                                            <p> {{ event.description|striptags|escape|truncate(300) }}</p>
+                                            <span class="hide-span"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="span5">
-                                <div class="event-list-btn clearfix">
-                                    {% if node['venue'] is defined %}
-                                        <div class="map-place">
-                                            <span class="small-text">show on map</span>
-                                            <div class=" place-address">
-                                                <p class="tooltip-text" rel="tooltip" title="{{ node['venue']|striptags|escape }}">{{ node['venue']|striptags|escape }}</p>
-                                                <button class="btn btn-primary">
-                                                    <i class="icon-map-marker"></i>
+                                    <div class="event-list-btn clearfix">
+                                        <div class="status-btn clearfix">
+                                            {% if event.event_status == 1 %}
+                                                <button class="btn btn-block unpublishEvent" id="{{ event.id }}">
+                                                    <span class="btn-text">unpublish</span>
                                                 </button>
-                                            </div>
+                                            {% else %}
+                                                <button class="btn btn-block publishEvent" id="{{ event.id }}">
+                                                    <span class="btn-text">publish</span>
+                                                </button>
+                                            {% endif %}
+                                            <button class="btn btn-block editEvent" id="{{ event.id }}"><span class="btn-text">edit</span></button>
+                                            <button class="btn btn-block deleteEvent" id="{{ event.id }}"><span class="btn-text">archive</span></button>
                                         </div>
-                                    {% endif %}
-                                    <div class="rating clearfix">
-                                        <span class="small-text">Ratting</span>
-                                        <span class="rating-icon"></span>
-                                        <span class="rating-text">34</span>
                                     </div>
-                                    <button class="btn btn-more" onclick="javascript: window.location.href = '/event/show/{{ node['event']['id'] }}';">More</button>
-                                </div>
-                            </div>
-                        </div>
+                            	</div>
+                            	<hr/>
+                        	{% endfor %}
                     {% else %}
-                        <div style="margin-left: 50px"><i>No results for your request...</i></div>
-                    {% endfor %}
+                        You didn't create events yet.
+                    {% endif %}
                 </div>
-            {% endif %}
+                <div class="padd_30"></div>
+            </div>
         </div>
     </div>
 

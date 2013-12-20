@@ -1,0 +1,405 @@
+@media screen and (max-width: 1430px) {
+    .active-events {
+        padding: 0 1%;
+    }
+
+}
+
+@media screen and (max-width: 1290px) {
+    .logo {
+        background: url(../img/demo/logo-sm.png) no-repeat center center;
+        width: 73px;
+        height: 34px;
+        margin: 23px auto 0;
+    }
+    .header-logo
+    {
+        width: 75px;
+    }
+    .header .span5 {
+        width: 40%;
+    }
+    .header .span7 {
+        width: 60%;
+    }
+    .event-one-text {
+        max-width: 500px;
+    }
+
+
+
+}
+@media screen and (max-width: 1200px) {
+    .header .span5 {
+        width: 33%;
+    }
+    .header .span7 {
+        width: 67%;
+    }
+
+    a.location-city {
+        max-width: 148px;
+    }
+    .text-btn {
+        display: none;
+    }
+    .btn-add span {
+        margin-right: 0;
+    }
+    .location {
+        margin: 21px 11px 0 0;
+    }
+    .show-list {
+          margin-top: 21px;
+    }
+    .row-fluid .show-list {
+        margin-right: 20px;
+    }
+
+    .event-one-text {
+        max-width: 400px;
+    }
+    .event-one   .event-one-text  {
+        max-width: 51%;
+    }
+    .form-center {
+        padding-left: 173px;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    .location-place_ask > a > span {
+        display: none;
+    }
+    .location-place_ask > a {
+        width: 60px;
+    }
+    .header .span5 {
+        width: 40%;
+    }
+    .header .span7 {
+        width: 60%;
+    }
+
+    .location-place_country .location-search {
+        left: -208px;
+    }
+    .location-search input {
+        width: 57%;
+    }
+
+    .location-place .location-search .btn
+    {
+        margin-bottom: 18px;
+    }
+    .event-site {
+        margin-bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 980px) {
+    .event-one .event-list-btn {
+        float: left;
+        padding-left: 182px;
+    }
+    .event-one .event-one-text {
+        max-width: 74%;
+    }
+    .location-place_ask .location-search
+    {
+        height: 400px;
+        overflow-y: scroll;
+    }
+}
+
+@media screen and (max-width: 890px) {
+
+    .event-list-btn {
+        float: none;
+        clear: both;
+    }
+    .header .span7 {
+        width: 55%;
+    }
+    .header .span5 {
+        width: 45%;
+    }
+    .location-place_ask .caret {
+        display: none;
+    }
+    .location-place_ask > a {
+        width: 45px;
+    }
+
+    a.location-city {
+        max-width: 110px;
+        padding-right: 24px;
+    }
+    .event-site a {
+        margin-top: 15px;
+        clear: both;
+    }
+    .location-place_ask .location-search {
+        width: 560px;
+    }
+    .location-place_ask .input-search {
+        width: 73%;
+    }
+
+}
+
+@media screen and (max-width: 790px) {
+
+    .event-one .event-one-text {
+        max-width: 66%;
+    }
+
+
+    .input-div input {
+        width: 97%;
+    }
+
+    .field-big {
+        width: 97%;
+    }
+
+    .user-box a > span {
+       display: none;
+    }
+    .user-box > a
+    {min-width: 50px;}
+
+    .user-box a  .caret {
+        display: none;
+    }
+
+
+    .header .span7 {
+        width: 68%;
+    }
+    .header .span5 {
+        width: 32%;
+    }
+
+    .add-event {
+        width: 98%;
+    }
+
+    .sidebar {
+        width: 98%;
+        margin-left: 1%;
+    }
+
+    .location-place {
+        position: static;
+    }
+
+    .searchCityBlock, .advancedSearchBlock {
+        position: absolute;
+        top: 62px;
+        left: 0px !important;
+        width: 90% !important;
+        padding: 6% 5%;
+    }
+
+    .location-place_ask .input-search {
+        width: 73%;
+    }
+
+
+}
+@media screen and (max-width: 640px) {
+
+    .event-one .event-list-btn{
+        padding-left: 0;
+    }
+    .header-count {
+        display: none;
+    }
+    .header .span7 {
+        width: 65%;
+    }
+    .header .span5 {
+        width: 35%;
+    }
+
+    .event-one .event-one-text {
+        max-width: 100%;
+        margin-top: 10px;
+    }
+
+/*---profile---*/
+    .span9.profile-info-lf {
+        width: 100%;
+    }
+    .span3.profile-btn-rt {
+        width: 100%;
+        clear: both;
+    }
+    .change-box form {
+        left:0!important;
+    }
+    .profile-btn{
+        margin-left: 20px;
+    }
+
+    .service-search p {
+        color: #3B3B3B;
+        font: 300 17px "Open Sans";
+        padding-top: 10px;
+
+    }
+    .service-search .demo p
+    {
+        padding: 0;
+    }
+    .category-list .table-box {
+        width: 100%;
+    }
+
+    .event-list-btn {
+        padding-left: 0px;
+    }
+
+    .event-one-text {
+        max-width:100%;
+        clear: both;
+        margin-right: 0
+    }
+
+    .field-big {
+        min-height: 200px;
+        width: 97%;
+    }
+
+    .btn-list_profile .btn {
+        clear: both;
+        float: left;
+    }
+    .add-event .input-div input {
+        width: 97%;
+    }
+
+
+}
+
+@media screen and (max-width: 580px) {
+
+    .add-settings-box .span11 {
+        width: 100%;
+    }
+    .add-settings-box .span1 {
+        width: 100%;
+    }
+    .location-place_ask .input-search {
+        width: 65%;
+    }
+    .header-logo
+    {
+        display: none;
+    }
+    .header .span7 {
+        width: 70%;
+    }
+    .header .span5 {
+        width: 30%;
+    }
+
+    .user-block {
+        padding: 0 10%;
+    }
+
+    .slider-legend li {
+        width: 18%;
+    }
+
+    .events-result {
+        padding-top: 0
+    }
+    .span9.profile-info-lf {
+        width: 100%;
+    }
+    .span3.profile-btn-rt {
+        width: 100%;
+        clear: both;
+    }
+    .change-box form {
+        left:0!important;
+    }
+
+    .list-event-img {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .list-event-text {
+        width: 100%;
+    }
+
+    .list-event-img a {
+        text-align: center;
+    }
+
+    .list-event-img {
+        text-align: center;
+    }
+
+    .small-img {
+        width: 100%;
+    }
+
+    .list-event-img a {
+        display: inline-block;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .event-one-text {
+        clear: both;
+        padding-top: 10px;
+    }
+
+    .add-event .form-center {
+        clear: both;
+        padding-left: 0;
+    }
+
+    .profile-info {
+        padding-left: 20px;
+    }
+
+    .activity .event-site, .type-marker .event-site {
+        clear: both;
+        padding: 5px 0;
+        margin: 0;
+    }
+
+    .profile-btn {
+        margin-left: 20px;
+    }
+
+    .list-event-img {
+        float: none;
+        margin: 0 0px 10px 0;
+    }
+
+    .list-event_more_i {
+        padding: 0 20px;
+    }
+
+    .sidebar_i {
+        padding: 10px 20px 0 20px;
+    }
+
+    .event-one-text {
+        clear: both;
+        float: none;
+    }
+
+    .event-one-text .date-list {
+        border-top: 1px solid #cccccc;
+        border-bottom: 1px solid #cccccc;
+        margin: 4px 0;
+    }
+}
+
