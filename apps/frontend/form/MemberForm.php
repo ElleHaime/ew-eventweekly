@@ -30,6 +30,6 @@ class MemberForm extends Form
 
         $this -> addElement('file', 'logo', 'Logo', array('style' => 'display:none;'));
 
-        $this -> add(new Submit('Save', array('id' => 'save-member', 'class' => 'btn')));
+        $this -> add(new Submit('Save', array('id' => 'save-member', 'class' => 'btn btn-block')));
     }
 }
