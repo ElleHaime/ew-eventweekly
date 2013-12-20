@@ -9,6 +9,7 @@ define('frontMemberEditControl',
             self.settings = {
                 btnImg: '#file',
                 btnImgUpload: '#logo',
+                boxImg: '#img-box',
 
                 inpAddress: '#address',
                 listAddress: '#address-list',
@@ -92,7 +93,6 @@ define('frontMemberEditControl',
                     );
                 });
 
-
                 $(self.settings.btnSaveMember).click(function(){
                     var isValid = true;
 
@@ -111,6 +111,10 @@ define('frontMemberEditControl',
                     }
 
                     if (!isValid) return false;
+                });
+
+                $(self.settings.btnImgUpload).on('change', function(e) {
+                    self.__loadImage(e);
                 });
             }
 
@@ -156,6 +160,21 @@ define('frontMemberEditControl',
                 }
 
                 return true;
+            }
+
+            self.__loadImage = function(content)
+            {
+                var reader = new FileReader();
+                var file = content.target.files[0];
+
+                reader.onload = (function(f) {
+                    $(self.settings.btnImgUpload).attr('value', f.name);
+                    return function(e) {
+                        $(self.settings.boxImg).attr('src', e.target.result);
+                    }
+                })(file);
+
+                reader.readAsDataURL(file);
             }
         }
 

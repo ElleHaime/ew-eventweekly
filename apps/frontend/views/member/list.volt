@@ -9,7 +9,7 @@
                 <div class="span9 profile-info-lf">
                     <div class="profile-img">
                         <div class="profile-img-box">
-                        <img alt=""
+                        <img id="img-box" alt=""
                                 {% if member.logo != '' %}
                                     src="{{ member.logo }}"
                                 {% else %}
@@ -75,59 +75,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        {#<div class="profile-info clearfix" style="display: none">
-                            &#123;&#35;{{ form() }}&#35;&#125;
-                                <div class="control-group">
-                                    {{ memberForm.label('extra_email') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('extra_email') }}
-                                        {{ memberForm.messages('extra_email') }}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    {{ memberForm.label('name') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('name') }}
-                                        {{ memberForm.messages('name') }}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    {{ memberForm.label('phone') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('phone') }}
-                                        {{ memberForm.messages('phone') }}
-                                    </div>
-                                </div>
-
-                                {{ memberForm.render('logo') }}
-
-                                &#123;&#35;<div class="control-group">
-                                    <label class="control-label" for="inputPassword">{{ memberForm.label('logo') }}</label>
-                                    {{ memberForm.render('logo') }}
-
-                                    <div class="controls">
-                                        <button style="text-align: center; overflow: hidden; height: 42px; width: 227px;" class="btn btn-block btn-file"
-                                                id="add-img-btn" type="button">Add Image</button>
-                                        {{ memberForm.messages('logo') }}
-                                    </div>
-                                </div>&#35;&#125;
-
-                                <div class="control-group">
-                                    <div class="controls">
-                                        {{ memberForm.render('Save',{'class':'btn btn-block'})}}
-                                    </div>
-                                </div>
-
-                            &#123;&#35;<h4 class="profile-name">{{ member.name }}</h4>
-                            <span class="location-state">{{ member.location.alias }} {{ member.address }}</span>
-                            <span class="mail">{{ member.email }}</span>&#35;&#125;
-                        </div>#}
                     </form>
                 </div>
 
@@ -288,9 +235,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile-btn">
-                <a href="/member/edit" class="btn">Edit Profile</a>
             </div>
         </div>
 
