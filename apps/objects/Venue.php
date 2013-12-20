@@ -25,26 +25,29 @@ class Venue extends Model
 	public function createOnChange($argument = array())
 	{
 		$isVenueExists = false;
-		
+        $query = '';
+
 		if (!empty($argument)) {
 			if (isset($argument['latitude']) && isset($argument['longitude'])) {
 				// find by coordinates
 				$query = 'latitude = ' . (float)$argument['latitude'] . ' and longitude = ' . (float)$argument['longitude'];
 				$isVenueExists = self::findFirst($query);
-			} elseif (isset($argument['address'])) {
+			} elseif (isset($argument['address']) && !empty($argument['address'])) {
 				$query = 'address like "%' . $argument['address'] . '%"';
 				$isVenueExists = self::findFirst($query);
 			}
 		}
 
-		if (!$isVenueExists) {
+		if (!$isVenueExists && $query != '') {
 			$this -> assign($argument);
 			$this -> save();
 			
 			return $this;
-		} else {
+        }  elseif ($isVenueExists) {
 			return  $isVenueExists;
-		}
+		}  else {
+            return  false;
+        }
 	}
 
 }
