@@ -7,6 +7,9 @@ use \Phalcon\Mvc\Application as BaseApplication;
 use \Phalcon\Mvc\Router;
 use \Phalcon\Loader;
 use \Phalcon\Mvc\Url;
+use \Phalcon\Logger;
+use \Phalcon\Events\Manager as EventsManager;
+use \Phalcon\Logger\Adapter\File as FileAdapter;
 
 
 class Application extends BaseApplication
@@ -198,6 +201,18 @@ die();*/
 			
 			$di -> set('db',
 				function () use ($config, $adapter) {
+
+                    $eventsManager = new EventsManager();
+
+                    $logger = new FileAdapter(ROOT_APP.'var/logs/sql.log');
+
+                    //Listen all the database events
+                    $eventsManager->attach('db', function($event, $connection) use ($logger) {
+                            if ($event->getType() == 'beforeQuery') {
+                                $logger->log($connection->getSQLStatement());
+                            }
+                        });
+
 					$connection = new $adapter(
 						array('host' => $config -> host,
 							  'username' => $config -> username,
@@ -205,7 +220,9 @@ die();*/
 							  'dbname' => $config -> dbname
 						)
 					);
-	
+
+                    $connection->setEventsManager($eventsManager);
+
 					return $connection;
 				} 
 			);
