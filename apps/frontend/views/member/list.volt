@@ -166,21 +166,22 @@
                 </div>
             </div>
 
-            {#<div class="row-fluid">
-                <div class="span9 profile-info-lf">
-                    <h2>Your account information:</h2>
+            <div class="profile-body">
+                <hr/>
+                <form action="#" method="post" id="mLocationForm">
+                    {% if conflict is defined %}
+                        <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
+                    {% endif %}
 
-                    <form action="#" method="post" id="mLocationForm">
-                        <label for="uLocation">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
-                        {% if conflict is defined %}
-                            <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
-                        {% endif %}
-                        <input type="text" id="uLocation"/>
+                    <div class="control-group">
+                        <label for="uLocation" class="control-label mail">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
 
-                        &#123;&#35;<input type="submit" value="Save"/>&#35;&#125;
-                    </form>
-                </div>
-            </div>#}
+                        <div class="controls">
+                            <input type="text" id="uLocation"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <div class="profile-body">
                 <hr/>
