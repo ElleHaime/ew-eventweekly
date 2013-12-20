@@ -9,10 +9,10 @@
     <div class="row">
     <div class="span12">
     <div class="add-event_i clearfix">
-    <div class="padd_30"></div>
 
     <div class="row-fluid">
         <div class="span12">
+            <div class="padd_30"></div>
             <h3 class="title-add">
                 {% if event.id %}
                     Edit event
@@ -24,7 +24,8 @@
             </h3>
         </div>
     </div>
-
+<div class="row-fluid">
+    <div class="span12">
     <div class="add-event clearfix">
 
         <div class="add-img">
@@ -104,7 +105,7 @@
                     <span id="days-count" class="day-title">Event happens today</span>
                 </div>
             </div>
-            
+
             {{ form.render('description') }}
 
             <div class="btn-add_group clearfix">
@@ -151,102 +152,104 @@
         <div class="input-append">
             <input type="text" id="sites" placeholder="Event web site"/>
             <button class="btn btn-primary" id="add-web-site" type="button">Ok</button>
-
             <div class="warning-box"
                  style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
             </div>
 
         </div>
         <div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
-        	<input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
-            <p>Event web-sites :</p>        
-        	{% if event.site|length %}  
+            <input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
+            <p>Event web-sites :</p>
+            {% if event.site|length %}
 
-	            {% for site in event.site %}
-	            	<div class = "esite_elem">
-		            	<a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
-		            	<a href="#" class="btn btn-sm icon-remove-sign"></a>
-	        		</div>
-	        	{% endfor %}
-	        {% endif %}
-    	</div>
-
-    <p> 
-    	{{ form.label('event_category') }}
-    </p>
-    {{ form.render('event_category') }}
-    
-    <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
-        <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
-
-		<p>Event categories :</p>     	
-     	{% if event.category|length %}
-            {% for key, name in event.category %}
-                <div class="ecat_elem">
-                    <div>
-                        <label>{{ name }}</label>
-                        <a href="#" class="icon-remove-sign" catid="{{ key }}"></a>
+                {% for site in event.site %}
+                    <div class = "esite_elem">
+                        <a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
+                        <a href="#" class="btn btn-sm icon-remove"></a>
                     </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <p>
+            {{ form.label('event_category') }}
+        </p>
+        {{ form.render('event_category') }}
+
+        <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
+            <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
+
+            <p>Event categories :</p>
+            {% if event.category|length %}
+                {% for key, name in event.category %}
+                    <div class="ecat_elem">
+                        <div>
+                            <label>{{ name }}</label>
+                            <a href="#" class="icon-remove" catid="{{ key }}"></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="type-box">
+            <div class="event-site">
+                <p>Type:</p>
+
+                <div class="event-category clearfix">
+                    <span class="color-type gray ">festival</span>
+                    <span class="arrow"></span>
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
 
-    <div class="type-box">
-        <div class="event-site">
-            <p>Type:</p>
+            </div>
+            <div class="event-site">
+                <p>Genres:</p>
 
-            <div class="event-category clearfix">
-                <span class="color-type gray ">festival</span>
-                <span class="arrow"></span>
+                <div class="event-category clearfix">
+                    <span class="color-type yellow">rock</span>
+                    <span class="arrow arrow_yellow"></span>
+                </div>
+                <div class="event-category clearfix">
+                    <span class="color-type yellow">gothic</span>
+                    <span class="arrow arrow_yellow"></span>
+                </div>
+
             </div>
 
+            <div class="event-site">
+                <p>Venue:</p>
+
+                <div class="event-category clearfix">
+                    <span class="color-type light_yellow">gothic</span>
+                    <span class="arrow arrow_light-yellow"></span>
+                </div>
+
+            </div>
+            <div class="event-site tags-box clearfix">
+                <div class="input-append">
+                    <input type="text" placeholder="Tags">
+                    <button class="btn btn-primary" type="button">Ok</button>
+                </div>
+
+            </div>
         </div>
-        <div class="event-site">
-            <p>Genres:</p>
 
-            <div class="event-category clearfix">
-                <span class="color-type yellow">rock</span>
-                <span class="arrow arrow_yellow"></span>
+        <div class="radio-box">
+            <p> {{ form.label('recurring') }}</p>
+            {{ form.render('recurring') }}
+            <hr>
+            <div class="checkbox-block">
+                <label><input type="checkbox" value="">
+                    Create Promoter
+                </label>
+                <p> Choose promoter</p>
+                {{ form.render('campaign_id') }}
             </div>
-            <div class="event-category clearfix">
-                <span class="color-type yellow">gothic</span>
-                <span class="arrow arrow_yellow"></span>
-            </div>
-
-        </div>
-
-        <div class="event-site">
-            <p>Venue:</p>
-
-            <div class="event-category clearfix">
-                <span class="color-type light_yellow">gothic</span>
-                <span class="arrow arrow_light-yellow"></span>
-            </div>
-
-        </div>
-        <div class="event-site tags-box clearfix">
-            <div class="input-append">
-                <input type="text" placeholder="Tags">
-                <button class="btn btn-primary" type="button">Ok</button>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="radio-box">
-        <p> {{ form.label('recurring') }}</p>
-        {{ form.render('recurring') }}
-        <hr>
-        <div class="checkbox-block">
-            <label><input type="checkbox" value="">
-            Create Promoter
-            </label>
-            <p> Choose promoter</p>
-            {{ form.render('campaign_id') }}
         </div>
     </div>
     </div>
+</div>
+
     </div>
     </div>
     </form>

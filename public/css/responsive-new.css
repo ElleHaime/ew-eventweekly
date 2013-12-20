@@ -2,6 +2,12 @@
     .active-events {
         padding: 0 1%;
     }
+    .event-list_i {
+        padding: 0 1%;
+    }
+    .add-event_i {
+        padding: 0 1%;
+    }
 
 }
 
@@ -108,8 +114,16 @@
     }
     .location-place_ask .location-search
     {
-        height: 400px;
+        height: 300px;
         overflow-y: scroll;
+    }
+    .events-list_nbr .event-one-text {
+        max-width: 43%;
+    }
+
+    .events-list_nbr .event-list-btn {
+        float: right;
+        padding: 0;
     }
 }
 
@@ -118,6 +132,14 @@
     .event-list-btn {
         float: none;
         clear: both;
+    }
+    .events-list_nbr .event-list-btn {
+        float: left;
+        padding-left:182px;
+    }
+
+    .events-list_nbr .event-one-text {
+        max-width: 70%;
     }
     .header .span7 {
         width: 55%;
@@ -140,9 +162,7 @@
         margin-top: 15px;
         clear: both;
     }
-    .location-place_ask .location-search {
-        width: 560px;
-    }
+
     .location-place_ask .input-search {
         width: 73%;
     }
@@ -150,6 +170,14 @@
 }
 
 @media screen and (max-width: 790px) {
+
+    .profile-btn-rt  {
+        width: 100%;
+        float: left;
+    }
+    .profile-info-lf {
+        width: 100%;
+    }
 
     .event-one .event-one-text {
         max-width: 66%;
@@ -199,7 +227,7 @@
         position: absolute;
         top: 62px;
         left: 0px !important;
-        width: 90% !important;
+        width: 92% !important;
         padding: 6% 5%;
     }
 
@@ -210,6 +238,10 @@
 
 }
 @media screen and (max-width: 640px) {
+
+    #end_dateSearch, #start_dateSearch {
+        width: 153px;
+    }
 
     .event-one .event-list-btn{
         padding-left: 0;
@@ -240,9 +272,6 @@
     .change-box form {
         left:0!important;
     }
-    .profile-btn{
-        margin-left: 20px;
-    }
 
     .service-search p {
         color: #3B3B3B;
@@ -253,9 +282,6 @@
     .service-search .demo p
     {
         padding: 0;
-    }
-    .category-list .table-box {
-        width: 100%;
     }
 
     .event-list-btn {
@@ -286,6 +312,14 @@
 
 @media screen and (max-width: 580px) {
 
+
+    .user-box a .caret {
+        display: block;
+        border-top:6px solid #484846;
+        position: absolute;
+        top: 45px;
+        left:21px;
+    }
     .add-settings-box .span11 {
         width: 100%;
     }
@@ -364,18 +398,10 @@
         padding-left: 0;
     }
 
-    .profile-info {
-        padding-left: 20px;
-    }
-
     .activity .event-site, .type-marker .event-site {
         clear: both;
         padding: 5px 0;
         margin: 0;
-    }
-
-    .profile-btn {
-        margin-left: 20px;
     }
 
     .list-event-img {

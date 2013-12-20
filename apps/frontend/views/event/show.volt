@@ -23,8 +23,6 @@
     <div class="row-fluid ">
         <div class="span12">
             <div class="event-list_i">
-                <div class="events-list-content">
-                    <div class="padd_30"></div>
                         <div class="row-fluid ">
                             <div class="span12">
                                 <div class="event-one clearfix">
@@ -46,7 +44,7 @@
                                             <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
                                         </div>
 
-                                        {{ event.description|nl2br }}
+                                        <p>{{ event.description|nl2br }}</p>
 
                                         {% if not (event.memberpart|length) %}
                                             <span>So, whats your plan?</span>
@@ -120,20 +118,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                    {% include 'layouts/sharebar.volt' %}
+                            {% include 'layouts/sharebar.volt' %}
 
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <div class="comment-box">
-                                <h2>Leave comments</h2>
-                                <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <div class="comment-box">
+                                        <h2>Leave comments</h2>
+                                        <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

@@ -6,7 +6,8 @@
     <div class="container" id="content_noBorder">
         <div class="profile-box">
             <div class="row-fluid">
-                <div class="span9 profile-info-lf">
+            <div class="span12">
+                <div class=" profile-info-lf clearfix">
                     <div class="profile-img">
                         <div class="profile-img-box">
                         <img id="img-box" alt=""
@@ -78,7 +79,7 @@
                     </form>
                 </div>
 
-                <div class="span3 profile-btn-rt">
+                <div class=" profile-btn-rt clearfix">
                     <div class="profile-btn">
                         <button class="btn btn-block ">Facebook Sinc</button>
                         <p>import interests from facebook
@@ -112,6 +113,7 @@
                     </div>
                 </div>
             </div>
+            </div>
 
             <div class="profile-body">
                 <hr/>
@@ -130,7 +132,8 @@
                 </form>
             </div>
 
-            <div class="profile-body">
+            <div class="row-fluid">
+                <div class="span12">
                 <hr/>
                 <a href="#" class="edit-service"><span> customise your search event-profile </span></a>
                 <form action="/member/save-filters" method="post" id="filters" style="display: none">
@@ -224,8 +227,9 @@
                             </div>
                         {% endfor %}
                     </form>
-
-                    <button id="saveFilter" class="btn" style="width: 250px; margin: 0px 0px 20px 0px;">Save</button>
+                    <div class="profile-btn">
+                         <button id="saveFilter" class="btn " >Save</button>
+                    </div>
 
                     <div class=" row-fluid add-settings-box clearfix">
                         <div class="span11"><p><i class="icon-plus"></i> Or add your interests manually: rock, queen, zombie walk, golf
@@ -234,7 +238,17 @@
                             <button class="btn btn-block"> add</button>
                         </div>
                     </div>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <div class="profile-btn">
+                                <a href="/member/edit" class="btn btn-edit">Edit Profile</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+
             </div>
         </div>
 
