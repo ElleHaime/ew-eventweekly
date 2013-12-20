@@ -1181,6 +1181,7 @@ input[type="checkbox"]  {
     height: 160px;
     position: relative;
     width: 174px;
+    overflow: hidden;
 }
 
 .profile-img img {
