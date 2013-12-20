@@ -44,6 +44,13 @@ class Analizator {
     private $entries = array();
 
     /**
+     * Default category key
+     *
+     * @var string
+     */
+    private $defaultCategory = 'other';
+
+    /**
      * Get categories and set analiz type
      *
      * @param $text
@@ -58,8 +65,6 @@ class Analizator {
         $this->Text = $text;
 
         $this->analizType = $analizType;
-
-        $this->Text->content = strtolower($this->Text->content);
 
         $cat = new Parser();
         $this->categories = $cat->getCategories();
@@ -92,12 +97,16 @@ class Analizator {
         foreach ($words as $word) {
             $word = preg_replace("/[^\w$]/", '', $word);
 
-            if (!array_key_exists($word, $this->countedWords)) {
-                $this->countedWords[$word] = 0;
-            }
+            $word = explode('_', Inflector::underscore($word));
 
-            if (array_key_exists($word, $this->countedWords)) {
-                $this->countedWords[$word]++;
+            foreach ($word as $wrd) {
+                if (!array_key_exists($wrd, $this->countedWords)) {
+                    $this->countedWords[$wrd] = 0;
+                }
+
+                if (array_key_exists($wrd, $this->countedWords)) {
+                    $this->countedWords[$wrd]++;
+                }
             }
         }
 
@@ -117,7 +126,7 @@ class Analizator {
 
             foreach ($category as $keyWord) {
 
-                if (array_key_exists($keyWord, $this->countedWords)) {
+                if (array_key_exists($keyWord, $this->countedWords) || array_key_exists(Inflector::pluralize($keyWord), $this->countedWords)) {
 
                     if (!array_key_exists($keyWord, $entries)) {
                         $entries[$keyWord] = 0;
@@ -163,7 +172,7 @@ class Analizator {
     private function searchCategory()
     {
         $categories = array_values($this->entries);
-        $category = 'other';
+        $category = $this->defaultCategory;
 
         if ($this->analizType === 1) {
             $tmpIndex = 0;
@@ -185,7 +194,11 @@ class Analizator {
         unset($index);
 
         if ($this->analizType === 2) {
-            $category = array();
+            if (empty($categories)) {
+                $category = array($this->defaultCategory);
+            }else {
+                $category = array();
+            }
             foreach ($categories as $node) {
                 $category[] = $node['key'];
             }

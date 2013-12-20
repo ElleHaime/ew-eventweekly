@@ -45,8 +45,8 @@ require.config({
 		'frontCampaignEditControl': 'frontend/campaign/controls/campaignEditControl',
 		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl',
         'frontMemberEditControl': 'frontend/member/controls/memberEditControl',
-        'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation'
-
+        'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
+        'frontSearchPanel': 'frontend/general/searchPanel'
 	},
 
 	shim: {
