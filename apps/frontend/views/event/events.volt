@@ -3,12 +3,9 @@
 {% block content %}
 
 <div class="container" id="content_noBorder">
-    <div class="padd_30"></div>
-
-
-
                     <div class="row-fluid">
                         <div class="span12">
+                            <div class="padd_30"></div>
                             <div class="active-events">
                                 <div class="row-fluid">
                                     <div class="span12">

@@ -7,9 +7,12 @@
     <div class="row">
         <div class="span12">
             <div class="add-event_i clearfix">
-                <div class="padd_30"></div>
-                <div class="add-event clearfix">
-                   {{ form.render('id') }}
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="padd_30"></div>
+                        <div class="add-event clearfix">
+                            {{ form.render('id') }}
 
                     <div class="add-img">
 						<div class="event-one-img">
@@ -87,6 +90,9 @@
                         {% endif %}
  					</div>                
                 </div>
+            </div>
+        </div>
+
             </div>
         </div>
 	</div>

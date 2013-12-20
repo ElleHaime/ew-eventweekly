@@ -44,7 +44,7 @@ define('frontEventEditControl',
 				inpSiteReal: $('#event_site'),
 				listSite: $('#event-site-selected'),
 
-				removeSign: '.icon-remove-sign',
+				removeSign: '.icon-remove',
 
 				boxImg: '#img-box',
 				btnImg: '#add-img-btn',
@@ -189,7 +189,7 @@ define('frontEventEditControl',
 				var list = $(self.settings.listCategory);
 
 				var item = '<div><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
-						'<a href="#" class="icon-remove-sign" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
+						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
 		        $(self.settings.inpCategory + ' :selected').remove();
 
@@ -223,7 +223,7 @@ define('frontEventEditControl',
 			            url = 'http://' + url;
 			        }
 			        var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' + 
-			        			'<a href="#" class="icon-remove-sign"></a></div>';
+			        			'<a href="#" class="icon-remove"></a></div>';
 			        
 			        self.settings.listSite.append(link);
 			        self.settings.listSite.show();

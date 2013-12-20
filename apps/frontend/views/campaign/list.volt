@@ -4,13 +4,15 @@
 
     <div class="container " id="content_noBorder">
 
-        <div class="padd_30"></div>
+
         <div class="row-fluid">
             <div class="span12">
 
                 <div class="event-list_i">
+
                     <div class="row-fluid" style="background:#ffffff;">
                         <div class="span12">
+                            <div class="padd_30"></div>
                             <h3 class="title-name">Your campaigns</h3>
                         </div>
 
