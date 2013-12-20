@@ -45,7 +45,7 @@ class AuthController extends \Core\Controller
 
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
-                    $this -> response -> redirect('map');
+                    $this -> response -> redirect('/map');
                 }
             }
         }
@@ -81,7 +81,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this -> response -> redirect('map');
+                    $this -> response -> redirect('/map');
                 } 
                     
                 $this -> flash -> error($member -> getMessages());
@@ -249,7 +249,7 @@ class AuthController extends \Core\Controller
                                 $this -> session -> remove('reset_uri');
                                 $this -> session -> remove('reset_member');
 
-                                $this -> response -> redirect('login');
+                                $this -> response -> redirect('/login');
                             }
                         }
                     }

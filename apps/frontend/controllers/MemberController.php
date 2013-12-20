@@ -93,7 +93,7 @@ class MemberController extends \Core\Controllers\CrudController
                     $this->setFlash('Your data was successfully changed!');
 
                     $this->session->set('member', $member);
-                    $this->response->redirect('/profile');
+                    $this->loadRedirect();
                 }
             } else {
                 $form->setFormValues($formValues);
@@ -115,7 +115,7 @@ class MemberController extends \Core\Controllers\CrudController
 	
 	public function loadRedirect()
 	{
-		$this -> response -> redirect('profile');
+		$this -> response -> redirect('/profile');
 	}
 
 	
@@ -208,7 +208,7 @@ class MemberController extends \Core\Controllers\CrudController
             $filters->delete();
         }
 
-        $this->response->redirect('/profile');
+        $this->loadRedirect();
     }
 
     /**
@@ -305,7 +305,7 @@ class MemberController extends \Core\Controllers\CrudController
 
                         $this->setFlash('Your password was successfully changed!');
 
-                        $this->response->redirect('profile');
+                        $this->loadRedirect();
                     }
                 }
             }

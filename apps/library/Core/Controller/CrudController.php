@@ -69,7 +69,7 @@ class CrudController extends \Core\Controller
 				// Sad =/
 			} 
 
-			return $this -> response -> redirect(strtolower($model). '/list');
+			return $this -> response -> redirect('/' . strtolower($model). '/list');
 		}
 	}
 
@@ -96,7 +96,7 @@ class CrudController extends \Core\Controller
 	public function loadRedirect()
 	{
 		$model = strtolower($this -> getModel());
-		$this -> response -> redirect(strtolower($model). '/list');
+		$this -> response -> redirect('/' . strtolower($model). '/list');
 	}
 	
 	public function processForm($form) 

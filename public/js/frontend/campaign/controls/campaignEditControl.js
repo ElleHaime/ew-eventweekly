@@ -52,7 +52,7 @@ define('frontCampaignEditControl',
 
 
 				$(self.settings.btnCancel).click(function() {
-					window.location.replace = "/event/list";
+					window.location.href = "/campaign/list";
 				});
 			}
 
