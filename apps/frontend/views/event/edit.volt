@@ -165,15 +165,12 @@
                 {% for site in event.site %}
                     <div class = "esite_elem">
                         <a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
-                        <a href="#" class="btn btn-sm icon-remove"></a>
+                        <a href="#" class="icon-remove"></a>
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
 
-        <p>
-            {{ form.label('event_category') }}
-        </p>
         {{ form.render('event_category') }}
 
         <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
