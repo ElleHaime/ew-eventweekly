@@ -1552,7 +1552,7 @@ input[type="checkbox"]  {
     margin-bottom: 10px;
 }
 
-.event-list-category .category-title, .event-list-category  span {
+.event-list-category .category-title, .event-list-category  .category-title {
     font-size: 18px;
 }
 
