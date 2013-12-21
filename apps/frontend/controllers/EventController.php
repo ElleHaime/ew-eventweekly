@@ -203,6 +203,8 @@ class EventController extends \Core\Controllers\CrudController
 		$this -> view -> setVar('event', $event);
         $categories = Category::find();
         $this -> view -> setVar('categories', $categories->toArray());
+
+        $this -> view -> setVar('link_back_to_list', true);
 	}
 
     /**
