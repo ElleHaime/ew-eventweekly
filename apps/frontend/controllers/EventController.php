@@ -142,7 +142,7 @@ class EventController extends \Core\Controllers\CrudController
 						$elem = 1;
 					}
 
-					$events[$elem][] = array(
+					$newEv = array(
 						'id' => $ev -> event -> id,
 						'eid' => $ev -> event -> fb_uid,
 						'pic_square' => '',
@@ -154,11 +154,18 @@ class EventController extends \Core\Controllers\CrudController
                         'location' => $ev -> location,
 						'anon' => $ev -> event -> description,
 						'logo' => $ev -> logo,
-						'start_time' => date('F, l d, H:i', strtotime($ev -> event -> start_date)),
-						'start_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> start_date_nice)),
-						'end_time' => date('F, l d, H:i', strtotime($ev -> event -> end_date)),
-						'end_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> end_date_nice)),
+						'start_time' =>$ev -> event -> start_time,
+						'start_date_nice' => $ev -> event -> start_date_nice,
+						'end_time' => $ev -> event -> end_time,
+						'end_date_nice' => $ev -> event -> end_date_nice,
 					);
+
+                    if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {
+                        $newEv['venue']['latitude'] = $ev -> location_latitude;
+                        $newEv['venue']['longitude'] = $ev -> location_longitude;
+                    }
+
+                    $events[$elem][] = $newEv;
 				}
 			}
 			return $events;

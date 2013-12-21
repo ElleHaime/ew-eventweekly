@@ -96,14 +96,14 @@ class Event extends EventObject
         $MemberFilter = new MemberFilter();
         $member_categories = $MemberFilter->getbyId($uId);
 
-        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude
+        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude, location.latitude as location_latitude, location.longitude as location_longitude
 					from \Frontend\Models\Event as event
 					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
 					left join \Frontend\Models\Location as location on event.location_id = location.id
 					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
                     LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-					where venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
-					and venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+					where location.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' OR venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
+					and location.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' OR venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
 
         if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
             $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
@@ -325,12 +325,12 @@ class Event extends EventObject
 						$data[$source][$item]['id'] = $eventsScope[$ev['eid']]['id'];
 						//$data[$source][$item]['logo'] = $eventsScope[$ev['eid']]['logo'];						
 						if (!empty($eventsScope[$ev['eid']]['start_date'])) {
-							$data[$source][$item]['start_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
-							$data[$source][$item]['start_date_nice'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
+							$data[$source][$item]['start_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
+							$data[$source][$item]['start_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['start_date']));
 						}
 						if (!empty($eventsScope[$ev['eid']]['end_date'])) {
-							$data[$source][$item]['end_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
-							$data[$source][$item]['end_date_nice'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
+                            $data[$source][$item]['end_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
+							$data[$source][$item]['end_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['end_date']));
 						}
 					}
 				}
