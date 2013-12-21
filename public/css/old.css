@@ -3552,4 +3552,5 @@ i.icon-map {
 
 .btn.disabled:hover , .btn[disabled]:hover {
     background:#E6E6E6;
+    color: #333333;
 }
