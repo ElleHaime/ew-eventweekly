@@ -1339,6 +1339,29 @@ input[type="checkbox"]  {
 .arrow-business {
     border-color: rgba(0, 0, 0, 0) #0071BC rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
+
+.theater-color {
+    background: #9ebfe8;
+}
+.arrow-theater {
+    border-color: rgba(0, 0, 0, 0) #9ebfe8 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.social-color {
+    background: #d84e37;
+}
+.arrow-social {
+    border-color: rgba(0, 0, 0, 0) #d84e37 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.special-color {
+    background: #7db894;
+}
+.arrow-special {
+    border-color: rgba(0, 0, 0, 0) #7db894 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
 .music-color
 {
     background: #ebc500;
@@ -1465,6 +1488,9 @@ input[type="checkbox"]  {
     border-left:14px solid #ebc500;
 }
 
+.events-list.theater-category {
+    border-left:14px solid #9ebfe8;
+}
 
 .events-list.sport-category {
     border-left:14px solid #dc7f00;
@@ -1526,8 +1552,7 @@ input[type="checkbox"]  {
     margin-bottom: 10px;
 }
 
-.event-list-category .category-title {
-
+.event-list-category .category-title, .event-list-category  .category-title {
     font-size: 18px;
 }
 
@@ -1546,8 +1571,70 @@ input[type="checkbox"]  {
     color:#ffffff;
 }
 
-.events-list.music-category  .category-title {
+.events-list.music-category  .category-title, .music-title {
     color:#e9c900;
+}
+
+
+.events-list.theater-category .sub_category div  {
+    border:1px solid #9ebfe8;
+}
+.events-list.theater-category .sub_category span {
+    color:#9ebfe8;
+}
+.events-list.theater-category    .sub_category div:hover {
+    background: #9ebfe8;
+
+}
+
+.events-list.theatre-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.theatre-category  .category-title,  .event-list-category .theater-title {
+    color:#9ebfe8;
+}
+
+
+
+.events-list.social-category .sub_category div  {
+    border:1px solid #d84e37;
+}
+.events-list.social-category .sub_category span {
+    color:#d84e37;
+}
+.events-list.social-category    .sub_category div:hover {
+    background: #d84e37;
+
+}
+
+.events-list.social-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.social-category  .category-title,  .event-list-category .social-title {
+    color:#d84e37;
+}
+
+
+
+.events-list.special-category .sub_category div  {
+    border:1px solid #7db894;
+}
+.events-list.special-category .sub_category span {
+    color:#7db894;
+}
+.events-list.special-category    .sub_category div:hover {
+    background: #7db894;
+
+}
+
+.events-list.special-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.special-category  .category-title,  .event-list-category .special-title {
+    color:#7db894;
 }
 
 .events-list.ent-category .sub_category div  {
@@ -1559,7 +1646,7 @@ input[type="checkbox"]  {
 .events-list.ent-category    .sub_category div:hover {
     background: #9556be;
 }
-.events-list.ent-category  .category-title {
+.events-list.ent-category  .category-title, .event-list-category .entertainment-title {
     color:#9556be;
 }
 
@@ -1567,7 +1654,7 @@ input[type="checkbox"]  {
     color:#ffffff;
 }
 
-.events-list.music-category  .category-title {
+.events-list.music-category  .category-title , .event-list-category .music-title {
     color:#e9c900;
 }
 
@@ -1580,7 +1667,7 @@ input[type="checkbox"]  {
 .events-list.sport-category   .sub_category div:hover {
     background: #dc7f00;
 }
-.events-list.sport-category  .category-title {
+.events-list.sport-category  .category-title, .sport-title {
     color:#dc7f00;
 }
 
@@ -1597,7 +1684,7 @@ input[type="checkbox"]  {
 .events-list.outdoors-category  .sub_category div:hover {
     background: #5acd5c;
 }
-.events-list.outdoors-category  .category-title {
+.events-list.outdoors-category  .category-title, .outdoors-title {
     color:#5acd5c;
 }
 
@@ -1614,7 +1701,7 @@ input[type="checkbox"]  {
 .events-list.shopping-category    .sub_category div:hover {
     background: #db4d30;
 }
-.events-list.shopping-category    .category-title {
+.events-list.shopping-category    .category-title , .shopping-title {
     color:#db4d30;
 }
 
@@ -1631,7 +1718,7 @@ input[type="checkbox"]  {
 .events-list.business-category  .sub_category div:hover {
     background: #0071BC;
 }
-.events-list.business-category    .category-title {
+.events-list.business-category    .category-title, .business-title {
     color:#0071BC;
 }
 
@@ -1650,7 +1737,7 @@ input[type="checkbox"]  {
 .events-list.art-category .sub_category div:hover {
     background: #4fbc97;
 }
-.events-list.art-category   .category-title {
+.events-list.art-category   .category-title, .art-title {
     color:#4fbc97;
 }
 
@@ -1668,7 +1755,7 @@ input[type="checkbox"]  {
 .events-list.night-lifes-category .sub_category div:hover {
     background: #384961;
 }
-.events-list.night-lifes-category   .category-title {
+.events-list.night-lifes-category   .category-title, .night-lifes-title {
     color:#384961;
 }
 
@@ -1685,7 +1772,7 @@ input[type="checkbox"]  {
 .events-list.other-category .sub_category div:hover {
     background: #97a5a5;
 }
-.events-list.other-category   .category-title {
+.events-list.other-category   .category-title, .other-title {
     color:#97a5a5;
 }
 
@@ -1870,6 +1957,7 @@ input[type="checkbox"]  {
 
 .plans-box  {
     clear: both;
+    margin: 10px 0 0;
 }
 .plans-box .btn {
     min-width: 174px;
@@ -2136,7 +2224,7 @@ ul.days-events  {
 }
 
 .location-place_country  .location-search {
-    left:-57px;
+    left:-56px;
     padding: 22px 22px 13px 22px;
 }
 
@@ -3455,4 +3543,14 @@ i.icon-map {
 }
 .btn-hide  span {
     font-weight: bold;
+}
+
+.event-site > div {
+    margin-bottom: 7px;
+    position: relative;
+}
+
+.btn.disabled:hover , .btn[disabled]:hover {
+    background:#E6E6E6;
+    color: #333333;
 }
