@@ -278,6 +278,13 @@ class Event extends EventObject
                         if (!empty($titleCategory) || !empty($descriptionCategory)) {
                             $categories = array_unique(array_merge($titleCategory, $descriptionCategory));
 
+                            // TODO: small dirty code. need refactoring in categoryzator
+                            if (count($categories) > 1 && in_array('other', $categories)) {
+                                $categories = array_flip($categories);
+                                unset($categories['other']);
+                                $categories = array_flip($categories);
+                            }
+
                             $cats = array();
                             foreach ($categories as $key => $c) {
                                 $cat = Category::findFirst("key = '".$c."'");
@@ -289,6 +296,11 @@ class Event extends EventObject
                         }
 
                         $eventObj = new self;
+
+                        if (empty($result['end_date'])) {
+                            $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
+                        }
+
 						$eventObj -> assign($result);
 						if ($eventObj -> save()) {
 							$images = new EventImage();

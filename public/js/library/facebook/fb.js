@@ -126,6 +126,7 @@ define('fb',
 			self.__register = function(data)
 			{
 				params = { uid: self.accessUid,
+                           token: self.accessToken,
                            address: data.current_address,
                            location: data.current_location,
                            email: data.email,

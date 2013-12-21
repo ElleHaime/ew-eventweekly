@@ -211,7 +211,16 @@ class EventController extends \Core\Controllers\CrudController
     {
         $status['status'] = false;
 
-        if ($this->session->has('member')) {
+        $existence = EventCategory::findFirst('event_id = '.$eventId);
+
+        if ($existence && ($existence->eventpart2->key == 'other')) {
+
+            $result = $this->modelsManager->executeQuery('UPDATE \Objects\EventCategory SET category_id = '.$categoryId.' WHERE event_id = '.$eventId);
+            if ($result) {
+                $status['status'] = true;
+            }
+
+        }else {
             $CategoryEvent = new EventCategory();
 
             if ($CategoryEvent->save(array(
@@ -220,8 +229,6 @@ class EventController extends \Core\Controllers\CrudController
                 ))) {
                 $status['status'] = true;
             }
-        } else {
-        	$status['error'] = 'not_logged';
         }
 
         if ($this->request->isAjax()) {

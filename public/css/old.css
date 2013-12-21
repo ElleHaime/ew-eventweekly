@@ -2396,6 +2396,8 @@ ul.days-events  {
     margin-bottom:2px;
     display: block;
     padding: 4px 0;
+    width: 50%;
+    float: left;
 }
 
 .number-events {

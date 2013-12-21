@@ -1,4 +1,4 @@
-<form action="/search" method="post" class="form-horizontal">
+<form action="/search" method="post" class="form-horizontal" id="topSearchForm">
     <div class="input-append" style="float: none">
         {{ searchForm.render('title', {'class':'input-search input-large', 'placeholder':'Title'}) }}
     </div>
@@ -15,11 +15,6 @@
         <div class="input-div ">
             {{ searchForm.render('end_dateSearch', {'placeholder':'End Date'}) }}
             <i class="icon-calendar"></i>
-        </div>
-        <div class="hidden-categories" style="display: none">
-            {% for index, node in formCategories %}
-                {{ check_field('category[]', 'value': node['id'], 'class': 'cat'~index) }} - {{ node['name'] }}
-            {% endfor %}
         </div>
     </div>
 
@@ -98,32 +93,24 @@
             <h5>Choose events type</h5>
             <div class="row-fluid">
                 <div class="table-box">
-                    <div class="table-box span6">
+                    <div class="table-box span12">
                         {% for index, node in formCategories %}
-                            {% if index is odd %}
-                                <a href="#" class="table-box-row other-border clearfix" 
-                                    id="cat{{ index }}">
-                                        <div class="cell number-events">0</div>
-                                        <div class="cell location-name">{{ node['name'] }}</div>
-                                        <div class="cell"><span class="icon-device"></span></div>
-                                </a>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-
-                    <div class="table-box span6">
-                        {% for index, node in formCategories %}
-                            {% if index is even %}
-                                <a href="#" class="table-box-row other-border clearfix" id="cat{{ index }}">
-                                    <div class="cell number-events">0</div>
-                                    <div class="cell location-name">{{ node['name'] }}</div>
-                                    <div class="cell"><span class="icon-device"></span></div>
-                                </a>
-                            {% endif %}
+                            <a href="#" class="table-box-row other-border clearfix searchChooseCatBtn" id="cat{{ index }}" data-active="0">
+                                <div class="cell number-events">0</div>
+                                <div class="cell location-name">{{ node['name'] }}</div>
+                                <div class="cell"><span class="icon-device"></span></div>
+                            </a>
                         {% endfor %}
                     </div>
                 </div>
             </div>
+
+            <div class="hidden-categories" style="display: none">
+                {% for index, node in formCategories %}
+                    {{ check_field('category[]', 'value': node['id'], 'class': 'cat'~index) }} - {{ node['name'] }}
+                {% endfor %}
+            </div>
+
         </div>
         <button class="btn btn-block">Find</button>
     </div>

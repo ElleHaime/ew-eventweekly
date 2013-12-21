@@ -15,10 +15,6 @@
     $('#user-down-caret').click(function () {
         $('.user-box').toggleClass('active-box');
     });
-    $('.table-box-row').click(function () {
-        $(".table-box-row").removeClass('active-line');
-        $(this).addClass('active-line');
-    });
     $('.locationCity').click(function () {
         $('.searchCityBlock ').slideToggle('2000');
     });
