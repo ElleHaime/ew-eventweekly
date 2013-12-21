@@ -40,7 +40,7 @@
 
                                         <div class="date-list">
                                             <i class="icon-time"></i>
-                                            <span class="date-start">{{ event.start_date }}</span> start at
+                                            <span class="date-start">{{ event.start_date_nice }}</span> start at
                                             <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
                                         </div>
 

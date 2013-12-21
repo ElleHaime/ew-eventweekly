@@ -155,7 +155,9 @@ class EventController extends \Core\Controllers\CrudController
 						'anon' => $ev -> event -> description,
 						'logo' => $ev -> logo,
 						'start_time' => date('F, l d, H:i', strtotime($ev -> event -> start_date)),
+						'start_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> start_date_nice)),
 						'end_time' => date('F, l d, H:i', strtotime($ev -> event -> end_date)),
+						'end_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> end_date_nice)),
 					);
 				}
 			}
