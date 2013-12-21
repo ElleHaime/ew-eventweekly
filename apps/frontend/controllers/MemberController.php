@@ -191,7 +191,7 @@ class MemberController extends \Core\Controllers\CrudController
 
             $MemberFilter = new MemberFilter();
 
-            if ($elemExists('category')) {
+            if (!empty($postData['category']) && $elemExists('category')) {
 
                 $toSave = array(
                     'member_id' => $Member->id,
@@ -199,7 +199,7 @@ class MemberController extends \Core\Controllers\CrudController
                     'value' => $postData['category']
                 );
 
-                if ($elemExists('member_filter_category_id')) {
+                if (!empty($postData['member_filter_category_id']) && $elemExists('member_filter_category_id')) {
                     $toSave['id'] = $postData['member_filter_category_id'];
                 }
 
