@@ -83,7 +83,12 @@
 
             <div class="span7 location-box">
                 <div class="show-list">
-                    {% if link_to_list is defined %}
+                    {% if link_back_to_list is defined %}
+                        <button class="btn btn-show tooltip-text"
+                                onclick="location.href='/list'" title="" rel="tooltip" data-placement="bottom"
+                                data-original-title="Back link"><i class="icon-back"></i>
+                        </button>
+                    {% elseif link_to_list is defined %}
                         <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
                                 onclick="location.href='/list'" data-original-title="Show all list"><i class="icon-sel"></i>
                         </button>
