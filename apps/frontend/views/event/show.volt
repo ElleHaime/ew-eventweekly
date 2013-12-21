@@ -25,6 +25,7 @@
             <div class="event-list_i">
                         <div class="row-fluid ">
                             <div class="span12">
+                                <div class="padd_30"></div>
                                 <div class="event-one clearfix">
                                     <div class="event-one-img" id="current_event_id" event="{{ event.id }}">
                                         {% if event.logo is defined %}
@@ -46,11 +47,12 @@
 
                                         <p>{{ event.description|nl2br }}</p>
 
-                                        {% if not (event.memberpart|length) %}
-                                            <span>So, whats your plan?</span>
-                                        {% endif %}
 
                                         <div class="btn-hide clearfix">
+
+                                            {% if not (event.memberpart|length) %}
+                                                <span>So, whats your plan?</span>
+                                            {% endif %}
                                             <div class="event-site clearfix">
                                                 {% if not (event.memberpart|length) %}
                                                     <button class="btn" id="event-join">I`m going!</button>
@@ -112,9 +114,9 @@
                                                     </ul>
                                                 {% endif %}
 	                    					{% else %}
-												{#<span class="btn uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
+												<span class="btn uncategorized_label" style="padding: 5px 47px; min-height: 0;">Uncategorized</span>
 
-						                        <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
+						                        <span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>
 						                        <ul id="suggestCategoriesBlock"  class="select-category">
 						                        {% for index, node in categories %}
 						                            <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
