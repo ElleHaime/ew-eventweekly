@@ -1646,7 +1646,7 @@ input[type="checkbox"]  {
 .events-list.ent-category    .sub_category div:hover {
     background: #9556be;
 }
-.events-list.ent-category  .category-title, .event-list-category .ent-title {
+.events-list.ent-category  .category-title, .event-list-category .entertainment-title {
     color:#9556be;
 }
 
