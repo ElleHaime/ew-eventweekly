@@ -3434,3 +3434,23 @@ i.icon-map {
 
 
 
+
+.uncategorized_label {
+    height: 42px;
+    line-height: 39px;
+    padding: 0 47px;
+}
+
+#suggestCategoryBtn {
+    padding: 0px 10px;
+    height: 42px;
+    line-height: 39px;
+}
+
+
+.btn-hide {
+    margin-top: 20px;
+}
+.btn-hide  span {
+    font-weight: bold;
+}
