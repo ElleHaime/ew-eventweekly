@@ -238,13 +238,6 @@
                             <button class="btn btn-block"> add</button>
                         </div>
                     </div>
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <div class="profile-btn">
-                                <a href="/member/edit" class="btn btn-edit">Edit Profile</a>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 

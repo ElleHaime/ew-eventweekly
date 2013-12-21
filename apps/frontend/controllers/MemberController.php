@@ -181,31 +181,33 @@ class MemberController extends \Core\Controllers\CrudController
 
         $postData = $this->request->getPost();
 
-        $elemExists = function($elem) use (&$postData) {
-            if (!is_array($postData[$elem])) {
-                $postData[$elem] = trim(strip_tags($postData[$elem]));
+        if (!empty($postData)) {
+            $elemExists = function($elem) use (&$postData) {
+                if (!is_array($postData[$elem])) {
+                    $postData[$elem] = trim(strip_tags($postData[$elem]));
+                }
+                return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
+            };
+
+            $MemberFilter = new MemberFilter();
+
+            if ($elemExists('category')) {
+
+                $toSave = array(
+                    'member_id' => $Member->id,
+                    'key' => 'category',
+                    'value' => $postData['category']
+                );
+
+                if ($elemExists('member_filter_category_id')) {
+                    $toSave['id'] = $postData['member_filter_category_id'];
+                }
+
+                $MemberFilter->save($toSave);
+            } else {
+                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
+                $filters->delete();
             }
-            return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
-        };
-
-        $MemberFilter = new MemberFilter();
-
-        if ($elemExists('category')) {
-
-            $toSave = array(
-                'member_id' => $Member->id,
-                'key' => 'category',
-                'value' => $postData['category']
-            );
-
-            if ($elemExists('member_filter_category_id')) {
-                $toSave['id'] = $postData['member_filter_category_id'];
-            }
-
-            $MemberFilter->save($toSave);
-        }else {
-            $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
-            $filters->delete();
         }
 
         $this->loadRedirect();
