@@ -519,7 +519,7 @@ class EventController extends \Core\Controllers\CrudController
 			$venueInfo = array('latitude' => $event['venue_latitude'],
 						       'longitude' => $event['venue_longitude']);
 		}
-		if ($newEvent['location_id']) {
+		if (!empty($newEvent['location_id']) && $newEvent['location_id']) {
 			$venueInfo['location_id'] = $newEvent['location_id'];
 		}
 
