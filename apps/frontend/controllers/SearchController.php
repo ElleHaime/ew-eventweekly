@@ -68,9 +68,9 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('end_date')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) < "'.strtotime($postData['end_dateSearch']).'"';
+                $conditions[] = 'event.end_date < "'.$postData['end_dateSearch'].'"';
             }else {
-                $conditions[] = 'UNIX_TIMESTAMP(event.end_date) > "'.time().'"';
+                $conditions[] = 'event.end_date > "'.date('Y-m-d H:m:i', time()).'"';
             }
 
             if (!empty($conditions)) {

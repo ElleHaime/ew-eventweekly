@@ -79,5 +79,9 @@ require.config({
         };
 
   		require([moduleName]);
+
+        require(['frontSearchPanel'], function(frontSearchPanel){
+            frontSearchPanel.init();
+        });
     }	
 });

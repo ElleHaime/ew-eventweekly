@@ -3,12 +3,9 @@
 {% block content %}
 
 <div class="container" id="content_noBorder">
-    <div class="padd_30"></div>
-
-
-
                     <div class="row-fluid">
                         <div class="span12">
+                            <div class="padd_30"></div>
                             <div class="active-events">
                                 <div class="row-fluid">
                                     <div class="span12">
@@ -42,7 +39,7 @@
 
                                                     <div class="date-list">
                                                         <i class="icon-time"></i>
-                                                        <span class="date-start">{{ event['start_time'] }}</span> start at
+                                                        <span class="date-start">{{ event['start_date_nice'] }}</span> start at
                                                         <span class="date-time">{{ event['start_time'] }}</span>
                                                     </div>
                                                     <p>

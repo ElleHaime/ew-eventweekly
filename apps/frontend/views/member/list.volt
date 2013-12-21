@@ -6,10 +6,11 @@
     <div class="container" id="content_noBorder">
         <div class="profile-box">
             <div class="row-fluid">
-                <div class="span9 profile-info-lf">
+            <div class="span12">
+                <div class=" profile-info-lf clearfix">
                     <div class="profile-img">
                         <div class="profile-img-box">
-                        <img alt=""
+                        <img id="img-box" alt=""
                                 {% if member.logo != '' %}
                                     src="{{ member.logo }}"
                                 {% else %}
@@ -75,63 +76,10 @@
                                 </div>
                             </div>
                         </div>
-
-                        {#<div class="profile-info clearfix" style="display: none">
-                            &#123;&#35;{{ form() }}&#35;&#125;
-                                <div class="control-group">
-                                    {{ memberForm.label('extra_email') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('extra_email') }}
-                                        {{ memberForm.messages('extra_email') }}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    {{ memberForm.label('name') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('name') }}
-                                        {{ memberForm.messages('name') }}
-                                    </div>
-                                </div>
-
-                                <div class="control-group">
-                                    {{ memberForm.label('phone') }}
-
-                                    <div class="controls">
-                                        {{ memberForm.render('phone') }}
-                                        {{ memberForm.messages('phone') }}
-                                    </div>
-                                </div>
-
-                                {{ memberForm.render('logo') }}
-
-                                &#123;&#35;<div class="control-group">
-                                    <label class="control-label" for="inputPassword">{{ memberForm.label('logo') }}</label>
-                                    {{ memberForm.render('logo') }}
-
-                                    <div class="controls">
-                                        <button style="text-align: center; overflow: hidden; height: 42px; width: 227px;" class="btn btn-block btn-file"
-                                                id="add-img-btn" type="button">Add Image</button>
-                                        {{ memberForm.messages('logo') }}
-                                    </div>
-                                </div>&#35;&#125;
-
-                                <div class="control-group">
-                                    <div class="controls">
-                                        {{ memberForm.render('Save',{'class':'btn btn-block'})}}
-                                    </div>
-                                </div>
-
-                            &#123;&#35;<h4 class="profile-name">{{ member.name }}</h4>
-                            <span class="location-state">{{ member.location.alias }} {{ member.address }}</span>
-                            <span class="mail">{{ member.email }}</span>&#35;&#125;
-                        </div>#}
                     </form>
                 </div>
 
-                <div class="span3 profile-btn-rt">
+                <div class=" profile-btn-rt clearfix">
                     <div class="profile-btn">
                         <button class="btn btn-block ">Facebook Sinc</button>
                         <p>import interests from facebook
@@ -165,24 +113,27 @@
                     </div>
                 </div>
             </div>
-
-            {#<div class="row-fluid">
-                <div class="span9 profile-info-lf">
-                    <h2>Your account information:</h2>
-
-                    <form action="#" method="post" id="mLocationForm">
-                        <label for="uLocation">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
-                        {% if conflict is defined %}
-                            <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
-                        {% endif %}
-                        <input type="text" id="uLocation"/>
-
-                        &#123;&#35;<input type="submit" value="Save"/>&#35;&#125;
-                    </form>
-                </div>
-            </div>#}
+            </div>
 
             <div class="profile-body">
+                <hr/>
+                <form action="#" method="post" id="mLocationForm">
+                    {% if conflict is defined %}
+                        <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
+                    {% endif %}
+
+                    <div class="control-group">
+                        <label for="uLocation" class="control-label mail">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
+
+                        <div class="controls">
+                            <input type="text" id="uLocation"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
                 <hr/>
                 <a href="#" class="edit-service"><span> customise your search event-profile </span></a>
                 <form action="/member/save-filters" method="post" id="filters" style="display: none">
@@ -276,8 +227,9 @@
                             </div>
                         {% endfor %}
                     </form>
-
-                    <button id="saveFilter" class="btn" style="width: 250px; margin: 0px 0px 20px 0px;">Save</button>
+                    <div class="profile-btn">
+                         <button id="saveFilter" class="btn " >Save</button>
+                    </div>
 
                     <div class=" row-fluid add-settings-box clearfix">
                         <div class="span11"><p><i class="icon-plus"></i> Or add your interests manually: rock, queen, zombie walk, golf
@@ -288,8 +240,8 @@
                     </div>
                 </div>
             </div>
-            <div class="profile-btn">
-                <a href="/member/edit" class="btn">Edit Profile</a>
+
+
             </div>
         </div>
 

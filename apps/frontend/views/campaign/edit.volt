@@ -7,9 +7,12 @@
     <div class="row">
         <div class="span12">
             <div class="add-event_i clearfix">
-                <div class="padd_30"></div>
-                <div class="add-event clearfix">
-                   {{ form.render('id') }}
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="padd_30"></div>
+                        <div class="add-event clearfix">
+                            {{ form.render('id') }}
 
                     <div class="add-img">
 						<div class="event-one-img">
@@ -59,7 +62,7 @@
                         {{ form.render('description') }}
                         
                         <div class="btn-add_group clearfix">
-                            <button class="btn btn-cancel" id="btn-cancel">Cancel</button>
+                            <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
                             <button class="btn" id="btn-submit" type="submit">Save</button>
                         </div>
                     </div>
@@ -87,6 +90,9 @@
                         {% endif %}
  					</div>                
                 </div>
+            </div>
+        </div>
+
             </div>
         </div>
 	</div>

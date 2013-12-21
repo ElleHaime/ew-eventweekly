@@ -35,18 +35,18 @@ class Event extends EventObject
 	{ 
 		if ($this -> start_date) {
 			$this -> start_time = date('H:i', strtotime($this -> start_date));
-			$this -> start_date = date('d/m/Y', strtotime($this -> start_date));
+			$this -> start_date_nice = date('d/m/Y', strtotime($this -> start_date));
 		} else {
 			$this -> start_time = '00:00:00';
-			$this -> start_date = '0000-00-00';
+			$this -> start_date_nice = '0000-00-00';
 		}
 		
 		if ($this -> end_date) {
 			$this -> end_time = date('H:i', strtotime($this -> end_date));
-			$this -> end_date = date('d/m/Y', strtotime($this -> end_date));
+			$this -> end_date_nice = date('d/m/Y', strtotime($this -> end_date));
 		} else {
 			$this -> end_time = '00:00:00';
-			$this -> end_date = '0000-00-00';
+			$this -> end_date_nice = '0000-00-00';
 		}
 	}
 
@@ -326,9 +326,11 @@ class Event extends EventObject
 						//$data[$source][$item]['logo'] = $eventsScope[$ev['eid']]['logo'];						
 						if (!empty($eventsScope[$ev['eid']]['start_date'])) {
 							$data[$source][$item]['start_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
+							$data[$source][$item]['start_date_nice'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
 						}
 						if (!empty($eventsScope[$ev['eid']]['end_date'])) {
 							$data[$source][$item]['end_date'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
+							$data[$source][$item]['end_date_nice'] = date('F, l d, H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
 						}
 					}
 				}

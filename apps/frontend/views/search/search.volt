@@ -67,7 +67,7 @@
 
                                             <div class="date-list">
                                                 <i class="icon-time"></i>
-                                                <span class="date-start">{{ node.event.start_time }}</span> start at
+                                                <span class="date-start">{{ node.event.start_date_nice }}</span> start at
                                                 <span class="date-time">{{ node.event.start_time }}</span>
                                             </div>
                                             <p>

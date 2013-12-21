@@ -155,7 +155,9 @@ class EventController extends \Core\Controllers\CrudController
 						'anon' => $ev -> event -> description,
 						'logo' => $ev -> logo,
 						'start_time' => date('F, l d, H:i', strtotime($ev -> event -> start_date)),
+						'start_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> start_date_nice)),
 						'end_time' => date('F, l d, H:i', strtotime($ev -> event -> end_date)),
+						'end_time_nice' => date('F, l d, H:i', strtotime($ev -> event -> end_date_nice)),
 					);
 				}
 			}
@@ -518,12 +520,16 @@ class EventController extends \Core\Controllers\CrudController
 		if ($newEvent['location_id']) {
 			$venueInfo['location_id'] = $newEvent['location_id'];
 		}
+
 		$venueInfo['name'] = $event['venue'];
 		$venueInfo['address'] = $event['address'];
 
 		$vn = $venue -> createOnChange($venueInfo);
-		$newEvent['venue_id'] = $vn -> id;
 
+        if ($vn) {
+		    $newEvent['venue_id'] = $vn -> id;
+        }
+//_U::dump($newEvent);
 		// process address
 		$newEvent['address'] = $event['address'];
 
@@ -599,7 +605,7 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 		}
-		
-		$this -> response -> redirect('/event/list');
+
+        $this -> loadRedirect();
 	}
 }		
