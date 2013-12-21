@@ -604,7 +604,7 @@ i.icon-map {
     background: url(../img/bgs/icons.png)  no-repeat -3px -60px;
     width: 15px;
     height: 23px;
-    margin: 0 auto;
+    margin: 0 14px;
     display: inline-block;
     zoom: 1;
     *display: inline;
