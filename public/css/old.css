@@ -613,7 +613,7 @@ i.icon-map {
 
 select {
     border-radius: 0;
-    width: 100%;
+    width: 99%;
     height: 42px;
     padding:10px;
     border: 1px solid #9CC3F4;
@@ -1077,7 +1077,9 @@ background: #9556BE ;
 }
 
 .add-img {
-    max-width: 170px;
+    width: 160px;
+    float: left;
+    margin-right: 20px;
 }
 
 .btn-file input {
@@ -1616,8 +1618,6 @@ input[type="checkbox"]  {
     color:#d84e37;
 }
 
-
-
 .events-list.special-category .sub_category div  {
     border:1px solid #7db894;
 }
@@ -2072,7 +2072,7 @@ i.icon-chevron-down {
    margin-bottom: 10px;
 }
 .form-center {
-    padding-left:179px;
+    margin-right: 20px;
 }
 .sidebar {
     padding-top: 0;
@@ -2377,7 +2377,8 @@ ul.days-events  {
 }
 
 .add-event_i {
-    background: #fff;
+    padding:  0 1%;
+    background: #ffffff;
 }
 .add-event {
     float: left;
@@ -3564,3 +3565,46 @@ i.icon-map {
 #mLocationForm  .control-group, #mLocationForm input  {
     margin-bottom: 0;
 }
+
+
+
+.sidebar-box .input-append  input{
+    height: 32px;
+    width: 224px;
+}
+
+.sidebar-box
+.input-append .btn {
+    width: 60px;
+    height: 42px;
+}
+
+
+/**/
+
+#content_right
+{
+    width: 100%;
+    float: right;
+    margin-left: -300px;
+}
+#content_right_inner
+{
+    margin-left: 180px;
+}
+#content_center
+{
+    width: 100%;
+    float: left;
+    margin-right: -300px;
+}
+#content-box
+{
+    margin-right: 300px;
+}
+.sidebar-box
+ {
+     width: 300px;
+     float: right;
+ }
+
