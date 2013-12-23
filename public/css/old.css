@@ -10,7 +10,7 @@ header, nav, section, article, aside, footer {
     display: block;
 }
 body {
-   font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif;;
+    font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif;;
     width: 100%;
     height: 100%;
     position: relative;
@@ -145,7 +145,7 @@ hr {
     background: #ffffff;
 }
 .agreement-box form {
-    padding-left: 70px;
+    padding-left: 0;
     float: left;
 }
 .agreement-box form h4 {
@@ -186,6 +186,23 @@ hr {
 .agreement-box .btn {
     text-transform: capitalize;
 }
+
+.agreement-box form label {
+    width: 140px;
+}
+
+.agreement-box  .form-horizontal .controls {
+    margin-left: 140px;
+}
+
+.agreement-box  {
+    padding-left: 50px;
+}
+.agreement-box   h4 {
+    font: 400 17px "Open Sans";
+    padding-bottom: 20px;
+}
+
 /*------------------------------------------agreement css----------------------------------------------------------*/
 /*------------------------------------------btn css----------------------------------------------------------*/
 .btn, #fb-invite-all  {
@@ -954,7 +971,7 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 
 .ent-color {
-background: #9556BE ;
+    background: #9556BE ;
 }
 .arrow-ent  {
     border-color: transparent #9556BE transparent transparent;
@@ -2160,7 +2177,7 @@ i.icon-chevron-down {
     padding-top: 0;
 }
 .add-img {
-   margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .form-center {
     margin-right: 20px;
@@ -3349,7 +3366,7 @@ a.table-box-row:focus {
     margin-left: 12px;
 }
 .input-div:first-child {
-  margin-left: 0;
+    margin-left: 0;
 }
 #from {
     width: 219px;
@@ -3429,7 +3446,7 @@ i.icon-map {
     height: 29px;
     display: block;
     text-indent: -9999px;
-    padding: 5px 10px 4px; 
+    padding: 5px 10px 4px;
 }
 
 .header-main {
@@ -3683,10 +3700,10 @@ i.icon-map {
     margin-right: 300px;
 }
 .sidebar-box
- {
-     width: 300px;
-     float: right;
- }
+{
+    width: 300px;
+    float: right;
+}
 
 .sidebar-box .input-append  input{
     height: 32px;

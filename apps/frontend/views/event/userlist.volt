@@ -4,7 +4,7 @@
 
 <div class="container" id="content_noBorder">
     <div class="padd_30"></div>
-
+    <div class=" active-events">
             <div class="row-fluid">
                 <div class="span12">
                     <h3 class="title-page">{{ listName }}</h3>
@@ -17,7 +17,7 @@
                 </div>
                     <div class="row-fluid">
                         <div class="span12">
-                            <div class=" active-events">
+
                            {% for index, node in events %}
 
                                 <div class="events-list {{ node['category']['key'] }}-category signleEventListElement" event-id="{{ node['event']['id'] }}">

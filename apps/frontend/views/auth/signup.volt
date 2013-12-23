@@ -1,10 +1,10 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-    <div class="container" id="container-box">
-        <div class="agreement-box">
+    <div class="container-fluid" id="container-box">
+        <div class="agreement-box ">
             <div class="row-fluid ">
-                <div class="span6 offset1">
+                <div class="span12">
                     <h4>Registration</h4>
 
                     <form class="form-horizontal" method="post" id="form_signup">
@@ -35,7 +35,7 @@
 
                         <div class="control-group">
                             <div class="controls">
-                                <button type="button" class="btn" id="submit_signup">Sign Up</button>
+                                <button type="button" class="btn btn-block" id="submit_signup">Sign Up</button>
                             </div>
                         </div>
                     </form>
@@ -45,4 +45,5 @@
     </div>
 
 {% endblock %}
+
 
