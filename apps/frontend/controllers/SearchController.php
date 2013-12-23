@@ -63,11 +63,11 @@ class SearchController extends \Core\Controller
                 $conditions[] = 'location.city LIKE "%'.$postData['locationSearch'].'%"';
             }
 
-            if ($elemExists('start_date')) {
+            if ($elemExists('start_dateSearch')) {
                 $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_dateSearch']).'"';
             }
 
-            if ($elemExists('end_date')) {
+            if ($elemExists('end_dateSearch')) {
                 $conditions[] = 'event.end_date < "'.$postData['end_dateSearch'].'"';
             }else {
                 $conditions[] = 'event.end_date > "'.date('Y-m-d H:m:i', time()).'"';
