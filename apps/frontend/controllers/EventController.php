@@ -158,7 +158,6 @@ class EventController extends \Core\Controllers\CrudController
 						'start_date_nice' => $ev -> event -> start_date_nice,
 						'end_time' => $ev -> event -> end_time,
 						'end_date_nice' => $ev -> event -> end_date_nice,
-                        'category_key' => $ev -> category -> key,
 					);
 
                     if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {

@@ -19,7 +19,8 @@
                                     </div>
                                 </div>
                             {% for event in events %}
-                                <div class="events-list {{ event['category_key'] }}-category signleEventListElement" event-id="{{ event['id'] }}">
+
+                                <div class="events-list music-category signleEventListElement" event-id="{{ event['id'] }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
                                             <div class="event-one clearfix">
