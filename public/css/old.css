@@ -3569,19 +3569,8 @@ i.icon-map {
 
 
 
-.sidebar-box .input-append  input{
-    height: 32px;
-    width: 224px;
-}
 
-.sidebar-box
-.input-append .btn {
-    width: 60px;
-    height: 42px;
-}
-
-
-/**/
+/*------add events---------*/
 
 #content_right
 {
@@ -3608,4 +3597,20 @@ i.icon-map {
      width: 300px;
      float: right;
  }
+
+.sidebar-box .input-append  input{
+    height: 32px;
+    width: 228px;
+    border-right: 0;
+}
+
+.sidebar-box .input-append  input:active, .sidebar-box .input-append input:focus
+{
+    border-right: 0;
+}
+.sidebar-box
+.input-append .btn {
+    width: 60px;
+    height: 42px;
+}
 
