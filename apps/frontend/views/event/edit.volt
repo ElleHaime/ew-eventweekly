@@ -254,11 +254,6 @@
             {{ form.render('add-img-upload') }}
         </div>
 
-    <div class="add-event_content clearfix">
-
-
-    </div>
-
     </div>
 </div>
 
