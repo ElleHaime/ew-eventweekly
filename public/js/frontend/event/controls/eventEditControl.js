@@ -2,7 +2,7 @@ define('frontEventEditControl',
 	['jquery', 'utils', 'datetimepicker', 'noti', 'domReady'],
 	function($, utils, datetimepicker, noti) {
 
-		function frontEventEditControl($, utils, datetimepicker, noti) 
+		function frontEventEditControl($, utils, datetimepicker, noti)
 		{
 			var self = this;
 
@@ -73,6 +73,8 @@ define('frontEventEditControl',
 				self.__presetTime($(self.settings.inpTimeStart), $(self.settings.textTimeStart));
 				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));
 
+                    self.__initCategoryList();
+
 				self.bindEvents();
 			}
 
@@ -101,8 +103,8 @@ define('frontEventEditControl',
 
 				// process locations
 				$(self.settings.inpLocation).keyup(function() {
-					self.__inputFillList(self.settings.inpLocation, 
-										 self.settings.listLocation, 
+					self.__inputFillList(self.settings.inpLocation,
+										 self.settings.listLocation,
 										 self.settings.coordsLocationLat,
 										 self.settings.coordsLocationLng);
 				});
@@ -114,8 +116,8 @@ define('frontEventEditControl',
 
 				// process venues
 				$(self.settings.inpVenue).keyup(function() {
-					self.__inputFillList(self.settings.inpVenue, 
-										 self.settings.listVenue, 
+					self.__inputFillList(self.settings.inpVenue,
+										 self.settings.listVenue,
 										 self.settings.coordsVenueLat,
 										 self.settings.coordsVenueLng);
 				});
@@ -133,7 +135,7 @@ define('frontEventEditControl',
 				self.settings.btnSite.click(function() {
 					self.__addSite();
 				});
-				
+
 				self.settings.listSite.on('click', self.settings.removeSign, function(e) {
 					e.preventDefault();
 					self.__removeSite($(this));
@@ -164,8 +166,8 @@ define('frontEventEditControl',
 			{
 				var img = image,
 					w = img.width, h = img.height,
-					s = w / h;     
- 
+					s = w / h;
+
 					if(w > size && h > size) {
 						if(img.width > img.height) {
 							img.width = size;
@@ -175,7 +177,7 @@ define('frontEventEditControl',
 							img.width = size * s;
 						}
 					}
- 
+
   					return img;
 			}
 
@@ -208,7 +210,7 @@ define('frontEventEditControl',
 				var item = '<option value="' + elem.attr('catid') + '">' + elem.prev('label').html() + '</option>';
 		 		$(self.settings.inpCategory).append(item);
 		 		$(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val().replace(elem.attr('catid') + ',', ''));
-		 		
+
 		        elem.parent('div').remove();
 
 		        if ($(self.settings.listCategory).children('div').length == 0) {
@@ -216,17 +218,28 @@ define('frontEventEditControl',
 		        }
 			}
 
+            self.__initCategoryList = function()
+            {
+                var categories = $(self.settings.inpCategoryReal).val().split(',');
+
+                categories.forEach(function(cat) {
+                    if (cat == "") return;
+
+                    $(self.settings.inpCategory + " option[value='" + cat + "']").remove();
+                });
+            }
+
 			self.__addSite = function()
 			{
 				var url = self.settings.inpSite.val();
-				
+
 				if (url.length != 0) {
 			        if (url.indexOf('http', 0) < 0) {
 			            url = 'http://' + url;
 			        }
-			        var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' + 
+			        var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
 			        			'<a href="#" class="icon-remove"></a></div>';
-			        
+
 			        self.settings.listSite.append(link);
 			        self.settings.listSite.show();
 			        self.settings.inpSite.val('');
@@ -274,7 +287,7 @@ define('frontEventEditControl',
 
 			self.__presetDate = function(elem, txt, type)
 			{
-				elem.datetimepicker({ pickTime: false, 
+				elem.datetimepicker({ pickTime: false,
 									  startDate: new Date() });
 				if (txt.val() == '') {
 					txt.attr('placeholder', type + 's ' + utils.dateFormat('%d/%m/%Y'))
@@ -295,7 +308,7 @@ define('frontEventEditControl',
 					$(list).parent('div').addClass('hidden');
 					return false;
 				}
-				
+
 				return true;
 			}
 
@@ -310,26 +323,26 @@ define('frontEventEditControl',
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
-			                
+
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });
 		           	}
-		           	
+
 		           	if (input == self.settings.inpAddress) {
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
-			                
+
 			                $(self.settings.coordsAddress).val(lat + ';' + lng);
 			            });
 		           	}
-		           	
+
 		           	if (input == self.settings.inpVenue) {
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
-			                
+
 			                $(self.settings.coordsVenueLat).val(lat);
 			                $(self.settings.coordsVenueLng).val(lng);
 			            });

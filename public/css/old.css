@@ -1333,6 +1333,14 @@ input[type="checkbox"]  {
     border-color: rgba(0, 0, 0, 0) #9556be rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
+.disabled-marker .entertainment-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-entertainment {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
 .business-color {
     background: #0071BC;
 }
@@ -1340,11 +1348,27 @@ input[type="checkbox"]  {
     border-color: rgba(0, 0, 0, 0) #0071BC rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
+.disabled-marker .business-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-business {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
 .theater-color {
     background: #9ebfe8;
 }
 .arrow-theater {
     border-color: rgba(0, 0, 0, 0) #9ebfe8 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .theater-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-theater {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
 
@@ -1355,11 +1379,27 @@ input[type="checkbox"]  {
     border-color: rgba(0, 0, 0, 0) #d84e37 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
+.disabled-marker .social-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-social {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
 .special-color {
     background: #7db894;
 }
 .arrow-special {
     border-color: rgba(0, 0, 0, 0) #7db894 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .special-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-special {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
 .music-color
@@ -1408,18 +1448,53 @@ input[type="checkbox"]  {
 }
 
 
-.outdoors-color {
+.outdoor-color {
     background: #8cc63f;
 }
-.arrow-outdoors {
+.arrow-outdoor {
     border-color: rgba(0, 0, 0, 0) #8cc63f rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
-.disabled-marker .outdoors-color  {
+.disabled-marker .outdoor-color  {
     background: #ffffff;
     color:#333333;
 }
-.disabled-marker  .arrow-outdoors {
+.disabled-marker  .arrow-outdoor {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.events-list.family-category .sub_category div  {
+    border:1px solid #7c7ec8;
+}
+.events-list.family-category .sub_category span {
+    color:#7c7ec8;
+}
+.events-list.family-category .sub_category div:hover {
+    background: #7c7ec8;
+
+}
+
+.events-list.family-category .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.family-category .category-title,  .event-list-category .family-title {
+    color:#7c7ec8;
+}
+
+.family-color {
+    background: #7c7ec8;
+}
+.arrow-family {
+    border-color: rgba(0, 0, 0, 0) #7c7ec8 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .family-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-family {
     border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
@@ -1497,7 +1572,7 @@ input[type="checkbox"]  {
 }
 
 
-.events-list.outdoors-category{
+.events-list.outdoor-category{
     border-left:14px solid #5acd5c;
 }
 
@@ -1506,7 +1581,7 @@ input[type="checkbox"]  {
 }
 
 
-.events-list.bussines-category {
+.events-list.business-category {
     border-left:14px solid #4f96e4
 }
 
@@ -1520,8 +1595,19 @@ input[type="checkbox"]  {
 .events-list.other-category {
     border-left:14px solid  #97A5A5;
 }
-.events-list.ent-category {
+.events-list.entertainment-category {
     border-left:14px solid  #9556be;
+}
+.events-list.social-category {
+    border-left:14px solid  #d84e37;
+}
+
+.events-list.special-category {
+    border-left:14px solid  #7db894;
+}
+
+.events-list.family-category {
+    border-left:14px solid  #7c7ec8;
 }
 
 .sub_category  {
@@ -3564,3 +3650,5 @@ i.icon-map {
 #mLocationForm  .control-group, #mLocationForm input  {
     margin-bottom: 0;
 }
+
+.event-one-text a { color:#464646}
