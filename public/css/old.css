@@ -784,10 +784,11 @@ input[type="color"]:focus, .uneditable-input:focus
     color:#464646;
     font: 400 22px/22px "Open Sans";
     margin-bottom: 10px;
-    display: inline-block;
+    display: block;
+    word-wrap: break-word;
 }
 .event-one-text {
-    max-width: 650px;
+    max-width: 690px;
     margin-right: 10px;
     float: left;
     position: relative;
