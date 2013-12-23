@@ -3554,3 +3554,12 @@ i.icon-map {
     background:#E6E6E6;
     color: #333333;
 }
+
+#mLocationForm label {
+    padding-bottom: 10px;
+    font-size:14px;
+}
+
+#mLocationForm  .control-group, #mLocationForm input  {
+    margin-bottom: 0;
+}
