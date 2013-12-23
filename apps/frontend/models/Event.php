@@ -96,7 +96,7 @@ class Event extends EventObject
         $MemberFilter = new MemberFilter();
         $member_categories = $MemberFilter->getbyId($uId);
 
-        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude, location.latitude as location_latitude, location.longitude as location_longitude
+        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude, location.latitude as location_latitude, location.longitude as location_longitude, category.*
 					from \Frontend\Models\Event as event
 					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
 					left join \Frontend\Models\Location as location on event.location_id = location.id
@@ -108,6 +108,8 @@ class Event extends EventObject
         if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
             $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
         }
+
+        $query .= ' GROUP BY event.id';
 
 		$eventsList = $this -> getModelsManager() -> executeQuery($query);
 

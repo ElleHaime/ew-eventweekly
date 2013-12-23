@@ -20,7 +20,7 @@
                             <div class=" active-events">
                            {% for index, node in events %}
 
-                                <div class="events-list music-category signleEventListElement" event-id="{{ node['event']['id'] }}">
+                                <div class="events-list {{ node['category']['key'] }}-category signleEventListElement" event-id="{{ node['event']['id'] }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
                                             <div class="event-one clearfix">

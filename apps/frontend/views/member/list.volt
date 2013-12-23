@@ -175,7 +175,7 @@
                                 <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
 
                                 <label class="checkbox">
-                                    <span class="check-span {#{{ node['key'] }}#}other-color"><i class=" icon-ok icon-white"></i></span>
+                                    <span class="check-span {{ node['key'] }}-color"><i class=" icon-ok icon-white"></i></span>
                                     {{ node['name'] }}
                                 </label>
                                 <div class="hide-box">
@@ -183,20 +183,20 @@
                                         <label>Activity:</label>
                                         <div class="event-site clearfix">
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">one</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">one</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category disabled-marker clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">two</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">two</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">three</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">three</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">four</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">four</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -205,20 +205,20 @@
                                         <label>Type:</label>
                                         <div class="event-site clearfix">
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">one</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">one</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category disabled-marker clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">two</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">two</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">three</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">three</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                             <div class="event-category clearfix">
-                                                <span class="color-type {#{{ node['key'] }}#}other-color">four</span>
-                                                <span class="arrow arrow-{#{{ node['key'] }}#}other"></span>
+                                                <span class="color-type {{ node['key'] }}-color">four</span>
+                                                <span class="arrow arrow-{{ node['key'] }}"></span>
                                             </div>
                                         </div>
                                     </div>
