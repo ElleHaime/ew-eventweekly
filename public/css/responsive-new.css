@@ -68,9 +68,6 @@
     .event-one   .event-one-text  {
         max-width: 51%;
     }
-    .form-center {
-        padding-left: 173px;
-    }
 }
 
 @media screen and (max-width: 1050px) {
@@ -127,6 +124,23 @@
 }
 
 @media screen and (max-width: 890px) {
+
+    .sidebar-box
+    {
+        width: 300px;
+        float: left;
+        clear: both;
+    }
+
+    #content-box {
+        margin-right: 0;
+    }
+
+    .form-center {
+        margin-right: 0;
+    }
+
+
     .event-one .event-list-btn {
         float: left;
         padding-left: 182px;

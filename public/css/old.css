@@ -613,7 +613,7 @@ i.icon-map {
 
 select {
     border-radius: 0;
-    width: 100%;
+    width: 99%;
     height: 42px;
     padding:10px;
     border: 1px solid #9CC3F4;
@@ -784,10 +784,11 @@ input[type="color"]:focus, .uneditable-input:focus
     color:#464646;
     font: 400 22px/22px "Open Sans";
     margin-bottom: 10px;
-    display: inline-block;
+    display: block;
+    word-wrap: break-word;
 }
 .event-one-text {
-    max-width: 650px;
+    max-width: 690px;
     margin-right: 10px;
     float: left;
     position: relative;
@@ -1044,12 +1045,11 @@ background: #9556BE ;
 
 .title-add {
     color:#3b3b3b;
-    padding: 0 0 10px 18px;
+    padding: 0 0 10px 0;
     font: 400 26px "Open Sans";
 }
 .input-div input   {
     width: 98%;
-
 }
 .input-div input[type="text"], .input-div_date  input[type="text"]
 {
@@ -1077,7 +1077,9 @@ background: #9556BE ;
 }
 
 .add-img {
-    max-width: 170px;
+    width: 160px;
+    float: left;
+    margin-right: 20px;
 }
 
 .btn-file input {
@@ -1132,7 +1134,7 @@ input[type="checkbox"]  {
     margin-bottom: 10px;
 }
 
-
+/*-----------------------------------------------------------style for placeholder ----------------------------------------------------------*/
 .input-append input::-webkit-input-placeholder , .input-div input::-webkit-input-placeholder , .input-div_small  input::-webkit-input-placeholder
 { color:#8aaad2; opacity: 0.6;  padding-left: 5px; }
 .input-append input::-webkit-input-placeholder , .input-div_small  input::-webkit-input-placeholder , .input-div input::-webkit-input-placeholder{
@@ -1163,6 +1165,8 @@ input[type="checkbox"]  {
 .input-div_small input:active , .input-div_small input:focus  {
     color:#010101!important;
 }
+/*--------------------------------------------------------end style for placeholder ----------------------------------------------------------*/
+
 .btn-block + .btn-block {
     margin-top: 0;
 }
@@ -1276,6 +1280,27 @@ input[type="checkbox"]  {
     color:#333333;
     font-weight: bold;
 }
+
+
+.profile-info-lf .profile-img {
+    width: 174px;
+}
+
+.profile-info-lf .profile-img .btn-file {
+    margin-top: 15px;
+}
+
+.profile-info  .form-horizontal {
+    padding: 0;
+}
+
+.profile-info  .controls .btn {
+    margin-top: 0px;
+}
+
+/** -----------------------------------------------------end profile  box----------------------------------------------------***/
+
+/** -----------------------------------------------------hide box----------------------------------------------------***/
 .hide-box {
     background: #e6e6e6;
     padding: 10px 22px;
@@ -1292,26 +1317,9 @@ input[type="checkbox"]  {
     width: 80px;
     display: block;
 }
-
-.profile-info-lf .profile-img {
-    width: 174px;
-}
-
-.profile-info-lf .profile-img .btn-file {
-    margin-top: 15px;
-}
-
-
-.profile-info  .form-horizontal {
-    padding: 0;
-}
-
-.profile-info  .controls .btn {
-    margin-top: 0px;
-}
+/** -----------------------------------------------------end hide box----------------------------------------------------***/
 
 /*------------------------------------------category css----------------------------------------------------------*/
-
 .activity .event-site , .type-marker .event-site{
     padding-left: 90px;
 }
@@ -1323,7 +1331,6 @@ input[type="checkbox"]  {
 .settings-box-one {
     margin-bottom: 10px;
 }
-
 
 .entertainment-color, .ent-color{
     background: #9556be;
@@ -1616,8 +1623,6 @@ input[type="checkbox"]  {
     color:#d84e37;
 }
 
-
-
 .events-list.special-category .sub_category div  {
     border:1px solid #7db894;
 }
@@ -1835,7 +1840,6 @@ input[type="checkbox"]  {
 
 }
 .event-one-img img {
-
     position: absolute;
     top: 0;
     right: 0;
@@ -1888,8 +1892,6 @@ input[type="checkbox"]  {
 .event-list-btn .event-site p {
     padding: 0;
 }
-
-
 
 .events-list {
     background: #ffffff;
@@ -1952,9 +1954,8 @@ input[type="checkbox"]  {
     top:0
 }
 
-
 /*------------------------------------------END icons css----------------------------------------------------------*/
-
+/*------------------------------------------plans box css----------------------------------------------------------*/
 .plans-box  {
     clear: both;
     margin: 10px 0 0;
@@ -1967,6 +1968,7 @@ input[type="checkbox"]  {
     font-size: 13px;
     font-weight: bold;
 }
+/*------------------------------------------end plans box css----------------------------------------------------------*/
 
 .event-list-btn {
     float: right;
@@ -2026,7 +2028,6 @@ input[type="checkbox"]  {
     position: relative;z-index: 10;
 }
 
-
 a.btn-row-down {
     background: none repeat scroll 0 0 #333333;
     border-radius: 50%;
@@ -2072,7 +2073,7 @@ i.icon-chevron-down {
    margin-bottom: 10px;
 }
 .form-center {
-    padding-left:179px;
+    margin-right: 20px;
 }
 .sidebar {
     padding-top: 0;
@@ -2377,7 +2378,8 @@ ul.days-events  {
 }
 
 .add-event_i {
-    background: #fff;
+    padding:  0 1%;
+    background: #ffffff;
 }
 .add-event {
     float: left;
@@ -3564,3 +3566,51 @@ i.icon-map {
 #mLocationForm  .control-group, #mLocationForm input  {
     margin-bottom: 0;
 }
+
+
+
+
+/*------add events---------*/
+
+#content_right
+{
+    width: 100%;
+    float: right;
+    margin-left: -300px;
+}
+#content_right_inner
+{
+    margin-left: 180px;
+}
+#content_center
+{
+    width: 100%;
+    float: left;
+    margin-right: -300px;
+}
+#content-box
+{
+    margin-right: 300px;
+}
+.sidebar-box
+ {
+     width: 300px;
+     float: right;
+ }
+
+.sidebar-box .input-append  input{
+    height: 32px;
+    width: 228px;
+    border-right: 0;
+}
+
+.sidebar-box .input-append  input:active, .sidebar-box .input-append input:focus
+{
+    border-right: 0;
+}
+.sidebar-box
+.input-append .btn {
+    width: 60px;
+    height: 42px;
+}
+
