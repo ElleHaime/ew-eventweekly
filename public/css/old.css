@@ -1280,6 +1280,27 @@ input[type="checkbox"]  {
     color:#333333;
     font-weight: bold;
 }
+
+
+.profile-info-lf .profile-img {
+    width: 174px;
+}
+
+.profile-info-lf .profile-img .btn-file {
+    margin-top: 15px;
+}
+
+.profile-info  .form-horizontal {
+    padding: 0;
+}
+
+.profile-info  .controls .btn {
+    margin-top: 0px;
+}
+
+/** -----------------------------------------------------end profile  box----------------------------------------------------***/
+
+/** -----------------------------------------------------hide box----------------------------------------------------***/
 .hide-box {
     background: #e6e6e6;
     padding: 10px 22px;
@@ -1296,26 +1317,9 @@ input[type="checkbox"]  {
     width: 80px;
     display: block;
 }
-
-.profile-info-lf .profile-img {
-    width: 174px;
-}
-
-.profile-info-lf .profile-img .btn-file {
-    margin-top: 15px;
-}
-
-
-.profile-info  .form-horizontal {
-    padding: 0;
-}
-
-.profile-info  .controls .btn {
-    margin-top: 0px;
-}
+/** -----------------------------------------------------end hide box----------------------------------------------------***/
 
 /*------------------------------------------category css----------------------------------------------------------*/
-
 .activity .event-site , .type-marker .event-site{
     padding-left: 90px;
 }
@@ -1327,7 +1331,6 @@ input[type="checkbox"]  {
 .settings-box-one {
     margin-bottom: 10px;
 }
-
 
 .entertainment-color, .ent-color{
     background: #9556be;
@@ -1837,7 +1840,6 @@ input[type="checkbox"]  {
 
 }
 .event-one-img img {
-
     position: absolute;
     top: 0;
     right: 0;
@@ -1890,8 +1892,6 @@ input[type="checkbox"]  {
 .event-list-btn .event-site p {
     padding: 0;
 }
-
-
 
 .events-list {
     background: #ffffff;
@@ -1954,9 +1954,8 @@ input[type="checkbox"]  {
     top:0
 }
 
-
 /*------------------------------------------END icons css----------------------------------------------------------*/
-
+/*------------------------------------------plans box css----------------------------------------------------------*/
 .plans-box  {
     clear: both;
     margin: 10px 0 0;
@@ -1969,6 +1968,7 @@ input[type="checkbox"]  {
     font-size: 13px;
     font-weight: bold;
 }
+/*------------------------------------------end plans box css----------------------------------------------------------*/
 
 .event-list-btn {
     float: right;
@@ -2027,7 +2027,6 @@ input[type="checkbox"]  {
 .header .row:first-child {
     position: relative;z-index: 10;
 }
-
 
 a.btn-row-down {
     background: none repeat scroll 0 0 #333333;
