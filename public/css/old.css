@@ -1817,7 +1817,7 @@ input[type="checkbox"]  {
 
 .event-one-img {
     float: left;
-    margin: 0 20px 0px 0;
+    margin: 0 20px 10px 0;
     position: relative;
     width: 160px;
     height: 160px;

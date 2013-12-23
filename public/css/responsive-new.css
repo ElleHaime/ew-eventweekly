@@ -132,8 +132,8 @@
         padding-left: 182px;
     }
     .event-list-btn {
-        float: none;
-        clear: both;
+        float: right;
+        /*clear: both;*/
     }
     .events-list_nbr .event-list-btn {
         float: left;
@@ -172,6 +172,10 @@
 }
 
 @media screen and (max-width: 790px) {
+    .event-list-btn {
+        float: left;
+        clear: both;
+    }
 
     .profile-btn-rt  {
         width: 100%;
@@ -240,6 +244,7 @@
 
 }
 @media screen and (max-width: 640px) {
+
 
     #end_dateSearch, #start_dateSearch {
         width: 153px;
