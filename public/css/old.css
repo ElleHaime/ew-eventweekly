@@ -1817,7 +1817,7 @@ input[type="checkbox"]  {
 
 .event-one-img {
     float: left;
-    margin: 0 20px 0px 0;
+    margin: 0 20px 10px 0;
     position: relative;
     width: 160px;
     height: 160px;
@@ -2484,7 +2484,8 @@ ul.days-events  {
     margin-bottom:2px;
     display: block;
     padding: 4px 0;
-    width: 50%;
+    width: 49%;
+    margin-right: 1%;
     float: left;
 }
 
@@ -3553,4 +3554,13 @@ i.icon-map {
 .btn.disabled:hover , .btn[disabled]:hover {
     background:#E6E6E6;
     color: #333333;
+}
+
+#mLocationForm label {
+    padding-bottom: 10px;
+    font-size:14px;
+}
+
+#mLocationForm  .control-group, #mLocationForm input  {
+    margin-bottom: 0;
 }

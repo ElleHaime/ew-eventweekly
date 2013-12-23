@@ -107,7 +107,6 @@
 @media screen and (max-width: 980px) {
     .event-one .event-list-btn {
         float: left;
-        padding-left: 182px;
     }
     .event-one .event-one-text {
         max-width: 74%;
@@ -128,10 +127,13 @@
 }
 
 @media screen and (max-width: 890px) {
-
+    .event-one .event-list-btn {
+        float: left;
+        padding-left: 182px;
+    }
     .event-list-btn {
-        float: none;
-        clear: both;
+        float: right;
+        /*clear: both;*/
     }
     .events-list_nbr .event-list-btn {
         float: left;
@@ -170,6 +172,10 @@
 }
 
 @media screen and (max-width: 790px) {
+    .event-list-btn {
+        float: left;
+        clear: both;
+    }
 
     .profile-btn-rt  {
         width: 100%;
@@ -238,6 +244,7 @@
 
 }
 @media screen and (max-width: 640px) {
+
 
     #end_dateSearch, #start_dateSearch {
         width: 153px;
