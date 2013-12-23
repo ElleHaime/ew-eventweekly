@@ -2484,7 +2484,8 @@ ul.days-events  {
     margin-bottom:2px;
     display: block;
     padding: 4px 0;
-    width: 50%;
+    width: 49%;
+    margin-right: 1%;
     float: left;
 }
 
