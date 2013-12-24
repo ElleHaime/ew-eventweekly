@@ -15,7 +15,11 @@
                             <div class="padd_30"></div>
                             <h3 class="title-name">Your campaigns</h3>
                         </div>
-
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <button class="btn" onclick="location.href = '/campaign/edit'">Add campaign</button>
+                            </div>
+                        </div>
                         {% if object is defined %}
                             {% for campaign in object %}
                                 <div class="events-list">
