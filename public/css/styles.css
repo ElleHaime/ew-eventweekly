@@ -620,18 +620,21 @@ footer .login-variants div.read-more {
     .header-count {
         display: none;
     }
-    .location-place {
+}
+
+@media screen and (max-width: 780px) {
+        .location-place {
         position: static;
-    }
+        }
 
-    .searchCityBlock, .advancedSearchBlock {
-        position: absolute;
-        top: 62px;
-        left: 0px !important;
-        width: 90% !important;
-        padding: 4% 5%;
+.searchCityBlock, .advancedSearchBlock {
+    position: absolute;
+    top: 62px;
+    left: 0px !important;
+    width: 92% !important;
+    padding: 4%;
 
-    }
+}
 
 
 }
