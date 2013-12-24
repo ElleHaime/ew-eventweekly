@@ -1380,10 +1380,10 @@ input[type="checkbox"]  {
 }
 
 .theater-color {
-    background: #9ebfe8;
+    background: #93278F;
 }
 .arrow-theater {
-    border-color: rgba(0, 0, 0, 0) #9ebfe8 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+    border-color: rgba(0, 0, 0, 0) #93278F rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
 .disabled-marker .theater-color  {
@@ -1396,10 +1396,10 @@ input[type="checkbox"]  {
 
 
 .social-color {
-    background: #d84e37;
+    background: #ED1E79;
 }
 .arrow-social {
-    border-color: rgba(0, 0, 0, 0) #d84e37 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+    border-color: rgba(0, 0, 0, 0) #ED1E79 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
 .disabled-marker .social-color  {
@@ -1587,7 +1587,7 @@ input[type="checkbox"]  {
 }
 
 .events-list.theater-category {
-    border-left:14px solid #9ebfe8;
+    border-left:14px solid #93278F;
 }
 
 .events-list.sport-category {
@@ -1622,7 +1622,7 @@ input[type="checkbox"]  {
     border-left:14px solid  #9556be;
 }
 .events-list.social-category {
-    border-left:14px solid  #d84e37;
+    border-left:14px solid  #ED1E79;
 }
 
 .events-list.special-category {
@@ -1686,13 +1686,13 @@ input[type="checkbox"]  {
 
 
 .events-list.theater-category .sub_category div  {
-    border:1px solid #9ebfe8;
+    border:1px solid #93278F;
 }
 .events-list.theater-category .sub_category span {
-    color:#9ebfe8;
+    color:#93278F;
 }
 .events-list.theater-category    .sub_category div:hover {
-    background: #9ebfe8;
+    background: #93278F;
 
 }
 
@@ -1701,19 +1701,19 @@ input[type="checkbox"]  {
 }
 
 .events-list.theatre-category  .category-title,  .event-list-category .theater-title {
-    color:#9ebfe8;
+    color:#93278F;
 }
 
 
 
 .events-list.social-category .sub_category div  {
-    border:1px solid #d84e37;
+    border:1px solid #ED1E79;
 }
 .events-list.social-category .sub_category span {
-    color:#d84e37;
+    color:#ED1E79;
 }
 .events-list.social-category    .sub_category div:hover {
-    background: #d84e37;
+    background: #ED1E79;
 
 }
 
@@ -1722,7 +1722,7 @@ input[type="checkbox"]  {
 }
 
 .events-list.social-category  .category-title,  .event-list-category .social-title {
-    color:#d84e37;
+    color:#ED1E79;
 }
 
 .events-list.special-category .sub_category div  {
@@ -3721,3 +3721,22 @@ i.icon-map {
 
 
 .event-one-text a { color:#464646}
+
+.page-top {
+    padding: 12px 12px 0 12px ;
+}
+.page-top .title-name {
+    padding-bottom: 10px;
+}
+.page-top .btn {
+    min-width: 174px;
+    margin-bottom: 10px;
+}
+
+.btn-add_group  .btn {
+    min-width: 174px;
+}
+
+.event-list_i hr {
+    margin:5px 0;
+}

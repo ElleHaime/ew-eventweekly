@@ -8,7 +8,7 @@ define('frontCampaignListControl',
 
 			self.settings = {
 				btnEdit: '.editCampaign',
-				btnDelete: '.deleteCampaign',
+				btnDelete: '.deleteCampaign'
 			},
 			
 			self.init = function()
@@ -24,7 +24,8 @@ define('frontCampaignListControl',
 				});
 
 				$(self.settings.btnDelete).click(function(e) {
-					e.preventDefault();
+					e.preventDefault($(this));
+                    self.__delete($(this));
 				});
 			},
 
@@ -33,10 +34,18 @@ define('frontCampaignListControl',
 				window.location.href = '/campaign/edit/' + elem.attr('id');
 			},
 
-			self.__delete = function()
-			{
-
-			}
+            self.__delete = function(elem)
+            {
+                var params = {
+                   id: elem.attr('id')
+                };
+                $.when(utils.request('post', '/campaign/delete', params)).then(function(data) {
+                    data = $.parseJSON(data);
+                    if (data.status == 'OK') {
+                        $('#element_' + data.id).remove();
+                    }
+                });
+            }
 		};
 		
 		return new frontCampaignListControl($, utils);

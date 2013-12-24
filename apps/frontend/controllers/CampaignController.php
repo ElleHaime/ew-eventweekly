@@ -49,7 +49,18 @@ class CampaignController extends \Core\Controllers\CrudController
 	 */
 	public function deleteAction()
 	{
-		parent::deleteAction();
+        $data =  $this -> request -> getPost();
+        $result['status'] = 'ERROR';
+
+        if (isset($data['id']) && !empty($data['id'])) {
+            $campaign = Campaign::findFirst((int)$data['id']);
+            if ($campaign) {
+                $campaign -> delete();
+                $result['status'] = 'OK';
+                $result['id'] = (int)$data['id'];
+            }
+        }
+        echo json_encode($result);
 	}
 
 	public function processForm($form) 
