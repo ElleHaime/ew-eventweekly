@@ -7,24 +7,24 @@
 
         <div class="row-fluid">
             <div class="span12">
-
                 <div class="event-list_i">
-
-                    <div class="row-fluid" style="background:#ffffff;">
+                    <div class="row-fluid">
                         <div class="span12">
+
                             <div class="padd_30"></div>
-                            <h3 class="title-name">Your campaigns</h3>
-                        </div>
-                        <div class="row-fluid">
-                            <div class="span12">
+                            <div class="page-top clearfix">
+                                <h3 class="title-name">Your campaigns</h3>
                                 <button class="btn" onclick="location.href = '/campaign/edit'">Add campaign</button>
                             </div>
-                        </div>
+
+
                         {% if object is defined %}
                             {% for campaign in object %}
-                                <div class="events-list">
+                             <hr/>
+                                <div class="events-list" id="element_{{ campaign.id }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
+
                                             <div class="event-one clearfix">
                                                 <div class="event-one-img">
                                                     <a href="#">
@@ -42,8 +42,8 @@
                                                         <span class="hide-span"></span>
                                                     </div>
                                                     <div class="plans-box clearfix">
-                                                        <button class="btn active editCampaign" id="{{ campaign.id }}">edit</button>
-									                    <button class="btn active deleteCampaign" {% if campaign.event|length %} disabled="true" {% endif %}>delete</button>
+                                                        <button class="btn editCampaign" id="{{ campaign.id }}">edit</button>
+									                    <button class="btn deleteCampaign"  id="{{ campaign.id }}" {% if campaign.event|length %} disabled="true" {% endif %}>delete</button>
                                                     </div>
                                                 </div>
                                                 
@@ -62,6 +62,7 @@
 				                                    </div>
 				                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -69,6 +70,7 @@
                         {% else %}
                             You didn't create campaigns yet
                         {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
