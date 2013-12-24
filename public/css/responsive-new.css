@@ -333,7 +333,12 @@
 
 @media screen and (max-width: 580px) {
 
-
+    #content_right {
+        margin-top: 232px;
+    }
+    #content_right_inner {
+        margin-left: 0;
+    }
     .user-box a .caret {
         display: block;
         border-top:6px solid #484846;
