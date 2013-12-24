@@ -209,9 +209,6 @@
                         {{ form.render('recurring') }}
                         <hr>
                         <div class="checkbox-block">
-                            <label><input type="checkbox" value="">
-                                Create Promoter
-                            </label>
                             <p> Choose promoter</p>
                             {{ form.render('campaign_id') }}
                         </div>
