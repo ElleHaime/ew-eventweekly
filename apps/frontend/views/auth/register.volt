@@ -5,7 +5,6 @@
         <div class="agreement-box clearfix">
             <div class="row-fluid ">
                 <div class="span12">
-
                     <h4>Registration</h4>
                     <form class="form-horizontal" method="post">
                         <div class="control-group">
