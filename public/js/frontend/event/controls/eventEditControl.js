@@ -73,7 +73,7 @@ define('frontEventEditControl',
 				self.__presetTime($(self.settings.inpTimeStart), $(self.settings.textTimeStart));
 				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));
 
-                    self.__initCategoryList();
+                self.__initCategoryList();
 
 				self.bindEvents();
 			}
@@ -123,8 +123,16 @@ define('frontEventEditControl',
 				});
 
 				// process categories
+                var otherCatInd = null;
+                otherCatInd = $(self.settings.inpCategory + ' :contains(\'Other\')').val();
+                if (!otherCatInd) {
+                    otherCatInd = $(self.settings.listCategory).find('.ecat_elem' + ' :contains("Other") a').attr('catid');
+                }
+
 				$(self.settings.inpCategory).change(function() {
-					self.__addCategory();
+                    self.__removeCategoryConflict(otherCatInd);
+
+                    self.__addCategory();
 				});
 
 				$(self.settings.listCategory).on('click', self.settings.removeSign, function(e) {
@@ -145,6 +153,22 @@ define('frontEventEditControl',
 					window.location.href = "/event/list";
 				})
 			}
+
+            self.__removeCategoryConflict = function(otherCatInd)
+            {
+                if ($(self.settings.inpCategory + ' :selected').text().toLowerCase() == 'other') {
+                    var ind = $(self.settings.inpCategory + ' :selected').val();
+                    var catsToDelete = $(self.settings.inpCategoryReal).val().replace(ind + ',', '');
+                    var categories = catsToDelete.split(',');
+
+                    categories.forEach(function(cat) {
+                        if (cat == "") return;
+                        self.__removeCategory($("a[catid=" + cat + "]"));
+                    });
+                } else {
+                    self.__removeCategory($("a[catid=" + otherCatInd + "]"));
+                }
+            }
 
 			self.__loadImage = function(content)
 			{
@@ -192,7 +216,7 @@ define('frontEventEditControl',
 			{
 				var list = $(self.settings.listCategory);
 
-				var item = '<div><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
+				var item = '<div class="ecat_elem"><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
 						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
 		        $(self.settings.inpCategory + ' :selected').remove();
@@ -207,6 +231,8 @@ define('frontEventEditControl',
 
 			self.__removeCategory = function(elem)
 			{
+                if (elem.attr('catid') == undefined) return;
+
 				var item = '<option value="' + elem.attr('catid') + '">' + elem.prev('label').html() + '</option>';
 		 		$(self.settings.inpCategory).append(item);
 		 		$(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val().replace(elem.attr('catid') + ',', ''));
