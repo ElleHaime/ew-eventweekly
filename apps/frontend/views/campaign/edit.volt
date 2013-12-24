@@ -7,32 +7,22 @@
     <div class="row">
         <div class="span12">
             <div class="add-event_i clearfix">
-
                 <div class="row-fluid">
                     <div class="span12">
                         <div class="padd_30"></div>
-                        <div class="add-event clearfix">
+                        <h3 class="title-add">
+                            Create campaign
                             {{ form.render('id') }}
-
-                    <div class="add-img">
-						<div class="event-one-img">
-                            {% if campaign.logo %}
-                                <a><img id='img-box' src="/upload/img/campaign/{{ campaign.logo }}" alt=""></a>
-                            {% else %}
-                                <a><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
-                            {% endif %}
-
-                            {{ form.render('logo')}}
-
-                            <div style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file "id ="add-img-btn">
-                                <div>{{ form.label('logo')}}</div>
-
-                            </div>
-                        </div>
+                        </h3>
                     </div>
-					{{ form.render('add-img-upload') }}
-
-                    <div class="form-center clearfix">
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div id="content_right">
+                            <div id="content_right_inner">
+                                <div id="content_center">
+                                    <div id="content-box">
+                                        <div class="form-center clearfix">
                         <div class="input-div clearfix">
 							{{ form.render('name')}}
                             <div class="arrow_box"> arrow</div>
@@ -66,10 +56,11 @@
                             <button class="btn" id="btn-submit" type="submit">Save</button>
                         </div>
                     </div>
-                </div>
-                
-                <div class="sidebar">
- 					<div class="event-site clearfix">
+                                    </div>
+
+                                </div>
+                                <div class="sidebar-box">
+                                    <div class="event-site clearfix">
  						{% if campaign.event|length %}
  							<p>Events in campaign</p>
                             {% for event in campaign.event %}
@@ -89,10 +80,28 @@
                             Campaign has no events.
                         {% endif %}
  					</div>                
-                </div>
-            </div>
-        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="add-img">
+                            <div class="event-one-img">
+                                {% if campaign.logo %}
+                                    <a><img id='img-box' src="/upload/img/campaign/{{ campaign.logo }}" alt=""></a>
+                                {% else %}
+                                    <a><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
+                                {% endif %}
 
+                                {{ form.render('logo')}}
+
+                                <div style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file "id ="add-img-btn">
+                                    <div>{{ form.label('logo')}}</div>
+
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.render('add-img-upload') }}
+                     </div>
+                </div>
             </div>
         </div>
 	</div>

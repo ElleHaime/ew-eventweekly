@@ -32,8 +32,6 @@
         max-width: 500px;
     }
 
-
-
 }
 @media screen and (max-width: 1200px) {
     .header .span5 {
@@ -85,16 +83,12 @@
     }
 
     .location-place_country .location-search {
-        left: -208px;
+        left: -213px;
     }
     .location-search input {
-        width: 57%;
+        width: 68%;
     }
 
-    .location-place .location-search .btn
-    {
-        margin-bottom: 18px;
-    }
     .event-site {
         margin-bottom: 0;
     }
@@ -102,17 +96,14 @@
 
 
 @media screen and (max-width: 980px) {
+
     .event-one .event-list-btn {
         float: left;
     }
     .event-one .event-one-text {
         max-width: 74%;
     }
-    .location-place_ask .location-search
-    {
-        height: 300px;
-        overflow-y: scroll;
-    }
+
     .events-list_nbr .event-one-text {
         max-width: 43%;
     }
@@ -124,7 +115,9 @@
 }
 
 @media screen and (max-width: 890px) {
-
+    .location-place_country .location-search {
+        left: -266px;
+    }
     .sidebar-box
     {
         width: 300px;
@@ -140,14 +133,12 @@
         margin-right: 0;
     }
 
-
     .event-one .event-list-btn {
         float: left;
         padding-left: 182px;
     }
     .event-list-btn {
         float: right;
-        /*clear: both;*/
     }
     .events-list_nbr .event-list-btn {
         float: left;
@@ -230,15 +221,6 @@
         width: 32%;
     }
 
-    .add-event {
-        width: 98%;
-    }
-
-    .sidebar {
-        width: 98%;
-        margin-left: 1%;
-    }
-
     .location-place {
         position: static;
     }
@@ -248,13 +230,16 @@
         top: 62px;
         left: 0px !important;
         width: 92% !important;
-        padding: 6% 5%;
+        padding: 4%;
     }
 
     .location-place_ask .input-search {
         width: 73%;
     }
-
+    .location-place_country .searchCityBlock
+    {
+        width: 95% !important;
+    }
 
 }
 @media screen and (max-width: 640px) {
@@ -455,3 +440,10 @@
     }
 }
 
+@media screen and (max-height: 780px) {
+    .location-place_ask .location-search
+    {
+        height: 300px;
+        overflow-y: scroll;
+    }
+}

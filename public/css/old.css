@@ -574,10 +574,6 @@ a.location-city  {
 .container-fluid .location-place .input-search:active, .container-fluid .location-place .input-search:focus {
     background: url(../img/bgs/search-icon.png) no-repeat 10px 7px #DEEDFF;
 }
-
-.location-place_ask .location-search {
-    width: 213%;
-}
 .location-place  .location-search .btn {
     padding: 10px 38px;
     font-weight: normal;
@@ -857,7 +853,7 @@ input[type="color"]:focus, .uneditable-input:focus
     top:0;
     width: 60px;
 }
-.sidebar .change-input   input
+.sidebar-box .change-input   input
 {
     background: #999999;
 }
@@ -875,6 +871,9 @@ input[type="color"]:focus, .uneditable-input:focus
     text-decoration: none;
     border-bottom: 0;
 }
+
+
+/*------------------------------------------share box css----------------------------------------------------------*/
 
 .share-box{
     border: 1px solid #CCCCCC;
@@ -904,6 +903,8 @@ input[type="color"]:focus, .uneditable-input:focus
 .comment-box {
     margin: 10px 12px 0 12px;
 }
+
+/*------------------------------------------end share css----------------------------------------------------------*/
 
 
 /*------------------------------------------events css----------------------------------------------------------*/
@@ -988,7 +989,7 @@ input[type="color"]:focus, .uneditable-input:focus
     background: #165B8C;
 }
 
-
+/*------------------------------------------place box css----------------------------------------------------------*/
 .place-address {
     background: #E6E6E6;
     position: relative;
@@ -1003,11 +1004,11 @@ input[type="color"]:focus, .uneditable-input:focus
     min-width: 174px;
 }
 
-.sidebar .place-address_nbg {
+.sidebar-box .place-address_nbg {
     max-width: 100%;
 }
 
-.sidebar .place-address_nbg span {
+.sidebar-box .place-address_nbg span {
     display: inline-block;
     zoom: 1;
     *display: inline;
@@ -1024,9 +1025,6 @@ input[type="color"]:focus, .uneditable-input:focus
     right: -1px;
     top: -1px;
 }
-
-
-
 
 /*------------------------------------------plant box css----------------------------------------------------------*/
 .plans-box {
@@ -1063,7 +1061,7 @@ input[type="color"]:focus, .uneditable-input:focus
 .title-add {
     color:#3b3b3b;
     padding: 0 0 10px 0;
-    font: 400 26px "Open Sans";
+    font: 400 22px "Open Sans";
 }
 .input-div input   {
     width: 98%;
@@ -2326,7 +2324,7 @@ ul.days-events  {
 .days-events  li.activity {
     color:#ffffff;
 }
-.location-place_ask .location-search  {
+.location-place_ask .location-search , .location-place_country .location-search {
     width: 475px;
     right:0!important;
 }
