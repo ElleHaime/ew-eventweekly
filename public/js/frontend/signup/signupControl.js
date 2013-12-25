@@ -27,6 +27,10 @@ define('signupControl',
 			self.__bindClicks = function()
 			{
 				$(self.settings.btnSubmit).click(function() {
+                    if (!self.__checkEmail()) {
+                        return false;
+                    }
+
                     if (!self.__checkIdentical()) {
 						return false;
 					}
@@ -34,6 +38,19 @@ define('signupControl',
                     self.__checkEmailUnique();
 				});
 			}
+
+            self.__checkEmail = function()
+            {
+                var email = $(self.settings.inpEmail).val();
+                var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+                if (email != '' && !filter.test(email)) {
+                    noti.createNotification('Invalid email address!', 'error');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
 
 			self.__checkIdentical = function()
 			{
