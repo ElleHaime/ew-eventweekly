@@ -72,12 +72,12 @@
 
                                     </div>
                                     <div class="event-list-btn clearfix">
-                                        {% if event.venue is defined %}
+                                        {% if event.venue.name is defined %}
                                             <div class=" place-address">
                                                 <span>{{ event.venue.name|striptags }}</span>
                                             </div>
                                         {% else %}
-                                            {% if event.location is defined %}
+                                            {% if event.location.alias is defined %}
                                                 <div class=" place-address">
                                                     <span>{{ event.location.alias|striptags }}</span>
                                                 </div>

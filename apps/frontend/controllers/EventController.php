@@ -191,15 +191,17 @@ class EventController extends \Core\Controllers\CrudController
 				$event -> save();
 			}
 		}
-		
+
+        $memberpart = null;
 		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
 			foreach ($event -> memberpart as $mpart) {
 				if ($mpart -> member_id == $this -> memberId) {
-					$event -> memberpart = $mpart -> member_status;
+                    $memberpart = $mpart -> member_status;
 					break;
 				}
 			}
 		}
+        $event -> memberpart = $memberpart;
 
         // TODO: refactor this. Get uploads dir and default logo url from config
         $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
