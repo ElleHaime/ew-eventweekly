@@ -484,7 +484,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['description'] = $event['description'];
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
-		$newEvent['event_status'] = $event['event_status'];
+		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];

@@ -48,8 +48,7 @@ class EventForm extends Form
 		$this -> addElement('hidden', 'venue_latitude');
 		$this -> addElement('hidden', 'venue_longitude');
 
-		$this -> addElement('check', 'event_status', 'Publish event immediately',
-								array('value' => '1'));
+		$this -> addElement('check', 'event_status', 'Publish event immediately');
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'add description',
