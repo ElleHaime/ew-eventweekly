@@ -19,7 +19,7 @@ class Event extends Model
 	public $start_date;
 	public $end_date;
 	public $recurring;
-	public $event_status	= 0;
+	public $event_status	= 1;
 	public $coordinates;
 	public $address;
 	public $logo;
