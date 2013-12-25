@@ -2,13 +2,14 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
-	'utils',
-	'noti',
+    'noti',
+    'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb) {
+	function($, frontTopPanel, fb, noti) {
+        noti.init();
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
