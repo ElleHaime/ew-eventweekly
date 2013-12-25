@@ -27,18 +27,26 @@ define('signupControl',
 			self.__bindClicks = function()
 			{
 				$(self.settings.btnSubmit).click(function() {
-					if (!self.__checkIdentical()) {
+                    if (!self.__checkIdentical()) {
 						return false;
 					}
 
-					self.__checkEmailUnique();
+                    self.__checkEmailUnique();
 				});
 			}
 
 			self.__checkIdentical = function()
 			{
-				if ($(self.settings.inpPassword).val() != $(self.settings.inpPasswordConfirm).val()) {
+                if ($(self.settings.inpPassword).val() == '') {
+                    var msg = 'Password cannot be empty';
+                    noti.createNotification(msg, 'error');
+                    self.__initError(msg);
+                    return false;
+                }
+
+                if ($(self.settings.inpPassword).val() != $(self.settings.inpPasswordConfirm).val()) {
 					var msg = 'Passwords don\'t match';
+                    noti.createNotification(msg, 'error');
 					self.__initError(msg);
 					return false;
 				} 
@@ -50,6 +58,7 @@ define('signupControl',
 				var sgEmail = $(self.settings.inpEmail).val();
 
 				if (sgEmail.length <= 0) {
+                    noti.createNotification('Email incorrect', 'error');
 					self.__initError('Email incorrect');
 					return false;
 				}
@@ -59,6 +68,7 @@ define('signupControl',
 					data = $.parseJSON(data);
 					if (data.status != 'OK') {
 						self.errors = data.message;
+                        noti.createNotification(data.message, 'error');
 						self.__initError(data.message);
 					} else {
 						self.__submit();

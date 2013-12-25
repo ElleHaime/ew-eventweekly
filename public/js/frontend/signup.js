@@ -10,7 +10,7 @@ require([
 	'jCookie'
 	], 
 	function($, frontTopPanel, fb, noti, signupControl) {
-
+        noti.init();
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
