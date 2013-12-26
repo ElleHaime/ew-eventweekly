@@ -887,7 +887,6 @@ input[type="color"]:focus, .uneditable-input:focus
     clear: both;
     padding: 7px 13px 7px 17px;
     background: #ffffff;
-    margin: 0 12px;
 }
 
 .share-box-title {
@@ -906,7 +905,7 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 
 .comment-box {
-    margin: 10px 12px 0 12px;
+    margin: 10px 0 0 0;
 }
 
 /*------------------------------------------end share css----------------------------------------------------------*/
@@ -1943,6 +1942,7 @@ input[type="checkbox"]  {
     height: 157px;
     position: relative;
     padding: 0;
+    overflow: hidden;
 
 
 }
@@ -1991,7 +1991,7 @@ input[type="checkbox"]  {
     *display: inline;
     max-width: 240px;
     float: right;
-    margin: 4px 4px 0 0;
+    margin: 0;
 }
 
 .event-list-btn .event-site {
@@ -2414,13 +2414,6 @@ ul.days-events  {
     display: inline-block;
     margin: 9px;
 }
-.event-list-btn {
-    display: inline-block;
-    float: right;
-    margin: 4px 4px 0 0;
-    width: 240px;
-}
-
 .event-one  {
     padding: 12px;
 }
@@ -3744,4 +3737,33 @@ i.icon-map {
 
 .event-list_i hr {
     margin:5px 0;
+}
+
+
+.event-text-box  {
+    float:left;
+    margin-left:-300px;
+    width:100%;
+}
+.event-list-btn {
+    float:right;
+    width:300px;
+}
+#cont {
+    margin-left:300px;
+}
+
+.event-one-box {
+    padding: 0 1%;
+    background: #ffffff;
+}
+.event-text-one {
+    clear: both;
+}
+
+.event-img {
+    height: 264px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    vertical-align: bottom;
 }
