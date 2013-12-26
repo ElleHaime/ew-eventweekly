@@ -7,7 +7,11 @@ define('frontEventEditControl',
 			var self = this;
 
 			self.settings = {
-				inpDateStart: '#date-picker-start',
+                form: 'form',
+
+                inpName: '#name',
+
+                inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',
 				textDateStart: '#start_date',
 				textTimeStart: '#start_time',
@@ -54,7 +58,9 @@ define('frontEventEditControl',
 				inpCampaign: '#campaign_id',
 				inpCampaignExists: '#is_campaign',
 
-				btnCancel: '#btn-cancel'
+				btnCancel: '#btn-cancel',
+
+                defaultCategories: '#defaultCategories'
 			},
 
 
@@ -124,15 +130,8 @@ define('frontEventEditControl',
 										 self.settings.coordsVenueLng);
 				});
 
-				// process categories
-                var otherCatInd = null;
-                otherCatInd = $(self.settings.inpCategory + ' :contains(\'Other\')').val();
-                if (!otherCatInd) {
-                    otherCatInd = $(self.settings.listCategory).find('.ecat_elem' + ' :contains("Other") a').attr('catid');
-                }
-
 				$(self.settings.inpCategory).change(function() {
-                    self.__removeCategoryConflict(otherCatInd);
+                    self.__removeCategoryConflict();
 
                     self.__addCategory();
 				});
@@ -153,22 +152,42 @@ define('frontEventEditControl',
 
 				$(self.settings.btnCancel).click(function() {
 					window.location.href = "/event/list";
-				})
+				});
+
+                $(self.settings.form).submit(function(){
+                    if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                        $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+                    }
+
+                    if (!self.__checkRequiredFields()) return false;
+                });
 			}
 
-            self.__removeCategoryConflict = function(otherCatInd)
+            self.__removeCategoryConflict = function()
             {
-                if ($(self.settings.inpCategory + ' :selected').text().toLowerCase() == 'other') {
+                var defaultCategories = $(self.settings.defaultCategories).text().split(',');
+                var ind = $(self.settings.inpCategory + ' :selected').val();
+
+                if (defaultCategories.indexOf(ind) === -1) {
+                    defaultCategories.forEach(function(cat){
+                        self.__removeCategory($("a[catid=" + cat + "]"));
+                    });
+                } else {
                     var ind = $(self.settings.inpCategory + ' :selected').val();
-                    var catsToDelete = $(self.settings.inpCategoryReal).val().replace(ind + ',', '');
+
+                    var catsToDelete = $(self.settings.inpCategoryReal).val();
+                    defaultCategories.forEach(function(cat){
+                        catsToDelete = catsToDelete.replace(cat + ',', '');
+                    });
                     var categories = catsToDelete.split(',');
 
                     categories.forEach(function(cat) {
                         if (cat == "") return;
-                        self.__removeCategory($("a[catid=" + cat + "]"));
+
+                        if (defaultCategories.indexOf(ind) !== -1) {
+                            self.__removeCategory($("a[catid=" + cat + "]"));
+                        }
                     });
-                } else {
-                    self.__removeCategory($("a[catid=" + otherCatInd + "]"));
                 }
             }
 
@@ -216,6 +235,10 @@ define('frontEventEditControl',
 
 			self.__addCategory = function()
 			{
+                if ($(self.settings.inpCategoryReal).val() == $(self.settings.defaultCategories).text()) {
+                    $(self.settings.inpCategoryReal).val('');
+                }
+
 				var list = $(self.settings.listCategory);
 
 				var item = '<div class="ecat_elem"><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
@@ -242,6 +265,8 @@ define('frontEventEditControl',
 		        elem.parent('div').remove();
 
 		        if ($(self.settings.listCategory).children('div').length == 0) {
+                    $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+
 		            $(self.settings.listCategory).hide();
 		        }
 			}
@@ -391,6 +416,33 @@ define('frontEventEditControl',
 		           	}
 				}
 			}
+
+            self.__checkRequiredFields = function()
+            {
+                var isValid = true;
+
+                var fields = [
+                    { element : self.settings.inpName, text : 'event title' },
+                    { element : self.settings.textDateStart, text : ' start date' },
+                    { element : self.settings.textDateEnd, text : 'end date' },
+                    { element : self.settings.inpLocation, text : 'location' }
+                ];
+
+                var text = 'Please enter: ';
+                fields.forEach(function(field) {
+                    if ($(field.element).val() == '') {
+                        text += field.text + ', ';
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    text = text.substring(0, text.length - 2);
+                    noti.createNotification(text, 'error');
+                }
+
+                return isValid;
+            }
 		};
 
 		return new frontEventEditControl($, utils, datetimepicker, noti);

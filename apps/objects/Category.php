@@ -11,6 +11,7 @@ class Category extends Model
 	public $key;
 	public $name;
     public $parent_id;
+    public $is_default;
 	
 	public function initialize()
 	{
