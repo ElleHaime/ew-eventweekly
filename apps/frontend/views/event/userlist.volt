@@ -57,24 +57,28 @@
                                                         <button class="btn eventLikeBtn" data-status="0" data-id="{{ node['event']['id'] }}">Don`t like</button>
                                                     </div>
                                                 </div>
-                                                
-												{% if node['venue'] is defined %}                                                
-	                                                <div class="event-list-btn clearfix">
-	                                                    <div class=" place-address">
-	                                                        <span>
-	                                                            {{ node['venue']|striptags|escape }}
-	                                                        </span>
-	                                                    </div>
-	                                                </div>
-                                                {% else %}
-                                                	<div class="event-list-btn clearfix">
-                                                		<div class=" place-address">
-                                                        	<span>
-                                                            	{{ node['location']['alias'] }}
-                                                        	</span>
-                                                    	</div>
-                                                    </div>
-												{% endif %}                                                
+
+                                                <div class="event-list-btn clearfix">
+                                                    {% if node['venue'] is defined %}
+                                                        <div class=" place-address">
+                                                            <span>
+                                                                {{ node['venue']|striptags|escape }}
+                                                            </span>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class=" place-address">
+                                                            <span>
+                                                                {{ node['location']['alias'] }}
+                                                            </span>
+                                                        </div>
+                                                    {% endif %}
+
+                                                    {% if node['event']['fb_uid'] is defined %}
+                                                        <div class="event-site clearfix">
+                                                            <a target="_blank" href="https://www.facebook.com/events/{{ node['event']['fb_uid'] }}">Facebook link</a>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
