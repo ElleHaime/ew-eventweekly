@@ -76,6 +76,8 @@ define('frontEventEditControl',
                 self.__initCategoryList();
 
 				self.bindEvents();
+
+                self.__setupDateTimePicker();
 			}
 
 			self.bindEvents = function()
@@ -337,6 +339,20 @@ define('frontEventEditControl',
 
 				return true;
 			}
+
+            // setup datetimepicker to close on click
+            self.__setupDateTimePicker = function()
+            {
+                var startDate = $(self.settings.inpDateStart).datetimepicker()
+                    .on('changeDate', function(ev) {
+                        startDate.datetimepicker('hide');
+                    });
+
+                var endDate = $(self.settings.inpDateEnd).datetimepicker()
+                    .on('changeDate', function(ev) {
+                        endDate.datetimepicker('hide');
+                    });
+            }
 
 			// input -- input element (usualy type == text)
 			// list -- destination element (found values will be rendered here)
