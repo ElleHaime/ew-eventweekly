@@ -341,7 +341,10 @@ class EventController extends \Core\Controllers\CrudController
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-	{	
+	{
+        $category = new Category();
+        $this -> view -> setVar('categories', $category -> getDefaultIdsAsString());
+
 		parent::editAction();
 	}
 

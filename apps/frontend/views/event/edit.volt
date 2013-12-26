@@ -152,6 +152,8 @@
 
                     {{ form.render('event_category') }}
 
+                    <div id="defaultCategories" style="display: none">{{ categories }}</div>
+
                     <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
                         <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
 
