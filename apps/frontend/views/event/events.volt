@@ -70,6 +70,12 @@
 	                                                        <p>web-site : <a href="#">http://www.dpdp.com</a></p>
 	                                                    </div>
                                                     {% endif %}
+
+                                                    {% if event['eid'] is defined %}
+                                                        <div class="event-site clearfix">
+                                                            <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">Facebook link</a>
+                                                        </div>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>

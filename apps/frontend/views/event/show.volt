@@ -140,6 +140,12 @@
 						                        </ul>
 	                    					{% endif %}
                                         </div>
+
+                                        {% if event.fb_uid is defined %}
+                                            <div class="event-site clearfix">
+                                                <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">Facebook link</a>
+                                            </div>
+                                        {% endif %}
                                         
                                     </div>
                                 </div>
