@@ -440,10 +440,18 @@
     }
 }
 
-@media screen and (max-height: 780px) {
+@media screen and (max-height: 580px) {
     .location-place_ask .location-search
     {
-        height: 300px;
+        max-height: 280px;
         overflow-y: scroll;
     }
+    #end_dateSearch, #start_dateSearch {
+        width: 210px;
+    }
+
+    .location-search .form-horizontal {
+        margin-bottom: 20px;
+    }
+
 }
