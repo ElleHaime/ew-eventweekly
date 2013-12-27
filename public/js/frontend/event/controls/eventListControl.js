@@ -29,7 +29,7 @@ define('frontEventListControl',
 				});
 
 				$(self.settings.btnDelete).click(function(e) {
-					e.preventDefault($(this));
+                    e.preventDefault($(this));
 					self.__delete($(this));
 				});
 
@@ -107,11 +107,6 @@ define('frontEventListControl',
 			self.__redirectEdit = function(elem)
 			{
 				window.location.href = '/event/edit/' + elem.attr('id');
-			},
-
-			self.__delete = function()
-			{
-
 			}
 		};
 		

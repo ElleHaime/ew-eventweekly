@@ -358,8 +358,8 @@ class EventController extends \Core\Controllers\CrudController
 
 
 	/**
-	 * @Route("/event/delete}", methods={"GET"})
-	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET"})
+	 * @Route("/event/delete", methods={"GET", "POST"})
+	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function deleteAction()
@@ -368,10 +368,11 @@ class EventController extends \Core\Controllers\CrudController
 		$result['status'] = 'ERROR';
 
 		if (isset($data['id']) && !empty($data['id'])) {
-			$event = Event::findFirst((int)$id);
+			$event = Event::findFirst((int)$data['id']);
 			if ($event) {
 				$event -> delete();
 				$result['status'] = 'OK';
+                $result['id'] = $data['id'];
 			} 
 		}
 
