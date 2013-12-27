@@ -1,12 +1,16 @@
 define('frontCampaignEditControl',
-	['jquery', 'utils', 'domReady', 'datetimepicker'],
-	function($, utils, datetimepicker) {
+	['jquery', 'utils', 'datetimepicker', 'noti', 'domReady'],
+	function($, utils, datetimepicker, noti) {
 
-		function frontCampaignEditControl($, utils, datetimepicker) 
+		function frontCampaignEditControl($, utils, datetimepicker, noti)
 		{
 			var self = this;
 
 			self.settings = {
+                form: 'form',
+
+                inpName: '#name',
+
 				inpLocation: '#location',
 				listLocation: '#locations-list',
 				coordsLocationLat: '#location_latitude',
@@ -54,6 +58,10 @@ define('frontCampaignEditControl',
 				$(self.settings.btnCancel).click(function() {
 					window.location.href = "/campaign/list";
 				});
+
+                $(self.settings.form).submit(function(){
+                    if (!self.__checkRequiredFields()) return false;
+                });
 			}
 
 			self.__loadImage = function(content)
@@ -116,8 +124,32 @@ define('frontCampaignEditControl',
 		           	}
 				}
 			}
+
+            self.__checkRequiredFields = function()
+            {
+                var isValid = true;
+
+                var fields = [
+                    { element : self.settings.inpName, text : 'campaign title' }
+                ];
+
+                var text = 'Please enter: ';
+                fields.forEach(function(field) {
+                    if ($(field.element).val() == '') {
+                        text += field.text + ', ';
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    text = text.substring(0, text.length - 2);
+                    noti.createNotification(text, 'error');
+                }
+
+                return isValid;
+            }
 		};
 
-		return new frontCampaignEditControl($, utils, datetimepicker);
+		return new frontCampaignEditControl($, utils, datetimepicker, noti);
 	}
 );

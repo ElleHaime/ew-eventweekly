@@ -11,7 +11,8 @@ require([
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontCampaignEditControl, datetimepicker, utils) {
+	function($, frontTopPanel, fb, frontCampaignEditControl, datetimepicker, utils, noti) {
+        noti.init();
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});

@@ -8,7 +8,7 @@
                     {% if object is defined %}
                     
                         {% for event in object %}
-                            <div class="row-fluid eventListing" id="element_{{ event.id }}>
+                            <div class="row-fluid eventListing" id="element_{{ event.id }}">
                                 <div class="span12">
                                     <div class="event-one-img">
                                         <a href="#">

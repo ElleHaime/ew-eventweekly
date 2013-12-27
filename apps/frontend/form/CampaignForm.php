@@ -26,7 +26,9 @@ class CampaignForm extends Form
 		$nameValidators = array(
 				'PresenceOf' => array('message' => 'Name is required')
 		);
-		$this -> addElement('text', 'name', 'Name', array('validators' => $nameValidators));
+		$this -> addElement('text', 'name', 'Name',
+                                array('placeholder' => 'Campaign title',
+                                      'validators' => $nameValidators));
 		$this -> addElement('textarea', 'description', 'Description',
 								array('placeholder' => 'add description',
 									  'class' => 'resizable field-big'));
