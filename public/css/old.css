@@ -2004,6 +2004,9 @@ input[type="checkbox"]  {
     background: #ffffff;
     margin-bottom: 10px;
 }
+.events-list hr {
+    margin: 10px 0 19px;
+}
 .events-list-content {
     background: #fff;
 }
@@ -3742,6 +3745,7 @@ i.icon-map {
     float:left;
     margin-left:-300px;
     width:100%;
+    margin-top: 10px;
 }
 .event-list-btn {
     float:right;
