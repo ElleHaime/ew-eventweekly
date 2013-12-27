@@ -7,7 +7,10 @@
 
 namespace Frontend\Events;
 
-use Thirdparty\Facebook\Extractor;
+use Frontend\Models\Event,
+    Frontend\Models\EventLike,
+    Frontend\Models\EventMember,
+    Thirdparty\Facebook\Extractor;
 
 class MemberListener {
 
@@ -36,6 +39,27 @@ class MemberListener {
         $this->subject->session->set('member', $params);
         $this->subject->session->set('role', $params->role);
         $this->subject->session->set('memberId', $params->id);
+    }
+
+    /**
+     * Writer custom, liked, following event counts in session
+     *
+     * @param $subject
+     */
+    public function setEventsCounters($subject) {
+        $this->subject = $subject->getSource();
+        $params = $subject->getData();
+
+        $userId = $params->id;
+
+        $model = new Event();
+        $this->subject->session->set('userEventsCreated', $model->getCreatedEventsCount($userId));
+
+        $model = new EventLike();
+        $this->subject->session->set('userEventsLiked', $model->getLikedEventsCount($userId));
+
+        $model = new EventMember();
+        $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
     }
 
     public function checkLocationMatch($subject)

@@ -6,6 +6,8 @@ define('frontEventLike',
 			var self = this;
 			
 			self.settings = {
+                userEventsLiked: '#userEventsLiked',
+
 		        likeUrl: '/event/like',
 		        likeBtn: '.eventLikeBtn',
 		        dislikeBtn: '.eventDislikeBtn',
@@ -77,8 +79,12 @@ define('frontEventLike',
 		        	if (data.member_like == 1) {
 		        		like.prop('disabled', true);
 		        		dislike.prop('disabled', false);
+
+                        self.__plusUserEventsLiked();
 		        	} else {
 		        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
+
+                        self.__minusUserEventsLiked();
 		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
@@ -88,6 +94,18 @@ define('frontEventLike',
 		        	}
 		        }
 		    }
+
+            self.__plusUserEventsLiked = function()
+            {
+                var counter = parseInt($(self.settings.userEventsLiked).text()) + 1;
+                $(self.settings.userEventsLiked).text(counter);
+            }
+
+            self.__minusUserEventsLiked = function()
+            {
+                var counter = parseInt($(self.settings.userEventsLiked).text()) - 1;
+                $(self.settings.userEventsLiked).text(counter);
+            }
 
 		};
 		

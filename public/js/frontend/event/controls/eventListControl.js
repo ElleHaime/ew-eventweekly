@@ -7,6 +7,8 @@ define('frontEventListControl',
 			var self = this;
 
 			self.settings = {
+                userEventsCreated: '#userEventsCreated',
+
 				btnEdit: '.editEvent',
 				btnDelete: '.deleteEvent',
 				btnPublish: '.publishEvent',
@@ -15,7 +17,7 @@ define('frontEventListControl',
 				classElement: '.row-fluid.eventListing'
 			},
 			self.processedElement = null,
-			
+
 			self.init = function()
 			{
 				self.bindClicks();
@@ -56,9 +58,16 @@ define('frontEventListControl',
 					data = $.parseJSON(data);
 		            if (data.status == 'OK') {
 		            	self.__hideEvent(data.id);
+                        self.__minusUserEventsCreated();
 		            }
 				});
 			}
+
+            self.__minusUserEventsCreated = function()
+            {
+                var counter = parseInt($(self.settings.userEventsCreated).text()) - 1;
+                $(self.settings.userEventsCreated).text(counter);
+            }
 
 			self.__publish = function(elem)
 			{

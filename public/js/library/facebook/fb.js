@@ -12,6 +12,8 @@ define('fb',
 								'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
 								'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights';
 			self.settings = {
+                userEventsGoing: '#userEventsGoing',
+
 				btnLogin: '#fb-login',
 				btnInvite: '#fb-invite',
 				btnEventGoing: '#event-join',
@@ -178,6 +180,9 @@ define('fb',
 					if (data.status == 'OK') {
 						$('#event-' + data.event_member_status.toLowerCase()).show();
 						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);
+
+                        self.__plusUserEventsGoing();
+
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
@@ -187,6 +192,12 @@ define('fb',
 					}
 				});
 			}
+
+            self.__plusUserEventsGoing = function()
+            {
+                var counter = parseInt($(self.settings.userEventsGoing).text()) + 1;
+                $(self.settings.userEventsGoing).text(counter);
+            }
 
 			self.__goingEvent = function()
 			{

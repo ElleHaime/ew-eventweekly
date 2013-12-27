@@ -280,6 +280,9 @@ class EventController extends \Core\Controllers\CrudController
 			if ($eventMember -> save()) {
 				$ret = array('status' => 'OK',
 							 'event_member_status' => $data['answer']);
+
+                $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+                $this -> session -> set('userEventsGoing', $userEventsGoing);
 			} 
 		} else {
 			$ret['error'] = 'not_logged';	
@@ -373,6 +376,9 @@ class EventController extends \Core\Controllers\CrudController
 				$event -> delete();
 				$result['status'] = 'OK';
                 $result['id'] = $data['id'];
+
+                $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
 			} 
 		}
 
@@ -406,6 +412,14 @@ class EventController extends \Core\Controllers\CrudController
        			$response['status'] = true;
        			$response['member_like'] = $status;
        			$response['event_id'] = $eventId;
+
+                if ($status == 1) {
+                    $userEventsCreated = $this -> session -> get('userEventsLiked') + 1;
+                    $this -> session -> set('userEventsLiked', $userEventsCreated);
+                } else {
+                    $userEventsCreated = $this -> session -> get('userEventsLiked') - 1;
+                    $this -> session -> set('userEventsLiked', $userEventsCreated);
+                }
        			
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
@@ -619,6 +633,9 @@ class EventController extends \Core\Controllers\CrudController
 					}
 				}
 			}
+
+            $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
+            $this -> session -> set('userEventsCreated', $userEventsCreated);
 		}
 
         $this -> loadRedirect();

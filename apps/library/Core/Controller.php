@@ -70,7 +70,11 @@ class Controller extends \Phalcon\Mvc\Controller
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);
 		}
-		$this -> view -> setVar('location', $this -> session -> get('location'));	
+		$this -> view -> setVar('location', $this -> session -> get('location'));
+
+        $this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
+        $this -> view -> setVar('userEventsLiked', $this -> session -> get('userEventsLiked'));
+        $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
 	}
 	
 

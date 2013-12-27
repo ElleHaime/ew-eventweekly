@@ -391,4 +391,9 @@ class Event extends EventObject
         }
         return $result;
     }
+
+    public function getCreatedEventsCount($uId)
+    {
+        return self::find(array('member_id = ' . $uId))->count();
+    }
 } 
