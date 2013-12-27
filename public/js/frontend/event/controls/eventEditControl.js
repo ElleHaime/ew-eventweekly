@@ -81,6 +81,8 @@ define('frontEventEditControl',
 
                 self.__initCategoryList();
 
+                self.__initFieldsForDateTimePicker();
+
 				self.bindEvents();
 
                 self.__setupDateTimePicker();
@@ -159,7 +161,9 @@ define('frontEventEditControl',
                         $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                     }
 
+                    if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
+                    if (!self.__checkDatesContradictions()) return false;
                 });
 			}
 
@@ -417,6 +421,44 @@ define('frontEventEditControl',
 				}
 			}
 
+            self.__checkDatesContradictions = function()
+            {
+                var isValid = true;
+
+                var startDate = $(self.settings.textDateStart).val();
+                if ($(self.settings.textTimeStart).val() != '') {
+                    startDate += ' ' + $(self.settings.textTimeStart).val();
+                } else {
+                    startDate += ' ' + "00:00:00";
+                }
+                startDate = self.__getTimeInMs(startDate);
+
+                var endDate = $(self.settings.textDateEnd).val();
+                if ($(self.settings.textTimeEnd).val() != '') {
+                    endDate += ' ' + $(self.settings.textTimeEnd).val();
+                } else {
+                    endDate += ' ' + '23:59:59';
+                }
+                endDate = self.__getTimeInMs(endDate);
+
+                if (startDate > endDate) {
+                    isValid = false;
+                    noti.createNotification('Start date cannot be greater than end date', 'error');
+                }
+
+                return isValid;
+            }
+
+            self.__getTimeInMs = function(date)
+            {
+                var pieces = date.split('/');
+                var temp = pieces.shift();
+
+                var newDate = pieces.shift() + '/' + temp + '/' + pieces.join('/');
+
+                return Date.parse(newDate);
+            }
+
             self.__checkRequiredFields = function()
             {
                 var isValid = true;
@@ -442,6 +484,22 @@ define('frontEventEditControl',
                 }
 
                 return isValid;
+            }
+
+            self.__initFieldsForDateTimePicker = function()
+            {
+                var fields = [
+                    $(self.settings.inpDateStart),
+                    $(self.settings.inpDateEnd),
+                    $(self.settings.inpTimeStart),
+                    $(self.settings.inpTimeEnd)
+                ];
+
+                fields.forEach(function(field) {
+                    field.click(function(){
+                        $(this).datetimepicker('show');
+                    });
+                });
             }
 		};
 
