@@ -634,8 +634,10 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 
-            $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
-            $this -> session -> set('userEventsCreated', $userEventsCreated);
+            if (empty($event['id'])) {
+                $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
+            }
 		}
 
         $this -> loadRedirect();
