@@ -93,10 +93,11 @@
 
                                 {{ form.render('logo')}}
 
-                                <div style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file "id ="add-img-btn">
-                                    <div>{{ form.label('logo')}}</div>
 
-                                </div>
+                            </div>
+                            <div style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file "id ="add-img-btn">
+                                <div>{{ form.label('logo')}}</div>
+
                             </div>
                         </div>
                         {{ form.render('add-img-upload') }}
