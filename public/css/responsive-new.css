@@ -99,6 +99,8 @@
 
     .event-one .event-list-btn {
         float: left;
+        padding-left: 180px;
+        clear: both;
     }
     .event-one .event-one-text {
         max-width: 74%;
@@ -166,8 +168,7 @@
         padding-right: 24px;
     }
     .event-site a {
-        margin-top: 15px;
-        clear: both;
+       clear: both;
     }
 
     .location-place_ask .input-search {
