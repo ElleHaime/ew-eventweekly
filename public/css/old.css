@@ -1943,11 +1943,8 @@ input[type="checkbox"]  {
     position: relative;
     padding: 0;
     overflow: hidden;
-
-
 }
 .event-one-img img {
-
     position: absolute;
     top: 0;
     right: 0;
