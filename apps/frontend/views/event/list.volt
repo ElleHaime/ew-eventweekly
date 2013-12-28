@@ -48,6 +48,7 @@
                                     </div>
                             	</div>
                             	<hr/>
+                            </div>
                         	{% endfor %}
                     {% else %}
                         You didn't create events yet.
