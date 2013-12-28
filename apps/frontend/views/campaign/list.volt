@@ -15,7 +15,7 @@
                             <div class="page-top clearfix">
                                 <h3 class="title-name">Your campaigns</h3>
                                 <button class="btn" onclick="location.href = '/campaign/edit'">Add campaign</button>
-                            </div>
+
 
 
                         {% if object is defined %}
@@ -68,8 +68,9 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            You didn't create campaigns yet
+                            <p>You didn't create campaigns yet</p><br/>
                         {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
