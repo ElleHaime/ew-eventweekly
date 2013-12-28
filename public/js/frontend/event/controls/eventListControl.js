@@ -8,6 +8,8 @@ define('frontEventListControl',
 
 			self.settings = {
                 userEventsCreated: '#userEventsCreated',
+                userEventsLiked: '#userEventsLiked',
+                userEventsGoing: '#userEventsGoing',
 
 				btnEdit: '.editEvent',
 				btnDelete: '.deleteEvent',
@@ -58,6 +60,15 @@ define('frontEventListControl',
 					data = $.parseJSON(data);
 		            if (data.status == 'OK') {
 		            	self.__hideEvent(data.id);
+
+                        if (data.userEventsGoing != parseInt($(self.settings.userEventsGoing).text())) {
+                            self.__minusUserEventsGoing();
+                        }
+
+                        if (data.userEventsLiked != parseInt($(self.settings.userEventsLiked).text())) {
+                            self.__minusUserEventsLiked();
+                        }
+
                         self.__minusUserEventsCreated();
 		            }
 				});
@@ -67,6 +78,18 @@ define('frontEventListControl',
             {
                 var counter = parseInt($(self.settings.userEventsCreated).text()) - 1;
                 $(self.settings.userEventsCreated).text(counter);
+            }
+
+            self.__minusUserEventsLiked = function()
+            {
+                var counter = parseInt($(self.settings.userEventsLiked).text()) - 1;
+                $(self.settings.userEventsLiked).text(counter);
+            }
+
+            self.__minusUserEventsGoing = function()
+            {
+                var counter = parseInt($(self.settings.userEventsGoing).text()) -1;
+                $(self.settings.userEventsGoing).text(counter);
             }
 
 			self.__publish = function(elem)

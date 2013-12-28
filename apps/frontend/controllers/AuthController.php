@@ -182,6 +182,8 @@ class AuthController extends \Core\Controller
                     		'uid' => $userData['uid'],
                     		'token' => $userData['token']
                     ));
+
+                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
                 } else {
                     echo 'Sad =/'; die();
                 }
