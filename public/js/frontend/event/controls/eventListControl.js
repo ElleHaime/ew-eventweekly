@@ -66,7 +66,7 @@ define('frontEventListControl',
                         }
 
                         if (data.userEventsLiked != parseInt($(self.settings.userEventsLiked).text())) {
-                            self.__minusUserEventsLiked();
+                            $(self.settings.userEventsLiked).text(data.userEventsLiked);
                         }
 
                         self.__minusUserEventsCreated();

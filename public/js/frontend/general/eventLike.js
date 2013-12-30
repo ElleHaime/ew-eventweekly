@@ -84,7 +84,9 @@ define('frontEventLike',
 		        	} else {
 		        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
 
-                        self.__minusUserEventsLiked();
+                        if (data.likeCounter != null) {
+                            $(self.settings.userEventsLiked).text(data.likeCounter);
+                        }
 		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
@@ -103,6 +105,7 @@ define('frontEventLike',
 
             self.__minusUserEventsLiked = function()
             {
+                console.log('minus');
                 var counter = parseInt($(self.settings.userEventsLiked).text()) - 1;
                 $(self.settings.userEventsLiked).text(counter);
             }

@@ -416,19 +416,9 @@ class EventController extends \Core\Controllers\CrudController
        			$response['member_like'] = $status;
        			$response['event_id'] = $eventId;
 
-                if ($status == 1) {
-                    $userEventsCreated = $this -> session -> get('userEventsLiked') + 1;
-                    $this -> session -> set('userEventsLiked', $userEventsCreated);
-                } else {
-                    $eventLike = EventLike::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
-                    if ($eventLike) {
-                        $eventLike->delete();
+                $response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
+                $this -> session -> set('userEventsLiked', $response['likeCounter']);
 
-                        $userEventsCreated = $this -> session -> get('userEventsLiked') - 1;
-                        $this -> session -> set('userEventsLiked', $userEventsCreated);
-                    }
-                }
-       			
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
         } else {
