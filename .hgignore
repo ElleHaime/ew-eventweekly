@@ -1,4 +1,5 @@
 config/database.php
+config/rabbitmq.php
 .htaccess
 .idea
 public/.htaccess
@@ -6,3 +7,7 @@ public/upload
 ^var/compiled/(?!empty$)
 ^var/logs/(?!empty$)
 ^\.project
+^service/*
+^service_py/*
+^\.pydevproject
+^\.settings/org.eclipse.php.core.prefs
