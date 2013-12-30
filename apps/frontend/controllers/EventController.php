@@ -420,8 +420,13 @@ class EventController extends \Core\Controllers\CrudController
                     $userEventsCreated = $this -> session -> get('userEventsLiked') + 1;
                     $this -> session -> set('userEventsLiked', $userEventsCreated);
                 } else {
-                    $userEventsCreated = $this -> session -> get('userEventsLiked') - 1;
-                    $this -> session -> set('userEventsLiked', $userEventsCreated);
+                    $eventLike = EventLike::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+                    if ($eventLike) {
+                        $eventLike->delete();
+
+                        $userEventsCreated = $this -> session -> get('userEventsLiked') - 1;
+                        $this -> session -> set('userEventsLiked', $userEventsCreated);
+                    }
                 }
        			
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
