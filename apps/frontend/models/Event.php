@@ -44,7 +44,7 @@ class Event extends EventObject
             if ($eventLike) {
                 $eventLike->delete();
 
-                $userEventsLiked = $session -> get('userEventsLiked') - 1;
+                $userEventsLiked = EventLike::find(array('member_id = ' . $uid . " AND status = 1"))->count();
                 $session -> set('userEventsLiked', $userEventsLiked);
             }
 
