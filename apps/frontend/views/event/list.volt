@@ -47,14 +47,16 @@
                                         </div>
                                     </div>
                             	</div>
-                                </div>
-                            	<hr/>
+                            </div>
+                            <hr/>
+
                         	{% endfor %}
+
+
                     {% else %}
                         <p>You didn't create events yet.</p>
                     {% endif %}
                 </div>
-                <div class="padd_30"></div>
             </div>
         </div>
     </div>

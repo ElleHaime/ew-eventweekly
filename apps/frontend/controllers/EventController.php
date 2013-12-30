@@ -280,6 +280,9 @@ class EventController extends \Core\Controllers\CrudController
 			if ($eventMember -> save()) {
 				$ret = array('status' => 'OK',
 							 'event_member_status' => $data['answer']);
+
+                $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+                $this -> session -> set('userEventsGoing', $userEventsGoing);
 			} 
 		} else {
 			$ret['error'] = 'not_logged';	
@@ -373,6 +376,12 @@ class EventController extends \Core\Controllers\CrudController
 				$event -> delete();
 				$result['status'] = 'OK';
                 $result['id'] = $data['id'];
+
+                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
+                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
+
+                $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
 			} 
 		}
 
@@ -406,7 +415,10 @@ class EventController extends \Core\Controllers\CrudController
        			$response['status'] = true;
        			$response['member_like'] = $status;
        			$response['event_id'] = $eventId;
-       			
+
+                $response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
+                $this -> session -> set('userEventsLiked', $response['likeCounter']);
+
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
         } else {
@@ -619,6 +631,11 @@ class EventController extends \Core\Controllers\CrudController
 					}
 				}
 			}
+
+            if (empty($event['id'])) {
+                $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
+            }
 		}
 
         $this -> loadRedirect();
