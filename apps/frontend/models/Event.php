@@ -14,7 +14,9 @@ use Objects\Event as EventObject,
     Frontend\Models\Category,
     Frontend\Models\MemberFilter,
     Objects\EventCategory,
-    Phalcon\Mvc\Model\Resultset;
+    Phalcon\Mvc\Model\Resultset,
+    Frontend\Models\EventLike,
+    Frontend\Models\EventMember as EventMemberModel;
 
 class Event extends EventObject
 {
@@ -29,7 +31,32 @@ class Event extends EventObject
 	private $conditions = [];
 	private $selector = ' AND';
 
+    public function afterDelete()
+    {
+        $di = $this -> getDi();
+        if ($di -> has('session')) {
+            $session = $di -> getShared('session');
 
+            $eid = $this->id;
+            $uid = $session -> get('memberId');
+
+            $eventLike = EventLike::findFirst('event_id = ' . $eid . ' AND member_id = ' . $uid);
+            if ($eventLike) {
+                $eventLike->delete();
+
+                $userEventsLiked = EventLike::find( array('member_id = ' . $uid . " AND status = 1") )->count();
+                $session -> set('userEventsLiked', $userEventsLiked);
+            }
+
+            $eventGoing = EventMemberModel::findFirst('event_id = ' . $eid . ' AND member_id = ' . $uid);
+            if ($eventGoing) {
+                $eventGoing->delete();
+
+                $userEventsGoing = $session -> get('userEventsGoing') - 1;
+                $session -> set('userEventsGoing', $userEventsGoing);
+            }
+        }
+    }
 	
 	public function afterFetch()
 	{ 
@@ -390,5 +417,10 @@ class Event extends EventObject
             $result = $result->toArray();
         }
         return $result;
+    }
+
+    public function getCreatedEventsCount($uId)
+    {
+        return self::find(array('member_id = ' . $uId))->count();
     }
 } 

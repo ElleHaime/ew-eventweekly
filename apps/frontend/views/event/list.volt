@@ -8,7 +8,7 @@
                     {% if object is defined %}
                     
                         {% for event in object %}
-                            <div class="row-fluid eventListing" id="element_{{ event.id }}>
+                            <div class="row-fluid eventListing" id="element_{{ event.id }}">
                                 <div class="span12">
                                     <div class="event-one-img">
                                         <a href="#">
@@ -47,13 +47,16 @@
                                         </div>
                                     </div>
                             	</div>
-                            	<hr/>
+                            </div>
+                            <hr/>
+
                         	{% endfor %}
+
+
                     {% else %}
-                        You didn't create events yet.
+                        <p>You didn't create events yet.</p>
                     {% endif %}
                 </div>
-                <div class="padd_30"></div>
             </div>
         </div>
     </div>

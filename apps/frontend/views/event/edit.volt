@@ -70,6 +70,12 @@
                                 </div>
                             </div>
 
+                            <div class="date-box clearfix">
+                                <label>
+                                    {{ form.render('event_status') }} Publish event immediately
+                                </label>
+                            </div>
+
                             <div class="date-box" id="time-string" style="display:none;">
                                 <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start"
                                                                                                              class="date-time">00:00:00</span><br>
@@ -82,7 +88,7 @@
                         <div class="btn-add_group clearfix">
                             <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
                             <button class="btn" type="button" id="btn-preview" disabled="disabled">Preview</button>
-                            <button class="btn" type="submit" id="btn-submit">Save and publish</button>
+                            <button class="btn" type="submit" id="btn-submit">Save</button>
                         </div>
 
                     </div>
@@ -145,6 +151,8 @@
                     </div>
 
                     {{ form.render('event_category') }}
+
+                    <div id="defaultCategories" style="display: none">{{ categories }}</div>
 
                     <div id="event-category-selected" class="event-site clearfix" {% if not (event.category|length) %}style="display:none;"{% endif %}>
                         <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
@@ -209,9 +217,6 @@
                         {{ form.render('recurring') }}
                         <hr>
                         <div class="checkbox-block">
-                            <label><input type="checkbox" value="">
-                                Create Promoter
-                            </label>
                             <p> Choose promoter</p>
                             {{ form.render('campaign_id') }}
                         </div>

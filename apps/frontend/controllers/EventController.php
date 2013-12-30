@@ -191,15 +191,17 @@ class EventController extends \Core\Controllers\CrudController
 				$event -> save();
 			}
 		}
-		
+
+        $memberpart = null;
 		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
 			foreach ($event -> memberpart as $mpart) {
 				if ($mpart -> member_id == $this -> memberId) {
-					$event -> memberpart = $mpart -> member_status;
+                    $memberpart = $mpart -> member_status;
 					break;
 				}
 			}
 		}
+        $event -> memberpart = $memberpart;
 
         // TODO: refactor this. Get uploads dir and default logo url from config
         $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
@@ -278,6 +280,9 @@ class EventController extends \Core\Controllers\CrudController
 			if ($eventMember -> save()) {
 				$ret = array('status' => 'OK',
 							 'event_member_status' => $data['answer']);
+
+                $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+                $this -> session -> set('userEventsGoing', $userEventsGoing);
 			} 
 		} else {
 			$ret['error'] = 'not_logged';	
@@ -339,7 +344,10 @@ class EventController extends \Core\Controllers\CrudController
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function editAction()
-	{	
+	{
+        $category = new Category();
+        $this -> view -> setVar('categories', $category -> getDefaultIdsAsString());
+
 		parent::editAction();
 	}
 
@@ -353,8 +361,8 @@ class EventController extends \Core\Controllers\CrudController
 
 
 	/**
-	 * @Route("/event/delete}", methods={"GET"})
-	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET"})
+	 * @Route("/event/delete", methods={"GET", "POST"})
+	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function deleteAction()
@@ -363,10 +371,17 @@ class EventController extends \Core\Controllers\CrudController
 		$result['status'] = 'ERROR';
 
 		if (isset($data['id']) && !empty($data['id'])) {
-			$event = Event::findFirst((int)$id);
+			$event = Event::findFirst((int)$data['id']);
 			if ($event) {
 				$event -> delete();
 				$result['status'] = 'OK';
+                $result['id'] = $data['id'];
+
+                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
+                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
+
+                $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
 			} 
 		}
 
@@ -400,7 +415,10 @@ class EventController extends \Core\Controllers\CrudController
        			$response['status'] = true;
        			$response['member_like'] = $status;
        			$response['event_id'] = $eventId;
-       			
+
+                $response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
+                $this -> session -> set('userEventsLiked', $response['likeCounter']);
+
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
         } else {
@@ -484,7 +502,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['description'] = $event['description'];
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
-		$newEvent['event_status'] = $event['event_status'];
+		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
@@ -613,6 +631,11 @@ class EventController extends \Core\Controllers\CrudController
 					}
 				}
 			}
+
+            if (empty($event['id'])) {
+                $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
+                $this -> session -> set('userEventsCreated', $userEventsCreated);
+            }
 		}
 
         $this -> loadRedirect();

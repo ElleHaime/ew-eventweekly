@@ -7,7 +7,11 @@ define('frontEventEditControl',
 			var self = this;
 
 			self.settings = {
-				inpDateStart: '#date-picker-start',
+                form: 'form',
+
+                inpName: '#name',
+
+                inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',
 				textDateStart: '#start_date',
 				textTimeStart: '#start_time',
@@ -54,7 +58,9 @@ define('frontEventEditControl',
 				inpCampaign: '#campaign_id',
 				inpCampaignExists: '#is_campaign',
 
-				btnCancel: '#btn-cancel'
+				btnCancel: '#btn-cancel',
+
+                defaultCategories: '#defaultCategories'
 			},
 
 
@@ -73,9 +79,13 @@ define('frontEventEditControl',
 				self.__presetTime($(self.settings.inpTimeStart), $(self.settings.textTimeStart));
 				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));
 
-                    self.__initCategoryList();
+                self.__initCategoryList();
+
+                self.__initFieldsForDateTimePicker();
 
 				self.bindEvents();
+
+                self.__setupDateTimePicker();
 			}
 
 			self.bindEvents = function()
@@ -122,9 +132,10 @@ define('frontEventEditControl',
 										 self.settings.coordsVenueLng);
 				});
 
-				// process categories
 				$(self.settings.inpCategory).change(function() {
-					self.__addCategory();
+                    self.__removeCategoryConflict();
+
+                    self.__addCategory();
 				});
 
 				$(self.settings.listCategory).on('click', self.settings.removeSign, function(e) {
@@ -143,8 +154,46 @@ define('frontEventEditControl',
 
 				$(self.settings.btnCancel).click(function() {
 					window.location.href = "/event/list";
-				})
+				});
+
+                $(self.settings.form).submit(function(){
+                    if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                        $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+                    }
+
+                    if (!self.__checkDatesContradictions()) return false;
+                    if (!self.__checkRequiredFields()) return false;
+                    if (!self.__checkDatesContradictions()) return false;
+                });
 			}
+
+            self.__removeCategoryConflict = function()
+            {
+                var defaultCategories = $(self.settings.defaultCategories).text().split(',');
+                var ind = $(self.settings.inpCategory + ' :selected').val();
+
+                if (defaultCategories.indexOf(ind) === -1) {
+                    defaultCategories.forEach(function(cat){
+                        self.__removeCategory($("a[catid=" + cat + "]"));
+                    });
+                } else {
+                    var ind = $(self.settings.inpCategory + ' :selected').val();
+
+                    var catsToDelete = $(self.settings.inpCategoryReal).val();
+                    defaultCategories.forEach(function(cat){
+                        catsToDelete = catsToDelete.replace(cat + ',', '');
+                    });
+                    var categories = catsToDelete.split(',');
+
+                    categories.forEach(function(cat) {
+                        if (cat == "") return;
+
+                        if (defaultCategories.indexOf(ind) !== -1) {
+                            self.__removeCategory($("a[catid=" + cat + "]"));
+                        }
+                    });
+                }
+            }
 
 			self.__loadImage = function(content)
 			{
@@ -190,9 +239,13 @@ define('frontEventEditControl',
 
 			self.__addCategory = function()
 			{
+                if ($(self.settings.inpCategoryReal).val() == $(self.settings.defaultCategories).text()) {
+                    $(self.settings.inpCategoryReal).val('');
+                }
+
 				var list = $(self.settings.listCategory);
 
-				var item = '<div><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
+				var item = '<div class="ecat_elem"><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
 						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
 		        $(self.settings.inpCategory + ' :selected').remove();
@@ -207,6 +260,8 @@ define('frontEventEditControl',
 
 			self.__removeCategory = function(elem)
 			{
+                if (elem.attr('catid') == undefined) return;
+
 				var item = '<option value="' + elem.attr('catid') + '">' + elem.prev('label').html() + '</option>';
 		 		$(self.settings.inpCategory).append(item);
 		 		$(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val().replace(elem.attr('catid') + ',', ''));
@@ -214,6 +269,8 @@ define('frontEventEditControl',
 		        elem.parent('div').remove();
 
 		        if ($(self.settings.listCategory).children('div').length == 0) {
+                    $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+
 		            $(self.settings.listCategory).hide();
 		        }
 			}
@@ -312,6 +369,20 @@ define('frontEventEditControl',
 				return true;
 			}
 
+            // setup datetimepicker to close on click
+            self.__setupDateTimePicker = function()
+            {
+                var startDate = $(self.settings.inpDateStart).datetimepicker()
+                    .on('changeDate', function(ev) {
+                        startDate.datetimepicker('hide');
+                    });
+
+                var endDate = $(self.settings.inpDateEnd).datetimepicker()
+                    .on('changeDate', function(ev) {
+                        endDate.datetimepicker('hide');
+                    });
+            }
+
 			// input -- input element (usualy type == text)
 			// list -- destination element (found values will be rendered here)
 			self.__inputFillList = function(input, list, coordsLat, coordsLng)
@@ -349,6 +420,87 @@ define('frontEventEditControl',
 		           	}
 				}
 			}
+
+            self.__checkDatesContradictions = function()
+            {
+                var isValid = true;
+
+                var startDate = $(self.settings.textDateStart).val();
+                if ($(self.settings.textTimeStart).val() != '') {
+                    startDate += ' ' + $(self.settings.textTimeStart).val();
+                } else {
+                    startDate += ' ' + "00:00:00";
+                }
+                startDate = self.__getTimeInMs(startDate);
+
+                var endDate = $(self.settings.textDateEnd).val();
+                if ($(self.settings.textTimeEnd).val() != '') {
+                    endDate += ' ' + $(self.settings.textTimeEnd).val();
+                } else {
+                    endDate += ' ' + '23:59:59';
+                }
+                endDate = self.__getTimeInMs(endDate);
+
+                if (startDate > endDate) {
+                    isValid = false;
+                    noti.createNotification('Start date cannot be greater than end date', 'error');
+                }
+
+                return isValid;
+            }
+
+            self.__getTimeInMs = function(date)
+            {
+                var pieces = date.split('/');
+                var temp = pieces.shift();
+
+                var newDate = pieces.shift() + '/' + temp + '/' + pieces.join('/');
+
+                return Date.parse(newDate);
+            }
+
+            self.__checkRequiredFields = function()
+            {
+                var isValid = true;
+
+                var fields = [
+                    { element : self.settings.inpName, text : 'event title' },
+                    { element : self.settings.textDateStart, text : ' start date' },
+                    { element : self.settings.textDateEnd, text : 'end date' },
+                    { element : self.settings.inpLocation, text : 'location' }
+                ];
+
+                var text = 'Please enter: ';
+                fields.forEach(function(field) {
+                    if ($(field.element).val() == '') {
+                        text += field.text + ', ';
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    text = text.substring(0, text.length - 2);
+                    noti.createNotification(text, 'error');
+                }
+
+                return isValid;
+            }
+
+            self.__initFieldsForDateTimePicker = function()
+            {
+                var fields = [
+                    $(self.settings.inpDateStart),
+                    $(self.settings.inpDateEnd),
+                    $(self.settings.inpTimeStart),
+                    $(self.settings.inpTimeEnd)
+                ];
+
+                fields.forEach(function(field) {
+                    field.click(function(){
+                        $(this).datetimepicker('show');
+                    });
+                });
+            }
 		};
 
 		return new frontEventEditControl($, utils, datetimepicker, noti);

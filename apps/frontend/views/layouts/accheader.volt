@@ -42,16 +42,16 @@
                                 <div class="btn-list">
                                     <div class="btn-line clearfix">
                                         <button class="btn btn-block" onclick="location.href='/event/list'">
-                                            <span class="btn-count">21</span>
+                                            <span class="btn-count" id="userEventsCreated">{{ userEventsCreated }}</span>
                                             <span class="btn-text">Created</span>
                                         </button>
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/event/joined'">
-                                        <span class="btn-count">12</span>
+                                        <span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span>
                                         <span class="btn-text">Where I Go</span>
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/liked'">
-                                        <span class="btn-count">12</span>
+                                        <span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
                                         <span class="btn-text">Liked by you</span>
                                     </button>
                                 </div>

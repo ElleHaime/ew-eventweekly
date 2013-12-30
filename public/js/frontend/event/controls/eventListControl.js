@@ -7,6 +7,10 @@ define('frontEventListControl',
 			var self = this;
 
 			self.settings = {
+                userEventsCreated: '#userEventsCreated',
+                userEventsLiked: '#userEventsLiked',
+                userEventsGoing: '#userEventsGoing',
+
 				btnEdit: '.editEvent',
 				btnDelete: '.deleteEvent',
 				btnPublish: '.publishEvent',
@@ -15,7 +19,7 @@ define('frontEventListControl',
 				classElement: '.row-fluid.eventListing'
 			},
 			self.processedElement = null,
-			
+
 			self.init = function()
 			{
 				self.bindClicks();
@@ -29,7 +33,7 @@ define('frontEventListControl',
 				});
 
 				$(self.settings.btnDelete).click(function(e) {
-					e.preventDefault($(this));
+                    e.preventDefault($(this));
 					self.__delete($(this));
 				});
 
@@ -56,9 +60,37 @@ define('frontEventListControl',
 					data = $.parseJSON(data);
 		            if (data.status == 'OK') {
 		            	self.__hideEvent(data.id);
+
+                        if (data.userEventsGoing != parseInt($(self.settings.userEventsGoing).text())) {
+                            self.__minusUserEventsGoing();
+                        }
+
+                        if (data.userEventsLiked != parseInt($(self.settings.userEventsLiked).text())) {
+                            $(self.settings.userEventsLiked).text(data.userEventsLiked);
+                        }
+
+                        self.__minusUserEventsCreated();
 		            }
 				});
 			}
+
+            self.__minusUserEventsCreated = function()
+            {
+                var counter = parseInt($(self.settings.userEventsCreated).text()) - 1;
+                $(self.settings.userEventsCreated).text(counter);
+            }
+
+            self.__minusUserEventsLiked = function()
+            {
+                var counter = parseInt($(self.settings.userEventsLiked).text()) - 1;
+                $(self.settings.userEventsLiked).text(counter);
+            }
+
+            self.__minusUserEventsGoing = function()
+            {
+                var counter = parseInt($(self.settings.userEventsGoing).text()) -1;
+                $(self.settings.userEventsGoing).text(counter);
+            }
 
 			self.__publish = function(elem)
 			{
@@ -107,11 +139,6 @@ define('frontEventListControl',
 			self.__redirectEdit = function(elem)
 			{
 				window.location.href = '/event/edit/' + elem.attr('id');
-			},
-
-			self.__delete = function()
-			{
-
 			}
 		};
 		
