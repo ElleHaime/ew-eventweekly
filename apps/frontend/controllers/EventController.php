@@ -377,7 +377,7 @@ class EventController extends \Core\Controllers\CrudController
 				$result['status'] = 'OK';
                 $result['id'] = $data['id'];
 
-                $result['userEventsLiked'] = $this -> session -> get('userEventsLiked');
+                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
                 $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
 
                 $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;

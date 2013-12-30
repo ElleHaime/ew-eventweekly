@@ -80,7 +80,7 @@ define('frontEventLike',
 		        		like.prop('disabled', true);
 		        		dislike.prop('disabled', false);
 
-                        self.__plusUserEventsLiked();
+                        $(self.settings.userEventsLiked).text(data.likeCounter)
 		        	} else {
 		        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
 
