@@ -42,8 +42,8 @@
                                                         <span class="hide-span"></span>
                                                     </div>
                                                     <div class="plans-box clearfix">
-                                                        <button class="btn editCampaign" id="{{ campaign.id }}">edit</button>
-									                    <button class="btn deleteCampaign"  id="{{ campaign.id }}" {% if campaign.event|length %} disabled="true" {% endif %}>delete</button>
+                                                        <button class="btn editCampaign" id="{{ campaign.id }}">Edit</button>
+									                    <button class="btn deleteCampaign"  id="{{ campaign.id }}" {% if campaign.event|length %} disabled="true" {% endif %}>Delete</button>
                                                     </div>
                                                 </div>
                                                 

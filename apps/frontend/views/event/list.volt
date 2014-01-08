@@ -2,13 +2,14 @@
 
 {% block content %}
     <div class="container" id="content_noBorder">
-        <div class=" profile-box">
-            <div class="profile-body">
-                <div class="events-list">
+        <div class="padd_30"></div>
+        <h3 class="title-page">Created events</h3>
+        <div class="events-list">
                     {% if object is defined %}
                     
                         {% for event in object %}
-                            <div class="row-fluid eventListing" id="element_{{ event.id }}">
+                            <div class="row-fluid ">
+                            <div class="eventListing events-list music-category clearfix" id="element_{{ event.id }}">
                                 <div class="span12">
                                     <div class="event-one-img">
                                         <a href="#">
@@ -35,21 +36,20 @@
                                         <div class="status-btn clearfix">
                                             {% if event.event_status == 1 %}
                                                 <button class="btn btn-block unpublishEvent" id="{{ event.id }}">
-                                                    <span class="btn-text">unpublish</span>
+                                                    <span class="btn-text">Unpublish</span>
                                                 </button>
                                             {% else %}
                                                 <button class="btn btn-block publishEvent" id="{{ event.id }}">
-                                                    <span class="btn-text">publish</span>
+                                                    <span class="btn-text">Publish</span>
                                                 </button>
                                             {% endif %}
-                                            <button class="btn btn-block editEvent" id="{{ event.id }}"><span class="btn-text">edit</span></button>
-                                            <button class="btn btn-block deleteEvent" id="{{ event.id }}"><span class="btn-text">archive</span></button>
+                                            <button class="btn btn-block editEvent" id="{{ event.id }}"><span class="btn-text">Edit</span></button>
+                                            <button class="btn btn-block deleteEvent" id="{{ event.id }}"><span class="btn-text">Archive</span></button>
                                         </div>
                                     </div>
                             	</div>
                             </div>
-                            <hr/>
-
+                            </div>
                         	{% endfor %}
 
 
@@ -57,8 +57,7 @@
                         <p>You didn't create events yet.</p>
                     {% endif %}
                 </div>
-            </div>
-        </div>
     </div>
+
 
 {% endblock %}
