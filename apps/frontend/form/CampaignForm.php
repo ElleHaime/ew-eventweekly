@@ -33,7 +33,7 @@ class CampaignForm extends Form
 								array('placeholder' => 'Add description',
 									  'class' => 'resizable field-big'));
 		$this -> addElement('text', 'address', 'Address',
-								array('placeholder' => 'Choose Address'));
+								array('placeholder' => 'Choose address'));
 		$this -> addElement('hidden', 'address-coords');	
 		$this -> addElement('text', 'location', 'Location',
 								array('placeholder' => 'Choose location'));
