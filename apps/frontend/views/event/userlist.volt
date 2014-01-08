@@ -25,7 +25,7 @@
                                         <div class="span12">
                                             <div class="event-one clearfix">
                                                 <div class="event-one-img">
-                                                    <a href="event/show/{{ node['event']['id'] }}"  class="name-link">
+                                                    <a href="event/show/{{ node['event']['id'] }}" >
                                                         {% if node['event']['logo'] is defined %}
 		                                                    <img src="/upload/img/event/{{ node['event']['logo'] }}">
 		
