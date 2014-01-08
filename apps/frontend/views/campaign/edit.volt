@@ -101,6 +101,7 @@
                             </div>
                         </div>
                         {{ form.render('add-img-upload') }}
+                        <div class="padd_30"></div>
                      </div>
                 </div>
             </div>

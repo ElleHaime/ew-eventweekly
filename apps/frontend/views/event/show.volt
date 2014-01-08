@@ -112,7 +112,7 @@
                                             <div class="event-list-category">
 
                                                 {% if event.category|length %}
-                                                    <div class="event-list-category">
+
                                                         {% for cat in event.category %}
                                                             <span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>
                                                         {% endfor %}
@@ -132,19 +132,19 @@
                                                         </div>
                                                         <a href="#" class="show-all">show all tags</a>
                                                         #}
-                                                    </div>
+
                                                     {% if event.category.getFirst().key == 'other' %}
-                                                        <span class="btn" id="suggestCategoryBtn" style="padding: 5px 10px; min-height: 0;" title="Suggest Category">?</span>
-                                                        <ul id="suggestCategoriesBlock" style="padding: 10px; margin: 10px 0 0 15px; list-style: none; background: #67ADDA; width: 140px; display: none;">
+                                                        <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
+                                                        <ul id="suggestCategoriesBlock"  class="select-category">
                                                             {% for index, node in categories %}
                                                                 <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
                                                             {% endfor %}
                                                         </ul>
                                                     {% endif %}
                                                 {% else %}
-                                                    <span class="btn uncategorized_label">Uncategorized</span>
+                                                    <span class="btn btn-block suggest-btn uncategorized_label" id="suggestCategoryBtn" >Suggest category</span>
 
-                                                    <span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>
+                                                    {#<span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>#}
                                                     <ul id="suggestCategoriesBlock"  class="select-category">
                                                         {% for index, node in categories %}
                                                             <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>

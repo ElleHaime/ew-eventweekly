@@ -19,7 +19,7 @@ class CampaignForm extends Form
 	{
 		$this -> addElement('hidden', 'id');		
 
-		$this -> addElement('hidden', 'logo', 'add image');	
+		$this -> addElement('hidden', 'logo', 'Add image');
 		$this -> addElement('file', 'add-img-upload', 'upload',
 								array('style' => 'display:none;'));	
 
@@ -30,7 +30,7 @@ class CampaignForm extends Form
                                 array('placeholder' => 'Campaign title',
                                       'validators' => $nameValidators));
 		$this -> addElement('textarea', 'description', 'Description',
-								array('placeholder' => 'add description',
+								array('placeholder' => 'Add description',
 									  'class' => 'resizable field-big'));
 		$this -> addElement('text', 'address', 'Address',
 								array('placeholder' => 'Choose Address'));

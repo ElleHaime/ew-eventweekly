@@ -215,7 +215,6 @@
                     <div class="radio-box">
                         <p> {{ form.label('recurring') }}</p>
                         {{ form.render('recurring') }}
-                        <hr>
                         <div class="checkbox-block">
                             <p> Choose promoter</p>
                             {{ form.render('campaign_id') }}
@@ -260,6 +259,7 @@
         </div>
 
     </div>
+    <div class="padd_30"></div>
 </div>
 
     </div>

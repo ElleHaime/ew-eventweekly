@@ -20,7 +20,7 @@ class EventForm extends Form
 	{
 		$this -> addElement('hidden', 'id');		
 
-		$this -> addElement('hidden', 'logo', 'add image');	
+		$this -> addElement('hidden', 'logo', 'Add image');
 		$this -> addElement('file', 'add-img-upload', 'upload',
 								array('style' => 'display:none;'));	
 
@@ -29,7 +29,7 @@ class EventForm extends Form
 		);
 		$this -> addElement('text', 'name', 'Name', 
 								array('validators' => $nameValidators,
-									   'placeholder' => 'main title'));
+									   'placeholder' => 'Main title'));
 
 		$this -> addElement('radio', 'recurring', 'Recurring', 
 								array('options' => \Frontend\Models\Event::$eventRecurring)); 
@@ -51,7 +51,7 @@ class EventForm extends Form
 		$this -> addElement('check', 'event_status', 'Publish event immediately');
 
 		$this -> addElement('textarea', 'description', 'Description', 
-								array('placeholder' => 'add description',
+								array('placeholder' => 'Add description',
 									  'class' => 'resizable field-big'));
 
 		$this -> addElement('text', 'event_site', 'Event web site',
@@ -60,22 +60,22 @@ class EventForm extends Form
 		$this -> addElement('date', 'start_date', 'Start date',
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
-									  'placeholder' => 'start date'));
+									  'placeholder' => 'Start date'));
 		
 		$this -> addElement('date', 'start_time', 'Start time',
 								array('data-format' => 'hh:mm:ss',
 									  'data-type' => 'event_time',
-									  'placeholder' => 'start time'));		
+									  'placeholder' => 'Start time'));
 		
 		$this -> addElement('date', 'end_date', 'End date',
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
-									  'placeholder' => 'end date'));
+									  'placeholder' => 'End date'));
 
 		$this -> addElement('date', 'end_time', 'End time',
 								array('data-format' => 'hh:mm:ss',
 									  'data-type' => 'event_time',
-									  'placeholder' => 'end time'));
+									  'placeholder' => 'End time'));
 
 		$this -> addElement('select', 'event_category', 'Suggest category', 
 								array('options' => \Frontend\Models\Category::find(),
