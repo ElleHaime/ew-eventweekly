@@ -2,9 +2,10 @@
 
 {% block content %}
     <div class="container" id="content_noBorder">
-        <div class="padd_30"></div>
-        <h3 class="title-page">Created events</h3>
-        <div class="events-list">
+
+        <div class="active-events">
+            <div class="padd_30"></div>
+            <h3 class="title-page">Created events</h3>
                     {% if object is defined %}
                     
                         {% for event in object %}
