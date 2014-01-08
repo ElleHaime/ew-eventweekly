@@ -1015,20 +1015,20 @@ input[type="color"]:focus, .uneditable-input:focus
     min-width: 174px;
 }
 
-.sidebar-box .place-address_nbg {
-    max-width: 100%;
-}
+/*.sidebar-box .place-address_nbg {*/
+    /*max-width: 100%;*/
+/*}*/
 
-.sidebar-box .place-address_nbg span {
-    display: inline-block;
-    zoom: 1;
-    *display: inline;
-    padding:0 0 0 9px;
-    margin: 12px 0;
-    height: 17px;
-    overflow: hidden;
-    vertical-align: middle;
-}
+/*.sidebar-box .place-address_nbg span {*/
+    /*display: inline-block;*/
+    /*zoom: 1;*/
+    /**display: inline;*/
+    /*padding:0 0 0 9px;*/
+    /*margin: 12px 0;*/
+    /*height: 17px;*/
+    /*overflow: hidden;*/
+    /*vertical-align: middle;*/
+/*}*/
 .place-address .btn {
     min-width: 60px;
     padding: 10px 20px;
@@ -2510,7 +2510,6 @@ ul.days-events  {
 }
 
 .settings-box-one label {
-    display: inline-block;
     padding-left: 0;
 }
 
@@ -2572,32 +2571,30 @@ ul.days-events  {
 .location-search {
     background: #ffffff;
 }
-.sidebar .place-address_nbg  span {
-    background: none;
-    color:#010101;
-}
+/*.sidebar .place-address_nbg  span {*/
+    /*background: none;*/
+    /*color:#010101;*/
+/*}*/
 
-.sidebar .place-address_nbg {
-    background:#ffffff;
-    border:1px solid #9CC3F4;
-    padding-right: 70px;
-}
+/*.sidebar .place-address_nbg {*/
+    /*background:#ffffff;*/
+    /*border:1px solid #9CC3F4;*/
+    /*padding-right: 70px;*/
+/*}*/
 
 .place-address span {
     color:#ffffff;
     font: 400 17px "Open Sans";
     display: inline-block;
     word-break:normal;
-    padding: 9px 40px 6px 47px;
+    padding: 9px 40px 5px 47px;
     background: url(../img/bgs/place-icon-white.png) no-repeat 20px 80% ;
 }
 
 .event-list-btn  .place-address span {
-    /*padding: 12px 10px 0 47px;*/
     height: 22px;
     overflow: hidden;
 }
-
 
 
 .cities_box {
@@ -3931,11 +3928,6 @@ i.icon-map {
     overflow: hidden;
     vertical-align: bottom;
 }
-
-.events-list hr {
-    margin: 10px 0 19px;
-}
-
 
 .other-title {
     padding: 0;
