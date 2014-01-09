@@ -90,7 +90,7 @@ define('frontEventLike',
 		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
-		        		window.location.href = 'login';
+		        		window.location.href = '/#fb-login';
 		        	} else {
 			            noti.createNotification('Oops! Error occurred. Can\'t save you choice.', 'error');		        		
 		        	}

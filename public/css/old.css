@@ -762,7 +762,7 @@ div.grippie {
     padding-bottom: 10px;
 }
 .checkbox-block {
-    margin: 10px 0 10px 0;
+    margin: 10px 0 0px 0;
     border-top:1px solid #cccccc;
 }
 .checkbox-block p {
@@ -1037,21 +1037,7 @@ input[type="color"]:focus, .uneditable-input:focus
     top: -1px;
 }
 
-/*------------------------------------------plant box css----------------------------------------------------------*/
-.plans-box {
-    margin: 17px 0 0 0;
-}
 
-.plans-box  span {
-    display: block;
-    clear: none;
-    color:#666666;
-}
-.plans-box .btn {
-    float: left;
-    padding:10px 10px;
-    margin: 0 10px 0 0;
-}
 /*------------------------------------------END plant box css----------------------------------------------------------*/
 
 .type-box {
@@ -2116,6 +2102,9 @@ input[type="checkbox"]  {
 
 /*------------------------------------------END icons css----------------------------------------------------------*/
 /*------------------------------------------plans box css----------------------------------------------------------*/
+
+
+/*------------------------------------------plant box css----------------------------------------------------------*/
 .plans-box  {
     clear: both;
     margin: 10px 0 0;
@@ -2123,10 +2112,16 @@ input[type="checkbox"]  {
 .plans-box .btn {
     min-width: 174px;
     margin-bottom: 10px;
+    height: 42px;
+    float: left;
+    margin: 0 10px 10px 0;
+    padding:9px 10px 10px 10px;
 }
 .plans-box span {
     color: #494949;
     font-size: 13px;
+    display: block;
+    clear: none;
     font-weight: bold;
 }
 /*------------------------------------------end plans box css----------------------------------------------------------*/
@@ -2139,7 +2134,7 @@ input[type="checkbox"]  {
 }
 .btn_invite {
     padding: 0 10px;
-    height: 42px;
+    height: 41px;
     text-align: left;
 }
 
@@ -3940,4 +3935,9 @@ i.icon-map {
 
 .location-state , .phone, .extra-email {
     font-size: 14px;
+}
+
+#content_right_inner .btn-add_group  {
+    clear: both;
+    float: none;
 }
