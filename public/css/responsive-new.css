@@ -183,6 +183,12 @@
         clear: both;
     }
 
+    .event-text-box {
+        margin-left: 0;
+    }
+    #cont {
+        margin-left: 0;
+    }
     .profile-btn-rt  {
         width: 100%;
         float: left;
