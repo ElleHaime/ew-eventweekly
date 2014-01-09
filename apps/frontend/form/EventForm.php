@@ -40,11 +40,11 @@ class EventForm extends Form
 		$this -> addElement('hidden', 'location_longitude');
 		
 		$this -> addElement('text', 'address', 'Address', 
-								array('placeholder' => 'Choose Address'));
+								array('placeholder' => 'Choose address'));
 		$this -> addElement('hidden', 'address-coords');		
 
 		$this -> addElement('text', 'venue', 'Venue',
-								array('placeholder' => 'Choose Venue'));
+								array('placeholder' => 'Choose venue'));
 		$this -> addElement('hidden', 'venue_latitude');
 		$this -> addElement('hidden', 'venue_longitude');
 

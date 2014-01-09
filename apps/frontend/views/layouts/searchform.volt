@@ -9,11 +9,11 @@
 
     <div class="date-picker clearfix">
         <div class="input-div ">
-            {{ searchForm.render('start_dateSearch', {'placeholder':'From Date'}) }}
+            {{ searchForm.render('start_dateSearch', {'placeholder':'From date'}) }}
             <i class="icon-calendar"></i>
         </div>
         <div class="input-div ">
-            {{ searchForm.render('end_dateSearch', {'placeholder':'End Date'}) }}
+            {{ searchForm.render('end_dateSearch', {'placeholder':'End date'}) }}
             <i class="icon-calendar"></i>
         </div>
     </div>

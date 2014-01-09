@@ -60,7 +60,7 @@
 
                         <button class="btn btn-add" onclick="location.href='/event/edit'">
                             <span class="icon-plus"></span>
-                            <span class="text-btn">Add Event</span>
+                            <span class="text-btn">Add event</span>
                         </button>
                     </div>
 
