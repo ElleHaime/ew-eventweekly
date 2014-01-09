@@ -3,7 +3,11 @@
         <div class="row-fluid">
             <div class="span5">
                 <div class=" header-logo">
-                    <a href="/" class="logo"></a>
+                    {% if member.id is defined %}
+                        <a href="/map" class="logo"></a>
+                    {% else %}
+                        <a href="/#fb-login" class="logo"></a>
+                    {% endif %}
                 </div>
 
                 {% if member.id is defined %}
@@ -69,7 +73,7 @@
                     {% if hideYouAreNotLoggedInBtn is empty %}
                         <div class=" user-block  no_user clearfix">
                             <div class="user-box">
-                                <a href="/">
+                                <a href="/#fb-login">
                                     <i class="log-icon"></i>
                                     <span class="no_log">you are not logged in</span>
                                 </a>
