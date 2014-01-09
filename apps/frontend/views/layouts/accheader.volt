@@ -3,7 +3,11 @@
         <div class="row-fluid">
             <div class="span5">
                 <div class=" header-logo">
-                    <a href="/" class="logo"></a>
+                    {% if member.id is defined %}
+                        <a href="/map" class="logo"></a>
+                    {% else %}
+                        <a href="/#fb-login" class="logo"></a>
+                    {% endif %}
                 </div>
 
                 {% if member.id is defined %}
