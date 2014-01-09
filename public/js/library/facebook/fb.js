@@ -186,7 +186,7 @@ define('fb',
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
-							window.location.href = '/login';	
+							window.location.href = '/#fb-login';
 							return false;
 						}
 					}
