@@ -69,7 +69,7 @@
                     {% if hideYouAreNotLoggedInBtn is empty %}
                         <div class=" user-block  no_user clearfix">
                             <div class="user-box">
-                                <a href="/">
+                                <a href="/#fb-login">
                                     <i class="log-icon"></i>
                                     <span class="no_log">you are not logged in</span>
                                 </a>
