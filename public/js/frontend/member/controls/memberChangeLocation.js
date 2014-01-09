@@ -48,6 +48,9 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
                     if (response.status == true) {
                         console.log('all is OK');
 
+                        // change city text in header
+                        $('.location-place_country span').text(city);
+
                         $('#mLocation').text(city);
                         $('#uLocation').val('');
 
