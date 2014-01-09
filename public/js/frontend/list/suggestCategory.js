@@ -57,7 +57,7 @@ define('frontListSuggestCategory',
 		            $(self.settings.categoriesBlock).remove();
 		        } else {
 		        	if (response[0].error == 'not_logged') {
-		        		window.location.href = '/login';
+		        		window.location.href = '/#fb-login';
 		        	} else {
 		        		alert('Oops! Some error occurred. Call to administrator');
 		        	}
