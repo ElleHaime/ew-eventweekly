@@ -212,7 +212,6 @@
                         <p> {{ form.label('recurring') }}</p>
                         {{ form.render('recurring') }}
                         <div class="checkbox-block">
-                            <p> Choose promoter</p>
                             {{ form.render('campaign_id') }}
                         </div>
                     </div>

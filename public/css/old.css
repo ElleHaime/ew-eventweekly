@@ -429,7 +429,7 @@ hr {
     zoom: 1;
     *display: inline;
     vertical-align: middle;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 .user-down .btn-text {
     font-size: 14px;
@@ -437,7 +437,13 @@ hr {
 .btn-list {
     padding: 22px 22px 0 22px;
 }
+.btn-list .btn-text {
+    padding-left: 5px;
+}
 
+.edit-btn .btn-block .btn-text {
+    padding-left: 5px;
+}
 .btn-count {
     color:#ffffff;
     font-weight: bold;
@@ -764,6 +770,7 @@ div.grippie {
 .checkbox-block {
     margin: 10px 0 0px 0;
     border-top:1px solid #cccccc;
+    padding-top: 14px;
 }
 .checkbox-block p {
     padding-top: 10px;
@@ -3808,7 +3815,7 @@ i.icon-map {
 }
 #content_right_inner
 {
-    margin-left: 180px;
+    margin-left: 185px;
 }
 #content_center
 {
@@ -3832,7 +3839,8 @@ i.icon-map {
     border-right: 0;
 }
 
-.sidebar-box .input-append  input:active, .sidebar-box .input-append input:focus
+.sidebar-box .input-append  input:active,
+.sidebar-box .input-append input:focus
 {
     border-right: 0;
 }
@@ -3841,7 +3849,6 @@ i.icon-map {
     width: 60px;
     height: 42px;
 }
-
 
 .event-one-text a { color:#464646}
 

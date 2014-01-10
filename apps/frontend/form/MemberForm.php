@@ -19,14 +19,14 @@ class MemberForm extends Form
 	{
         $this->setAttribute('class', 'form-horizontal');
         $this -> addElement('text', 'extra_email', 'Additional email', array(
-            'placeholder' => 'Additional Email'
+            'placeholder' => 'Additional email'
         ));
         $this -> addElement('text', 'name', 'Your name', array(
-            'placeholder' => 'Your Name'
+            'placeholder' => 'Your name'
         ));
 
-        $this -> addElement('text', 'address', 'Address', array('placeholder' => 'Your Address'));
-        $this -> addElement('text', 'phone', 'Phone', array('placeholder' => 'Your Phone'));
+        $this -> addElement('text', 'address', 'Address', array('placeholder' => 'Your address'));
+        $this -> addElement('text', 'phone', 'Phone', array('placeholder' => 'Your phone'));
 
         $this -> addElement('file', 'logo', 'Logo', array('style' => 'display:none;'));
 
