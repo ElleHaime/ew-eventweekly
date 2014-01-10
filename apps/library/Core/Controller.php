@@ -47,7 +47,7 @@ class Controller extends \Phalcon\Mvc\Controller
             }
 			$this -> session -> set('location', $location);
 		}
-
+//_U::dump($this -> session -> get('location'));
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}

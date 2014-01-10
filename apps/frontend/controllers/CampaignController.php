@@ -36,13 +36,6 @@ class CampaignController extends \Core\Controllers\CrudController
 		parent::editAction();
 	}
 
-	public function setEditExtraRelations()
-	{
-		$this -> editExtraRelations = array(
-			'location' => array('latitude', 'longitude')
-		);
-	}
-
 	/**
 	 * @Route("/campaign/delete", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});  	 
@@ -79,7 +72,9 @@ class CampaignController extends \Core\Controllers\CrudController
 		$newCamp['address'] = $campaign['address'];
 		
 		// process location
-		if (!empty($campaign['location_latitude']) && !empty($campaign['location_longitude'])) {
+		if (!empty($campaign['location_id'])) {
+			$newCamp['location_id'] = $campaign['location_id'];
+		} elseif (!empty($campaign['location_latitude']) && !empty($campaign['location_longitude'])) {
 			// check location by coordinates
 			$location = $loc -> createOnChange(array('latitude' => $campaign['location_latitude'], 
 													 'longitude' => $campaign['location_longitude']), 
@@ -87,13 +82,6 @@ class CampaignController extends \Core\Controllers\CrudController
 			$newCamp['location_id'] = $location -> id;
 
 		} 
-		// location wasn't found
-		if (!isset($newCamp['location_id'])) {
-			if (!empty($campaign['location'])) {
-				$location = $loc -> createOnChange(array('city' => $campaign['location']), array('city'));
-				$newCamp['location_id'] = $location -> id; 
-			}
-		}
 
 		//process image
 		foreach ($this -> request -> getUploadedFiles() as $file) {

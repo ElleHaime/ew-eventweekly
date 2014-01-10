@@ -20,11 +20,12 @@ class Event extends Model
 	public $end_date;
 	public $recurring;
 	public $event_status	= 1;
-	public $coordinates;
+	public $latitude;
+	public $longitude;
 	public $address;
 	public $logo;
 	public $is_description_full = 0;
-
+	
 
 	public function initialize()
 	{

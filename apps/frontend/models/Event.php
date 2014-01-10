@@ -118,19 +118,30 @@ class Event extends EventObject
 	
 
 
-	public function grabEventsByCoordinatesScale($scale, $uId)
+	public function grabEventsByCoordinatesScale($lat, $lng, $uId)
 	{
         $MemberFilter = new MemberFilter();
         $member_categories = $MemberFilter->getbyId($uId);
 
-        $query = 'select event.*, event.logo as logo, location.alias as location, venue.latitude as venue_latitude, venue.longitude as venue_longitude, location.latitude as location_latitude, location.longitude as location_longitude, category.*
-					from \Frontend\Models\Event as event
-					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
-					left join \Frontend\Models\Location as location on event.location_id = location.id
-					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
-                    LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-					where location.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' OR venue.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . '
-					and location.latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' OR venue.longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
+        $query = 'select event.*, 
+        				event.logo as logo, 
+        				location.alias as location,
+        				event.latitude as location_latitude,
+        				event.longitude as location_longitude, 
+        				venue.latitude as venue_latitude, 
+        				venue.longitude as venue_longitude, 
+        				location.latitudeMin as location_latitudeMin, 
+        				location.latitudeMax as location_latitudeMax, 
+        				location.longitudeMin as location_longitudeMin, 
+        				location.longitudeMax as location_longitudeMax,
+        				category.*
+			        from \Frontend\Models\Event as event
+			        left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
+			        left join \Frontend\Models\Location as location on event.location_id = location.id
+			        LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
+			        LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
+			        where location.latitudeMin <= ' . $lat . ' and location.latitudeMax >= ' . $lat . '
+			        	and location.longitudeMin <= ' . $lng . ' and location.longitudeMax >= ' . $lng;
 
         if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
             $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
@@ -182,8 +193,10 @@ class Event extends EventObject
 		if ($locationsList) {
 			$locationsScope = array();
 			foreach ($locationsList as $loc) {
-				$locationsScope[$loc -> id] = array('lat' => $loc -> latitude,
-													'lon' => $loc -> longitude,
+				$locationsScope[$loc -> id] = array('latMin' => $loc -> latitudeMin,
+													'lonMin' => $loc -> longitudeMin,
+													'latMax' => $loc -> latitudeMax,
+													'lonMax' => $loc -> longitudeMax,
 													'city' => $loc -> city,
 													'country' => $loc -> country);
 			}
@@ -233,20 +246,11 @@ class Event extends EventObject
 						if (!empty($ev['venue'])) {
 							if (!isset($venuesScope[$ev['venue']['id']])) {
 
-								// check location by city and country of venue
-								foreach ($locationsScope as $loc_id => $coords) {
-									if ($ev['venue']['city'] == $coords['city'] && $ev['venue']['country'] == $coords['country']) {
-										$eventLocation = $loc_id;
-										break;
-									}
-								}
-
 								// check location by venue coordinates
 								if ($eventLocation == '') {
-									$scale = $geo -> buildCoordinateScale($ev['venue']['latitude'], $ev['venue']['longitude']);	
 									foreach ($locationsScope as $loc_id => $coords) {
-										if ($scale['latMin'] <= $coords['lat'] && $coords['lat'] <= $scale['latMax'] &&
-											$scale['lonMin'] <= $coords['lon'] && $coords['lon'] <= $scale['lonMax'])
+										if ($ev['venue']['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $ev['venue']['latitude'] &&
+											$ev['venue']['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $ev['venue']['longitude'])
 										{
 											$eventLocation = $loc_id;
 											break;
@@ -256,14 +260,15 @@ class Event extends EventObject
 
 								// create new location from coordinates
 								if ($eventLocation == '') {
-									$locationArgs = $geo -> getLocation(array('latitude' => $ev['venue']['latitude'], 
-																			 		  'longitude' => $ev['venue']['longitude']));
-									$loc = $locator -> createOnChange($locationArgs);
+									$loc = $locator -> createOnChange(array('latitude' => $ev['venue']['latitude'], 
+																			'longitude' => $ev['venue']['longitude']));
 									$eventLocation = $loc -> id;
 
 									$locationsScope[$loc -> id] = array(
-														'lat' => $loc -> latitude,
-														'lon' => $loc -> longitude,
+														'latMin' => $loc -> latitudeMin,
+														'lonMin' => $loc -> longitudeMin,
+														'latMax' => $loc -> latitudeMax,
+														'lonMax' => $loc -> longitudeMax,
 														'city' => $loc -> city,
 														'country' => $loc -> country);
 								}

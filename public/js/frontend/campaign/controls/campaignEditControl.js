@@ -15,6 +15,7 @@ define('frontCampaignEditControl',
 				listLocation: '#locations-list',
 				coordsLocationLat: '#location_latitude',
 				coordsLocationLng: '#location_longitude',
+				coordsLocationId: '#location_id',
 
 				inpAddress: '#address',
 				listAddress: '#addresses-list',
@@ -44,6 +45,7 @@ define('frontCampaignEditControl',
 				});
 
 				$(self.settings.inpLocation).keyup(function() {
+					$(self.settings.coordsLocationId).val('');
 					self.__inputFillList(self.settings.inpLocation, 
 										 self.settings.listLocation, 
 										 self.settings.coordsLocationLat,

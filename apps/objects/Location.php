@@ -13,9 +13,12 @@ class Location extends Model
 	public $state;
 	public $country;
 	public $alias;
-	public $coordinates;
 	public $latitude;
 	public $longitude;
+	public $latitudeMin;
+	public $longitudeMin;
+	public $latitudeMax;
+	public $longitudeMax;
 	public $parent_id = 0;
 	 
 
@@ -28,62 +31,65 @@ class Location extends Model
 	}
 	
 	
-	public function createOnChange($argument = array(), $compare = array(), $network = 'facebook')
+	public function createOnChange($argument = array(), $network = 'facebook')
 	{
+		$isGeoObject = false;
+		$newLoc = false;
+		
 		if (empty($argument)) {
 			$geo = $this -> getGeo();
 			$argument = $geo -> getLocation();
+			if ($argument) {
+				$isGeoObject = true;
+			}
 		}
 		$query = array();
-		
-		if (!empty($compare)) {
-			foreach ($compare as $key => $value) {
-				if ($value == 'latitude' || $value == 'longitude') {
-					$query[] = $value . '=' . (float)$argument[$value];
-				} else {
-					$query[] = $value . ' like "%' . trim($argument[$value]) . '%"';					
-				}
-			}
-		} else {
-			if (isset($argument['city'])) {
-				$query[] = 'city like "%' . trim($argument['city']) . '%"';
-			}
-			if (isset($argument['country'])) {
-				$query[] .= 'country like "%' . trim($argument['country']) . '%"';
-			}
+//_U::dump($argument);		
+		if (isset($argument['longitude'])) {
+			$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
+		}
+		if (isset($argument['latitude'])) {
+			$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
 		}
 
 		$query = implode(' and ', $query);
 		$isLocationExists = self::findFirst($query);
 
 		if (!$isLocationExists) {
-			if (isset($argument['latitude']) && isset($argument['longitude']))
-			{
-				$geo = $this -> getGeo();
-				$argument = $geo -> getLocation($argument);
-				$argument['latitude'] = (float)$argument['latitude'];
-				$argument['longitude'] = (float)$argument['longitude'];
-			}
-
-			if (!isset($argument['id']) || empty($argument['id'])) {
-				$argument[$network . '_id'] = null;
+			if (!$isGeoObject) {
+				if (isset($argument['longitude']) && isset($argument['latitude'])) {
+					$newLoc = $geo -> getLocation($argument);
+				}				
 			} else {
-				$argument[$network . '_id'] = $argument['id'];
-				unset($argument['id']);
+				$newLoc = $argument;
 			}
 			
-			if (isset($argument['name']) || !empty($argument['name'])) {
-				$argument['alias'] = $argument['name'];
-				unset($argument['name']);
-			} 
-				
-			$this -> assign($argument);
+			if ($newLoc) {
+				if (!isset($argument['id']) || empty($argument['id'])) {
+					$newLoc[$network . '_id'] = null;
+				} else {
+					$newLoc[$network . '_id'] = $argument['id'];
+				}
+			}
+			
+			$this -> assign($newLoc);
 			$this -> save();
 			
-			return $this;
-			
-		} else {
-			return $isLocationExists;
+			$isLocationExists = $this;
 		}
+
+		if ($newLoc !== false) {
+			$isLocationExists -> latitude = $newLoc['latitude'];
+			$isLocationExists -> longitude = $newLoc['longitude'];
+		} else {
+			$isLocationExists -> latitude = (float)$argument['latitude'];
+			$isLocationExists -> longitude = (float)$argument['longitude'];
+		}
+		$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
+		$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
+		$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
+		$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
+//_U::dump($isLocationExists);		
+		return $isLocationExists;
 	} 
 }

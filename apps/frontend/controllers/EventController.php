@@ -125,11 +125,9 @@ class EventController extends \Core\Controllers\CrudController
 			} 
 
 		} else {
-
 			// user registered via email
 			$events = array();
-			$scale = $this -> geo -> buildCoordinateScale($loc -> latitude , $loc -> longitude);
-			$eventsList = $eventModel -> grabEventsByCoordinatesScale($scale, $this->session->get('memberId'));
+			$eventsList = $eventModel -> grabEventsByCoordinatesScale($loc -> latitude , $loc -> longitude, $this->session->get('memberId'));
 
 			if ($eventsList -> count() > 0) {
 				$events[0] = array();
@@ -354,7 +352,6 @@ class EventController extends \Core\Controllers\CrudController
 	public function setEditExtraRelations()
 	{
 		$this -> editExtraRelations = array(
-			'location' => array('latitude', 'longitude'),
 			'venue' => array('latitude', 'longitude')
 		);
 	}
@@ -511,7 +508,9 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		
 		// process location
-		if (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
+		if (!empty($event['location_id'])) {
+			$newEvent['location_id'] = $event['location_id']; 
+		} elseif (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
 			// check location by coordinates
 			$location = $loc -> createOnChange(array('latitude' => $event['location_latitude'], 
 													 'longitude' => $event['location_longitude']), 
@@ -522,20 +521,10 @@ class EventController extends \Core\Controllers\CrudController
 		// location coordinates wasn't set. Try to get location from venue or address coordinates 
 		if (!isset($newEvent['location_id'])) {
 			if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
-				if (!empty($coords)) {
-					$scale = $geo -> buildCoordinateScale($event['venue_latitude'], $event['venue_longitude']);
-					$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
-										and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
-					$location =  $loc::findFirst($query);
-					$newEvent['location_id'] = $location -> id;
-				}
-			}
-		}
-		// venue/address coordinates wasn't set or location wasn't found
-		if (!isset($newEvent['location_id'])) {
-			if (!empty($event['location'])) {
-				$location = $loc -> createOnChange(array('city' => $event['location']), array('city'));
-				$newEvent['location_id'] = $location -> id; 
+				$location = $loc -> createOnChange(array('latitude' => $event['venue_latitude'],
+														 'longitude' => $event['venue_longitude']),
+														 array('latitude', 'longitude'));
+				$newEvent['location_id'] = $location -> id;
 			}
 		}
 

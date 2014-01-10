@@ -38,6 +38,7 @@ class EventForm extends Form
 								array('placeholder' => 'Choose location'));
 		$this -> addElement('hidden', 'location_latitude');
 		$this -> addElement('hidden', 'location_longitude');
+		$this -> addElement('hidden', 'location_id');
 		
 		$this -> addElement('text', 'address', 'Address', 
 								array('placeholder' => 'Choose address'));
