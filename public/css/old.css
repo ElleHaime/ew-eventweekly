@@ -429,7 +429,7 @@ hr {
     zoom: 1;
     *display: inline;
     vertical-align: middle;
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 .user-down .btn-text {
     font-size: 14px;
@@ -437,7 +437,13 @@ hr {
 .btn-list {
     padding: 22px 22px 0 22px;
 }
+.btn-list .btn-text {
+    padding-left: 5px;
+}
 
+.edit-btn .btn-block .btn-text {
+    padding-left: 5px;
+}
 .btn-count {
     color:#ffffff;
     font-weight: bold;

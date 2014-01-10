@@ -35,12 +35,12 @@
                                     <div class="btn-line clearfix">
                                         <button class="btn" onclick="location.href='/profile'">
                                             <span class="edit-icon"></span>
-                                            <span class="btn-text">profile settings</span>
+                                            <span class="btn-text">Profile settings</span>
                                         </button>
                                         <a href="#" class="btn-logout" onclick="location.href='/logout'"></a>
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/campaign/list'">
-                                        <span class="edit-icon"></span><span class="btn-text">manage campaigns</span>
+                                        <span class="edit-icon"></span><span class="btn-text">Manage campaigns</span>
                                     </button>
                                 </div>
                                 <div class="btn-list">
@@ -52,7 +52,7 @@
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/event/joined'">
                                         <span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span>
-                                        <span class="btn-text">Where I Go</span>
+                                        <span class="btn-text">Where I go</span>
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/liked'">
                                         <span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
