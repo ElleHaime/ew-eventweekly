@@ -39,10 +39,15 @@
                                               <!--small block with photo -->
                                                 <div class="event-one-img" id="current_event_id" event="{{ event.id }}">
                                                     {% if event.logo is defined %}
-                                                    <a href="/event/show/{{ event.id }}">
-                                                    <img src="/upload/img/event/{{ event.logo }}">
-                                                    </a>
+                                                        {% set image = '/upload/img/event/' ~ event.logo %}
+                                                        {% if event.logo is empty %}
+                                                            {% set image = '/img/logo200.png' %}
+                                                        {% endif %}
                                                     {% endif %}
+
+                                                    <a href="/event/show/{{ event.id }}">
+                                                        <img src="{{ image }}">
+                                                    </a>
                                                 </div>
 
                                                 <h4 class="name-link">{{ event.name }}</h4>
