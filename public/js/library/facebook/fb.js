@@ -13,6 +13,7 @@ define('fb',
 								'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights';
 			self.settings = {
                 userEventsGoing: '#userEventsGoing',
+                currentEventIdBox: '#current_event_id',
 
 				btnLogin: '#fb-login',
 				btnInvite: '#fb-invite',
@@ -71,6 +72,7 @@ define('fb',
 
 				$(self.settings.btnEventGoing).click(function(e) {
 					self.__goingEvent();
+                    self.__shareEvent();
 				});
 
 				$(self.settings.btnEventMaybe).click(function(e) {
@@ -149,10 +151,12 @@ define('fb',
 
 			self.__shareEvent = function()
 			{
-		 		FB.ui({ picture: window.location.host + self.shareImg,
+                var image = $(self.settings.currentEventIdBox + ' img');
+
+		 		FB.ui({ picture: window.location.host + image.attr('src'),
 		            	method: 'feed',
 		            	link: window.location.href,
-		            	caption: 'User are shared this event'
+		            	caption: 'I am attending event at Event Weekly!'
 		        }, function(response){});
 			}
 
