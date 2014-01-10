@@ -67,7 +67,7 @@ define('frontEventEditControl',
 			self.init = function()
 			{
                 utils.addEmptyOptionFirst($(self.settings.inpCategory), 'Choose categories');
-				utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'No campaign');
+				utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
 
 				var camp = $(self.settings.inpCampaignExists).val();
 				if (camp != 0) {
