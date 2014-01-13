@@ -284,6 +284,11 @@ class MemberController extends \Core\Controllers\CrudController
             $this->session->set('member', $sMember);
 
             $this->session->set('location', $Location);
+
+            $this->cookies->get('lastLat')->delete();
+            $this->cookies->get('lastLng')->delete();
+            $this->cookies->get('lastCity')->delete();
+
             $result = array('status' => true);
         }else {
             $result = array('status' => false);
