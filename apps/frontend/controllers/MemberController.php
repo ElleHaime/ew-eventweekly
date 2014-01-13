@@ -330,7 +330,7 @@ class MemberController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/member/get-private-preset", methods={'get'})
-     * @Acl(roles={'member'});
+     * @Acl(roles={'guest', 'member'});
      */
     public function getPrivatePresetAction()
     {
@@ -343,6 +343,7 @@ class MemberController extends \Core\Controllers\CrudController
             $response['member_categories'] = $MemberFilter->getbyId($this->session->get('memberId'))['category']['value'];
         } else {
             $response['errors'] = true;
+            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
         }
 
         $this->sendAjax($response);
