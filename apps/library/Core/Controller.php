@@ -7,7 +7,8 @@ use Phalcon\Filter,
 	Core\Utils as _U,
 	Frontend\Form\SearchForm,
     Frontend\Models\Location,
-    Frontend\Models\EventCategory AS CountEvent;
+    Frontend\Models\EventCategory AS CountEvent,
+    Thirdparty\MobileDetect\MobileDetect;
 
 class Controller extends \Phalcon\Mvc\Controller
 {
@@ -109,6 +110,13 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
+
+        $detect = new MobileDetect();
+        if ( $detect->isMobile() || $detect->isTablet() ) {
+            $this->view->setVar('isMobile', '1');
+        } else {
+            $this->view->setVar('isMobile', '0');
+        }
 	}
 	
 

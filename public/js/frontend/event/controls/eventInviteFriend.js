@@ -16,7 +16,10 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 friendsBlock: '#friendsBlock',
                 friendClass: 'friendItem',
                 eventLink: window.location.href,
-                wallText: 'Check out this awesome event!'
+                wallText: 'Check out this awesome event!',
+
+                isLogged: '#isLogged',
+                isMobile: '#isMobile'
             },
 
             /**
@@ -61,8 +64,15 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
             __friendsClickHandler: function() {
                 var $this = this;
                 return function(event){
-                    event.preventDefault();
-                    $this.__getFriends();
+                    if ($($this.settings.isLogged).val() === '0') {
+                        noti.createNotification(
+                            'Please <a href="/#fb-login">login via Facebook</a> to be able to invite your friends to event', 'warning'
+                        )
+                    } else {
+                        event.preventDefault();
+                        $this.__getFriends();
+                    }
+                    return true;
                 }
             },
 
@@ -74,15 +84,24 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
              */
             __fbMsgHandler: function() {
                 var $this = this;
-                return function() {
-                    if ($this.__issetFB()) {
-                        FB.ui({
-                            method: 'send',
-                            to: $(this).data('id'),
-                            link: $this.settings.eventLink
-                        });
+                return function(event) {
+                    if ($($this.settings.isMobile).val() === '1') {
+                        console.log($(this));
+                        var friendId = $(this).attr('data-id');
+                        window.location = 'http://www.facebook.com/dialog/send?app_id=166657830211705&link=' +
+                            document.URL + '&redirect_uri=' + document.URL + '&to='+ friendId;
+                    } else {
+                        if ($this.__issetFB()) {
+                            if ($this.__issetFB()) {
+                                FB.ui({
+                                    method: 'send',
+                                    to: $(this).data('id'),
+                                    link: $this.settings.eventLink
+                                });
+                            }
+                            $this.__removeFriendList();
+                        }
                     }
-                    $this.__removeFriendList();
                 }
             },
 

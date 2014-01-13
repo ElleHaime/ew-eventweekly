@@ -44,6 +44,7 @@ $cfg_settings = array(
 			'Thirdparty\Geo' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 			'Thirdparty\Facebook' => ROOT_APP . 'apps/library/Thirdparty/Facebook/',
 			'Categoryzator' => ROOT_APP . 'apps/library/Thirdparty/Categoryzator/',
+            'Thirdparty\MobileDetect' => ROOT_APP . 'apps/library/Thirdparty/MobileDetect/',
 		),
 		'mailer' => array(
 			//'path' => ROOT_LIB . 'Mail/Swift/swift_required.php'
