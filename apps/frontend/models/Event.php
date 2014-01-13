@@ -138,16 +138,6 @@ class Event extends EventObject
 
 		return $events;
 	}
-	
-	
-	public function grabEventsDescription($eventId)
-	{
-		$this -> facebook = new Extractor();
-		$result = $this -> facebook -> getEventDescription($eventId);
-	
-		return $result;
-	}
-	
 
 
     public function grabEventsByCoordinatesScale($lat, $lng, $uId)

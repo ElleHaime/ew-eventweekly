@@ -189,18 +189,6 @@ class EventController extends \Core\Controllers\CrudController
 	public function showAction($eventId)
 	{
 		$event = Event::findFirst($eventId);
-		
-		if ($event -> fb_uid != '' && $event -> is_description_full != 1) {
-			$descFull = $event -> grabEventsDescription($event -> fb_uid);
-				
-			if ($descFull && $descFull != '') {
-				$description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$event -> assign(array('description' => $description,
-									   'is_description_full' => 1));
-				$event -> save();
-			}
-		}
-
         $memberpart = null;
 		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
 			foreach ($event -> memberpart as $mpart) {
