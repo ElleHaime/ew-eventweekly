@@ -26,6 +26,7 @@ class MemberListener {
         $this->subject = $subject->getSource();
         $this->subject->cookies->get('lastLat')->delete();
         $this->subject->cookies->get('lastLng')->delete();
+        $this->subject->cookies->get('lastCity')->delete();
     }
 
     /**
