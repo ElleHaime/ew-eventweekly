@@ -58,6 +58,14 @@ define('frontTopPanel',
 		                var lng = list.getPlace().geometry.location.lng();
 
 		                self.__city = list.getPlace().vicinity;
+
+                        if (_.isUndefined(self.__city)) {
+                            self.__city = list.getPlace().name;
+                        }
+
+                        if (_.isUndefined(self.__city)) {
+                            self.__city = list.getPlace().formatted_address;
+                        }
 		                //$(self.settings.searchCityBtn).find('span').text(self.__city);
 
 		                self.__sendCoords(lat, lng);

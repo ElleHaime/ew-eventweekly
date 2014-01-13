@@ -40,7 +40,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $member = $this -> session -> get('member');
         $loc = $this -> session -> get('location');
 
-		if (!$loc || !is_object($member) || ($loc->id != $member->location_id)) {
+		if (!$loc || (is_object($member) && $loc->id != $member->location_id) && $loc instanceof \stdClass) {
             if ($member) {
                 $location = Location::findFirst('id = '.$member->location_id);
             }
@@ -50,11 +50,16 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this -> session -> set('location', $location);
 		}
 
+        $loc = $this -> session -> get('location');
+
 		if (!$loc -> latitude && !$loc -> longitude) {
-			$geo = new \Core\Geo();
-			$coords = $geo -> getUserLocation();
-			$loc -> latitude = $coords['latitude'];
-			$loc -> longitude = $coords['longitude'];
+			//$geo = new \Core\Geo();
+			//$coords = $geo -> getUserLocation();
+			//$loc -> latitude = $coords['latitude'];
+			//$loc -> longitude = $coords['longitude'];
+
+            $loc -> latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
+			$loc -> longitude = (float)(($loc->longitudeMin + $loc->longitudeMax) / 2);
 			$loc -> latitudeMin = (float)$loc -> latitudeMin;
 			$loc -> latitudeMax = (float)$loc -> latitudeMax;
 			$loc -> longitudeMin = (float)$loc -> longitudeMin;

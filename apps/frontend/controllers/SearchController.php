@@ -98,22 +98,8 @@ class SearchController extends \Core\Controller
 
                 $loc = new Location();
                 $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-                $location = $this->session->get('location');
 
-                if ($newLocation -> city) {
-                    $location->city = $newLocation -> city;
-                    $location->alias = $newLocation -> alias;
-                } else {
-                    $location->city = $newLocation -> country;
-                    $location->alias = $newLocation -> country;
-                }
-                if ($newLocation -> state) {
-                    $location->state = $newLocation -> state;
-                }
-                $location->latitude = $newLocation -> latitude;
-                $location->longitude = $newLocation -> longitude;
-
-                $this->session->set('location', $location);
+                $this->session->set('location', $newLocation);
 
                 $this->cookies->get('lastLat')->delete();
                 $this->cookies->get('lastLng')->delete();
