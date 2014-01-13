@@ -50,6 +50,11 @@ define('frontSearchPanel',
         __privateCategories: [],
 
         /**
+         * Button that was clicked
+         */
+        __clickedSwitchBtn: null,
+
+        /**
          * Initialize clicks. Constructor
          */
         init: function(options) {
@@ -212,6 +217,8 @@ define('frontSearchPanel',
             return function(event) {
                 event.preventDefault();
 
+                $this.__clickedSwitchBtn = $(this);
+
                 if ($(this).data('type') == 'private') {
 
                     $this.__globalCategories.length = 0;
@@ -219,16 +226,28 @@ define('frontSearchPanel',
                         $this.__globalCategories.push(node);
                     });
 
-                    $($this.settings.switchStateBtnBlock+' button').removeClass('active');
-                    $(this).addClass('active');
-
+                    $this.__switchSearchTypeBtnState();
                     $this.__tryApplyPreset();
                 }else {
-                    $($this.settings.switchStateBtnBlock+' button').removeClass('active');
-                    $(this).addClass('active');
-
+                    $this.__switchSearchTypeBtnState();
                     $this.__tryApplyGlobal();
                 }
+            }
+        },
+
+        __switchSearchTypeBtnState: function() {
+            var $this = this, btns = $($this.settings.switchStateBtnBlock+' button'), activeBtn = null, inactiveBtn = null;
+            _.each(btns, function(btn) {
+                btn = $(btn);
+                if (btn.hasClass('active')) {
+                    activeBtn = btn;
+                }else {
+                    inactiveBtn = btn;
+                }
+            });
+            btns.removeClass('active');
+            if (!_.isNull(inactiveBtn)) {
+                inactiveBtn.addClass('active');
             }
         },
 
@@ -236,7 +255,14 @@ define('frontSearchPanel',
             var $this = this;
             $.when(utils.request('get', $this.settings.privatePresetUrl)).then(function(response){
                 if (response.errors) {
-                    noti.createNotification('Some errors occurred! Call to administrator!', 'error');
+                    var err_msg = 'Some errors occurred! Call to administrator!';
+                    if (_.isUndefined(response.error_msg) || _.isEmpty(response.error_msg) || _.isNull(response.error_msg) || _.isNull(response.error_msg)) {
+                        err_msg = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
+                    }else {
+                        err_msg = response.error_msg;
+                    }
+                    noti.createNotification(err_msg, 'warning');
+                    $this.__switchSearchTypeBtnState();
                 }else {
                     $($this.settings.searchCategoriesTypeBlock + ' input').prop('checked', false);
                     $($this.settings.searchCategoriesTypeBlock + ' input[value="private"]').prop('checked', true);
