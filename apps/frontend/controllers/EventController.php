@@ -71,7 +71,10 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('events', array_merge($events[0], $events[1]));
 			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
 			$this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
-		}
+		}else {
+            $this -> view -> setVar('eventsTotal', 0);
+            $this -> session -> set('eventsTotal', 0);
+        }
 
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
@@ -91,15 +94,18 @@ class EventController extends \Core\Controllers\CrudController
         $loc = $this -> session -> get('location');
         
         if(!empty($lat) && !empty($lng)) {
-            $loc -> latitude = $lat;
-            $loc -> longitude = $lng ;
+            $newLocation = new Location();
+            $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+            $this->session->set('location', $newLocation);
+
+            $loc = $newLocation;
         }
 		if(!empty($city)) {
-			$loc -> city = $city;
-			$loc -> alias = $city;
+            $newLocation->city = $city;
+            $newLocation->alias = $city;
+            $this->session->set('location', $newLocation);
 		}
-		
-		$this -> session -> set('location', $loc);
+
 		$eventModel = new Event();
 
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {

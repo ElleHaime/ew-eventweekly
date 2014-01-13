@@ -6,7 +6,7 @@ define('gmapEvents',
 		{
 		    var self = this;
 
-		   	self.debug = true,
+		   	self.debug = false,
 		    self.settings = {
 		        autoGetEvents: true,
 		        eventsUrl: '/eventmap',
