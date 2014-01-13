@@ -21,7 +21,7 @@
 {% if member.id is defined %}
     <input id="isLogged" type="hidden" value="1" />
 {% else %}
-    <input id="isLogged" type="hidden" value="1" />
+    <input id="isLogged" type="hidden" value="0" />
 {% endif %}
 
 {% if isMobile is defined %}
