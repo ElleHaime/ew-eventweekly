@@ -17,3 +17,13 @@
 {% if acc_external is defined %}
     <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
 {% endif %}
+
+{% if member.id is defined %}
+    <input id="isLogged" type="hidden" value="1" />
+{% else %}
+    <input id="isLogged" type="hidden" value="1" />
+{% endif %}
+
+{% if isMobile is defined %}
+    <input id="isMobile" type="hidden" value="{{ isMobile }}" />
+{% endif %}
