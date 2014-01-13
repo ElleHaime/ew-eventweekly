@@ -11,7 +11,7 @@ namespace Categoryzator\Core;
 class Analizator {
 
     /**
-     * @var string
+     * @var Text string
      */
     private $Text = null;
 
@@ -53,11 +53,11 @@ class Analizator {
     /**
      * Get categories and set analiz type
      *
-     * @param $text
+     * @param Text $text
      * @param $analizType
      * @throws CategoryzatorException
      */
-    public function __construct($text, $analizType)
+    public function __construct(Text $text, $analizType)
     {
         if (!$text instanceof Text) {
             throw new CategoryzatorException('Param $text must be a instance of Categoryzator\Core\Text object');
@@ -92,20 +92,22 @@ class Analizator {
      */
     private function countWords()
     {
-        $words = explode(' ', $this->Text->content);
+        foreach ($this->Text->content as $index => $content) {
+            $words = explode(' ', $content);
 
-        foreach ($words as $word) {
-            $word = preg_replace("/[^\w$]/", '', $word);
+            foreach ($words as $word) {
+                $word = preg_replace("/[^\w$]/", '', $word);
 
-            $word = explode('_', Inflector::underscore($word));
+                $word = explode('_', Inflector::underscore($word));
 
-            foreach ($word as $wrd) {
-                if (!array_key_exists($wrd, $this->countedWords)) {
-                    $this->countedWords[$wrd] = 0;
-                }
+                foreach ($word as $wrd) {
+                    if (!array_key_exists($wrd, $this->countedWords)) {
+                        $this->countedWords[$wrd] = 0;
+                    }
 
-                if (array_key_exists($wrd, $this->countedWords)) {
-                    $this->countedWords[$wrd]++;
+                    if (array_key_exists($wrd, $this->countedWords)) {
+                        $this->countedWords[$wrd]++;
+                    }
                 }
             }
         }
@@ -120,7 +122,7 @@ class Analizator {
      */
     private function countEntry()
     {
-
+        $this->Text->tag = array();
         $entries = array();
         foreach ($this->categories as $categoryKey => $category) {
 
@@ -130,6 +132,9 @@ class Analizator {
 
                     if (!array_key_exists($keyWord, $entries)) {
                         $entries[$keyWord] = 0;
+                        if (!in_array($keyWord, $this->Text->tag)) {
+                            $this->Text->tag[$categoryKey][] = $keyWord;
+                        }
                     }
 
                     if (array_key_exists($keyWord, $entries)) {

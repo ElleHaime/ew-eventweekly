@@ -7,6 +7,7 @@ use Core\Utils as _U,
     Frontend\Models\MemberFilter,
     Frontend\Models\Member,
     Frontend\Models\Location,
+    Frontend\Models\Tag,
     Frontend\Form\ChangePassForm,
     Frontend\Form\MemberForm;
 
@@ -34,9 +35,16 @@ class MemberController extends \Core\Controllers\CrudController
         $MemberFilter = new MemberFilter();
         $member_categories = $MemberFilter->getbyId($list->id);
 
+        $tagIds = '';
+        if ( isset($member_categories['tag']['value']) ) {
+            $tagIds = implode(',', $member_categories['tag']['value']);
+        }
+
 		$this->view->setVars(array(
                 'member', $list,
                 'categories' => Category::find()->toArray(),
+                'tags' => Tag::find()->toArray(),
+                'tagIds' => $tagIds,
                 'member_categories' => $member_categories
             ));
 
@@ -206,7 +214,29 @@ class MemberController extends \Core\Controllers\CrudController
                 $MemberFilter->save($toSave);
             } else {
                 $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
-                $filters->delete();
+                if ($filters) {
+                    $filters->delete();
+                }
+            }
+
+            $MemberFilter = new MemberFilter();
+            if (!empty($postData['tagIds'])) {
+                $toSave = array(
+                    'member_id' => $Member->id,
+                    'key' => 'tag',
+                    'value' => json_encode(array_filter(explode(',', $postData['tagIds'])))
+                );
+
+                if (!empty($postData['recordTagId']) && isset($postData['recordTagId'])) {
+                    $toSave['id'] = $postData['recordTagId'];
+                }
+
+                $MemberFilter->save($toSave);
+            } else {
+                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "tag"');
+                if ($filters) {
+                    $filters->delete();
+                }
             }
         }
 
@@ -223,29 +253,11 @@ class MemberController extends \Core\Controllers\CrudController
 
         $member = null;
 
-        $postData = $this->request->getPost();
+        $postData = $this -> request-> getPost();
 
-        $Location = new Location();
-
-        $isLocationExists = $Location::findFirst('city like "%' . trim($postData['city']) . '%" AND country like "%' . trim($postData['country']) . '%"');
-
-
-        if (!$isLocationExists) {
-            $Location->city = $postData['city'];
-            $Location->alias = $postData['city'];
-            $Location->country = $postData['country'];
-            $Location->latitude = $postData['lat'];
-            $Location->longitude = $postData['lng'];
-
-            if (!$Location->save()) {
-                $process = false;
-            }
-
-            $id = $Location->id;
-        }else {
-            $id = $isLocationExists->id;
-            $Location = $isLocationExists;
-        }
+        $newLoc = new Location();
+        $Location = $newLoc -> createOnChange(array('latitude' => $postData['lat'], 'longitude' => $postData['lng']));
+        $id = $Location->id;
 
         if ($process) {
             $sMember = $this->session->get('member');
@@ -314,5 +326,25 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->view->form = $form;
+    }
+
+    /**
+     * @Route("/member/get-private-preset", methods={'get'})
+     * @Acl(roles={'member'});
+     */
+    public function getPrivatePresetAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        if ($this->session->has('memberId')) {
+            $MemberFilter = new MemberFilter();
+            $response['member_categories'] = $MemberFilter->getbyId($this->session->get('memberId'))['category']['value'];
+        } else {
+            $response['errors'] = true;
+        }
+
+        $this->sendAjax($response);
     }
 }

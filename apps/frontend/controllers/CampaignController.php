@@ -36,6 +36,7 @@ class CampaignController extends \Core\Controllers\CrudController
 		parent::editAction();
 	}
 
+
 	/**
 	 * @Route("/campaign/delete", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});  	 
@@ -77,8 +78,7 @@ class CampaignController extends \Core\Controllers\CrudController
 		} elseif (!empty($campaign['location_latitude']) && !empty($campaign['location_longitude'])) {
 			// check location by coordinates
 			$location = $loc -> createOnChange(array('latitude' => $campaign['location_latitude'], 
-													 'longitude' => $campaign['location_longitude']), 
-													 array('latitude', 'longitude'));
+													 'longitude' => $campaign['location_longitude']));
 			$newCamp['location_id'] = $location -> id;
 
 		} 

@@ -38,6 +38,7 @@ $cfg_settings = array(
 			'Core' => ROOT_APP . 'apps/library/Core/',
 			'Core\Acl' => ROOT_APP . 'apps/library/Core/Acl/',
 			'Core\Controllers' => ROOT_APP . 'apps/library/Core/Controller/',
+			'Core\Traits' => ROOT_APP . 'apps/library/Core/Traits/',
 			'Core\Form\Element' => ROOT_APP . 'apps/library/Core/Form/Element/',
 			'Objects' => ROOT_APP . 'apps/objects/',
 			'Thirdparty\Geo' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',

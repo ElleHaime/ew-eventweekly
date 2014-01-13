@@ -10,7 +10,8 @@ use \Phalcon\Mvc\ModuleDefinitionInterface,
 	\Core\Auth,
 	\Core\Mail,
 	\Core\Geo,
-	\Core\Acl;
+	\Core\Acl,
+    Frontend\Events\ViewListener;
 
 abstract class Bootstrap implements ModuleDefinitionInterface
 {
@@ -70,7 +71,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                             $eventsManager = $di->getShared('eventsManager');
 
-                            $eventsManager->attach('view:beforeRender', function($event, $view) use ($di) {
+                            /*$eventsManager->attach('view:beforeRender', function($event, $view) use ($di) {
                                     $session = $di->getShared('session');
 
                                     if ($session->has('flashMsgText')) {
@@ -83,7 +84,9 @@ abstract class Bootstrap implements ModuleDefinitionInterface
                                         $session->remove('flashMsgType');
                                     }
 
-                                });
+                                });*/
+
+                            $eventsManager->attach('view:beforeRender', new ViewListener($di));
 
                             $view->setEventsManager($eventsManager);
 
@@ -131,7 +134,8 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	protected function _initSession($di)
 	{
 		$di -> set('session', function() {
-			$session = new \Phalcon\Session\Adapter\Files();
+			//$session = new \Phalcon\Session\Adapter\Files();
+			$session = new \Core\Session();
 			$session -> start();
 			
 			return $session;

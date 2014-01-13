@@ -15,6 +15,7 @@ define('frontMemberEditControl',
                 listAddress: '#address-list',
 
                 settingsBoxCheckbox: '.settings-box-one .checkbox',
+                activeCheckbox: '.settings-box-one .checkbox',
                 fieldId: '.fieldId',
 
                 filters: '#filters',
@@ -27,7 +28,11 @@ define('frontMemberEditControl',
                 txtProfileName: '.profile-name',
                 txtLocationState: '.location-state',
                 txtExtraEmail: '.extra-email',
-                txtPhone: '.phone'
+                txtPhone: '.phone',
+
+                marker: '.marker',
+                disabledMarker: 'disabled-marker',
+                inpTagIds: '#tagIds'
             },
 
             self.init = function()
@@ -48,6 +53,10 @@ define('frontMemberEditControl',
 
                 $(self.settings.saveFilterBtn).click(function(){
                     $(self.settings.filters).submit();
+                });
+
+                $(self.settings.activeCheckbox).click(function(){
+                    self.__clearTags($(this).parent());
                 });
 
                 $(self.settings.settingsBoxCheckbox).click(function () {
@@ -116,6 +125,22 @@ define('frontMemberEditControl',
                 $(self.settings.btnImgUpload).on('change', function(e) {
                     self.__loadImage(e);
                 });
+
+                $(self.settings.marker).click(function(){
+                    $(this).toggleClass(self.settings.disabledMarker);
+
+                    var clickedId = $(this).attr('data-id');
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                    if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                    } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                    }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
             }
 
             self.checkFill = function(field)
@@ -175,6 +200,20 @@ define('frontMemberEditControl',
                 })(file);
 
                 reader.readAsDataURL(file);
+            }
+
+            self.__clearTags = function(element)
+            {
+                var tagsToClear = $(element).find('.marker:not(.disabled-marker)');
+
+                var tagIds = null;
+                tagsToClear.each(function( index, element) {
+                    $(this).toggleClass('disabled-marker');
+
+                    tagIds = $(self.settings.inpTagIds).val().split(',');
+                    tagIds.splice( tagIds.indexOf($(this).attr('data-id')), 1);
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
             }
         }
 

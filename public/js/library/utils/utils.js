@@ -72,8 +72,8 @@ define('utils',
 
 				if (daysNum > 30) {
 		            var count = Math.round(daysNum/30),
-		                resut = 'Event happens more than in ' + count + ' month';
-		            if (count > 1) { 
+                        result = 'Event happens more than in ' + count + ' month';
+		            if (count > 1) {
 		            	result += 's';
 		            }
 

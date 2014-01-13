@@ -53,9 +53,14 @@
                                                 <h4 class="name-link">{{ event.name }}</h4>
 
                                                 <div class="date-list">
-                                                    <i class="icon-time"></i>
-                                                    <span class="date-start">{{ event.start_date_nice }}</span> start at
-                                                    <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
+                                                    {% if event.start_date_nice is defined  %}
+                                                        <i class="icon-time"></i>
+                                                        <span class="date-start">{{ event.start_date_nice }}</  span> 
+                                                        {% if event.start_time is defined %}
+                                                            start at
+                                                            <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
+                                                        {% endif %}
+                                                    {% endif %}
                                                 </div>
 
                                                 <p>{{ event.description|nl2br }}</p>
@@ -187,7 +192,7 @@
         </div>
     </div>
 </div>
-
+    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
 {% endblock %}
 
 

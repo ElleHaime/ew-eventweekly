@@ -25,10 +25,12 @@ require.config({
 		'resizer': 'library/vendors/resizer',
 		'bootstrap': 'library/vendors/bootstrap.min',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
+		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
 
 		// maps
 		'gmap': 'library/maps/gmap',
 		'gmapEvents': 'library/maps/gmapEvents',
+		'eventsPointer': 'library/maps/eventsPointer',
 
 		// facebook
 		'fb': 'library/facebook/fb',
@@ -56,6 +58,13 @@ require.config({
         'datetimepicker': {
         	deps: ['jquery'],
         	exports: 'datetimepicker'
+        },
+        'bootstrapDatepicker': {
+        	deps: ['jquery'],
+        	exports: 'bootstrapDatepicker'
+        },
+        'bootstrap' : {
+            deps: ['jquery']
         }
 	},
 
@@ -78,9 +87,12 @@ require.config({
         	moduleName = 'frontend' + fileName;
         };
 
+        console.log('Call module: '+moduleName);
+
   		require([moduleName]);
 
-        require(['frontSearchPanel'], function(frontSearchPanel){
+        require(['jquery', 'frontSearchPanel', 'bootstrap'], function($, frontSearchPanel, bootstrap){
+            $('.tooltip-text').tooltip();
             frontSearchPanel.init();
         });
     }	

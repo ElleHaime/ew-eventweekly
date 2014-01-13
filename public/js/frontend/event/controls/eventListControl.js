@@ -121,10 +121,10 @@ define('frontEventListControl',
 			{
 				if (status == 0) {
 					self.processedElement.removeClass('unpublishEvent').addClass('publishEvent');
-					self.processedElement.children().text('publish');
+					self.processedElement.children().text('Publish');
 				} else {
 					self.processedElement.removeClass('publishEvent').addClass('unpublishEvent');
-					self.processedElement.children().text('unpublish');
+					self.processedElement.children().text('Unpublish');
 				}
 
 				self.processedElement = null;

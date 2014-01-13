@@ -24,7 +24,6 @@ class Geo extends Plugin
 	protected $_config 		= false;
 	protected $_errors		= array();
 	
-	
 	public function __construct($dependencyInjector = null)
 	{
 		if ($dependencyInjector) {
@@ -62,18 +61,16 @@ class Geo extends Plugin
 			$this -> _userIp = $this -> getUserIp();
 		}
 	}
+
+	public function getUserLocation()
+	{
+		return array('latitude' => $this -> _locLatCur,
+					 'longitude' => $this -> _locLonCur);
+	}
 	
 	public function getUserIp()
 	{
 		return $this -> _userIp;
-	}
-	
-	public function getUserCoordinates()
-	{
-		return array('latitudeMin' => $this -> _locLatMin,
-					 'longitudeMin' => $this -> _locLonMin,
-					 'latitudeMax' => $this -> _locLatMax,
-					 'longitudeMax' => $this -> _locLonMax);
 	}
 
 	public function getLocation($coordinates = array())
@@ -94,38 +91,42 @@ class Geo extends Plugin
 					if ($details -> types[0] == 'locality') {
 						$scope = $details;
 					}
-				}			
-				foreach ($scope -> address_components as $obj => $lvl) {
-					if ($lvl -> types[0] == 'locality') {
-						// city								
-						$location['alias'] = $lvl -> long_name;
-						$location['city'] = $lvl -> long_name;
-					}
-					if ($lvl -> types[0] == 'administrative_area_level_1') {
-						// state
-						$location['state'] = $lvl -> long_name;
-					}
-					if ($lvl -> types[0] == 'country') {
-						// country
-						$location['country'] = $lvl -> long_name;
-					}
 				}
+				if ($scope) {			
+					foreach ($scope -> address_components as $obj => $lvl) {
+						if ($lvl -> types[0] == 'locality') {
+							// city								
+							$location['alias'] = $lvl -> long_name;
+							$location['city'] = $lvl -> long_name;
+						}
+						if ($lvl -> types[0] == 'administrative_area_level_1') {
+							// state
+							$location['state'] = $lvl -> long_name;
+						}
+						if ($lvl -> types[0] == 'country') {
+							// country
+							$location['country'] = $lvl -> long_name;
+						}
+					}
 
-				if (!empty($coordinates)) {
-					$location['latitude'] = (float)$coordinates['latitude'];
-					$location['longitude'] = (float)$coordinates['longitude'];
+					if (!empty($coordinates)) {
+						$location['latitude'] = (float)$coordinates['latitude'];
+						$location['longitude'] = (float)$coordinates['longitude'];
+					} else {
+						$location['latitude'] = (float)$this -> _locLatCur ;
+						$location['longitude'] = (float)$this -> _locLonCur;
+					}
+					if (!empty($result -> results[0] -> geometry)) {
+						$location['latitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lat;
+						$location['longitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lng;
+						$location['latitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lat;
+						$location['longitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lng;
+					}						
+					
+					return $location;
 				} else {
-					$location['latitude'] = (float)$this -> _locLatCur ;
-					$location['longitude'] = (float)$this -> _locLonCur;
+					return false;
 				}
-				if (!empty($result -> results[0] -> geometry)) {
-					$location['latitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lat;
-					$location['longitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lng;
-					$location['latitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lat;
-					$location['longitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lng;
-				}						
-				
-				return $location;
 				
 			} else {
 			 	$return = $result -> status;
@@ -138,7 +139,8 @@ class Geo extends Plugin
 	protected function _buildQuery($lat, $lon, $countryCode = false)
 	{
 		$result = array();
-		
+
+
 		if ($countryCode) {
 			$result[] = 'region=' . $this -> _countryCode;
 		}
@@ -148,7 +150,6 @@ class Geo extends Plugin
 		
 		return implode("&", $result);
 	}
-
 
 	public function getErrors()
 	{

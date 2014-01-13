@@ -36,6 +36,10 @@ class MemberListener {
     public function registerMemberSession($subject) {
         $this->subject = $subject->getSource();
         $params = $subject->getData();
+
+        // remove search global preset from session
+        $this->subject->session->remove('userSearch');
+
         $this->subject->session->set('member', $params);
         $this->subject->session->set('role', $params->role);
         $this->subject->session->set('memberId', $params->id);

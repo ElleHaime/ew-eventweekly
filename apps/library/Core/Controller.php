@@ -6,7 +6,8 @@ use Phalcon\Filter,
 	Core\Acl,
 	Core\Utils as _U,
 	Frontend\Form\SearchForm,
-    Frontend\Models\Location;
+    Frontend\Models\Location,
+    Frontend\Models\EventCategory AS CountEvent;
 
 class Controller extends \Phalcon\Mvc\Controller
 {
@@ -17,6 +18,8 @@ class Controller extends \Phalcon\Mvc\Controller
 	protected $module 				= false;
 	protected $memberId				= false;
 	protected $locator				= false;
+
+    public $eventListCreatorFlag = false;
 	
 	
 	public function initialize()
@@ -24,12 +27,11 @@ class Controller extends \Phalcon\Mvc\Controller
 		$this -> _setModule();
 		$this -> _getChild();
 		$this -> _parseQueryVals();
-		
-		
+
 		if (!$this -> session -> isStarted()) {
 			$this -> session -> start();
 		}
-		
+
 		if (!$this -> locator) {
 			$this -> plugLocator();
 		}
@@ -47,7 +49,20 @@ class Controller extends \Phalcon\Mvc\Controller
             }
 			$this -> session -> set('location', $location);
 		}
-//_U::dump($this -> session -> get('location'));
+
+		if (!$loc -> latitude && !$loc -> longitude) {
+			$geo = new \Core\Geo();
+			$coords = $geo -> getUserLocation();
+			$loc -> latitude = $coords['latitude'];
+			$loc -> longitude = $coords['longitude'];
+			$loc -> latitudeMin = (float)$loc -> latitudeMin;
+			$loc -> latitudeMax = (float)$loc -> latitudeMax;
+			$loc -> longitudeMin = (float)$loc -> longitudeMin;
+			$loc -> longitudeMax = (float)$loc -> longitudeMax;
+
+			$this -> session -> set('location', $loc);	
+		}
+
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
@@ -56,6 +71,23 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this->view->setVar('location_conflict', $this->session->get('location_conflict'));
             $this->session->remove('location_conflict');
 		}
+
+        if ($this->session->has('userSearch')) {
+            $this->view->setVar('userSearch', $this->session->get('userSearch'));
+        }
+
+        if ($this->session->has('userSearchTab')) {
+            $this->view->setVar('userSearchTab', $this->session->get('userSearchTab'));
+        }else {
+            $this->view->setVar('userSearchTab', 'global');
+        }
+
+        $CountEvent = new CountEvent;
+        $eventsInCategories = $CountEvent->countEvents();
+
+        if (!empty($eventsInCategories)) {
+            $this->view->setVar('eventsInCategories', $eventsInCategories);
+        }
 
 		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
 			$this -> memberId = $this -> session -> get('memberId');
@@ -75,6 +107,8 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
         $this -> view -> setVar('userEventsLiked', $this -> session -> get('userEventsLiked'));
         $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
+
+        $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
 	}
 	
 

@@ -35,7 +35,7 @@
     });
 
 
-$('.tooltip-text').tooltip();
+//$('.tooltip-text').tooltip();
 $('#show-popover').popover('toggle');
 $('.settings-box-one .checkbox').click(function () {
     $(this).parent().toggleClass('active-box');

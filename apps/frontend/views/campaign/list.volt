@@ -48,8 +48,8 @@
                                                 </div>
                                                 
                                                 <div class="event-list-btn clearfix">
-													{% if campaign.location_id %}		                                               
-														<div class=" place-address">
+													{% if campaign.location_id %}
+                                                        <div class=" place-address tooltip-text"  data-original-title="{{ campaign.location.alias }} " title="" rel="tooltip">
 					                                        <span>{{ campaign.location.alias }}</span>
 					                                    </div>
 					                                {% endif %}

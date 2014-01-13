@@ -6,17 +6,19 @@ define('gmapEvents',
 		{
 		    var self = this;
 
-		   	self.debug = false,
+		   	self.debug = true,
 		    self.settings = {
 		        autoGetEvents: true,
 		        eventsUrl: '/eventmap',
-		        eventsCounter: '#events_count'
+		        eventsCounter: '#events_count',
+                searchCityBtn: '.locationCity'
 		    },
 		    self.__lastLat = null,
 		    self.__lastLng = null,
 
             self.__newLat = null,
             self.__newLng = null,
+            self.__newCity = null,
 
             self.resetLocation = false,
 
@@ -29,8 +31,11 @@ define('gmapEvents',
 
 		            var lat = $.cookie('lastLat');
 		            var lng = $.cookie('lastLng');
+		            var city = $.cookie('lastCity');
 
-		            if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
+                    if (!_.isUndefined(lat) && !_.isUndefined(lng) && !_.isUndefined(city)) {
+                        self.getEvents(lat, lng, city);
+                    } else if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
 		                self.getEvents(lat, lng);
 		            } else {
 		                self.getEvents();
@@ -48,6 +53,8 @@ define('gmapEvents',
 		    self.getEvents = function(lat, lng, city) {
                 self.__newLat = lat;
                 self.__newLng = lng;
+                self.__newCity = city;
+
 		        $.when(self.__request(lat, lng, city)).then(function(response) {
 		            self.__responseHandler(response);
 		        });
@@ -63,10 +70,6 @@ define('gmapEvents',
 		     * @private
 		     */
 		    self.__request = function(lat, lng, city) {
-		        if (self.debug) {
-		            console.log('CITY - ' + city);
-		        }
-
 		        var url = self.settings.eventsUrl;
 
 		        if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
@@ -75,6 +78,9 @@ define('gmapEvents',
 		        if (!_.isUndefined(city)) {
 		            url = url + '/' + city;
 		        }
+		        if (self.debug) {
+					console.log(url);
+				}
 
 		        return $.ajax({
 		            url: url,
@@ -90,6 +96,10 @@ define('gmapEvents',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
+		    	if (self.debug) {
+		            console.log(data);
+		        }
+                $(self.settings.searchCityBtn).find('span').text(self.__newCity);
                 if (self.resetLocation === true) {
                     //gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
                 }
@@ -133,6 +143,7 @@ define('gmapEvents',
 		            // redraw clusterer
 		            gmap.MC.redraw();
 		        }else {
+                    gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
                     $(self.settings.eventsCounter).html(0);
                     noti.createNotification('No event in this area!', 'warning');
                 }
@@ -165,6 +176,20 @@ define('gmapEvents',
 
 		            var newLatLng = new google.maps.LatLng(event.venue.latitude, event.venue.longitude);
 
+                    // get array of markers currently in cluster
+                    var allMarkers = gmap.markers;
+
+                    // check to see if any of the existing markers match the latlng of the new marker
+                    if (allMarkers.length != 0) {
+                        for (var i=0; i < allMarkers.length; i++) {
+                            var existingMarker = allMarkers[i];
+                            var pos = existingMarker.getPosition();
+                            if (newLatLng.equals(pos)) {
+                                infoWindow.content = existingMarker.content + " & " + self.__createInfoPopupContent(event);
+                            }
+                        }
+                    }
+
 		            // create marker
 		            var marker = new google.maps.Marker({
 		                position: newLatLng,
@@ -174,20 +199,6 @@ define('gmapEvents',
 
 		            // add content to marker
 		            marker.content  = infoWindow.content;
-
-		            // get array of markers currently in cluster
-		            var allMarkers = gmap.markers;
-
-		            // check to see if any of the existing markers match the latlng of the new marker
-		            if (allMarkers.length != 0) {
-		                for (var i=0; i < allMarkers.length; i++) {
-		                    var existingMarker = allMarkers[i];
-		                    var pos = existingMarker.getPosition();
-		                    if (newLatLng.equals(pos)) {
-		                        infoWindow.content = existingMarker.content + " & " + self.__createInfoPopupContent(event);
-		                    }
-		                }
-		            }
 
 		            if (self.debug) {
 		                console.log('New map marker was created below:');
@@ -208,7 +219,7 @@ define('gmapEvents',
 		    self.__redirectToMap = function(data) {
 		        var lat = null, 
 		        	lng = null;
-		        
+console.log(data);		        
 		        if (!_.isEmpty(data.message[0])) {
 		            lat = _.last(data.message[0]).venue.latitude;
 		            lng = _.last(data.message[0]).venue.longitude;
@@ -243,7 +254,7 @@ define('gmapEvents',
 		    
 		    self.__createInfoPopupContent = function(event) {
 		        return '<div class="info-win" id="content">' +
-		            '<div class="venue-name">'+event.name+'</div><div>'+event.anon+'</div>' +
+		            '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
 		            '<div>' +
 		            '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
 		            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +

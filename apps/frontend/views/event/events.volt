@@ -18,8 +18,17 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% for event in events %}
+                            {% if events is defined %}    
+                                {% for event in events %}
 
+                                {% set disabled = '' %}
+                                {% if likedEventsIds is defined %}
+                                    {% for likedEventsId in likedEventsIds %}
+                                        {% if likedEventsId == event['id'] %}
+                                            {% set disabled = 'disabled' %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                                 <div class="events-list music-category signleEventListElement" event-id="{{ event['id'] }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
@@ -38,21 +47,27 @@
                                                     <a href="event/show/{{ event['id'] }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
 
                                                     <div class="date-list">
-                                                        <i class="icon-time"></i>
-                                                        <span class="date-start">{{ event['start_date_nice'] }}</span> start at
-                                                        <span class="date-time">{{ event['start_time'] }}</span>
+                                                        {% if event['start_date_nice'] != '0000-00-00' %}
+                                                            <i class="icon-time"></i>
+                                                            <span class="date-start">{{ event['start_date_nice'] }}</span> 
+                                                            {% if event['start_time'] != '00:00' %}
+                                                                start at
+                                                                <span class="date-time">{{ event['start_time'] }}</span>
+                                                            {% endif %}
+
+                                                        {% endif %}
                                                     </div>
                                                     <p>
-                                                        {{ event['anon']|striptags|escape|truncate(350) }}
+                                                        {{ event['description']|striptags|escape|truncate(350) }}
                                                     </p>
 
                                                     <div class="plans-box clearfix">
-                                                        <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}">Like</button>
+                                                        <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}" {{ disabled }}>Like</button>
                                                         <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
                                                     </div>
                                                 </div>
                                                 <div class="event-list-btn clearfix">
-                                                    <div class=" place-address">
+                                                    <div class=" place-address tooltip-text"  data-original-title="   {{ event['location'] }}" title="" rel="tooltip">
                                                         <span>
                                                             {% if event['venue']['street'] is empty %}
                                                                 {% if event['location'] is empty %}
@@ -81,12 +96,13 @@
                                         </div>
                                     </div>
                                 </div>
+                                {% endfor %}
 
                             {% else %}
 
                                 <div style="margin-left: 50px"><i>No events found</i></div>
 
-                            {% endfor %}
+                            {% endif %}
                              </div>
                         </div>
                     </div>

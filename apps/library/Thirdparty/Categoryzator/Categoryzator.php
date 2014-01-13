@@ -20,26 +20,11 @@ class Categoryzator {
     private $Text = null;
 
     /**
-     * Set income text
-     *
-     * @param string $text
+     * @param Text $Text
      */
-    public function __construct($text = '')
+    public function __construct(Text $Text)
     {
-        $this->Text = new Text();
-        $this->Text->content = $text;
-    }
-
-    /**
-     * Set income text
-     *
-     * @param string $text
-     * @return $this
-     */
-    public function setText($text)
-    {
-        $this->Text->content = $text;
-        return $this;
+        $this->Text = $Text;
     }
 
     /**

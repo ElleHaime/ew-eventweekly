@@ -43,8 +43,8 @@ class AuthController extends \Core\Controller
                 }else {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
-
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+//_U::dump($this -> session -> get('location'));    
 
                     $this -> response -> redirect('/map');
                 }
@@ -82,7 +82,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
+                    $this -> eventsManager -> fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this -> response -> redirect('/map');
                 } 
                     
@@ -110,6 +110,7 @@ class AuthController extends \Core\Controller
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
                 $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
             }
+           
             $this -> session -> set('user_token', $access_token);
             $this -> session -> set('role', Acl::ROLE_MEMBER);
 
