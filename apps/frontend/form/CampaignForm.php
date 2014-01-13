@@ -39,6 +39,7 @@ class CampaignForm extends Form
 								array('placeholder' => 'Choose location'));
 		$this -> addElement('hidden', 'location_latitude');
 		$this -> addElement('hidden', 'location_longitude');
+		$this -> addElement('hidden', 'location_id');
 
 		$this -> addElement('text', 'campaign_contacts', 'Contacts',
 								array('style' => 'display:none;'));

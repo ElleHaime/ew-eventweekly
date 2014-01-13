@@ -24,7 +24,8 @@ class CrudController extends \Core\Controller
 
 		if ($list -> count()) {
     		   $this -> view -> setVar('object', $list);
-		} 
+    		   $this -> view -> setVar('list', $list);
+		}
 	}
 
 	public function editAction()

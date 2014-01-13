@@ -20,6 +20,15 @@
 
                            {% for index, node in events %}
 
+                               {% set disabled = '' %}
+                               {% if likedEventsIds is defined %}
+                                   {% for likedEventsId in likedEventsIds %}
+                                       {% if likedEventsId == node['event']['id'] %}
+                                           {% set disabled = 'disabled' %}
+                                       {% endif %}
+                                   {% endfor %}
+                               {% endif %}
+
                                 <div class="events-list {{ node['category']['key'] }}-category signleEventListElement" event-id="{{ node['event']['id'] }}">
                                     <div class="row-fluid ">
                                         <div class="span12">
@@ -52,7 +61,7 @@
 
                                                     <div class="plans-box clearfix">
                                                     	{% if list_type != 'like' %}
-                                                        	<button class="btn eventLikeBtn" data-status="1" data-id="{{ node['event']['id'] }}">Like</button> 
+                                                        	<button class="btn eventLikeBtn" data-status="1" data-id="{{ node['event']['id'] }}" {{ disabled }}>Like</button>
                                                         {% endif %}
                                                         <button class="btn eventLikeBtn" data-status="0" data-id="{{ node['event']['id'] }}">Don`t like</button>
                                                     </div>

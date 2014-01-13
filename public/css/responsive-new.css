@@ -85,9 +85,9 @@
     .location-place_country .location-search {
         left: -213px;
     }
-    .location-search input {
-        width: 68%;
-    }
+    /*.location-search input {*/
+        /*width: 68%;*/
+    /*}*/
 
     .event-site {
         margin-bottom: 0;
@@ -178,6 +178,10 @@
 }
 
 @media screen and (max-width: 790px) {
+
+   .form-center .input-div input {
+        width: 97%;
+    }
     .event-list-btn {
         float: left;
         clear: both;
@@ -202,9 +206,9 @@
     }
 
 
-    .input-div input {
-        width: 97%;
-    }
+    /*.input-div input {*/
+        /*width: 97%;*/
+    /*}*/
 
     .field-big {
         width: 97%;
@@ -458,7 +462,7 @@
     }
 
     .location-search .form-horizontal {
-        margin-bottom: 20px;
+        margin-bottom: 4px;
     }
 
 }

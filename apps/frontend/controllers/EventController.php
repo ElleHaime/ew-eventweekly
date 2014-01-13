@@ -3,16 +3,16 @@
 namespace Frontend\Controllers;
 
 use Core\Utils as _U,
-	Thirdparty\Facebook\Extractor,
-	Frontend\Models\Location,
-	Frontend\Models\Venue as Venue,	
-	Frontend\Models\MemberNetwork,
-	Frontend\Models\Category,
-	Frontend\Models\EventCategory,
-	Frontend\Models\Event as Event,
-	Objects\EventImage,
-	Objects\EventSite,
-	Objects\EventMember,
+    Thirdparty\Facebook\Extractor,
+    Frontend\Models\Location,
+    Frontend\Models\Venue as Venue,
+    Frontend\Models\MemberNetwork,
+    Frontend\Models\Category as Category,
+    Frontend\Models\EventCategory as EventCategory,
+    Frontend\Models\Event as Event,
+    Objects\EventImage,
+    Objects\EventSite,
+    Objects\EventMember,
     Frontend\Models\EventLike;
 
 
@@ -21,6 +21,9 @@ use Core\Utils as _U,
  */
 class EventController extends \Core\Controllers\CrudController
 {
+
+    use \Core\Traits\TCMember;
+
 	/**
 	 * @Route("/map", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 	 
@@ -35,7 +38,7 @@ class EventController extends \Core\Controllers\CrudController
 	/**
 	 * @Route("/eventmap", methods={"GET", "POST"})
 	 * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city:[a-zA-Z ]+}", methods={"GET", "POST"})
+	 * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 	 	 
 	 */
 	public function eventmapAction($lat = null, $lng = null, $city = null)
@@ -68,7 +71,12 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('events', array_merge($events[0], $events[1]));
 			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
 			$this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
-		} 
+		}
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
+
 		$this -> view -> pick('event/events');
 	}
 
@@ -95,7 +103,6 @@ class EventController extends \Core\Controllers\CrudController
 		$eventModel = new Event();
 
 		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
-
 			// user registered via facebook and has facebook account
 			$events = $eventModel -> grabEventsByFbToken($this -> session -> get('user_token'), $this -> session -> get('location'));
 
@@ -125,11 +132,9 @@ class EventController extends \Core\Controllers\CrudController
 			} 
 
 		} else {
-
 			// user registered via email
 			$events = array();
-			$scale = $this -> geo -> buildCoordinateScale($loc -> latitude , $loc -> longitude);
-			$eventsList = $eventModel -> grabEventsByCoordinatesScale($scale, $this->session->get('memberId'));
+			$eventsList = $eventModel -> grabEventsByCoordinatesScale($loc -> latitude , $loc -> longitude, $this->session->get('memberId'));
 
 			if ($eventsList -> count() > 0) {
 				$events[0] = array();
@@ -152,7 +157,7 @@ class EventController extends \Core\Controllers\CrudController
 										 'longitude' => $ev -> venue_longitude),
 						'location_id' => $ev -> event -> location_id,
                         'location' => $ev -> location,
-						'anon' => $ev -> event -> description,
+						'description' => $ev -> event -> description,
 						'logo' => $ev -> logo,
 						'start_time' =>$ev -> event -> start_time,
 						'start_date_nice' => $ev -> event -> start_date_nice,
@@ -167,6 +172,10 @@ class EventController extends \Core\Controllers\CrudController
 
                     $events[$elem][] = $newEv;
 				}
+			} else {
+				$checkLoc = new Location();
+				$checkLoc -> createOnChange(array('latitude' => $loc -> latitude, 
+												  'longitude' => $loc -> longitude));
 			}
 			return $events;
 		} 
@@ -180,18 +189,6 @@ class EventController extends \Core\Controllers\CrudController
 	public function showAction($eventId)
 	{
 		$event = Event::findFirst($eventId);
-		
-		if ($event -> fb_uid != '' && $event -> is_description_full != 1) {
-			$descFull = $event -> grabEventsDescription($event -> fb_uid);
-				
-			if ($descFull && $descFull != '') {
-				$description = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $descFull);
-				$event -> assign(array('description' => $description,
-									   'is_description_full' => 1));
-				$event -> save();
-			}
-		}
-
         $memberpart = null;
 		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
 			foreach ($event -> memberpart as $mpart) {
@@ -204,8 +201,15 @@ class EventController extends \Core\Controllers\CrudController
         $event -> memberpart = $memberpart;
 
         // TODO: refactor this. Get uploads dir and default logo url from config
+        $cfg = $this -> di -> get('config');
+
+        $logoFile = '';
+        if ($event -> logo != '') {
+           $logoFile = $cfg -> application -> uploadDir . 'img/event/'. $event -> logo;
+        }
+
         $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
-        if (!file_exists($logo)) {
+        if (!file_exists($logoFile)) {
             $logo = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
         }
         $this -> view -> setVar('logo', $logo);
@@ -214,6 +218,11 @@ class EventController extends \Core\Controllers\CrudController
         $this -> view -> setVar('categories', $categories->toArray());
 
         $this -> view -> setVar('link_back_to_list', true);
+
+        return array(
+            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$event->id,
+            'eventMetaData' => $event
+        );
 	}
 
     /**
@@ -301,13 +310,24 @@ class EventController extends \Core\Controllers\CrudController
         $event = new Event();
 
 		$this -> view -> setvar('listName', 'Liked Events');
-		$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
 
-		$events = $event -> listEvent();
+		//$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
+		//$events = $event -> listEvent();
+
+        $event->addCondition('Frontend\Models\EventLike.member_id = '.$this->session->get('memberId'));
+        $events = $event->fetchEvents();
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
 
 		$this -> view -> setvar('list_type', 'like');
-        $this -> view -> setvar('events', $events);
-        $this -> view -> pick('event/userlist');
+        //$this -> view -> setvar('events', $events);
+        //$this -> view -> pick('event/userlist');
+
+        $this->view->setvar('list', $events);
+        $this->view->setVar('listTitle', 'Liked');
+        $this->view->pick('event/eventList');
 	}
 
 	/**
@@ -318,13 +338,21 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		$event = new Event();
 		$this -> view -> setvar('listName', 'Where I Go');
-		$event -> setCondition('event_member.member_id = '.$this->session->get('memberId'));
 
-		$events = $event->listEvent();
-		
-		$this -> view -> setvar('list_type', 'join');		
-		$this -> view -> setvar('events', $events);
-		$this -> view -> pick('event/userlist');		
+		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
+		$events = $event->fetchEvents();
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
+
+		$this -> view -> setvar('list_type', 'join');
+		//$this -> view -> setvar('events', $events);
+		//$this -> view -> pick('event/userlist');
+
+        $this->view->setvar('list', $events);
+        $this->view->setVar('listTitle', 'Where I Go');
+        $this->view->pick('event/eventList');
 	}
 
 
@@ -335,6 +363,13 @@ class EventController extends \Core\Controllers\CrudController
 	public function listAction()
 	{
 		parent::listAction();
+
+        $this->view->setVar('listTitle', 'Created');
+
+        $this->eventListCreatorFlag = true;
+        $this->view->pick('event/eventList');
+
+        return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
 	}
 	
 	
@@ -354,7 +389,6 @@ class EventController extends \Core\Controllers\CrudController
 	public function setEditExtraRelations()
 	{
 		$this -> editExtraRelations = array(
-			'location' => array('latitude', 'longitude'),
 			'venue' => array('latitude', 'longitude')
 		);
 	}
@@ -511,32 +545,36 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		
 		// process location
-		if (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
+		if (!empty($event['location_id'])) {
+			$newEvent['location_id'] = $event['location_id']; 
+		} elseif (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
 			// check location by coordinates
 			$location = $loc -> createOnChange(array('latitude' => $event['location_latitude'], 
-													 'longitude' => $event['location_longitude']), 
-													 array('latitude', 'longitude'));
+													 'longitude' => $event['location_longitude']));
 			$newEvent['location_id'] = $location -> id;
-
+			$newEvent['latitude'] = $event['location_latitude'];
+			$newEvent['longitude'] = $event['location_longitude'];
 		} 
-		// location coordinates wasn't set. Try to get location from venue or address coordinates 
-		if (!isset($newEvent['location_id'])) {
-			if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
-				if (!empty($coords)) {
-					$scale = $geo -> buildCoordinateScale($event['venue_latitude'], $event['venue_longitude']);
-					$query = 'latitude between ' . $scale['latMin'] . ' and ' . $scale['latMax'] . ' 
-										and longitude between ' . $scale['lonMin'] . ' and ' . $scale['lonMax'];
-					$location =  $loc::findFirst($query);
-					$newEvent['location_id'] = $location -> id;
-				}
+		// location coordinates wasn't set. Try to get location from venue coordinates 
+		if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+			if (!isset($newEvent['location_id'])) {
+				$location = $loc -> createOnChange(array('latitude' => $event['venue_latitude'],
+														 'longitude' => $event['venue_longitude']));
+				$newEvent['location_id'] = $location -> id;
 			}
+			$newEvent['latitude'] = $event['venue_latitude'];
+			$newEvent['longitude'] = $event['venue_longitude'];
 		}
-		// venue/address coordinates wasn't set or location wasn't found
-		if (!isset($newEvent['location_id'])) {
-			if (!empty($event['location'])) {
-				$location = $loc -> createOnChange(array('city' => $event['location']), array('city'));
-				$newEvent['location_id'] = $location -> id; 
+
+		// location coordinates wasn't set. Try to get location from address coordinates 
+		if (!empty($event['address_latitude']) && !empty($event['address_longitude'])) {
+			if (!isset($newEvent['location_id'])) {
+				$location = $loc -> createOnChange(array('latitude' => $event['address_latitude'],
+														 'longitude' => $event['address_longitude']));
+				$newEvent['location_id'] = $location -> id;
 			}
+			$newEvent['latitude'] = $event['address_latitude'];
+			$newEvent['longitude'] = $event['address_longitude'];
 		}
 
 		// process venue
@@ -595,7 +633,7 @@ class EventController extends \Core\Controllers\CrudController
 			}
 
 			// process site
-			$eSites = EventSite::find(array('event_id' => $ev -> id));
+			$eSites = EventSite::find('event_id = '. $ev -> id);
 			if ($eSites) {
 				foreach ($eSites as $es) {
 					$es -> delete();
@@ -614,7 +652,7 @@ class EventController extends \Core\Controllers\CrudController
 			}
 
 			// process categories
-			$eCats = EventCategory::find(array('event_id' => $ev -> id));
+			$eCats = EventCategory::find('event_id = '. $ev -> id);
 			if ($eCats) {
 				foreach ($eCats as $ec) {
 					$ec -> delete();
@@ -640,4 +678,48 @@ class EventController extends \Core\Controllers\CrudController
 
         $this -> loadRedirect();
 	}
+
+    /**
+     * @Route("/event/import-categories", methods={"GET", "POST"})
+     * @Acl(roles={'member','guest'});
+     */
+    /*public function importCategoriesAction()
+    {
+        $Parser = new \Categoryzator\Core\Parser();
+        $categories = $Parser->getCategories();
+
+        if (!empty($categories)) {
+            foreach ($categories as $categoryKey => $children) {
+                $Category = new Category();
+
+                $Category->key = $categoryKey;
+                $Category->name = ucfirst($categoryKey);
+                $Category->parent_id = 0;
+
+                if ($categoryKey === 'other') {
+                    $Category->is_default = 1;
+                }
+
+                $Category->save();
+            }
+
+            foreach ($categories as $categoryKey => $children) {
+                $parent = Category::findFirst('key = "'.$categoryKey.'"');
+                if (!empty($children)) {
+                    unset($children[0]);
+                    foreach ($children as $key => $cat) {
+                        $Tag = new Tag();
+
+                        $Tag->key = $cat;
+                        $Tag->name = ucfirst($cat);
+                        $Tag->category_id = $parent->id;
+
+                        $Tag->save();
+                    }
+                }
+            }
+        }
+
+        exit('DONE');
+    }*/
 }		

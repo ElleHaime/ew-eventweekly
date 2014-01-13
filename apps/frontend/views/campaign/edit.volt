@@ -33,6 +33,7 @@
                             <div class="arrow_box"> arrow</div>
                             {{ form.render('location_latitude') }}
                             {{ form.render('location_longitude') }}
+                            {{ form.render('location_id') }}
                             <div class="search-queries hidden">
                                 <ul id="locations-list">
                                 </ul>

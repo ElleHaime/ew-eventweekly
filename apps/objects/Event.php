@@ -20,7 +20,8 @@ class Event extends Model
 	public $end_date;
 	public $recurring;
 	public $event_status	= 1;
-	public $coordinates;
+	public $latitude;
+	public $longitude;
 	public $address;
 	public $logo;
 	public $is_description_full = 0;
@@ -36,10 +37,14 @@ class Event extends Model
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
-		$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
-		$this -> hasManyToMany('id', '\Objects\EventCategory', 
-							   'event_id', 'category_id', 
+		//$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
+		$this -> hasManyToMany('id', '\Objects\EventCategory',
+							   'event_id', 'category_id',
 							   '\Objects\Category', 'id', array('alias' => 'category',
+							   		 							'baseField' => 'name'));
+        $this -> hasManyToMany('id', '\Objects\EventTag',
+							   'event_id', 'tag_id',
+							   '\Objects\Tag', 'id', array('alias' => 'tag',
 							   		 							'baseField' => 'name'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}

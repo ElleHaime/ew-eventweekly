@@ -153,6 +153,12 @@
                         </label>
                     {% endfor %}
                     <input type="submit" value="Save"/>
+
+                    {% if member_categories['tag']['id'] is defined %}
+                        <input id="recordTagId" name="recordTagId" type="hidden" value="{{ member_categories['tag']['id'] }}" />
+                    {% endif %}
+
+                    <input id="tagIds" name="tagIds" type="hidden" value="{{ tagIds }}" />
                 </form>
 
                 <div class="settings-box">
@@ -178,48 +184,28 @@
                                     <span class="check-span {{ node['key'] }}-color"><i class=" icon-ok icon-white"></i></span>
                                     {{ node['name'] }}
                                 </label>
+
                                 <div class="hide-box">
                                     <div class="activity clearfix">
-                                        <label>Activity:</label>
-                                        <div class="event-site clearfix">
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">one</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category disabled-marker clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">two</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">three</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">four</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        <div class="event-site clearfix" style="padding: 0px">
+                                            {% for tag in tags %}
+                                                {% if node['id'] == tag['category_id'] %}
 
-                                    <div class="type-marker clearfix">
-                                        <label>Type:</label>
-                                        <div class="event-site clearfix">
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">one</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category disabled-marker clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">two</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">three</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
-                                            <div class="event-category clearfix">
-                                                <span class="color-type {{ node['key'] }}-color">four</span>
-                                                <span class="arrow arrow-{{ node['key'] }}"></span>
-                                            </div>
+                                                    {% set checked = true %}
+                                                    {% if member_categories['tag']['value'] is defined %}
+                                                        {% for tagId in member_categories['tag']['value'] %}
+                                                            {% if tagId == tag['id'] %}
+                                                                {% set checked = false %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                    <div class="event-category clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
+                                                        <span class="color-type {{ node['key'] }}-color">{{ tag['name'] }}</span>
+                                                        <span class="arrow arrow-{{ node['key'] }}"></span>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>

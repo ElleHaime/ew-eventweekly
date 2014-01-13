@@ -9,14 +9,24 @@
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
-    {% if logo is defined %}
-        <meta property="og:image" content="{{ logo }}"/>
-        <meta property="og:title" content="EventWeekly"/>
+    {% if eventMetaData is defined %}
+        {% if logo is defined %}
+            <meta property="og:image" content="{{ logo }}"/>
+        {% endif %}
+            <meta property="og:title" content="{{ eventMetaData.name|escape }}"/>
+            <meta property="og:description" content="{{ eventMetaData.description|escape|striptags }}"/>
+    {% else %}
+        {% if logo is defined %}
+            <meta property="og:image" content="{{ logo }}"/>
+            <meta property="og:title" content="EventWeekly"/>
+        {% endif %}
     {% endif %}
+
 
     {{ stylesheet_link('/css/bootstrap.min.css') }}
     {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('/css/styles.css') }}   
+    {{ stylesheet_link('/css/datepicker.css') }}
+    {{ stylesheet_link('/css/styles.css') }}
     {{ stylesheet_link('/css/jake.css') }}    
 	{{ stylesheet_link('/css/old.css') }}
     {{ stylesheet_link('/css/noti.css') }}

@@ -58,7 +58,7 @@ define('frontTopPanel',
 		                var lng = list.getPlace().geometry.location.lng();
 
 		                self.__city = list.getPlace().vicinity;
-		                $(self.settings.searchCityBtn).find('span').text(self.__city);
+		                //$(self.settings.searchCityBtn).find('span').text(self.__city);
 
 		                self.__sendCoords(lat, lng);
 		            });
@@ -110,6 +110,7 @@ define('frontTopPanel',
 
                 $.cookie('lastLat', lat, {expires: 1, path: '/'});
                 $.cookie('lastLng', lng, {expires: 1, path: '/'});
+                $.cookie('lastCity', self.__city, {expires: 1, path: '/'});
                 window.location.href = '/map';
 		    	//gmapEvents.getEvents(lat, lng, self.__city);
 		    }

@@ -6,7 +6,7 @@
             <div class="share-box-icon">
                 <!--Facebook-->
                 <div class="fb-like" data-colorscheme="light" data-layout="button_count" data-action="like"
-                     data-show-faces="false" data-send="true"></div>
+                     data-show-faces="false" data-send="true" data-href="{{ currentWindowLocation }}"></div>
 
                 <!--Google +-->
                 <!-- Place this tag where you want the +1 button to render. -->

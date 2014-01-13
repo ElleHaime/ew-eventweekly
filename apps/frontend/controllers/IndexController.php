@@ -16,6 +16,8 @@ class IndexController extends \Core\Controller
 	 */
     public function indexAction()
     {
+        $this -> view -> setVar('hideYouAreNotLoggedInBtn', true);
+
 	    if ($this -> session -> has('eventsTotal')) {
 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 	    }

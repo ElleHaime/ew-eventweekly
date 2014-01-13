@@ -1071,6 +1071,9 @@ input[type="color"]:focus, .uneditable-input:focus
     width: 98%;
 
 }
+.date-picker .input-div input {
+    width: 95%;
+}
 .input-div input[type="text"], .input-div_date  input[type="text"]
 {
     height: 32px;
@@ -1220,6 +1223,9 @@ input[type="checkbox"]  {
 .profile-btn .btn {
     width: 174px;
     margin: 10px 0;
+}
+.profile-info  .btn {
+    width: 174px;
 }
 
 .profile-btn  p {
@@ -2057,6 +2063,10 @@ input[type="checkbox"]  {
 .event-list-category {
     padding-top: 10px;
 }
+.event-list-category .category-title {
+    clear: both;
+    display: block;
+}
 
 .btn-orange , .btn-orange:hover {
     background: #F15A24;
@@ -2392,9 +2402,9 @@ ul.days-events  {
     padding: 22px 22px 13px 22px;
 }
 
-.location-search input {
-    width: 68%;
-}
+/*.location-search input {*/
+    /*width: 68%;*/
+/*}*/
 
 /*----------------------------------------------------user down-------------------------------------------------------*/
 #user-down  .edit-btn {
@@ -3493,6 +3503,7 @@ a.table-box-row:focus {
 .date-picker .input-div {
     float: left;
     margin-left: 12px;
+    width: 48.4%;
 }
 .input-div:first-child {
     margin-left: 0;
@@ -3871,9 +3882,7 @@ i.icon-map {
     margin:5px 0;
 }
 
-.location-search .date-picker input {
-    width: 219px;
-}
+
 .event-list-btn {
     float:right;
     width:300px;

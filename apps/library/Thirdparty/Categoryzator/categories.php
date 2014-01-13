@@ -9,6 +9,7 @@ return array(
         'musician',
         'dj',
         'mc',
+        'club',
         'playlist',
         'songwriter',
         'instrumentalist',
@@ -232,5 +233,6 @@ return array(
         'festival',
         'performance',
         'activity'
-    )
+    ),
+    'other' => array()
 );

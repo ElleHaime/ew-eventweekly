@@ -5,7 +5,10 @@ namespace Frontend\Controllers;
 use Frontend\Form\SearchForm,
     Frontend\Models\Event as EventModel,
     Phalcon\Mvc\Model\Resultset,
-    Frontend\Models\Category;
+    Frontend\Models\Category,
+    Frontend\Models\Location,
+    Frontend\Models\Event,
+    Core\Utils as _U;
 
 /**
  * @RoutePrefix('/')
@@ -15,84 +18,156 @@ class SearchController extends \Core\Controller
 
     /**
      * @Route("/search", methods={"POST"})
+     * @Route("/search/list", methods={"POST"})
+     * @Route("/search/map", methods={"POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function searchAction()
     {
-        $this->view->setVar('listTitle', 'Search results:');
-
         $categories = Category::find();
-        $this->view->setVar('categories', $categories->toArray());
+        $categories = $categories->toArray();
+        $this->view->setVar('categories', $categories);
 
         $form = new SearchForm();
         $this -> view -> form = $form;
 
         $result = array();
+        $countResults = 0;
+        $Event = new Event();
+        $postData = $this->request->getPost();
 
-        if ($this->request->isPost()) {
-            $postData = $this->request->getPost();
+        if (empty($postData)) {
+            $postData = $this->session->get('userSearch');
+        }
 
-            $conditions = array();
-
-            $query = '
-                SELECT event.*, category.*, location.*, venue.*, site.*
-                FROM \Frontend\Models\Event AS event
-                LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
-                LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-                LEFT JOIN \Frontend\Models\Location AS location ON (event.location_id = location.id)
-                LEFT JOIN \Frontend\Models\Venue AS venue ON (location.id = venue.location_id AND event.fb_creator_uid = venue.fb_uid)
-                LEFT JOIN \Objects\EventSite AS site ON (site.event_id = event.id)
-            ';
-
-            $elemExists = function($elem) use (&$postData) {
-                if (array_key_exists($elem, $postData) && !is_array($postData[$elem])) {
-                    $postData[$elem] = trim(strip_tags($postData[$elem]));
-                }
-                return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
-            };
-
-            if ($elemExists('title')) {
-                $conditions[] = 'event.name LIKE "%'.$postData['title'].'%"';
+        $elemExists = function($elem, $empty = true) use (&$postData) {
+            if (array_key_exists($elem, $postData) && !is_array($postData[$elem])) {
+                $postData[$elem] = trim(strip_tags($postData[$elem]));
             }
 
-            if ($elemExists('category')) {
-                $conditions[] = 'ec.category_id IN ('.implode(',', $postData['category']).')';
-            }
-
-            if ($elemExists('locationSearch')) {
-                $conditions[] = 'location.city LIKE "%'.$postData['locationSearch'].'%"';
-            }
-
-            if ($elemExists('start_dateSearch')) {
-                $conditions[] = 'UNIX_TIMESTAMP(event.start_date) > "'.strtotime($postData['start_dateSearch']).'"';
-            }
-
-            if ($elemExists('end_dateSearch')) {
-                $conditions[] = 'event.end_date < "'.$postData['end_dateSearch'].'"';
+            if ($empty === true) {
+                $answer = (array_key_exists($elem, $postData) && !empty($postData[$elem]));
             }else {
-                $conditions[] = 'event.end_date > "'.date('Y-m-d H:m:i', time()).'"';
+                $answer = (array_key_exists($elem, $postData) && empty($postData[$elem]));
+            }
+            return $answer;
+        };
+
+        if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
+            $location = $this->session->get('location');
+            $postData['searchLocationLatMin'] = $location->latitudeMin;
+            $postData['searchLocationLatMax'] = $location->latitudeMax;
+            $postData['searchLocationLngMin'] = $location->longitudeMin;
+            $postData['searchLocationLngMax'] = $location->longitudeMax;
+        }
+
+        $pageTitle = 'Search results: ';
+
+        if (!empty($postData)) {
+            $this->view->setVar('userSearch', $postData);
+
+
+            if ($elemExists('searchTitle')) {
+                $Event->addCondition('Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
+
+                $pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
             }
 
-            if (!empty($conditions)) {
-                $query .= ' WHERE';
-                $count = count($conditions);
-                for ($i = 0; $i < $count; $i++) {
-                    if ($i !== 0) {$query .= ' AND';}
-                    $query .= " ".$conditions[$i];
+            if ($elemExists('searchCategory')) {
+                $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
+
+                $pageTitle .= 'by categories - ';
+
+                foreach ($categories as $node) {
+                    if (in_array($node['id'], $postData['searchCategory'])) {
+                        $pageTitle .= ' '.$node['name'];
+                    }
                 }
 
-                $query .= ' GROUP BY event.id';
+                if (count($postData['searchCategory']) == 1) {
+                    $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
+                }
 
-                $result = $this->modelsManager->executeQuery($query);
-
-                /*$result->setHydrateMode(Resultset::HYDRATE_ARRAYS);
-                $result = $result->toArray();*/
             }
 
+            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
+                $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].'AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].'AND '.$postData['searchLocationLngMax']);
+
+                $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
+                $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+
+                $loc = new Location();
+                $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+                $location = $this->session->get('location');
+
+                if ($newLocation -> city) {
+                    $location->city = $newLocation -> city;
+                    $location->alias = $newLocation -> alias;
+                } else {
+                    $location->city = $newLocation -> country;
+                    $location->alias = $newLocation -> country;
+                }
+                if ($newLocation -> state) {
+                    $location->state = $newLocation -> state;
+                }
+                $location->latitude = $newLocation -> latitude;
+                $location->longitude = $newLocation -> longitude;
+
+                $this->session->set('location', $location);
+
+                $this->cookies->get('lastLat')->delete();
+                $this->cookies->get('lastLng')->delete();
+            }
+
+            if ($elemExists('searchStartDate')) {
+                $Event->addCondition('Frontend\Models\Event.start_date > "'.$postData['searchStartDate'].'"');
+            }
+
+            if ($elemExists('searchEndDate')) {
+                $Event->addCondition('Frontend\Models\Event.end_date < "'.$postData['searchEndDate'].'"');
+            }else {
+                $Event->addCondition('Frontend\Models\Event.end_date > "'.date('Y-m-d H:m:i', time()).'"');
+            }
+
+            if ($elemExists('searchType')) {
+                if ($postData['searchType'] == 'in_map') {
+                    $result = $Event->fetchEvents(Event::FETCH_ARRAY);
+                    $countResults = count($result);
+                    $result = json_encode($result);
+                }else {
+                    $page = $this->request->getQuery('page');
+                    if (empty($page)) {
+                        $page = 1;
+                    }
+                    $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);
+
+                    $result = $fetchedData->items;
+
+                    unset($fetchedData->items);
+
+                    $countResults = $fetchedData->total_items;
+                }
+            }
 
         }
 
-        $this->view->setVar('result', $result);
+        if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
+            $this->session->set('userSearch', $postData);
+        }
+
+        $this->view->setVar('list', $result);
+        $this->view->setVar('eventsTotal', $countResults);
+        if (isset($fetchedData)) {
+            $this->view->setVar('pagination', $fetchedData);
+        }
+
+        $this->view->setVar('listTitle', $pageTitle);
+
+        if ($postData['searchType'] == 'in_map') {
+            $this->view->pick('event/mapEvent');
+        } else {
+            $this->view->pick('event/eventList');
+        }
     }
 
 }

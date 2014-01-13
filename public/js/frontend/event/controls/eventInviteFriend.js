@@ -135,7 +135,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 container.html('');
                 var mfsForm = document.createElement('ul');
                 mfsForm.id = 'fbFriendList';
-                mfsForm.style = 'overflow-y: scroll; height: 300px';
+                mfsForm.setAttribute('style', 'overflow-y: scroll; height: 300px');
 
                 // generate element with one friend
                 _.each($this.__friends, function(node, index){
@@ -144,7 +144,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                     friendItem.setAttribute('data-id', node.id);
                     friendItem.setAttribute('class', $this.settings.friendClass);
                     friendItem.setAttribute('class', friendItem.getAttribute('class')+' clearfix');
-                    friendItem.style = 'cursor: pointer;';
+                    friendItem.setAttribute('style', 'cursor:pointer');
                     friendItem.title = node.name;
                     friendItem.innerHTML = '<img src="'+node.picture.data.url+'" alt="'+node.name+'"><span>'+node.name+'</span>';
                     mfsForm.appendChild(friendItem);

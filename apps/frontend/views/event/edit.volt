@@ -97,6 +97,7 @@
                         <button class="btn" type="button"><i class="icon-place-marker"></i></button>
                         {{ form.render('location_latitude') }}
                         {{ form.render('location_longitude') }}
+                        {{ form.render('location_id') }}
                         <div class="search-queries hidden">
                             <ul id="locations-list">
                             </ul>
