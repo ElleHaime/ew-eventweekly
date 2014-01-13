@@ -81,7 +81,7 @@
 
                 <div class=" profile-btn-rt clearfix">
                     <div class="profile-btn">
-                        <button class="btn btn-block ">Facebook Sinc</button>
+                        <button class="btn btn-block ">Facebook sinc</button>
                         <p>import interests from facebook
                             / login through facebook</p>
 
