@@ -48,7 +48,7 @@ class EventController extends \Core\Controllers\CrudController
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
 			$res['message'] = $events;
-			echo json_encode($res);				
+			echo json_encode($res);
 			die();
 		} else {
 			$res['status'] = 'ERROR';
@@ -296,8 +296,10 @@ class EventController extends \Core\Controllers\CrudController
 				$ret = array('status' => 'OK',
 							 'event_member_status' => $data['answer']);
 
-                $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
-                $this -> session -> set('userEventsGoing', $userEventsGoing);
+                if ($status == EventMember::JOIN) {
+                    $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+                    $this -> session -> set('userEventsGoing', $userEventsGoing);
+                }
 			} 
 		} else {
 			$ret['error'] = 'not_logged';	
@@ -311,7 +313,7 @@ class EventController extends \Core\Controllers\CrudController
 	 * @Route("/event/liked", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});
 	 */
-	public function listLikedAction() 
+	public function listLikedAction()
 	{
         $event = new Event();
 
@@ -321,6 +323,7 @@ class EventController extends \Core\Controllers\CrudController
 		//$events = $event -> listEvent();
 
         $event->addCondition('Frontend\Models\EventLike.member_id = '.$this->session->get('memberId'));
+        $event->addCondition('Frontend\Models\EventLike.status = 1');
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -346,6 +349,7 @@ class EventController extends \Core\Controllers\CrudController
 		$this -> view -> setvar('listName', 'Where I Go');
 
 		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
+		$event->addCondition('Objects\EventMember.member_status = 1');
 		$events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {

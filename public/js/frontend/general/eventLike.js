@@ -77,7 +77,9 @@ define('frontEventLike',
 		        	var dislike = $('button' + self.settings.dislikeBtn + '[data-id=' + data.event_id + ']');
 		        	
 		        	if (data.member_like == 1) {
-		        		like.prop('disabled', true);
+                        like.blur();
+                        like.prop('disabled', true);
+                        like.text('Liked');
 		        		dislike.prop('disabled', false);
 
                         $(self.settings.userEventsLiked).text(data.likeCounter)
