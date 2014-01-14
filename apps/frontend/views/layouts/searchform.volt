@@ -179,8 +179,8 @@
             {{ radio_field('searchCategoriesType', 'value': 'global', 'checked': true) }}
         </div>
         <div class="btn-box clearfix">
-            <button type="submit" value="in_list" class="btn" id="searchSubmitOnList">Find on List</button>
-            <button type="submit" value="in_map" class="btn" id="searchSubmitOnMap">Find on Map</button>
+            <button type="submit" value="in_list" class="btn" id="searchSubmitOnList" style="width: 100%">Find on List</button>
+            <button type="submit" value="in_map" class="btn" id="searchSubmitOnMap" style="display: none;">Find on Map</button>
             <input type="hidden" name="searchType" value="in_list"/>
             {#<button type="submit" name="searchType" value="in_list" class="btn">Find on List</button>
             <button type="submit" name="searchType" value="in_map" class="btn">Find on Map</button>#}
