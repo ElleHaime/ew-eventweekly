@@ -107,6 +107,8 @@ define('frontSearchPanel',
 
                 $($this.settings.searchLocationLatMax).val(latMax);
                 $($this.settings.searchLocationLngMax).val(lngMax);
+
+                $this.__switchSearchBtnVisible(true);
             });
 
             // add date picker
@@ -219,7 +221,9 @@ define('frontSearchPanel',
 
                 $this.__clickedSwitchBtn = $(this);
 
-                if ($(this).data('type') == 'private') {
+                $this.__state = $this.__clickedSwitchBtn.data('type');
+
+                if ($this.__state == 'private') {
 
                     $this.__globalCategories.length = 0;
                     _.each($($this.settings.chooseCatBtn+'[data-active="1"]'), function(node) {
@@ -264,6 +268,7 @@ define('frontSearchPanel',
                     noti.createNotification(err_msg, 'warning');
                     $this.__switchSearchTypeBtnState();
                 }else {
+
                     $($this.settings.searchCategoriesTypeBlock + ' input').prop('checked', false);
                     $($this.settings.searchCategoriesTypeBlock + ' input[value="private"]').prop('checked', true);
 
@@ -278,6 +283,8 @@ define('frontSearchPanel',
                         $this.__privateCategories.push(elem[0]);
                         elem.trigger('click');
                     });
+
+                    $this.__switchSearchBtnVisible();
                 }
             });
         },
@@ -298,6 +305,19 @@ define('frontSearchPanel',
                 $(elem).trigger('click');
             });
 
+            $this.__switchSearchBtnVisible();
+        },
+
+        __switchSearchBtnVisible: function(showMapBtn) {
+            var $this = this, mapBtn = $($this.settings.searchSubmitOnMap);
+
+            if (($this.__state == 'private' && !mapBtn.is(":visible")) || showMapBtn === true) {
+                $($this.settings.searchSubmitOnList).attr('style', 'width: 49%');
+                mapBtn.removeAttr('style');
+            }else if ($this.__state == 'global' && mapBtn.is(":visible")) {
+                $($this.settings.searchSubmitOnList).attr('style', 'width: 100%');
+                mapBtn.attr('style', 'display: none;');
+            }
         }
 
     };
