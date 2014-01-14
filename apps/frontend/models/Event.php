@@ -171,8 +171,13 @@ class Event extends EventObject
 					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
                     LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
                     LEFT JOIN \Frontend\Models\EventTag AS et ON (event.id = et.event_id)
-                    LEFT JOIN \Frontend\Models\Tag AS tag ON (tag.id = et.tag_id)
-			        where (location.latitudeMin <= ' . $lat . '
+                    LEFT JOIN \Frontend\Models\Tag AS tag ON (tag.id = et.tag_id)';
+
+        if (!empty($uId)) {
+            $query .= 'LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event_like.event_id = event.id and event_like.member_id = '.$uId.')';
+        }
+
+        $query .= 'where (location.latitudeMin <= ' . $lat . '
 			        	and location.latitudeMax >= ' . $lat . '
 			        	and location.longitudeMin <= ' . $lng . '
 			        	and location.longitudeMax >= ' . $lng . ')';
@@ -192,6 +197,10 @@ class Event extends EventObject
                 $query .= ' AND';
             }
             $query .= ' et.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')';
+        }
+
+        if (!empty($uId)) {
+            $query .= ' AND (event_like.status != 0 OR event_like.status IS NULL)';
         }
 
         $query .= ' GROUP BY event.id';
