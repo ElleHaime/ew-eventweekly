@@ -171,17 +171,15 @@
        clear: both;
     }
 
-    .location-place_ask .input-search {
-        width: 73%;
-    }
+    /*.location-place_ask .input-search {*/
+        /*width: 73%;*/
+    /*}*/
 
 }
 
 @media screen and (max-width: 790px) {
 
-   .form-center .input-div input {
-        width: 97%;
-    }
+
     .event-list-btn {
         float: left;
         clear: both;
@@ -204,16 +202,6 @@
     .event-one .event-one-text {
         max-width: 66%;
     }
-
-
-    /*.input-div input {*/
-        /*width: 97%;*/
-    /*}*/
-
-    .field-big {
-        width: 97%;
-    }
-
     .user-box a > span {
        display: none;
     }
@@ -244,9 +232,9 @@
         padding: 4%;
     }
 
-    .location-place_ask .input-search {
-        width: 73%;
-    }
+    /*.location-place_ask .input-search {*/
+        /*width: 73%;*/
+    /*}*/
     .location-place_country .searchCityBlock
     {
         width: 95% !important;
@@ -313,7 +301,6 @@
 
     .field-big {
         min-height: 200px;
-        width: 97%;
     }
 
     .btn-list_profile .btn {

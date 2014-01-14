@@ -692,9 +692,12 @@ input[type="color"]:focus, .uneditable-input:focus
     float: right;
 }
 .field-big {
-    width:98%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
     min-height: 200px;
     resize: none;
+    width: 100%;
 }
 div.grippie {
     background:#EEEEEE url(../img/bgs/grippie.png) no-repeat scroll center 2px;
@@ -1068,13 +1071,15 @@ input[type="color"]:focus, .uneditable-input:focus
     font: 400 22px "Open Sans";
 }
 .input-div input   {
-    width: 98%;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    height: 42px;
 
 }
-.date-picker .input-div input {
-    width: 95%;
-}
-.input-div input[type="text"], .input-div_date  input[type="text"]
+
+.input-div_date  input[type="text"]
 {
     height: 32px;
 }
@@ -3297,9 +3302,9 @@ a.table-box-row:focus {
     margin:0 auto;
 }
 
-.location-place_ask  .input-search {
-    width: 78%;
-}
+/*.location-place_ask  .input-search {*/
+    /*width: 78%;*/
+/*}*/
 
 .show-list {
     width:60px;
@@ -3479,9 +3484,13 @@ a.table-box-row:focus {
 }
 
 .location-place_ask .form-horizontal .input-search {
-    width: 97%;
     background: none;
     padding-left: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    height: 42px;
 }
 .location-place_ask .form-horizontal .input-search:active, .location-place_ask .form-horizontal .input-search:focus  {
     background: #DEEDFF;
@@ -3504,7 +3513,7 @@ a.table-box-row:focus {
 .date-picker .input-div {
     float: left;
     margin-left: 12px;
-    width: 48.4%;
+    width: 48.6%;
 }
 .input-div:first-child {
     margin-left: 0;
@@ -3827,7 +3836,7 @@ i.icon-map {
 }
 #content_right_inner
 {
-    margin-left: 185px;
+    margin-left: 180px;
 }
 #content_center
 {
