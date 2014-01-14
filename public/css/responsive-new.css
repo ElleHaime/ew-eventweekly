@@ -506,8 +506,5 @@
     .row-fluid .show-list {
         margin-right: 20px;
     }
-    #content_noBorder,    .container {
-        max-width: 480px;
-    }
 
 }
