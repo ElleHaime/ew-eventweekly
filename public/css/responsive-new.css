@@ -500,7 +500,14 @@
 }
 
 @media screen and (max-width: 490px) {
-.location-place_country .searchCityBlock {
-    width: 91.4% !important;
-}
+    .location-place_country .searchCityBlock {
+        width: 91.4% !important;
+    }
+    .row-fluid .show-list {
+        margin-right: 20px;
+    }
+    #content_noBorder,    .container {
+        max-width: 480px;
+    }
+
 }
