@@ -1036,20 +1036,6 @@ input[type="color"]:focus, .uneditable-input:focus
     min-width: 174px;
 }
 
-/*.sidebar-box .place-address_nbg {*/
-    /*max-width: 100%;*/
-/*}*/
-
-/*.sidebar-box .place-address_nbg span {*/
-    /*display: inline-block;*/
-    /*zoom: 1;*/
-    /**display: inline;*/
-    /*padding:0 0 0 9px;*/
-    /*margin: 12px 0;*/
-    /*height: 17px;*/
-    /*overflow: hidden;*/
-    /*vertical-align: middle;*/
-/*}*/
 .place-address .btn {
     min-width: 60px;
     padding: 10px 20px;
@@ -1057,7 +1043,6 @@ input[type="color"]:focus, .uneditable-input:focus
     right: -1px;
     top: -1px;
 }
-
 
 /*------------------------------------------END plant box css----------------------------------------------------------*/
 
@@ -2599,16 +2584,6 @@ ul.days-events  {
 .location-search {
     background: #ffffff;
 }
-/*.sidebar .place-address_nbg  span {*/
-    /*background: none;*/
-    /*color:#010101;*/
-/*}*/
-
-/*.sidebar .place-address_nbg {*/
-    /*background:#ffffff;*/
-    /*border:1px solid #9CC3F4;*/
-    /*padding-right: 70px;*/
-/*}*/
 
 .place-address span {
     color:#ffffff;
@@ -2624,6 +2599,9 @@ ul.days-events  {
     overflow: hidden;
 }
 
+.event-list-btn {
+    padding-bottom: 20px;
+}
 
 .cities_box {
     padding-top: 30px;
