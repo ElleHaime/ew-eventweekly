@@ -695,7 +695,7 @@ input[type="color"]:focus, .uneditable-input:focus
     box-sizing: border-box;
     -moz-box-sizing: border-box; /*Firefox 1-3*/
     -webkit-box-sizing: border-box; /* Safari */
-    min-height: 200px;
+    min-height: 211px;
     resize: none;
     width: 100%;
 }
