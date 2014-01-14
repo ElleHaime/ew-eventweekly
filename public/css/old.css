@@ -84,7 +84,7 @@ hr {
 .out{
     background: #212121;
     width: 100%;
-    z-index: 101;
+    z-index: 80;
     box-shadow: 0 0 4px #000;
     position: fixed;
     top:0;
@@ -567,8 +567,19 @@ a.location-city  {
 
 .container-fluid .location-place_country .location-search input[type="text"] {
     background: url("../img/demo/place-icon-hide.png") no-repeat scroll 10px 9px #ffffff;
-    padding: 0px 10px 0px 35px;
+    padding: 0px 110px 0px 35px;
     border-right: 0;
+    height: 42px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+
+}
+.searchCityBlock  .btn {
+    position: relative;
+    z-index: 10;
+    margin-left: -105px;
 }
 
 .container-fluid .location-place_country .location-search input[type="text"]:focus {
@@ -588,7 +599,7 @@ a.location-city  {
     font-size: 15px;
     background: #4e98e3;
     color:#ffffff;
-    height: 41px;
+    height: 42px;
 
 }
 .location-search .input-append .add-on:last-child,
@@ -2398,13 +2409,13 @@ ul.days-events  {
     color:#ffffff;
 }
 .location-place_ask .location-search , .location-place_country .location-search {
-    width: 475px;
+    width: 479px;
     right:0!important;
 }
 
 .location-place_country  .location-search {
     left:-56px;
-    padding: 22px 22px 13px 22px;
+    padding: 22px 20px 13px;
 }
 
 /*.location-search input {*/
@@ -3440,7 +3451,6 @@ a.table-box-row:focus {
     width: 180px;
     border: 1px solid #eee;
     float: right;
-    margin-right: -4px;
 }
 .switch-btn button{
     border: 0;
@@ -3513,7 +3523,7 @@ a.table-box-row:focus {
 .date-picker .input-div {
     float: left;
     margin-left: 12px;
-    width: 48.6%;
+    width: 48.3%;
 }
 .input-div:first-child {
     margin-left: 0;

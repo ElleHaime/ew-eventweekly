@@ -227,7 +227,7 @@
         top: 62px;
         left: 0px !important;
         width: 92% !important;
-        padding: 4%;
+        padding: 4% 4% 2% 4%;
     }
 
     /*.location-place_ask .input-search {*/
@@ -235,7 +235,7 @@
     /*}*/
     .location-place_country .searchCityBlock
     {
-        width: 95% !important;
+        width: 94.4% !important;
     }
 
 }
@@ -437,6 +437,10 @@
     body {
         overflow-x: hidden;
     }
+    .location-place_country .searchCityBlock {
+        width: 92.4% !important;
+    }
+
 }
 
 @media screen and (max-height: 580px) {
@@ -493,4 +497,10 @@
     {
         max-height: 200px;
     }
+}
+
+@media screen and (max-width: 490px) {
+.location-place_country .searchCityBlock {
+    width: 91.4% !important;
+}
 }
