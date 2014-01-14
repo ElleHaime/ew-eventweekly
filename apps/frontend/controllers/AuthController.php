@@ -206,8 +206,9 @@ class AuthController extends \Core\Controller
         $form = new RestoreForm();
 
         if ($this -> request -> isPost()) {
+            $email = $this -> request -> getPost('email', 'email');
             if ($form -> isValid($this -> request -> getPost())) {
-                $member = Member::findFirst(array('email' => $this -> request -> getPost('email', 'email')));
+                $member = Member::findFirst(array('email' => $email));
                 if (!$member) {
                     $this -> flash -> error('Use with such email doesn\'t exists');
                     $this -> view -> form = $form;
