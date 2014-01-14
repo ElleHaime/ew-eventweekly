@@ -1,5 +1,5 @@
 .notiBlock {
-    position: absolute;
+    position: fixed;
     width: 100%;
     z-index: 1;
     line-height: 50px;
@@ -36,11 +36,11 @@
     display: inline-block;
     line-height: 15px;
     position: absolute;
-    right:10px;
-    top:19px;
+    right:11px;
+    top:18px;
 }
 #notiText {
-    padding: 0 0 0 20px;
+    padding: 0 10px;
 }
 .notiABtn {
     display: inline-block;
