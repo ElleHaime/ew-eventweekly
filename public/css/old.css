@@ -84,7 +84,7 @@ hr {
 .out{
     background: #212121;
     width: 100%;
-    z-index: 101;
+    z-index: 80;
     box-shadow: 0 0 4px #000;
     position: fixed;
     top:0;
@@ -284,7 +284,7 @@ hr {
     margin-top: 0;
     min-width: 180px;
     position: relative;
-    z-index: 10;
+    z-index: 12;
 
 }
 .user-box  a:hover {
@@ -567,8 +567,19 @@ a.location-city  {
 
 .container-fluid .location-place_country .location-search input[type="text"] {
     background: url("../img/demo/place-icon-hide.png") no-repeat scroll 10px 9px #ffffff;
-    padding: 0px 10px 0px 35px;
+    padding: 0px 110px 0px 35px;
     border-right: 0;
+    height: 42px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+
+}
+.searchCityBlock  .btn {
+    position: relative;
+    z-index: 10;
+    margin-left: -105px;
 }
 
 .container-fluid .location-place_country .location-search input[type="text"]:focus {
@@ -588,7 +599,7 @@ a.location-city  {
     font-size: 15px;
     background: #4e98e3;
     color:#ffffff;
-    height: 41px;
+    height: 42px;
 
 }
 .location-search .input-append .add-on:last-child,
@@ -692,9 +703,12 @@ input[type="color"]:focus, .uneditable-input:focus
     float: right;
 }
 .field-big {
-    width:98%;
-    min-height: 200px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    min-height: 211px;
     resize: none;
+    width: 100%;
 }
 div.grippie {
     background:#EEEEEE url(../img/bgs/grippie.png) no-repeat scroll center 2px;
@@ -1068,13 +1082,15 @@ input[type="color"]:focus, .uneditable-input:focus
     font: 400 22px "Open Sans";
 }
 .input-div input   {
-    width: 98%;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    height: 42px;
 
 }
-.date-picker .input-div input {
-    width: 95%;
-}
-.input-div input[type="text"], .input-div_date  input[type="text"]
+
+.input-div_date  input[type="text"]
 {
     height: 32px;
 }
@@ -2393,13 +2409,13 @@ ul.days-events  {
     color:#ffffff;
 }
 .location-place_ask .location-search , .location-place_country .location-search {
-    width: 475px;
+    width: 479px;
     right:0!important;
 }
 
 .location-place_country  .location-search {
     left:-56px;
-    padding: 22px 22px 13px 22px;
+    padding: 22px 20px 13px;
 }
 
 /*.location-search input {*/
@@ -3297,15 +3313,16 @@ a.table-box-row:focus {
     margin:0 auto;
 }
 
-.location-place_ask  .input-search {
-    width: 78%;
-}
+/*.location-place_ask  .input-search {*/
+    /*width: 78%;*/
+/*}*/
 
 .show-list {
     width:60px;
     float: right;
     text-align: center;
     margin-top: 20px;
+    margin-right: 8px;
 }
 
 .out .container-fluid {
@@ -3434,7 +3451,6 @@ a.table-box-row:focus {
     width: 180px;
     border: 1px solid #eee;
     float: right;
-    margin-right: -4px;
 }
 .switch-btn button{
     border: 0;
@@ -3478,9 +3494,13 @@ a.table-box-row:focus {
 }
 
 .location-place_ask .form-horizontal .input-search {
-    width: 97%;
     background: none;
     padding-left: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    height: 42px;
 }
 .location-place_ask .form-horizontal .input-search:active, .location-place_ask .form-horizontal .input-search:focus  {
     background: #DEEDFF;
@@ -3503,7 +3523,7 @@ a.table-box-row:focus {
 .date-picker .input-div {
     float: left;
     margin-left: 12px;
-    width: 48.4%;
+    width: 48.3%;
 }
 .input-div:first-child {
     margin-left: 0;
@@ -3826,7 +3846,7 @@ i.icon-map {
 }
 #content_right_inner
 {
-    margin-left: 185px;
+    margin-left: 180px;
 }
 #content_center
 {

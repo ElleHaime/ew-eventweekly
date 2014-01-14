@@ -570,7 +570,7 @@ footer .login-variants div.read-more {
 /* tablet */
 @media screen and (min-width: 768px) and (max-width: 992px) {
     .big-top .square span{
-        padding:16% 22%;
+        padding:9% 22%;
         font-size: 0.6em;
     }
 
@@ -591,6 +591,10 @@ footer .login-variants div.read-more {
  
  
 @media screen and (min-width: 768px) and (max-width: 1069px) {
+
+    .big-top .square span{
+        padding:3% 22%;
+    }
 
 	footer .login-variants .line-box{
 		margin-bottom: 30px;
