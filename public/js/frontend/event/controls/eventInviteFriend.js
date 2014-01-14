@@ -19,7 +19,8 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 wallText: 'Check out this awesome event!',
 
                 isLogged: '#isLogged',
-                isMobile: '#isMobile'
+                isMobile: '#isMobile',
+                externalLogged: '#external_logged'
             },
 
             /**
@@ -64,7 +65,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
             __friendsClickHandler: function() {
                 var $this = this;
                 return function(event){
-                    if ($($this.settings.isLogged).val() === '0') {
+                    if ($($this.settings.isLogged).val() === '0' || $($this.settings.externalLogged).length == 0) {
                         noti.createNotification(
                             'Please <a href="/#fb-login">login via Facebook</a> to be able to invite your friends to event', 'warning'
                         )
