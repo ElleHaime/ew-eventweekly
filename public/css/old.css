@@ -14,7 +14,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    min-width: 480px;
+    min-width: 460px;
     color:#333333;
     background: #f3f3f3;
     padding: 0;
@@ -84,7 +84,7 @@ hr {
 .out{
     background: #212121;
     width: 100%;
-    z-index: 11;
+    z-index: 101;
     box-shadow: 0 0 4px #000;
     position: fixed;
     top:0;
@@ -141,12 +141,12 @@ hr {
 /*------------------------------------------agreement css----------------------------------------------------------*/
 
 .agreement-box  {
-    padding: 30px 0 15px 0;
+    padding: 3%;
     background: #ffffff;
 }
 .agreement-box form {
-    padding-left: 0;
     float: left;
+    padding: 0;
 }
 .agreement-box form h4 {
     padding-bottom: 10px;
@@ -195,9 +195,6 @@ hr {
     margin-left: 196px;
 }
 
-.agreement-box  {
-    padding-left: 50px;
-}
 .agreement-box   h4 {
     font: 400 17px "Open Sans";
     padding-bottom: 20px;
@@ -230,6 +227,9 @@ hr {
     color:#ffffff;
     outline: none;
     box-shadow: none;
+}
+.searchCityBlock  input {
+    width: 68%;
 }
 
 .btn-add:hover , .btn-add:active, .btn-add:focus {
@@ -602,7 +602,7 @@ a.location-city  {
     position: absolute;
     top:42px;
     width: auto;
-    padding: 22px;
+    padding: 22px 22px 10px 22px;
     z-index: 100;
 }
 .active-box > a {
@@ -810,7 +810,7 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .name-link , .name-link:hover {
     color:#464646;
-    font: 400 22px/22px "Open Sans";
+    font: 400 22px/24px "Open Sans";
     margin-bottom: 10px;
     display: block;
     word-wrap: break-word;
@@ -3308,7 +3308,7 @@ a.table-box-row:focus {
     margin-top: 20px;
 }
 
-.container-fluid {
+.out .container-fluid {
     min-width: 480px;
 }
 
@@ -3602,7 +3602,7 @@ i.icon-map {
 }
 
 .active-box > a {
-    padding-bottom:6px;
+    padding-bottom:4px;
 }
 
 .user-block .active-box > a

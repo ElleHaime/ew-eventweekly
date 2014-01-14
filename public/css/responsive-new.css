@@ -449,12 +449,34 @@
         border-bottom: 1px solid #cccccc;
         margin: 4px 0;
     }
+    body {
+        overflow-x: hidden;
+    }
 }
 
 @media screen and (max-height: 580px) {
     .location-place_ask .location-search
     {
         max-height: 280px;
+        overflow-y: scroll;
+}
+}
+@media screen and (max-height: 460px) {
+    body {
+        overflow-x: auto;
+    }
+}
+@media screen and (max-height: 640px) {
+    .location-place_ask .location-search
+    {
+        max-height: 530px;
+        overflow-y: scroll;
+    }
+}
+@media screen and (max-height: 600px) {
+    .location-place_ask .location-search
+    {
+        max-height: 400px;
         overflow-y: scroll;
     }
     #end_dateSearch, #start_dateSearch {
@@ -465,4 +487,25 @@
         margin-bottom: 4px;
     }
 
+}
+
+@media screen and (max-height: 500px) {
+    .location-place_ask .location-search
+    {
+        max-height: 380px;
+    }
+}
+
+@media screen and (max-height: 400px) {
+    .location-place_ask .location-search
+    {
+        max-height: 230px;
+    }
+}
+
+@media screen and (max-height: 300px) {
+    .location-place_ask .location-search
+    {
+        max-height: 200px;
+    }
 }
