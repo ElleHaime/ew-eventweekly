@@ -90,7 +90,7 @@ class SearchController extends \Core\Controller
 
             }
 
-            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
+            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax') && (($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'private') || ($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))) {
                 $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].'AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].'AND '.$postData['searchLocationLngMax']);
 
                 $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;

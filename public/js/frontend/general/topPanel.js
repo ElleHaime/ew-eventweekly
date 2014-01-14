@@ -13,7 +13,7 @@ define('frontTopPanel',
 		        advancedSearchBlock: '.advancedSearchBlock',
 		        sendCoordsUrl: '',
 
-				userControlBox: '#user-box',
+				userControlBox: '.user-box',
 				btnUserControl: {
 					elem: '#user-down-caret',
 					container: '#userControlBox'
@@ -129,11 +129,11 @@ define('frontTopPanel',
 		    	var controlList = $(self.settings.userControlList.elem);
 
 		    	if (controlBox.hasClass('active-box')) {
-		    		$(self.settings.userControlBox).removeClass('active-box');
+                    controlBox.removeClass('active-box');
 		    	} else {
-		    		$(self.settings.userControlBox).addClass('active-box');
+                    controlBox.addClass('active-box');
 		    	}
-		    	$(self.settings.userControlList.elem).slideToggle('2000');
+                controlList.toggle();
 		    }
 		}; 
 		
