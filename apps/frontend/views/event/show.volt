@@ -4,17 +4,17 @@
 {% if event.category|length %}
 	{% for cat in event.category %}
 
-	        {#<div class="container-fluid">#}
-	            {#<div class="row-fluid">#}
-	                {#<div class="span12">#}
-                        {#<div class="top-line {{ cat.key }}-color">#}
-                            {#<div class="event-title ">#}
-                                {#<span>{{ cat.name }}</span>#}
-                            {#</div>#}
-	                     {#</div>#}
-	                {#</div>#}
-	             {#</div>#}
-	        {#</div>#}
+	        <div class="container-fluid">
+	            <div class="row-fluid">
+	                <div class="span12">
+                        <div class="top-line {{ cat.key }}-color">
+                            <div class="event-title ">
+                                <span>{{ cat.name }}</span>
+                            </div>
+	                     </div>
+	                </div>
+	             </div>
+	        </div>
 	   {% break %}
 	{% endfor %}
 {% endif %}
