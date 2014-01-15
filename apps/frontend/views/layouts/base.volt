@@ -10,16 +10,13 @@
         var meta = document.createElement('meta'), content = '';
         meta.setAttribute('name', 'viewport');
         if (window.innerWidth <= 480) {
-            content = 'width=device-width, initial-scale=1.0';
-        }else {
             content = 'width=480,user-scalable=false';
+        }else {
+            content = 'width=device-width, initial-scale=1.0, user-scalable=no';
         }
         meta.setAttribute('content', content);
-
         var title = document.getElementsByTagName('title')[0];
         title.parentNode.insertBefore(meta, title);
-
-        console.log(title.parentNode);
     </script>
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
