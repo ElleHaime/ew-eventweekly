@@ -35,7 +35,7 @@
                                                 </div>
 
                                                 <div class="event-one-text">
-                                                    <a href="/campaign/edit/{{ campaign.id }}" class="name-link">{{ campaign.name }}</a>
+                                                    <a href="/campaign/event-list/{{ campaign.id }}" class="name-link">{{ campaign.name }}</a>
 
                                                     <div class="event-text">
                                                         <p>{{ campaign.description}}</p>

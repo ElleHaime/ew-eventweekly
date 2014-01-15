@@ -5,7 +5,8 @@ namespace Frontend\Controllers;
 use Core\Utils as _U,
 	Frontend\Models\Location,
 	Frontend\Models\Campaign as Campaign,
-	Frontend\Models\CampaignCategory;
+	Frontend\Models\CampaignCategory,
+    Frontend\Models\Event;
 
 /**
  * @RoutePrefix('/campaign')
@@ -56,6 +57,35 @@ class CampaignController extends \Core\Controllers\CrudController
         }
         echo json_encode($result);
 	}
+
+    /**
+     * @Route("/campaign/event-list/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function eventListAction($id)
+    {
+        $campaign = Campaign::findFirst((int)$id);
+
+        if ($campaign) {
+            $eventModel = new Event();
+            $eventModel->addCondition('\Frontend\Models\Event.campaign_id = ' . $id);
+
+            $events = $eventModel->fetchEvents();
+
+            $this->eventListCreatorFlag = true;
+
+            $this->view->pick('event/eventList');
+
+            return [
+                'list' => $events,
+                'eventListCreatorFlag' => $this->eventListCreatorFlag,
+                'listTitle' => $campaign->name . ' events',
+                'noListResult' => 'No events in this campaign'
+            ];
+        }
+
+        $this->response->redirect("/campaign/list");
+    }
 
 	public function processForm($form) 
 	{
