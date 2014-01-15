@@ -232,6 +232,7 @@ class AuthController extends \Core\Controller
 
                 $mailer = $this->di->get('mailEmailer');
                 $res = $mailer->send($message);
+                Logger::log('Email send result: ', \Phalcon\Logger::DEBUG);
                 Logger::log($res, \Phalcon\Logger::DEBUG);
 
                 //if (mail($to, $subject, $template)) {
