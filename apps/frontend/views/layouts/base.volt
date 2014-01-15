@@ -5,8 +5,20 @@
     <meta charset="utf-8"/>
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
-    {#<meta name="viewport" content="width=width=device-width,initial-scale=1,user-scalable=no" />#}
-    <meta name="viewport" content="width=480,user-scalable=false" />
+
+    <script type="text/javascript">
+        var meta = document.createElement('meta'), content = '';
+        meta.setAttribute('name', 'viewport');
+        if (window.innerWidth <= 480) {
+            content = 'width=480,user-scalable=false';
+        }else {
+            content = 'width=device-width, initial-scale=1.0, user-scalable=no';
+        }
+        meta.setAttribute('content', content);
+        var title = document.getElementsByTagName('title')[0];
+        title.parentNode.insertBefore(meta, title);
+    </script>
+
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if eventMetaData is defined %}
