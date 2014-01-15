@@ -35,17 +35,17 @@ class EventForm extends Form
 								array('options' => \Frontend\Models\Event::$eventRecurring)); 
 		
 		$this -> addElement('text', 'location', 'Location',
-								array('placeholder' => 'Choose location'));
+								array('placeholder' => 'Choose location', 'autocomplete' => 'off'));
 		$this -> addElement('hidden', 'location_latitude');
 		$this -> addElement('hidden', 'location_longitude');
 		$this -> addElement('hidden', 'location_id');
 		
 		$this -> addElement('text', 'address', 'Address', 
-								array('placeholder' => 'Choose address'));
+								array('placeholder' => 'Choose address', 'autocomplete' => 'off'));
 		$this -> addElement('hidden', 'address-coords');		
 
 		$this -> addElement('text', 'venue', 'Venue',
-								array('placeholder' => 'Choose venue'));
+								array('placeholder' => 'Choose venue', 'autocomplete' => 'off'));
 		$this -> addElement('hidden', 'venue_latitude');
 		$this -> addElement('hidden', 'venue_longitude');
 
@@ -61,22 +61,26 @@ class EventForm extends Form
 		$this -> addElement('date', 'start_date', 'Start date',
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
-									  'placeholder' => 'Start date'));
+									  'placeholder' => 'Start date',
+                                      'autocomplete' => 'off'));
 		
 		$this -> addElement('date', 'start_time', 'Start time',
 								array('data-format' => 'hh:mm:ss',
 									  'data-type' => 'event_time',
-									  'placeholder' => 'Start time'));
+									  'placeholder' => 'Start time',
+                                      'autocomplete' => 'off'));
 		
 		$this -> addElement('date', 'end_date', 'End date',
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
-									  'placeholder' => 'End date'));
+									  'placeholder' => 'End date',
+                                      'autocomplete' => 'off'));
 
 		$this -> addElement('date', 'end_time', 'End time',
 								array('data-format' => 'hh:mm:ss',
 									  'data-type' => 'event_time',
-									  'placeholder' => 'End time'));
+									  'placeholder' => 'End time',
+                                      'autocomplete' => 'off'));
 
 		$this -> addElement('select', 'event_category', 'Suggest category', 
 								array('options' => \Frontend\Models\Category::find(),

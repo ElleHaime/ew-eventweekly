@@ -158,6 +158,14 @@ define('frontEventEditControl',
 					window.location.href = "/event/list";
 				});
 
+                $(self.settings.form).bind("keyup keypress", function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code  == 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
                 $(self.settings.form).submit(function(){
                     if ($(self.settings.inpCategoryReal).val().trim() == '') {
                         $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());

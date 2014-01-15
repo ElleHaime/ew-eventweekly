@@ -133,7 +133,7 @@ define('frontEventListControl',
 
 			self.__hideEvent = function(elemId)
 			{
-				$('#element_' + elemId).remove();
+                $("div[event-id=" + elemId + "]").remove();
 			},
 
 			self.__redirectEdit = function(elem)
