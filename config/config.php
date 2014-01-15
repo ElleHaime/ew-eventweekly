@@ -39,6 +39,7 @@ $cfg_settings = array(
 			'Core\Acl' => ROOT_APP . 'apps/library/Core/Acl/',
 			'Core\Controllers' => ROOT_APP . 'apps/library/Core/Controller/',
 			'Core\Traits' => ROOT_APP . 'apps/library/Core/Traits/',
+			'Core\Mail' => ROOT_APP . 'apps/library/Core/Mail/',
 			'Core\Form\Element' => ROOT_APP . 'apps/library/Core/Form/Element/',
 			'Objects' => ROOT_APP . 'apps/objects/',
 			'Thirdparty\Geo' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
@@ -47,7 +48,17 @@ $cfg_settings = array(
             'Thirdparty\MobileDetect' => ROOT_APP . 'apps/library/Thirdparty/MobileDetect/',
 		),
 		'mailer' => array(
-			//'path' => ROOT_LIB . 'Mail/Swift/swift_required.php'
+			'path' => ROOT_LIB . 'Mail/Swift/swift_required.php',
+            'config' => array(
+                'transport' => 1, // 1 = SMTP, 2 = SendMail, 3 = Mail
+                'smtp' => array(
+                    'host' => 'smtp.mandrillapp.com',
+                    'security' => 'tls',
+                    'port' => 587,
+                    'user' => 'slava@tiestegroup.com',
+                    'pass' => '4NEhZpEAVCbZBjD5C-49-A'
+                )
+            )
 		),
 		'geo' => array(
 			'path' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',

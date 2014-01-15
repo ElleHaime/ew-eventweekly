@@ -2,6 +2,7 @@
 
 namespace Frontend\Controllers;
 
+use Core\Logger;
 use Frontend\Form\SignupForm,
     Frontend\Form\LoginForm,
     Frontend\Form\RestoreForm,
@@ -223,9 +224,20 @@ class AuthController extends \Core\Controller
                 $subject = 'Reset password';
                 $to = $email;
 
-                if (mail($to, $subject, $template)) {
+                $message = $this->di->get('mailMessage');
+                $message->setSubject($subject)
+                    ->setFrom(array('support@eventweekly.com' => 'Support'))
+                    ->setTo(array($to))
+                    ->setBody($template);
+
+                $mailer = $this->di->get('mailEmailer');
+                $res = $mailer->send($message);
+                Logger::log('Email send result: ', \Phalcon\Logger::DEBUG);
+                Logger::log($res, \Phalcon\Logger::DEBUG);
+
+                //if (mail($to, $subject, $template)) {
                     $this -> view -> pick('auth/reseted');
-                }
+                //}
             }
         }
 
