@@ -92,6 +92,13 @@ class Geo extends Plugin
 						$scope = $details;
 					}
 				}
+                if (!isset($scope)) {
+                    foreach($result -> results as $object => $details) {
+                        if ($details -> types[0] == 'administrative_area_level_1') {
+                            $scope = $details;
+                        }
+                    }
+                }
 				if ($scope) {			
 					foreach ($scope -> address_components as $obj => $lvl) {
 						if ($lvl -> types[0] == 'locality') {

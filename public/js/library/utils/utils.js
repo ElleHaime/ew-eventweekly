@@ -12,13 +12,14 @@ define('utils',
 			        return null;
 			    }
 
-			    var input = selector, options = {};
+			    var input = selector, options = {types: ['(cities)']};
 
 			    if (lat != '' && lat != undefined && lng != '' && lng != undefined) {
-			        options = {
+                    var boundsOptions = {
 			            bounds: new google.maps.LatLngBounds(new google.maps.LatLng(lat, lng),
 			            									 new google.maps.LatLng(lat, lng))
 			        };
+                    options = $.extend(options, boundsOptions);
 			    }
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
