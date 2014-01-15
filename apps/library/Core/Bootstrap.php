@@ -144,9 +144,21 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	protected function _initMail($di)
 	{
-		$di -> set('mail', function() {
-			return new Mail();
+        $mailerPath = $this->_config->application->mailer->path;
+        $config = $this->_config->application->mailer->config;
+        require $mailerPath;
+
+		$di->set('mailMessage', function() {
+            return new \Core\Mail\Message();
 		});
+
+        $di->set('mailEmailer', function() use ($config) {
+                return new \Core\Mail\Emailer($config);
+            });
+
+        /*$di -> set('mail', function() {
+			return new Mail();
+		});*/
 	}
 
 	protected function _initGeoApi($di)

@@ -2,6 +2,7 @@
 
 namespace Frontend\Controllers;
 
+use Core\Logger;
 use Frontend\Form\SignupForm,
     Frontend\Form\LoginForm,
     Frontend\Form\RestoreForm,
@@ -104,7 +105,7 @@ class AuthController extends \Core\Controller
         $uid = $this -> request -> getPost('uid', 'string');
 
         if (!empty($access_token)) {
-            $memberNetwork = MemberNetwork::findFirst(array('account_uid = "' . $uid . '"'));
+            $memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
 
             if ($memberNetwork) {
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
@@ -208,7 +209,7 @@ class AuthController extends \Core\Controller
         if ($this -> request -> isPost()) {
             $email = $this -> request -> getPost('email', 'email');
             if ($form -> isValid($this -> request -> getPost())) {
-                $member = Member::findFirst(array('email' => $email));
+                $member = Member::findFirst('email = "'.$email.'"');
                 if (!$member) {
                     $this -> flash -> error('Use with such email doesn\'t exists');
                     $this -> view -> form = $form;
@@ -223,9 +224,20 @@ class AuthController extends \Core\Controller
                 $subject = 'Reset password';
                 $to = $email;
 
-                if (mail($to, $subject, $template)) {
+                $message = $this->di->get('mailMessage');
+                $message->setSubject($subject)
+                    ->setFrom(array('support@eventweekly.com' => 'EW Support'))
+                    ->setTo(array($to))
+                    ->setBody($template);
+
+                $mailer = $this->di->get('mailEmailer');
+                $res = $mailer->send($message);
+                Logger::log('Email send result: ', \Phalcon\Logger::DEBUG);
+                Logger::log($res, \Phalcon\Logger::DEBUG);
+
+                //if (mail($to, $subject, $template)) {
                     $this -> view -> pick('auth/reseted');
-                }
+                //}
             }
         }
 
