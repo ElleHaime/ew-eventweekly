@@ -63,8 +63,8 @@ $cfg_settings = array(
 		'geo' => array(
 			'path' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 		),
-        'uploadDir' => ROOT_APP . 'public/upload/'
-
+        'uploadDir' => ROOT_APP . 'public/upload/',
+        'defaultLogo' => '/img/logo200.png'
     ),
 	
 	'modules' => array(

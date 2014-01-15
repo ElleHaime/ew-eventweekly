@@ -26,6 +26,7 @@ class ViewListener {
     public function beforeRender($subject)
     {
         $this->view = $subject->getSource();
+        $config = $this->di->getShared('config');
 
         $params = $this->dispatcher->getReturnedValue();
         if (!empty($params) && is_array($params)) {
@@ -45,6 +46,8 @@ class ViewListener {
         }
 
         $this->view->setVar('location', $this->session->get('location'));
+
+        $this->view->setVar('defaultEventLogo', $config->application->defaultLogo);
     }
 
 } 
