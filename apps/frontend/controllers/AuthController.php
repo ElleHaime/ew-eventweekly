@@ -209,7 +209,7 @@ class AuthController extends \Core\Controller
         if ($this -> request -> isPost()) {
             $email = $this -> request -> getPost('email', 'email');
             if ($form -> isValid($this -> request -> getPost())) {
-                $member = Member::findFirst(array('email' => $email));
+                $member = Member::findFirst('email = "'.$email.'"');
                 if (!$member) {
                     $this -> flash -> error('Use with such email doesn\'t exists');
                     $this -> view -> form = $form;
@@ -226,7 +226,7 @@ class AuthController extends \Core\Controller
 
                 $message = $this->di->get('mailMessage');
                 $message->setSubject($subject)
-                    ->setFrom(array('support@eventweekly.com' => 'Support'))
+                    ->setFrom(array('support@eventweekly.com' => 'EW Support'))
                     ->setTo(array($to))
                     ->setBody($template);
 
