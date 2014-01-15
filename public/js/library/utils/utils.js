@@ -76,6 +76,14 @@ define('utils',
 				selectElm.prepend('<option value="' + optVal + '" selected="selected">' + optName + '</option>');
 			},
 
+            self.addNotSelectedEmptyOptionFirst = function(selectElm, optName, optVal)
+            {
+                if (typeof optVal == 'undefined') {
+                    optVal = '';
+                }
+                selectElm.prepend('<option value="' + optVal + '">' + optName + '</option>');
+            },
+
 			self.daysDifference = function(daysNum)
 			{
 				var result = '';
