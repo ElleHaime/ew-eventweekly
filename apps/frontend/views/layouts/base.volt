@@ -7,7 +7,7 @@
     <meta name="description" content=""/>
     {#<meta name="viewport" content="initial-scale=1.0, user-scalable=no">#}
     {#<meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-    <meta name="viewport" content="width=480,user-scalable=false" />
+    <meta name="viewport" content="width=device-width, user-scalable=false" />
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if eventMetaData is defined %}
