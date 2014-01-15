@@ -6,13 +6,21 @@ define('utils',
 			var self = this;
 			
 
-			self.addressAutocomplete = function(selector, lat, lng)
+			self.addressAutocomplete = function(selector, type, lat, lng)
 			{
 				if (selector == '' || selector == undefined) {
 			        return null;
 			    }
 
-			    var input = selector, options = {types: ['(cities)']};
+                var typess = [];
+
+                if (type == '' || type == undefined) {
+                    typess.push('(cities)');
+                }else {
+                    typess.push(type);
+                }
+
+			    var input = selector, options = {types: typess};
 
 			    if (lat != '' && lat != undefined && lng != '' && lng != undefined) {
                     var boundsOptions = {
@@ -21,6 +29,7 @@ define('utils',
 			        };
                     options = $.extend(options, boundsOptions);
 			    }
+                console.log(options);
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 			    return autocomplete;

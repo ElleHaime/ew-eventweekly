@@ -398,9 +398,8 @@ define('frontEventEditControl',
 			self.__inputFillList = function(input, list, coordsLat, coordsLng)
 			{
 				if (self.__checkInputFill(input, list))	{
-		           	var locs = utils.addressAutocomplete($(input)[0]);
-
 		           	if (input == self.settings.inpLocation) {
+                        var locs = utils.addressAutocomplete($(input)[0]);
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.ob;
 			                var lng = locs.getPlace().geometry.location.pb;
@@ -411,18 +410,20 @@ define('frontEventEditControl',
 		           	}
 
 		           	if (input == self.settings.inpAddress) {
-			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.ob;
-			                var lng = locs.getPlace().geometry.location.pb;
+                        var addr = utils.addressAutocomplete($(input)[0], 'geocode');
+			           	google.maps.event.addListener(addr, 'place_changed', function() {
+			                var lat = addr.getPlace().geometry.location.ob;
+			                var lng = addr.getPlace().geometry.location.pb;
 
 			                $(self.settings.coordsAddress).val(lat + ';' + lng);
 			            });
 		           	}
 
 		           	if (input == self.settings.inpVenue) {
-			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.ob;
-			                var lng = locs.getPlace().geometry.location.pb;
+                        var ven = utils.addressAutocomplete($(input)[0], 'establishment');
+			           	google.maps.event.addListener(ven, 'place_changed', function() {
+			                var lat = ven.getPlace().geometry.location.ob;
+			                var lng = ven.getPlace().geometry.location.pb;
 
 			                $(self.settings.coordsVenueLat).val(lat);
 			                $(self.settings.coordsVenueLng).val(lng);
