@@ -6,7 +6,7 @@
  *
  * Simple examples:
  * <code>
- * \Core\Logger::log('Debug text', \Core\Logger::DEBUG);
+ * \Core\Logger::log('Debug text', \Phalcon\Logger::DEBUG);
  *
  * \Core\Logger::error('Oops! Some error!');
  *
