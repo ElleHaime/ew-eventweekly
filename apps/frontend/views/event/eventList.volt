@@ -129,6 +129,8 @@
                                     </div>
                                 </div>
                             </div>
+                        {% else %}
+                            <div style="margin-left: 50px"><i>{{ noListResult|default('No events found') }}</i></div>
                         {% endfor %}
                     {% else %}
                         <div style="margin-left: 50px"><i>{{ noListResult|default('No events found') }}</i></div>
