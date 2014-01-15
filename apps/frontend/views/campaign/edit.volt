@@ -11,7 +11,11 @@
                     <div class="span12">
                         <div class="padd_30"></div>
                         <h3 class="title-add">
-                            Create campaign
+                            {% if campaign.id %}
+                                Edit campaign
+                            {% else %}
+                                Create campaign
+                            {% endif %}
                             {{ form.render('id') }}
                         </h3>
                     </div>
@@ -62,25 +66,8 @@
                                 </div>
                                 <div class="sidebar-box">
                                     <div class="event-site clearfix">
- 						{% if campaign.event|length %}
- 							<p>Events in campaign</p>
-                            {% for event in campaign.event %}
-                                <div class="events-list">
-                                    <div class="row-fluid ">
-                                        <div class="span12">
-                                            <div class="event-one clearfix">
-                                                <div class="event-one-text">
-                                                    <a href="/event/edit/{{ event.id }}" class="name-link">{{ event.name }}</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            Campaign has no events.
-                        {% endif %}
- 					</div>                
+
+ 					                </div>
                                 </div>
                             </div>
                         </div>

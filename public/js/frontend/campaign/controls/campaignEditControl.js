@@ -61,6 +61,14 @@ define('frontCampaignEditControl',
 					window.location.href = "/campaign/list";
 				});
 
+                $(self.settings.form).bind("keyup keypress", function(e) {
+                    var code = e.keyCode || e.which;
+                    if (code  == 13) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
                 $(self.settings.form).submit(function(){
                     if (!self.__checkRequiredFields()) return false;
                 });
