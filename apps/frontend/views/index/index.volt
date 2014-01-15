@@ -20,19 +20,19 @@
         <div class="column">
             <div class="number">1</div>
             <div class="text">
-                <p>Войдите через Фейсбук, чтоб использовать наш сервис на полную. </p>
+                <p>Use Facebook login to get your personalized event listings. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">2</div>
             <div class="text">
-                <p>Посмотрите интереснейшие события в вашем городе. </p>
+                <p>Stay informed and updated with current and upcoming events in your city and all over the world. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">3</div>
             <div class="text">
-                <p>Запланируйте свое событие, пригласив на него более 100 000 пользователей по всему миру </p>
+                <p> Create event and invite more when 100 000 guests to attend from all over the world. </p>
             </div>
         </div>
     </div>
@@ -43,9 +43,7 @@
             </div>
             <div class="tip clear">
                 <i class="fb-lock"></i>
-
-                <p>Мы серьзено относимся к вопросам приватности — личные события останутся личными, пока вы напрямую
-                    не включите их. Также мы ничего не запостим на вашу стену. </p>
+                <p>We respect your privacy and will not post any information without your permission to your social network accounts. </p>
             </div>
         </div>
     </div>
