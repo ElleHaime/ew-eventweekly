@@ -15,12 +15,12 @@
 	                </div>
 	             </div>
 	        </div>
+        
 	   {% break %}
 	{% endfor %}
 {% endif %}
 
 <div class="container" id="content_noBorder">
-
     <div class="row-fluid ">
         <div class="span12">
             <div class="event-one-box">
@@ -176,20 +176,19 @@
 
 
                                 </div>
-                            </div>
+                        </div>
 
                             {% include 'layouts/sharebar.volt' %}
 
-                            <div class="row-fluid">
-                                <div class="span12">
-                                    <div class="comment-box">
-                                        <h2>Leave comments</h2>
-                                        <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
-                                    </div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="comment-box">
+                                    <h2>Leave comments</h2>
+                                    <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
                                 </div>
                             </div>
-                    </div>
-                </div>
+                        </div>
+            </div>
         </div>
     </div>
 </div>
