@@ -47,7 +47,12 @@
                                             <div class="event-one-img">
                                                 <a href="/event/show/{{ event.id }}"  class="name-link">
                                                     {% if event.logo is defined %}
-                                                        <img src="/upload/img/event/{{ event.logo }}" width="132px" height ="132px">
+                                                        {% if event.logo is empty %}
+                                                            {% set pic = defaultEventLogo %}
+                                                        {% else %}
+                                                            {% set pic = '/upload/img/event/'~event.logo %}
+                                                        {% endif %}
+                                                        <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}
                                                         <img src="{{ event.pic_square }}">
                                                     {% endif %}
