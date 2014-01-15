@@ -214,6 +214,7 @@
                         {{ form.render('recurring') }}
                         <div class="checkbox-block">
                             {{ form.render('campaign_id') }}
+                            <input id="hiddenCampaignId" name="hiddenCampaignId" value="{{ event.campaign_id }}" type="hidden"/>
                         </div>
                     </div>
                 </div>

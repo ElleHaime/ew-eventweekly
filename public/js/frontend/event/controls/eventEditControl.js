@@ -10,6 +10,7 @@ define('frontEventEditControl',
                 form: 'form',
 
                 inpName: '#name',
+                inpCampaignId: '#hiddenCampaignId',
 
                 inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',
@@ -68,7 +69,12 @@ define('frontEventEditControl',
 			self.init = function()
 			{
                 utils.addEmptyOptionFirst($(self.settings.inpCategory), 'Choose categories');
-				utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+
+                if ($(self.settings.inpCampaignId).val() == '' || $(self.settings.inpCampaignId).val() == 0) {
+                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+                } else {
+                    utils.addNotSelectedEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+                }
 
 				var camp = $(self.settings.inpCampaignExists).val();
 				if (camp != 0) {
