@@ -105,7 +105,7 @@ class AuthController extends \Core\Controller
         $uid = $this -> request -> getPost('uid', 'string');
 
         if (!empty($access_token)) {
-            $memberNetwork = MemberNetwork::findFirst(array('account_uid = "' . $uid . '"'));
+            $memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
 
             if ($memberNetwork) {
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);

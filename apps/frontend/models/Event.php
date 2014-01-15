@@ -111,7 +111,7 @@ class Event extends EventObject
 
 	public function grabEventsByFbId($token, $eventId)
 	{
-		$eventObj = self::findFirst(array('id = ' . $eventId));
+		$eventObj = self::findFirst('id = ' . $eventId);
 		$fbId = $eventObj -> fb_uid;
 
 		$this -> facebook = new Extractor();
@@ -125,7 +125,7 @@ class Event extends EventObject
 	public function grabEventsByEwId($eventId)
 	{
         $this -> hasManyToMany('id', '\Objects\EventCategory', 'event_id', 'category_id', '\Objects\Category', 'id',  array('alias' => 'event_category'));
-		$eventObj = self::findFirst(array('id = ' . $eventId));
+		$eventObj = self::findFirst('id = ' . $eventId);
 
 		return $eventObj;
 	}
