@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
-    <meta name="viewport" content="width=width=device-width,initial-scale=1,user-scalable=no" />
+    {#<meta name="viewport" content="width=width=device-width,initial-scale=1,user-scalable=no" />#}
     <meta name="viewport" content="width=480,user-scalable=false" />
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
