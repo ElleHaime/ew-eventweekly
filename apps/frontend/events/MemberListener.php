@@ -10,6 +10,7 @@ namespace Frontend\Events;
 use Frontend\Models\Event,
     Frontend\Models\EventLike,
     Frontend\Models\EventMember,
+    Frontend\Models\Location,
     Thirdparty\Facebook\Extractor;
 
 class MemberListener {
@@ -41,9 +42,17 @@ class MemberListener {
         // remove search global preset from session
         $this->subject->session->remove('userSearch');
 
-        $this->subject->session->set('member', $params);
-        $this->subject->session->set('role', $params->role);
-        $this->subject->session->set('memberId', $params->id);
+        $location = $this->subject->session->get('location');
+        if ($params != false && $location->id != $params->location_id) {
+            $location = Location::findFirst('id = ' . $params->location_id);
+            $this->subject->session->set('location', $location);
+        }
+
+        if ($params) {
+            $this->subject->session->set('member', $params);
+            $this->subject->session->set('role', $params->role);
+            $this->subject->session->set('memberId', $params->id);
+        }
     }
 
     /**
@@ -55,16 +64,18 @@ class MemberListener {
         $this->subject = $subject->getSource();
         $params = $subject->getData();
 
-        $userId = $params->id;
+        if ($params) {
+            $userId = $params->id;
 
-        $model = new Event();
-        $this->subject->session->set('userEventsCreated', $model->getCreatedEventsCount($userId));
+            $model = new Event();
+            $this->subject->session->set('userEventsCreated', $model->getCreatedEventsCount($userId));
 
-        $model = new EventLike();
-        $this->subject->session->set('userEventsLiked', $model->getLikedEventsCount($userId));
+            $model = new EventLike();
+            $this->subject->session->set('userEventsLiked', $model->getLikedEventsCount($userId));
 
-        $model = new EventMember();
-        $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
+            $model = new EventMember();
+            $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
+        }
     }
 
     public function checkLocationMatch($subject)

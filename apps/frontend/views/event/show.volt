@@ -151,13 +151,6 @@
 
                                                 </div>
                                             </div>
-
-
-                                        </div>
-                                        <div class="btn-add_group clearfix">
-                                            <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
-                                            <button class="btn" type="button" id="btn-preview" disabled="disabled">Preview</button>
-                                            <button class="btn" type="submit" id="btn-submit">Save</button>
                                         </div>
                                     </div>
                                 </div>
