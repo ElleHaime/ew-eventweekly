@@ -53,6 +53,8 @@
 </head>
 
 <body>
+<div class="overlay">
+</div>
 
 {% include 'layouts/stuff.volt' %}
 {% include 'layouts/accheader.volt' %}
