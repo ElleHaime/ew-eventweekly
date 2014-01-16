@@ -28,13 +28,11 @@ p {
 }
 
 a {
-    color: #ffffff;
     outline: none;
     text-decoration: none;
 }
 a:hover {
     text-decoration: underline;
-    color: #ffffff;
 }
 
 img {
@@ -350,7 +348,7 @@ hr {
     background: #ffffff;
     position: absolute;
     left:0;
-    top:76px;
+    top:62px;
     width: 238px;
     padding: 22px 0 7px 0;
     box-shadow: 1px 2px 3px #777777;
@@ -464,7 +462,7 @@ hr {
 .btn-add {
     float: left;
     padding: 11px 12px 9px;
-    margin-top: 21px;
+    margin-top: 20px;
     font: 400 13px "Open Sans";
     background: #dcc67b;
     color:#212121;
@@ -1035,6 +1033,9 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .plans-box .btn, .btn-hide .btn  {
     min-width: 174px;
+}
+.btn-hide .event-site .btn {
+    margin-right:7px;
 }
 
 .place-address .btn {
@@ -2032,7 +2033,7 @@ input[type="checkbox"]  {
     display: inline-block;
     zoom: 1;
     *display: inline;
-    max-width: 240px;
+    /*max-width: 240px;*/
     float: right;
     margin: 0;
 }
@@ -2191,7 +2192,7 @@ input[type="checkbox"]  {
     top:0;
 }
 .user-box {
-    padding: 21px 0 10px 0px;
+    padding: 20px 0 10px 0px;
 }
 .show-box .btn {
     text-align: left;
@@ -2937,8 +2938,8 @@ ul.days-events  {
     font: 700 12px "Open Sans";
 }
 
-.location-search {
-    width: 476px;
+.location-place_ask .location-search {
+    width: 475px;
 }
 
 .service-search p {
@@ -3608,11 +3609,6 @@ i.icon-map {
     padding-bottom:4px;
 }
 
-.user-block .active-box > a
-{
-    padding-bottom: 23px;
-}
-
 
 /*-----------------------------------------TOOLTIP--------------------------------------------------------------------*/
 .tooltip {
@@ -3935,8 +3931,7 @@ i.icon-map {
 .event-text-one {
     clear: both;
 }
-
-.event-text-one a {
+.event-text-one a , .event-text-one p {
     word-wrap: break-word;
 }
 .event-img {
@@ -3963,3 +3958,18 @@ i.icon-map {
     clear: both;
     float: none;
 }
+
+.campaign-box  .form-center {
+    padding-left: 180px;
+    padding-right: 0;
+    margin-right: 0;
+}
+.no-list {
+    background: #ffffff;
+    padding: 10px;
+}
+
+.events-description {
+    max-width: 800px;
+}
+

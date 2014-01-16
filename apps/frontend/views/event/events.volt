@@ -100,7 +100,7 @@
 
                             {% else %}
 
-                                <div style="margin-left: 50px"><i>No events found</i></div>
+                                <div   class="no-list"><i>No events found</i></div>
 
                             {% endif %}
                              </div>

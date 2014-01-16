@@ -45,7 +45,7 @@
                                     <div class="span12">
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
-                                                <a href="/event/show/{{ event.id }}"  class="name-link">
+                                                <a href="/event/show/{{ event.id }}">
                                                     {% if event.logo is defined %}
                                                         <img src="/upload/img/event/{{ event.logo }}" width="132px" height ="132px">
                                                     {% else %}
@@ -130,10 +130,10 @@
                                 </div>
                             </div>
                         {% else %}
-                            <div style="margin-left: 50px"><i>{{ noListResult|default('No events found') }}</i></div>
+                            <div class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
                         {% endfor %}
                     {% else %}
-                        <div style="margin-left: 50px"><i>{{ noListResult|default('No events found') }}</i></div>
+                        <div   class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
                     {% endif %}
                 </div>
             </div>

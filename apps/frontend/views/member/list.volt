@@ -220,7 +220,7 @@
                         <div class="span11"><p><i class="icon-plus"></i> Or add your interests manually: rock, queen, zombie walk, golf
                                 party etc.</p></div>
                         <div class="span1">
-                            <button class="btn btn-block"> add</button>
+                            <button class="btn btn-block"> Add</button>
                         </div>
                     </div>
                 </div>
