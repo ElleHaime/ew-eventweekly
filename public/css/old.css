@@ -2484,6 +2484,12 @@ ul.days-events  {
 .event-one  {
     padding: 12px;
 }
+.events-list .event-one   {
+    padding: 12px 12px 2px 12px;
+}
+.signleEventListElement .event-one {
+    padding: 12px;
+}
 .header-count {
     color:#585858;
     font-size: 14px;
