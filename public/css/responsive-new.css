@@ -29,7 +29,7 @@
         width: 60%;
     }
     .event-one-text {
-        max-width: 500px;
+        max-width: 550px;
     }
 
 }
@@ -60,9 +60,6 @@
         margin-right: 7px;
     }
 
-    .event-one-text {
-        max-width: 400px;
-    }
     .event-one   .event-one-text  {
         max-width: 51%;
     }
@@ -140,7 +137,8 @@
         padding-left: 182px;
     }
     .event-list-btn {
-        float: right;
+        float: left;
+        clear: both;
     }
     .events-list_nbr .event-list-btn {
         float: left;
@@ -178,6 +176,7 @@
 }
 
 @media screen and (max-width: 790px) {
+
     .event-list-btn {
         float: left;
         clear: both;
@@ -229,10 +228,6 @@
         width: 92% !important;
         padding: 4% 4% 2% 4%;
     }
-
-    /*.location-place_ask .input-search {*/
-        /*width: 73%;*/
-    /*}*/
     .location-place_country .searchCityBlock
     {
         width: 94.4% !important;
@@ -240,7 +235,6 @@
 
 }
 @media screen and (max-width: 640px) {
-
 
     #end_dateSearch, #start_dateSearch {
         width: 153px;
@@ -314,6 +308,10 @@
 
 @media screen and (max-width: 580px) {
 
+    .event-one-box  #content_right
+    {
+        margin-top: 140px;
+    }
     #content_right {
         margin-top: 195px;
     }
@@ -458,7 +456,7 @@
 @media screen and (max-height: 640px) {
     .location-place_ask .location-search
     {
-        max-height: 530px;
+        max-height: 505px;
         overflow-y: scroll;
     }
 }

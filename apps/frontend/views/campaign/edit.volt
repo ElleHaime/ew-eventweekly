@@ -22,56 +22,8 @@
                 </div>
                 <div class="row-fluid">
                     <div class="span12">
-                        <div id="content_right">
-                            <div id="content_right_inner">
-                                <div id="content_center">
-                                    <div id="content-box">
-                                        <div class="form-center clearfix">
-                        <div class="input-div clearfix">
-							{{ form.render('name')}}
-                            <div class="arrow_box"> arrow</div>
-                        </div>
-
-                        <div class="input-div clearfix">
-                            {{ form.render('location') }}
-                            <div class="arrow_box"> arrow</div>
-                            {{ form.render('location_latitude') }}
-                            {{ form.render('location_longitude') }}
-                            {{ form.render('location_id') }}
-                            <div class="search-queries hidden">
-                                <ul id="locations-list">
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="input-div">
-                            {{ form.render('address') }}
-                            <div class="arrow_box"> arrow</div>
-                            {{ form.render('address-coords') }}
-                            <div class="search-queries hidden">
-                                <ul id="addresses-list">
-                                </ul>
-                            </div>
-                        </div>
-
-                        {{ form.render('description') }}
-                        
-                        <div class="btn-add_group clearfix">
-                            <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
-                            <button class="btn" id="btn-submit" type="submit">Save</button>
-                        </div>
-                    </div>
-                                    </div>
-
-                                </div>
-                                <div class="sidebar-box">
-                                    <div class="event-site clearfix">
-
- 					                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="add-img">
+                        <div class="campaign-box clearfix">
+                            <div class="add-img">
                             <div class="event-one-img">
                                 {% if campaign.logo %}
                                     <a><img id='img-box' src="/upload/img/campaign/{{ campaign.logo }}" alt=""></a>
@@ -88,8 +40,44 @@
 
                             </div>
                         </div>
-                        {{ form.render('add-img-upload') }}
-                        <div class="padd_30"></div>
+                            {{ form.render('add-img-upload') }}
+                            <div class="form-center clearfix">
+                            <div class="input-div clearfix">
+                                {{ form.render('name')}}
+                                <div class="arrow_box"> arrow</div>
+                            </div>
+
+                            <div class="input-div clearfix">
+                                {{ form.render('location') }}
+                                <div class="arrow_box"> arrow</div>
+                                {{ form.render('location_latitude') }}
+                                {{ form.render('location_longitude') }}
+                                {{ form.render('location_id') }}
+                                <div class="search-queries hidden">
+                                    <ul id="locations-list">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="input-div">
+                                {{ form.render('address') }}
+                                <div class="arrow_box"> arrow</div>
+                                {{ form.render('address-coords') }}
+                                <div class="search-queries hidden">
+                                    <ul id="addresses-list">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {{ form.render('description') }}
+
+                            <div class="btn-add_group clearfix">
+                                <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
+                                <button class="btn" id="btn-submit" type="submit">Save</button>
+                            </div>
+                        </div>
+                            <div class="padd_30"></div>
+                        </div>
                      </div>
                 </div>
             </div>
