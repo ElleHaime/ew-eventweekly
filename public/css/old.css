@@ -835,8 +835,15 @@ input[type="color"]:focus, .uneditable-input:focus
 }
 .icon-time {
     vertical-align: middle;
+    /*margin-top: -3px;*/
+}
+.event-one-text
+.icon-time {
+    vertical-align: middle;
     margin-top: -3px;
 }
+
+
 .date-list {
     padding-bottom: 5px;
 }
@@ -3584,6 +3591,8 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
 }
 .status-btn .btn {
     margin-top: 10px;
+    height: 42px;
+    padding: 0 10px;
 }
 .status-btn .btn:first-child {
     margin-top: 0;
