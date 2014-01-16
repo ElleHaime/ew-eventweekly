@@ -542,7 +542,11 @@ class Event extends EventObject
 
     public function getCreatedEventsCount($uId)
     {
-        return self::find(array('member_id = ' . $uId))->count();
+        if ($uId) {
+            return self::find(array('member_id = ' . $uId))->count();
+        } else {
+            return 0;
+        }
     }
 
     /**

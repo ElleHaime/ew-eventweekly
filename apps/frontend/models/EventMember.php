@@ -8,6 +8,10 @@ class EventMember extends EventMemberObject
 {
     public function getEventMemberEventsCount($uId)
     {
-        return self::find(array('member_id = ' . $uId . ' AND member_status = 1'))->count();
+        if ($uId) {
+            return self::find(array('member_id = ' . $uId . ' AND member_status = 1'))->count();
+        } else {
+            return 0;
+        }
     }
 } 

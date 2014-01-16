@@ -8,6 +8,10 @@ class EventLike extends EventLikeObject
 {
     public function getLikedEventsCount($uId)
     {
-        return self::find(array('member_id = ' . $uId . " AND status = 1"))->count();
+        if ($uId) {
+            return self::find(array('member_id = ' . $uId . " AND status = 1"))->count();
+        } else {
+            return 0;
+        }
     }
 } 
