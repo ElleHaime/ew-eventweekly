@@ -345,7 +345,10 @@ class MemberController extends \Core\Controllers\CrudController
 
         if ($this->session->has('memberId')) {
             $MemberFilter = new MemberFilter();
-            $response['member_categories'] = $MemberFilter->getbyId($this->session->get('memberId'))['category']['value'];
+            $filters = $MemberFilter->getbyId($this->session->get('memberId'));
+            if (isset($filters['category']['value'])) {
+                $response['member_categories'] = $filters['category']['value'];
+            }
         } else {
             $response['errors'] = true;
             $response['error_msg'] = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
