@@ -272,11 +272,11 @@ class Event extends EventObject
                         $result['description'] = $ev['description'];
                         $result['name'] = $ev['name'];
 
-                        if (isset($ev['pic_square']) && !empty($ev['pic_square'])) {
-                            $ext = explode('.', $ev['pic_square']);
+                        if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
+                            $ext = explode('.', $ev['pic_big']);
                             $logo = 'fb_' . $ev['eid'] . '.' . end($ext);
 
-                            $ch =  curl_init($ev['pic_square']);
+                            $ch =  curl_init($ev['pic_big']);
                             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                             curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
                             $content = curl_exec($ch);
@@ -445,7 +445,7 @@ class Event extends EventObject
                             $images = new EventImage();
                             $images -> assign(array(
                                     'event_id' => $eventObj -> id,
-                                    'image' => $ev['pic_square']
+                                    'image' => $ev['pic_big']
                                 ));
                             $images -> save();
 

@@ -1,6 +1,7 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
+    <h1>!!!</h1>
     <div class="container" id="content_noBorder">
         <div class="padd_30"></div>
 
@@ -54,7 +55,7 @@
                                                         {% endif %}
                                                         <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}
-                                                        <img src="{{ event.pic_square }}">
+                                                        <img src="{{ event.pic_big }}">
                                                     {% endif %}
                                                 </a>
                                             </div>

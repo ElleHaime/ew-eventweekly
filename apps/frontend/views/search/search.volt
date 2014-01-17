@@ -68,7 +68,7 @@
                                                 {% if event.logo is defined %}
                                                     <img src="/upload/img/event/{{ event.logo }}" width="132px" height ="132px">
                                                 {% else %}
-                                                    <img src="{{ event.pic_square }}">
+                                                    <img src="{{ event.pic_big }}">
                                                 {% endif %}
                                             </a>
                                         </div>

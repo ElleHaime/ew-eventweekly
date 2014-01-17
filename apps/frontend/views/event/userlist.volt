@@ -39,7 +39,7 @@
 		                                                    <img src="/upload/img/event/{{ node['event']['logo'] }}">
 		
 		                                                {% else %}
-		                                                    <img src="{{ node['event']['pic_square'] }}">
+		                                                    <img src="{{ node['event']['pic_big'] }}">
 		                                                {% endif %}
                                                     </a>
                                                 </div>

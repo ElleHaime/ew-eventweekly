@@ -156,7 +156,7 @@ class EventController extends \Core\Controllers\CrudController
 					$newEv = array(
 						'id' => $ev -> event -> id,
 						'eid' => $ev -> event -> fb_uid,
-						'pic_square' => '',
+						'pic_big' => '',
 						'address' => $ev -> event -> address,
 						'name' => $ev -> event -> name,
 						'venue' => array('latitude' => $ev -> venue_latitude,

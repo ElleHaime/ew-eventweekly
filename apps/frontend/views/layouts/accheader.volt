@@ -15,13 +15,15 @@
                     <div class=" user-block clearfix">
                         <div class="user-box">
                             <a id="user-down-caret">
-                                <img alt=""
-                                    {% if member.logo != '' %}
-                                        src="{{ member.logo }}"
-                                    {% else %}
-                                        src='/img/demo/h_back_1.jpg'
-                                    {% endif %}
-                                >
+                                <div class="user-img" style=" overflow:hidden;float:left;border: 2px solid #484846;margin-top: -5px;width: 47px; height: 46px;">
+                                    <img style="height: auto; border: 0;margin: 0; width: 100%;" alt=""
+                                            {% if member.logo != '' %}
+                                                src="{{ member.logo }}"
+                                            {% else %}
+                                                src='/img/demo/h_back_1.jpg'
+                                            {% endif %}
+                                    >
+                                </div>
                                 <span>
                                     {% if member.name|length %}
                                         {{ member.name }}
