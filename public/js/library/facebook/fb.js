@@ -37,7 +37,7 @@ define('fb',
 				'current_location', 
 				'current_address', 
 				'username', 
-				'pic_square'
+				'pic_big'
 			];
 			self.accessToken = '';
 			self.accessUid = '';
@@ -133,7 +133,7 @@ define('fb',
                            address: data.current_address,
                            location: data.current_location,
                            email: data.email,
-                           logo: data.pic_square,
+                           logo: data.pic_big,
                            first_name: data.first_name,
                            last_name: data.last_name,
                            username: data.username };

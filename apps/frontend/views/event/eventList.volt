@@ -54,7 +54,7 @@
                                                         {% endif %}
                                                         <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}
-                                                        <img src="{{ event.pic_square }}">
+                                                        <img src="{{ event.pic_big }}">
                                                     {% endif %}
                                                 </a>
                                             </div>
