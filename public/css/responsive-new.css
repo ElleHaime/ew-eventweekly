@@ -168,10 +168,9 @@
     .event-site a {
        clear: both;
     }
-
-    /*.location-place_ask .input-search {*/
-        /*width: 73%;*/
-    /*}*/
+    .event-one-box .event-list-btn {
+        padding-bottom: 10px;
+    }
 
 }
 
