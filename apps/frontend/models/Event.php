@@ -244,7 +244,9 @@ class Event extends EventObject
             foreach ($venuesList as $vn) {
                 $venuesScope[$vn -> fb_uid] = array('venue_id' => $vn -> id,
                     'address' => $vn -> address,
-                    'location_id' => $vn -> location_id);
+                    'location_id' => $vn -> location_id,
+                    'latitude' => $vn -> latitude,
+                    'longitude' => $vn -> longitude);
             }
         }
 
