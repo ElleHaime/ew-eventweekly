@@ -1,7 +1,6 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-    <h1>!!!</h1>
     <div class="container" id="content_noBorder">
         <div class="padd_30"></div>
 
