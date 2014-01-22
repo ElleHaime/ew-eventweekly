@@ -253,12 +253,18 @@ console.log(data);
 
 		    
 		    self.__createInfoPopupContent = function(event) {
-		        return '<div class="info-win" id="content">' +
-		            '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
-		            '<div>' +
-		            '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-		            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
-		            '</div>';
+		        return '<div class="info-win music-category " id="content"> ' +
+                    ' <div class="events-img-box">' +
+                        '<img  class="events-img" src="img/eg.jpg" alt="">' +
+                        '<div class="events-date-box"><i class="icon-time"></i> 23 Aug 2014 </div> ' +
+                    '</div>' +
+                    '<div class="events-descriptions-box">' +
+                        '<h4><a href="#">Dublin</a> - <span>Irland</span> </h4>' +
+		                '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
+		                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+                    '<div>' +
+		            '</div>' +
+                    '</div>';
 		    }
 		};
 		

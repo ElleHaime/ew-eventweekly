@@ -17,10 +17,14 @@
 
 .table-condensed a.btn {
     height: auto;
-    padding: 4px 12px;
+    padding: 2px 12px;
     min-height: 24px;
+    line-height: 24px;
 }
-
+.table-condensed th, .table-condensed td
+{
+    padding: 2px 5px;
+}
 .table-condensed  i.icon-chevron-down, .table-condensed  .icon-chevron-up
 {
     position: relative;
