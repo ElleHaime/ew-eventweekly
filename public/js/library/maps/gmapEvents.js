@@ -185,7 +185,7 @@ define('gmapEvents',
                             var existingMarker = allMarkers[i];
                             var pos = existingMarker.getPosition();
                             if (newLatLng.equals(pos)) {
-                                infoWindow.content = existingMarker.content + " & " + self.__createInfoPopupContent(event);
+                                infoWindow.content = existingMarker.content + " <hr/> " + self.__createInfoPopupContent(event);
                             }
                         }
                     }

@@ -4102,3 +4102,8 @@ i.icon-map {
 {
     display: none;
 }
+
+
+.gm-style-iw hr {
+    margin-top: 10px;
+}
