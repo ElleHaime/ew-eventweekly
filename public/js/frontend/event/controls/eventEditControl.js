@@ -219,7 +219,15 @@ define('frontEventEditControl',
 				reader.onload = (function(f) {
 					$(self.settings.inpLogo).attr('value', f.name);
 					return function(e) {
-						$(self.settings.boxImg).attr('src', e.target.result);
+                        var img = new Image();
+                        img.src = e.target.result;
+                        //alert(img.width);
+
+                        if (img.width < 180 || img.height < 60) {
+                            noti.createNotification('Image size should be min 180x60 for posting on facebook!', 'warning');
+                        }
+
+                        $(self.settings.boxImg).attr('src', img.src);
 					}
 				})(file);
 

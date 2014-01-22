@@ -708,15 +708,23 @@ class EventController extends \Core\Controllers\CrudController
             }
 
 			// save image
+            $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
 			if (isset($logo)) {
-				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
-                $fbParams['cover.jpg'] = '@' . $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
+				$logo -> moveTo($file);
 			} else if ($ev->logo != '') {
-                $fbParams['cover.jpg'] = '@' . $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
-            } else {
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
+            } /*else {
                 if (!isset($ev->logo) || $ev->logo == '') {
-                    $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+                    $file = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
                 }
+            }*/
+
+            list($width, $height, $type, $attr) = getimagesize($file);
+            if ($width < 180 || $height < 60) {
+                $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+            } else {
+                $fbParams['cover.jpg'] = '@' . $file;
             }
             // finish prepare params for FB event
 
