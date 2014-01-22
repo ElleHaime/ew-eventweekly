@@ -549,6 +549,30 @@ class EventController extends \Core\Controllers\CrudController
         return $id;
     }
 
+    /**
+     * @Route("/event/facebook", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function facebookAction()
+    {
+
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+
+
+        $response = $httpClient->post('me/events', array(
+            'access_token' => $this->session->get('user_token'),
+            'name' => "!!!",
+            'description' => "!!!",
+            //'start_time' => date('c', strtotime('2012-02-01 13:00:00')),
+            //'end_time' => date('c', strtotime('2012-02-01 14:00:00')),
+            'location' => 'Moldova',
+            'privacy_type' => 'SECRET'
+        ));
+        $result = $response->body;
+    }
+
 	public function processForm($form) 
 	{
 		_U::dump($form -> getFormValues(), true);
@@ -567,6 +591,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
+        $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
@@ -657,37 +682,56 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
-            // collect params for FB event
+            // start prepare params for FB event
             $fbParams = array(
                 'access_token' => $this->session->get('user_token'),
                 'name' => $newEvent['name'],
                 'description' => $newEvent['description'],
                 'start_time' => date('c', strtotime($newEvent['start_date'])),
-                'end_time' => date('c', strtotime($newEvent['end_date'])),
-                'location' => isset($vn) ? $vn->name : $newEvent['address'],
                 'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
             );
+
+            /*if ($newEvent['event_fb_status'] == 1) {
+                $fbParams['privacy_type'] = 'OPEN';
+            }*/
+
+            if ($newEvent['start_date'] !== $newEvent['end_date']) {
+                $fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
+            }
+
+            if ($event['venue'] != '') {
+                $fbParams['location'] = $event['venue'];
+            } else if ($event['address'] != '') {
+                $fbParams['location'] = $event['address'];
+            } else {
+                $fbParams['location'] = $event['location'];
+            }
 
 			// save image
 			if (isset($logo)) {
 				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
                 $fbParams['cover.jpg'] = '@' . $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
-			} else {
+			} else if ($ev->logo != '') {
+                $fbParams['cover.jpg'] = '@' . $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
+            } else {
                 if (!isset($ev->logo) || $ev->logo == '') {
                     $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
                 }
             }
+            // finish prepare params for FB event
 
-            // add/edit event to facebook
-            if (!isset($ev->fb_uid)) {
-                $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+            if ($newEvent['event_fb_status'] == 1) {
+                // add/edit event to facebook
+                if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
+                    $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
 
-                if (!is_null($fbEventId)) {
-                    $ev->fb_uid = $fbEventId;
-                    $ev->save();
+                    if (!is_null($fbEventId)) {
+                        $ev->fb_uid = $fbEventId;
+                        $ev->save();
+                    }
+                } else {
+                    $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
                 }
-            } else {
-                $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
             }
 
 			// process site

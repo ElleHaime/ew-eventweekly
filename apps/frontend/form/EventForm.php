@@ -50,6 +50,7 @@ class EventForm extends Form
 		$this -> addElement('hidden', 'venue_longitude');
 
 		$this -> addElement('check', 'event_status', 'Publish event immediately');
+        $this -> addElement('check', 'event_fb_status', 'Publish event to Facebook'/*, array('checked' => 'checked')*/);
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'Add description',
