@@ -527,7 +527,27 @@ class EventController extends \Core\Controllers\CrudController
 
 		return $result;
 	}
-	
+
+    public function saveEventAtFacebook($url, $fbParams)
+    {
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+        $response = $httpClient->post($url, $fbParams);
+        $result = $response->body;
+
+        $id = null;
+        if ($result) {
+            $result = json_decode($result, true);
+
+            if (!isset($result['error'])) {
+                $id = $result['id'];
+            }
+        }
+
+        return $id;
+    }
 
 	public function processForm($form) 
 	{
@@ -637,10 +657,38 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
+            // collect params for FB event
+            $fbParams = array(
+                'access_token' => $this->session->get('user_token'),
+                'name' => $newEvent['name'],
+                'description' => $newEvent['description'],
+                'start_time' => date('c', strtotime($newEvent['start_date'])),
+                'end_time' => date('c', strtotime($newEvent['end_date'])),
+                'location' => isset($vn) ? $vn->name : $newEvent['address'],
+                'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
+            );
+
 			// save image
 			if (isset($logo)) {
 				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
-			}
+                $fbParams['cover.jpg'] = '@' . $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
+			} else {
+                if (!isset($ev->logo) || $ev->logo == '') {
+                    $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+                }
+            }
+
+            // add/edit event to facebook
+            if (!isset($ev->fb_uid)) {
+                $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+
+                if (!is_null($fbEventId)) {
+                    $ev->fb_uid = $fbEventId;
+                    $ev->save();
+                }
+            } else {
+                $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
+            }
 
 			// process site
 			$eSites = EventSite::find('event_id = '. $ev -> id);
