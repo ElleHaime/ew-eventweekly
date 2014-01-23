@@ -61,6 +61,7 @@ define('frontEventEditControl',
 				inpCampaignExists: '#is_campaign',
 
 				btnCancel: '#btn-cancel',
+                btnSubmit: '#btn-submit',
 
                 defaultCategories: '#defaultCategories'
 			},
@@ -180,6 +181,9 @@ define('frontEventEditControl',
                     if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
+
+                    $(self.settings.btnSubmit).prop('disabled', true);
+                    $(self.settings.btnSubmit).text('Saving...');
                 });
 			}
 
