@@ -85,8 +85,9 @@
 
                         {{ form.render('description') }}
 
-
-
+                        <div class="input-div clearfix">
+                            {{ form.render('tickets_url') }}
+                        </div>
                     </div>
                 </div>
             </div>

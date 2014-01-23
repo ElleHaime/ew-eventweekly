@@ -31,6 +31,8 @@ class EventForm extends Form
 								array('validators' => $nameValidators,
 									   'placeholder' => 'Main title'));
 
+        $this -> addElement('text', 'tickets_url', 'tickets_url', array('placeholder' => 'Link to tickets'));
+
 		$this -> addElement('radio', 'recurring', 'Recurring', 
 								array('options' => \Frontend\Models\Event::$eventRecurring)); 
 		

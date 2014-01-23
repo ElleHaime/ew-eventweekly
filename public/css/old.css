@@ -4213,6 +4213,11 @@ i.icon-map {
     margin-bottom: 0;
 }
 
+.description-text a {
+    margin-top: 10px;
+    display: inline-block;
+}
+
 /*-------markers style---*/
 
 .events-img-box {
