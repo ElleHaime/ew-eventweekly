@@ -22,6 +22,13 @@ define('googleMarker',
                 if (!_.contains(eventIds, Event.id) || (_.isUndefined(Event.id) && !_.contains(fbEventIds, Event.fb_uid))) {
                     var newLatLng = new google.maps.LatLng(Event.venue.latitude, Event.venue.longitude);
 
+                    // create marker
+                    marker = new google.maps.Marker({
+                        position: newLatLng,
+                        map: Map,
+                        title: Event.name
+                    });
+
                     // get array of markers currently in cluster
                     var allMarkers = Map.markers;
 
@@ -31,20 +38,23 @@ define('googleMarker',
                             var existingMarker = allMarkers[i];
                             var pos = existingMarker.getPosition();
                             if (newLatLng.equals(pos)) {
-                                InfoWindow.content = existingMarker.content + " & " + InfoWindow.createInfoPopupContent(Event);
+                                if (_.isUndefined(existingMarker.content)) {
+                                    InfoWindow.content = InfoWindow.createInfoPopupContentMany(Event) + InfoWindow.createInfoPopupContentMany(existingMarker.Event);
+                                    existingMarker.content = InfoWindow.content;
+                                }else {
+                                    InfoWindow.content = InfoWindow.createInfoPopupContentMany(Event) + existingMarker.content;
+                                }
+
+                                if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 4) {
+                                    marker.content = InfoWindow.content;
+                                }else if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 5) {
+                                    marker.content = InfoWindow.content + '<a href="/list" class="btn view-btn btn-block">View all events</a>';
+                                }
                             }
                         }
                     }
 
-                    // create marker
-                    marker = new google.maps.Marker({
-                        position: newLatLng,
-                        map: Map,
-                        title: Event.name
-                    });
-
-                    // add content to marker
-                    marker.content  = InfoWindow.content;
+                    marker.Event = Event;
 
                     Map.events.push({'ew_id': Event.id, fb_id: Event.fb_uid});
                 }
