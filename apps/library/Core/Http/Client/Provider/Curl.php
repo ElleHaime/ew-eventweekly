@@ -67,7 +67,8 @@ class Curl extends Request
             CURLOPT_REDIR_PROTOCOLS => CURLPROTO_HTTP | CURLPROTO_HTTPS,
             CURLOPT_USERAGENT       => 'Phalcon HTTP/' . self::VERSION . ' (Curl)',
             CURLOPT_CONNECTTIMEOUT  => 30,
-            CURLOPT_TIMEOUT         => 30
+            CURLOPT_TIMEOUT         => 30,
+            CURLOPT_SSL_VERIFYPEER  => false
         ));
     }
 
