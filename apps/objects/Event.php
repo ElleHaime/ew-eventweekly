@@ -16,6 +16,7 @@ class Event extends Model
 	public $venue_id;
 	public $name;
 	public $description;
+    public $tickets_url;
 	public $start_date;
 	public $end_date;
 	public $recurring;
