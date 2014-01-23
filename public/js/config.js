@@ -26,6 +26,8 @@ require.config({
 		'bootstrap': 'library/vendors/bootstrap.min',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
+		'niceDate': 'library/vendors/date',
+        'jTruncate': 'library/vendors/jquery.truncate',
 
 		// maps
 		'gmap': 'library/maps/gmap',
@@ -58,6 +60,10 @@ require.config({
         'datetimepicker': {
         	deps: ['jquery'],
         	exports: 'datetimepicker'
+        },
+        'jTruncate': {
+        	deps: ['jquery'],
+        	exports: 'jQuery'
         },
         'bootstrapDatepicker': {
         	deps: ['jquery'],

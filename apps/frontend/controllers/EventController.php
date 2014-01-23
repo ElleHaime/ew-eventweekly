@@ -588,6 +588,7 @@ class EventController extends \Core\Controllers\CrudController
 		// process name and descirption
 		$newEvent['name'] = $event['name'];
 		$newEvent['description'] = $event['description'];
+        $newEvent['tickets_url'] = $event['tickets_url'];
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
