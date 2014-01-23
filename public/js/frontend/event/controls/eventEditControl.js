@@ -353,7 +353,7 @@ define('frontEventEditControl',
 			self.__drawTimeLeft = function(val)
 			{
 				var elem = $(self.settings.inpTimeStart);
-				if (val != '00:00:00' && val != '') {
+				if (val != '00:00' && val != '') {
 					$(self.settings.timeLeft).html(utils.dateFormat('%H:%M', val));
 				}
 			}
@@ -371,7 +371,7 @@ define('frontEventEditControl',
 			{
 				elem.datetimepicker({ pickDate: false });
 				if (txt.val() == '') {
-					txt.attr('placeholder', 'at ' + '00:00:00');
+					txt.attr('placeholder', 'at ' + '00:00');
 				}
 			}
 
