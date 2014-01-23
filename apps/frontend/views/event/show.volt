@@ -46,6 +46,9 @@
 
                                                 <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>
 
+                                                {% if event.tickets_url != '' %}
+                                                    <br/><p><a href="{{ event.tickets_url }}" target="_blank">You can buy tickets here</a></p>
+                                                {% endif %}
 
                                                 <div class="btn-hide clearfix">
 
