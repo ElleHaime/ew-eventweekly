@@ -181,7 +181,6 @@ define('frontEventEditControl',
                         $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                     }
 
-                    if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
 
