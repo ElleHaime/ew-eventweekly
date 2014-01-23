@@ -91,6 +91,7 @@
                                                         Invite friends
                                                     </button>
                                                     <div id="friendsBlock"></div>
+                                                    <input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>
                                                     {% if event.site|length %}
                                                         <div class="event-site clearfix">
                                                             {% for site in event.site %}
