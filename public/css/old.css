@@ -1629,56 +1629,257 @@ input[type="checkbox"]  {
     border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
+/*------music-----*/
 .events-list.music-category, .music-category  .events-img-box img  {
     border-left:14px solid #ebc500;
 }
 
+.music-category .date-events-map {
+    border-right:3px solid #ebc500;
+}
+.events-map .music-category:hover {
+    background:#E99D00 ;
+}
+.events-map .music-category:hover span {
+    color:#ffffff;
+}
+.events-map .music-category:hover  .date-events-map
+{
+    border-right:1px solid #EBC500;
+}
+
+
+/*------theater-----*/
 .events-list.theater-category , .theater-category  .events-img-box img {
     border-left:14px solid #93278F;
 }
 
+.theater-category .date-events-map {
+    border-right:3px solid #93278F;
+}
+
+.events-map .theater-category:hover {
+    background: #93278F ;
+}
+.events-map .theater-category:hover span {
+    color:#ffffff;
+}
+.events-map .theater-category:hover  .date-events-map
+{
+    border-right:1px solid #A84EA5;
+}
+
+
+/*------sport-----*/
 .events-list.sport-category, .sport-category  .events-img-box img  {
     border-left:14px solid #dc7f00;
 }
 
+.sport-category .date-events-map {
+    border-right:3px solid #dc7f00;
+}
+.events-map .sport-category:hover {
+    background: #C65500 ;
+}
+.events-map .sport-category:hover span {
+    color:#ffffff;
+}
+.events-map .sport-category:hover  .date-events-map
+{
+    border-right:1px solid #DC7F00;
+}
 
+/*------outdoor-----*/
 .events-list.outdoor-category , .outdoor-category  .events-img-box img {
     border-left:14px solid #5acd5c;
 }
+.outdoor-category .date-events-map {
+    border-right:3px solid #5acd5c;
+}
 
+.events-map .outdoor-category:hover {
+    background: #4CAF51 ;
+}
+.events-map .outdoor-category:hover span {
+    color:#ffffff;
+}
+.events-map .outdoor-category:hover  .date-events-map
+{
+    border-right:1px solid #5acd5c;
+}
+
+/*------shopping-----*/
 .events-list.shopping-category  , .shopping-category  .events-img-box img {
     border-left:14px solid #db4d30;
 }
+.shopping-category .date-events-map {
+    border-right:3px solid #db4d30;
+}
+.events-map .shopping-category:hover {
+    background: #db4d30 ;
+}
+.events-map .shopping-category:hover span {
+    color:#ffffff;
+}
+.events-map .shopping-category:hover  .date-events-map
+{
+  border-right:1px solid #db4d30;
+}
 
 
+
+/*------business-----*/
 .events-list.business-category, .business-category  .events-img-box img  {
     border-left:14px solid #4f96e4
 }
 
+.business-category .date-events-map {
+    border-right:3px solid #4f96e4;
+}
+
+.events-map .business-category:hover {
+    background: #0071BC ;
+}
+.events-map .business-category:hover span {
+    color:#ffffff;
+}
+.events-map .business-category:hover  .date-events-map
+{
+    border-right:1px solid #4f96e4;
+}
+
+/*------art-----*/
 .events-list.art-category, .art-category  .events-img-box img {
     border-left:14px solid  #4fbc97;
 }
+.art-category .date-events-map {
+    border-right:3px solid #4fbc97;
+}
+
+.events-map .art-category:hover {
+    background: #419E81 ;
+}
+.events-map .art-category:hover span {
+    color:#ffffff;
+}
+.events-map .art-category:hover  .date-events-map
+{
+    border-right:1px solid #4fbc97;
+}
+
+/*------night-lifes-----*/
 .events-list.night-lifes-category, .night-lifes-category  .events-img-box img {
     border-left:14px solid  #384961;
 }
+.night-lifes-category .date-events-map {
+    border-right:3px solid #384961;
+}
 
+
+.events-map .night-lifes-category:hover {
+    background: #384961 ;
+}
+.events-map .night-lifes-category:hover span {
+    color:#ffffff;
+}
+.events-map .night-lifes-category:hover  .date-events-map
+{
+    border-right:1px solid #384961;
+}
+
+/*------other-----*/
 .events-list.other-category , .other-category  .events-img-box img {
     border-left:14px solid  #97A5A5;
 }
+.other-category .date-events-map {
+    border-right:3px solid #97A5A5;
+}
+
+.events-map .other-category:hover {
+    background: #808C8D ;
+}
+.events-map .other-category:hover span {
+    color:#ffffff;
+}
+.events-map .other-category:hover  .date-events-map
+{
+    border-right:1px solid #97A5A5;
+}
+
+/*------entertainment-----*/
 .events-list.entertainment-category, .entertainment-category  .events-img-box img  {
     border-left:14px solid  #9556be;
 }
+.entertainment-category .date-events-map {
+    border-right:3px solid #9556be;
+}
+.events-map .entertainment-category:hover {
+    background: #8942B6 ;
+}
+.events-map .entertainment-category:hover span {
+    color:#ffffff;
+}
+.events-map .entertainment-category:hover  .date-events-map
+{
+    border-right:1px solid #9556be;
+}
+
+/*------social-----*/
 .events-list.social-category , .social-category  .events-img-box img  {
     border-left:14px solid  #ED1E79;
 }
 
+.social-category .date-events-map {
+    border-right:3px solid #ED1E79;
+}
+
+.events-map .social-category:hover {
+    background: #ED1E79 ;
+}
+.events-map .social-category:hover span {
+    color:#ffffff;
+}
+.events-map .social-category:hover  .date-events-map
+{
+    border-right:1px solid #ED1E79;
+}
+/*------special-----*/
 .events-list.special-category, .special-category  .events-img-box img {
     border-left:14px solid  #7db894;
 }
+.special-category .date-events-map {
+    border-right:3px solid #7db894;
+}
+
+.events-map .special-category:hover {
+    background: #7DB894 ;
+}
+.events-map .special-category:hover span {
+    color:#ffffff;
+}
+.events-map .special-category:hover  .date-events-map
+{
+    border-right:1px solid #97C9AB;
+}
+
 
 .events-list.family-category , .family-category  .events-img-box img {
     border-left:14px solid  #7c7ec8;
 }
+.family-category .date-events-map{
+    border-right:3px solid #7c7ec8;
+}
+.events-map .family-category:hover {
+    background: #7C7EC8 ;
+}
+.events-map .family-category:hover span {
+    color:#ffffff;
+}
+.events-map .family-category:hover  .date-events-map
+{
+    border-right:1px solid #9B9CDB;
+}
+
 
 .sub_category  {
     margin-top: 10px;
@@ -1720,7 +1921,6 @@ input[type="checkbox"]  {
 }
 .events-list.music-category    .sub_category div:hover {
     background: #e9c900;
-
 }
 
 .events-list.music-category    .sub_category div:hover a span  {
@@ -4107,4 +4307,48 @@ i.icon-map {
 
 .gm-style-iw hr {
     margin-top: 10px;
+}
+
+.events-map li {
+    margin-bottom: 4px;
+    clear: both;
+    text-align: left;
+    height: 18px;
+    padding: 6px 0;
+    overflow: hidden;
+}
+
+.events-map li a {
+    color:#464646;
+    font:400 14px/18px "Open Sans"!important;
+}
+
+.events-map a {
+    font:400 17px/39px "Open Sans"!important;
+}
+.events-map li a:hover {
+    text-decoration: none;
+}
+.events-map  .date-events-map {
+    margin-right: 10px;
+    padding: 0 10px;
+    float: left;
+}
+
+.events-map  span {
+    font:400 14px/18px "Open Sans"!important;
+}
+.events-map-text {
+    display: block;
+    padding-left: 64px;
+}
+
+.gm-style div {
+    border-radius: 0!important;
+}
+
+.gm-style-iw
+{
+    right: 13px;
+    width: auto!important;
 }
