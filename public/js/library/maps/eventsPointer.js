@@ -53,7 +53,7 @@ define('eventsPointer',
                 if (!_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude))
                 {
                     // prepare HTML for popup window on map
-                    var contentString = $this.__createInfoPopupContent(event);
+                    var contentString = $this.__createInfoPopupContentSingle(event);
 
                     // initialize popup window
                     var infoWindow = new google.maps.InfoWindow({
@@ -74,7 +74,7 @@ define('eventsPointer',
                             var existingMarker = allMarkers[i];
                             var pos = existingMarker.getPosition();
                             if (newLatLng.equals(pos)) {
-                                infoWindow.content = existingMarker.content + " & " + $this.__createInfoPopupContent(event);
+                                infoWindow.content = existingMarker.content + " & " + $this.__createInfoPopupContentSingle(event);
                             }
                         }
                     }
@@ -104,7 +104,7 @@ define('eventsPointer',
                 }
             },
 
-            __createInfoPopupContent: function(event) {
+            __createInfoPopupContentSingle: function(event) {
                 return '<div class="info-win" id="content">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
                     '<div>' +

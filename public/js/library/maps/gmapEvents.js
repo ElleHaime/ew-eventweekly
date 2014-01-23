@@ -1,8 +1,8 @@
 define('gmapEvents',
-	['jquery', 'gmap', 'noti', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	function($, gmap, noti) {
-		
-		function gmapEvents($, gmap, noti)
+	['jquery', 'gmap', 'noti', 'niceDate', 'jTruncate', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	function($, gmap, noti, niceDate, jTruncate) {
+
+		function gmapEvents($, gmap, noti, niceDate, jTruncate)
 		{
 		    var self = this;
 
@@ -42,7 +42,7 @@ define('gmapEvents',
 		            }
 		        }
 		    }
-		    
+
 		    /**
 		     * Get events from server and draw markers on map
 		     *
@@ -88,7 +88,7 @@ define('gmapEvents',
 		            dataType: 'json'
 		        });
 		    },
-		    
+
 		    /**
 		     * Server response handler
 		     *
@@ -164,7 +164,7 @@ define('gmapEvents',
 		        if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude) != 'undefined')
 		        {
 		            // prepare HTML for popup window on map
-		            var contentString = self.__createInfoPopupContent(event);
+		            var contentString = self.__createInfoPopupContentSingle(event);
 
 		            // initialize popup window
 		            var infoWindow = new google.maps.InfoWindow({
@@ -176,6 +176,13 @@ define('gmapEvents',
 
 		            var newLatLng = new google.maps.LatLng(event.venue.latitude, event.venue.longitude);
 
+                    // create marker
+                    var marker = new google.maps.Marker({
+                        position: newLatLng,
+                        map: gmap.Map,
+                        title: event.name
+                    });
+
                     // get array of markers currently in cluster
                     var allMarkers = gmap.markers;
 
@@ -185,20 +192,26 @@ define('gmapEvents',
                             var existingMarker = allMarkers[i];
                             var pos = existingMarker.getPosition();
                             if (newLatLng.equals(pos)) {
-                                infoWindow.content = existingMarker.content + " <hr/> " + self.__createInfoPopupContent(event);
+                                if (_.isUndefined(existingMarker.content)) {
+                                    infoWindow.content = self.__createInfoPopupContentMany(event) + self.__createInfoPopupContentMany(existingMarker.Event);
+                                    existingMarker.content = infoWindow.content;
+                                }else {
+                                    infoWindow.content = self.__createInfoPopupContentMany(event) + existingMarker.content;
+                                }
+
+                                if ($('.events-map', '<div>'+infoWindow.content+'</div>').length < 4) {
+                                    marker.content = infoWindow.content;
+                                }else if ($('.events-map', '<div>'+infoWindow.content+'</div>').length < 5) {
+                                    marker.content = infoWindow.content + '<a href="/list" class="btn view-btn btn-block">View all events</a>';
+                                }
                             }
                         }
                     }
 
-		            // create marker
-		            var marker = new google.maps.Marker({
-		                position: newLatLng,
-		                map: gmap.Map,
-		                title: event.name
-		            });
-
 		            // add content to marker
-		            marker.content  = infoWindow.content;
+		            //marker.content  = infoWindow.content;
+
+                    marker.Event = event;
 
 		            if (self.debug) {
 		                console.log('New map marker was created below:');
@@ -215,11 +228,11 @@ define('gmapEvents',
 		        }
 		    },
 
-		    
+
 		    self.__redirectToMap = function(data) {
-		        var lat = null, 
+		        var lat = null,
 		        	lng = null;
-console.log(data);		        
+console.log(data);
 		        if (!_.isEmpty(data.message[0])) {
 		            lat = _.last(data.message[0]).venue.latitude;
 		            lng = _.last(data.message[0]).venue.longitude;
@@ -234,7 +247,7 @@ console.log(data);
 
 		        window.location.href = '/map';
 		    },
-		    
+
 
 		    self.__setCookies = function(lat, lng, path) {
 		        if (this.debug) {
@@ -251,55 +264,34 @@ console.log(data);
 		        $.cookie('lastLng', lng, {expires: 1, path: path});
 		    },
 
-		    
-		    self.__createInfoPopupContent = function(event) {
+
+		    self.__createInfoPopupContentSingle = function(event) {
+                var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
 		        return '<div class="info-win music-category " id="content"> ' +
-                       /* ' <div class="events-img-box">' +
-                            '<img  class="events-img" src="img/eg.jpg" alt="">' +
-                            '<div class="events-date-box"><i class="icon-time"></i> 23 Aug 2014 </div> ' +
-                        '</div>' +
-                        '<div class="events-descriptions-box">' +
-                            '<h4><a href="#">Dublin</a> - <span>Irland</span> </h4>' +
-                            '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
-                            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
-                        '<div>' +
-		            '</div>' +
-*/
-                    '<div class="events-map">' +
-                        '<ul>' +
-                            '<li class="music-category">' +
-                                '<a href="#" class="clearfix">' +
-                                    '<span class="date-events-map">12 Aug</span> ' +
-                                    '<span class="events-map-text">Name of event</span>' +
-                                '</a>' +
-                            '</li>' +
-                            '<li class="family-category">' +
-                                '<a href="#" class="clearfix">' +
-                                    '<span class="date-events-map">12 Aug</span> ' +
-                                    '<span class="events-map-text">Name of event hgfkjhdgd vhdgj mfgd jf,jfk,jgjfvuf</span>' +
-                                '</a>' +
-                            '</li>' +
-                            '<li class="special-category">' +
-                                '<a href="#" class=" clearfix">' +
-                                    '<span class="date-events-map">12 Aug</span> ' +
-                                    '<span class="events-map-text">Name of event nete tckjsdfs kjfsf g</span>' +
-                                '</a>' +
-                            '</li>' +
-                            '<li class="social-category">' +
-                                '<a href="#" class=" clearfix">' +
-                                    '<span class="date-events-map">12 Aug</span> ' +
-                                    '<span class="events-map-text">Name of event nete tckjsdfs kjfsf g tetxt extu ghjsgdfs sgfsjggfjvbgdjvgfdg dvdgvhfjgd</span>' +
-                                '</a>' +
-                            '</li>' +
-                        '</ul>' +
-                        '<a class="btn btn-block">View all events</a> ';
+                            '<div class="events-img-box">' +
+                                '<img  class="events-img" src="'+event.pic_big+'" alt="">' +
+                                '<div class="events-date-box"><i class="icon-time"></i>'+date+'</div> ' +
+                            '</div>' +
+                            '<div class="events-descriptions-box">' +
+                                '<div class="venue-name">'+event.name+'</div><div>'+$.truncate(event.description, {length: 300})+'</div>' +
+                                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a>' +
+                            '</div>' +
+		                '</div>';
+		    },
+
+            self.__createInfoPopupContentMany = function(event) {
+                var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                return '<div class="events-map">' +
+                    ' <div class="music-category">' +
+                    '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +
+                    '<span class="date-events-map">'+date+'</span> ' +
+                    '<span class="events-map-text">'+event.name+'</span>' +
+                    '</a>' +
+                    '</div>' +
                     '</div>';
-//                    '</div>';
-
-
-		    }
+            }
 		};
-		
+
 		return new gmapEvents($, gmap, noti);
 	}
 )
