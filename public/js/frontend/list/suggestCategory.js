@@ -8,10 +8,12 @@ define('frontListSuggestCategory',
 			self.settings = {
 		        btn: '#suggestCategoryBtn',
 		        categoriesBlock: '#suggestCategoriesBlock',
-		        uncategorizedLabel: '.uncategorized_label'
+		        uncategorizedLabel: '.uncategorized_label',
+                eventCategoryTitle: '.event-title span'
 		    },
 		    
 		    self.selectedCategory = null,
+            self.selectedCategoryKey = null,
 
 		    self.init = function(options){
 		        self.settings = _.extend(self.settings, options);
@@ -37,6 +39,8 @@ define('frontListSuggestCategory',
 		        var url = linkObj.attr('href');
 	        
 		        self.selectedCategory = linkObj.text();
+                self.selectedCategoryKey = linkObj.attr('data-catkey');
+
 		        $.when(self.__sendRequest(url)).then(function(response){
 		            self.__responseHandler(response);
 		        });
@@ -52,6 +56,10 @@ define('frontListSuggestCategory',
 
 		    self.__responseHandler = function(response){
 		        if (response[0].status == true) {
+                    $(self.settings.eventCategoryTitle).text(self.selectedCategory);
+                    $('.other-title').removeClass('other-title').addClass(self.selectedCategoryKey + '-title');
+                    $('.other-color').removeClass('other-color').addClass(self.selectedCategoryKey + '-color');
+
 		            $(self.settings.uncategorizedLabel).text(self.selectedCategory);
 		            $(self.settings.btn).remove();
 		            $(self.settings.categoriesBlock).remove();

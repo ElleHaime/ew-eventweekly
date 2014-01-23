@@ -31,6 +31,8 @@ class EventForm extends Form
 								array('validators' => $nameValidators,
 									   'placeholder' => 'Main title'));
 
+        $this -> addElement('text', 'tickets_url', 'tickets_url', array('placeholder' => 'Link to tickets'));
+
 		$this -> addElement('radio', 'recurring', 'Recurring', 
 								array('options' => \Frontend\Models\Event::$eventRecurring)); 
 		
@@ -65,7 +67,7 @@ class EventForm extends Form
                                       'autocomplete' => 'off'));
 		
 		$this -> addElement('date', 'start_time', 'Start time',
-								array('data-format' => 'hh:mm:ss',
+								array('data-format' => 'hh:mm',
 									  'data-type' => 'event_time',
 									  'placeholder' => 'Start time',
                                       'autocomplete' => 'off'));
@@ -77,7 +79,7 @@ class EventForm extends Form
                                       'autocomplete' => 'off'));
 
 		$this -> addElement('date', 'end_time', 'End time',
-								array('data-format' => 'hh:mm:ss',
+								array('data-format' => 'hh:mm',
 									  'data-type' => 'event_time',
 									  'placeholder' => 'End time',
                                       'autocomplete' => 'off'));
