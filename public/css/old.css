@@ -4314,29 +4314,36 @@ i.icon-map {
     margin-top: 10px;
 }
 
-.events-map li {
+.events-map {
+    /*width: 300px;*/
+    overflow: hidden;
+}
+
+.events-map div {
     margin-bottom: 4px;
     clear: both;
     text-align: left;
     height: 18px;
-    padding: 6px 0;
+    padding: 4px 0;
     overflow: hidden;
 }
 
-.events-map li a {
+.events-map div a {
     color:#464646;
     font:400 14px/18px "Open Sans"!important;
 }
 
-.events-map a {
+a.view-btn  {
     font:400 17px/39px "Open Sans"!important;
 }
-.events-map li a:hover {
+.events-map div a:hover {
     text-decoration: none;
 }
 .events-map  .date-events-map {
     margin-right: 10px;
-    padding: 0 10px;
+    text-align: left;
+    width: 85px;
+    padding-left: 10px;
     float: left;
 }
 
