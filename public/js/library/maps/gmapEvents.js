@@ -185,7 +185,7 @@ define('gmapEvents',
                             var existingMarker = allMarkers[i];
                             var pos = existingMarker.getPosition();
                             if (newLatLng.equals(pos)) {
-                                infoWindow.content = existingMarker.content + " & " + self.__createInfoPopupContent(event);
+                                infoWindow.content = existingMarker.content + " <hr/> " + self.__createInfoPopupContent(event);
                             }
                         }
                     }
@@ -253,12 +253,50 @@ console.log(data);
 
 		    
 		    self.__createInfoPopupContent = function(event) {
-		        return '<div class="info-win" id="content">' +
-		            '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
-		            '<div>' +
-		            '<a target="_blank" href="https://www.facebook.com/events/'+event.eid+'">Facebook link</a> ' +
-		            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
-		            '</div>';
+		        return '<div class="info-win music-category " id="content"> ' +
+                       /* ' <div class="events-img-box">' +
+                            '<img  class="events-img" src="img/eg.jpg" alt="">' +
+                            '<div class="events-date-box"><i class="icon-time"></i> 23 Aug 2014 </div> ' +
+                        '</div>' +
+                        '<div class="events-descriptions-box">' +
+                            '<h4><a href="#">Dublin</a> - <span>Irland</span> </h4>' +
+                            '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
+                            '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+                        '<div>' +
+		            '</div>' +
+*/
+                    '<div class="events-map">' +
+                        '<ul>' +
+                            '<li class="music-category">' +
+                                '<a href="#" class="clearfix">' +
+                                    '<span class="date-events-map">12 Aug</span> ' +
+                                    '<span class="events-map-text">Name of event</span>' +
+                                '</a>' +
+                            '</li>' +
+                            '<li class="family-category">' +
+                                '<a href="#" class="clearfix">' +
+                                    '<span class="date-events-map">12 Aug</span> ' +
+                                    '<span class="events-map-text">Name of event hgfkjhdgd vhdgj mfgd jf,jfk,jgjfvuf</span>' +
+                                '</a>' +
+                            '</li>' +
+                            '<li class="special-category">' +
+                                '<a href="#" class=" clearfix">' +
+                                    '<span class="date-events-map">12 Aug</span> ' +
+                                    '<span class="events-map-text">Name of event nete tckjsdfs kjfsf g</span>' +
+                                '</a>' +
+                            '</li>' +
+                            '<li class="social-category">' +
+                                '<a href="#" class=" clearfix">' +
+                                    '<span class="date-events-map">12 Aug</span> ' +
+                                    '<span class="events-map-text">Name of event nete tckjsdfs kjfsf g tetxt extu ghjsgdfs sgfsjggfjvbgdjvgfdg dvdgvhfjgd</span>' +
+                                '</a>' +
+                            '</li>' +
+                        '</ul>' +
+                        '<a class="btn btn-block">View all events</a> ';
+                    '</div>';
+//                    '</div>';
+
+
 		    }
 		};
 		
