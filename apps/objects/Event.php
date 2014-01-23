@@ -21,6 +21,7 @@ class Event extends Model
 	public $end_date;
 	public $recurring;
 	public $event_status	= 1;
+    public $event_fb_status	= 1;
 	public $latitude;
 	public $longitude;
 	public $address;

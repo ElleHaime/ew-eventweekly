@@ -527,7 +527,51 @@ class EventController extends \Core\Controllers\CrudController
 
 		return $result;
 	}
-	
+
+    public function saveEventAtFacebook($url, $fbParams)
+    {
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+        $response = $httpClient->post($url, $fbParams);
+        $result = $response->body;
+
+        $id = null;
+        if ($result) {
+            $result = json_decode($result, true);
+
+            if (!isset($result['error'])) {
+                $id = $result['id'];
+            }
+        }
+
+        return $id;
+    }
+
+    /**
+     * @Route("/event/facebook", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function facebookAction()
+    {
+
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+
+
+        $response = $httpClient->post('me/events', array(
+            'access_token' => $this->session->get('user_token'),
+            'name' => "!!!",
+            'description' => "!!!",
+            //'start_time' => date('c', strtotime('2012-02-01 13:00:00')),
+            //'end_time' => date('c', strtotime('2012-02-01 14:00:00')),
+            'location' => 'Moldova',
+            'privacy_type' => 'SECRET'
+        ));
+        $result = $response->body;
+    }
 
 	public function processForm($form) 
 	{
@@ -548,6 +592,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
+        $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
@@ -638,10 +683,65 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
+            // start prepare params for FB event
+            $fbParams = array(
+                'access_token' => $this->session->get('user_token'),
+                'name' => $newEvent['name'],
+                'description' => $newEvent['description'],
+                'start_time' => date('c', strtotime($newEvent['start_date'])),
+                'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
+            );
+
+            /*if ($newEvent['event_fb_status'] == 1) {
+                $fbParams['privacy_type'] = 'OPEN';
+            }*/
+
+            if ($newEvent['start_date'] !== $newEvent['end_date']) {
+                $fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
+            }
+
+            if ($event['venue'] != '') {
+                $fbParams['location'] = $event['venue'];
+            } else if ($event['address'] != '') {
+                $fbParams['location'] = $event['address'];
+            } else {
+                $fbParams['location'] = $event['location'];
+            }
+
 			// save image
+            $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
 			if (isset($logo)) {
-				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
-			}
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
+				$logo -> moveTo($file);
+			} else if ($ev->logo != '') {
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
+            } /*else {
+                if (!isset($ev->logo) || $ev->logo == '') {
+                    $file = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+                }
+            }*/
+
+            list($width, $height, $type, $attr) = getimagesize($file);
+            if ($width < 180 || $height < 60) {
+                $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+            } else {
+                $fbParams['cover.jpg'] = '@' . $file;
+            }
+            // finish prepare params for FB event
+
+            if ($newEvent['event_fb_status'] == 1) {
+                // add/edit event to facebook
+                if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
+                    $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+
+                    if (!is_null($fbEventId)) {
+                        $ev->fb_uid = $fbEventId;
+                        $ev->save();
+                    }
+                } else {
+                    $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
+                }
+            }
 
 			// process site
 			$eSites = EventSite::find('event_id = '. $ev -> id);

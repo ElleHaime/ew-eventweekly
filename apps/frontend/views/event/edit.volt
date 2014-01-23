@@ -74,6 +74,13 @@
                                 <label>
                                     {{ form.render('event_status') }} Publish event immediately
                                 </label>
+
+                                {% if event.fb_uid == '' %}
+                                <label>
+                                    {{ form.render('event_fb_status') }} Publish event to Facebook
+                                </label>
+                                {% endif %}
+
                             </div>
 
                             <div class="date-box" id="time-string" style="display:none;">

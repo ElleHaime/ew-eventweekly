@@ -61,8 +61,12 @@ define('frontEventEditControl',
 				inpCampaignExists: '#is_campaign',
 
 				btnCancel: '#btn-cancel',
+                btnSubmit: '#btn-submit',
 
-                defaultCategories: '#defaultCategories'
+                defaultCategories: '#defaultCategories',
+
+                memberExtUid: '#member_ext_uid',
+                eventFbStatus: '#event_fb_status'
 			},
 
 
@@ -180,6 +184,14 @@ define('frontEventEditControl',
                     if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
+
+                    if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
+                        noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
+                        return false;
+                    }
+
+                    $(self.settings.btnSubmit).prop('disabled', true);
+                    $(self.settings.btnSubmit).text('Saving...');
                 });
 			}
 
@@ -219,7 +231,15 @@ define('frontEventEditControl',
 				reader.onload = (function(f) {
 					$(self.settings.inpLogo).attr('value', f.name);
 					return function(e) {
-						$(self.settings.boxImg).attr('src', e.target.result);
+                        var img = new Image();
+                        img.src = e.target.result;
+                        //alert(img.width);
+
+                        if (img.width < 180 || img.height < 60) {
+                            noti.createNotification('Image size should be min 180x60 for posting on facebook!', 'warning');
+                        }
+
+                        $(self.settings.boxImg).attr('src', img.src);
 					}
 				})(file);
 
