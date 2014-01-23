@@ -34,6 +34,10 @@ class Event extends EventObject
 
     const ORDER_DESC = 4;
 
+    const CONDITION_SIMPLE = 5;
+
+    const CONDITION_COMPLEX = 6;
+
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 
@@ -531,12 +535,17 @@ class Event extends EventObject
      * Add condition to model for fetching
      *
      * @param $condition
+     * @param int $type
      * @return $this
      */
-    public function addCondition($condition)
+    public function addCondition($condition, $type = self::CONDITION_COMPLEX)
     {
 	    if (!empty($condition)) {
-	    	$this -> conditions[] = (string)$condition;
+            $cond = [
+                'type' => $type,
+                'condition' => (string)$condition
+            ];
+	    	$this -> conditions[] = $cond;
 	    }
 	    
 	    return $this;
@@ -578,9 +587,13 @@ class Event extends EventObject
                 $prevCondition = $builder->getWhere();
 
                 if (!empty($prevCondition)) {
-                    $builder->where($prevCondition.' AND '.$condition);
+                    if ($condition['type'] === self::CONDITION_COMPLEX) {
+                        $builder->where($prevCondition.' AND '.$condition['condition']);
+                    }elseif ($condition['type'] === self::CONDITION_SIMPLE) {
+                        $builder->where($prevCondition.' '.$condition['condition']);
+                    }
                 }else {
-                    $builder->where($condition);
+                    $builder->where($condition['condition']);
                 }
             }
         }

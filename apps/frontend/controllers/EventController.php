@@ -732,4 +732,38 @@ class EventController extends \Core\Controllers\CrudController
 
         exit('DONE');
     }*/
+
+    /**
+     * @Route("/event/test-get", methods={'GET'})
+     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
+     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function testGetAction($lat = null, $lng = null, $city = null)
+    {
+        $Event = new Event();
+
+        //$events = $this->searchAction($lat, $lng, $city);
+        $loc = $this->session->get('location');
+
+        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$loc->latitudeMin.' AND '.$loc->latitudeMax.' AND Frontend\Models\Event.longitude BETWEEN '.$loc->longitudeMin.' AND '.$loc->longitudeMax);
+
+        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, ['limit' => 10, 'page' => 1]);
+        $events = $events->items;
+
+
+        $eventsAll = $Event->fetchEvents(Event::FETCH_ARRAY);
+
+        if (count($events) > 0) {
+            $events = array_merge($eventsAll, $events);
+            $res['status'] = true;
+            $res['stop'] = true;
+            $res['events'] = $events;
+            $this->sendAjax($res);
+        } else {
+            $res['status'] = 'ERROR';
+            $res['message'] = 'no events';
+            $this->sendAjax($res);
+        }
+    }
 }		

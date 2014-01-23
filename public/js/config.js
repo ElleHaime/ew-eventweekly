@@ -21,6 +21,7 @@ require.config({
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
 		'jCookie': 'library/vendors/jquery.cookie',
+		'jTruncate': 'library/vendors/jquery.truncate',
 		'underscore': 'library/vendors/underscore',
 		'resizer': 'library/vendors/resizer',
 		'bootstrap': 'library/vendors/bootstrap.min',
@@ -48,7 +49,15 @@ require.config({
 		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl',
         'frontMemberEditControl': 'frontend/member/controls/memberEditControl',
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
-        'frontSearchPanel': 'frontend/general/searchPanel'
+        'frontSearchPanel': 'frontend/general/searchPanel',
+
+
+        // New
+        'newGmapEvents': 'library/maps/newGmapEvents',
+        'googleMap': 'library/google/map',
+        'googleMc': 'library/google/mc',
+        'googleMarker': 'library/google/marker',
+        'googleInfoWindow': 'library/google/infoWindow'
 	},
 
 	shim: {
@@ -58,6 +67,10 @@ require.config({
         'datetimepicker': {
         	deps: ['jquery'],
         	exports: 'datetimepicker'
+        },
+        'jTruncate': {
+        	deps: ['jquery'],
+        	exports: 'jQuery'
         },
         'bootstrapDatepicker': {
         	deps: ['jquery'],
