@@ -3804,7 +3804,7 @@ i.icon-map {
 
 /*-----------------------------------------end uncategorized_label----------------------------------------------------*/
 .btn-hide {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .btn-hide  span {
     font-weight: bold;
@@ -4006,4 +4006,9 @@ i.icon-map {
 }
 .btn-hide .event-site {
     margin-bottom: 0;
+}
+
+.description-text a {
+    margin-top: 10px;
+    display: inline-block;
 }
