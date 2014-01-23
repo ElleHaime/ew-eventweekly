@@ -63,7 +63,10 @@ define('frontEventEditControl',
 				btnCancel: '#btn-cancel',
                 btnSubmit: '#btn-submit',
 
-                defaultCategories: '#defaultCategories'
+                defaultCategories: '#defaultCategories',
+
+                memberExtUid: '#member_ext_uid',
+                eventFbStatus: '#event_fb_status'
 			},
 
 
@@ -181,6 +184,11 @@ define('frontEventEditControl',
                     if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
+
+                    if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
+                        noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
+                        return false;
+                    }
 
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
