@@ -71,7 +71,17 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                         )
                     } else {
                         event.preventDefault();
-                        $this.__getFriends();
+
+                        // open or close invite friend panel
+                        if ($($this.settings.friendsBlock + ' ul').length == 0) {
+                            $this.__getFriends();
+                        } else {
+                            // remove events
+                            $($this.settings.friendsBlock).empty();
+
+                            // hide button Invite all
+                            $($this.settings.inviteAllBtn).css('display', 'none');
+                        }
                     }
                     return true;
                 }
