@@ -43,10 +43,13 @@
                                                         {% endif %}
                                                     {% endif %}
                                                 </div>
+                                                <div class="description-text">
+                                                    <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>
 
-                                                <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>
-
-
+                                                    {% if event.tickets_url != '' %}
+                                                       <a href="{{ event.tickets_url }}" target="_blank">You can buy tickets here</a>
+                                                    {% endif %}
+                                                </div>
                                                 <div class="btn-hide clearfix">
 
                                                     {% if not (event.memberpart|length) %}
