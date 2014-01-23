@@ -71,7 +71,17 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                         )
                     } else {
                         event.preventDefault();
-                        $this.__getFriends();
+
+                        // open or close invite friend panel
+                        if ($($this.settings.friendsBlock + ' ul').length == 0) {
+                            $this.__getFriends();
+                        } else {
+                            // remove events
+                            $($this.settings.friendsBlock).empty();
+
+                            // hide button Invite all
+                            $($this.settings.inviteAllBtn).css('display', 'none');
+                        }
                     }
                     return true;
                 }
@@ -173,12 +183,8 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 // insert HTML
                 container.append(mfsForm);
 
-                // Create button Invite All for sending post to user wall
-                var inviteAllBtn = document.createElement('input');
-                inviteAllBtn.type = 'button';
-                inviteAllBtn.value = 'Invite All';
-                inviteAllBtn.id = 'fb-invite-all';
-                mfsForm.appendChild(inviteAllBtn);
+                // show button Invite all
+                $($this.settings.inviteAllBtn).css('display', 'block');
             },
 
             /**

@@ -94,6 +94,7 @@
                                                         Invite friends
                                                     </button>
                                                     <div id="friendsBlock"></div>
+                                                    <input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>
                                                     {% if event.site|length %}
                                                         <div class="event-site clearfix">
                                                             {% for site in event.site %}
@@ -130,7 +131,7 @@
                                                                 <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
                                                                 <ul id="suggestCategoriesBlock"  class="select-category">
                                                                     {% for index, node in categories %}
-                                                                        <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
+                                                                        <li><a data-catkey="{{ node['key'] }}" href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
                                                                     {% endfor %}
                                                                 </ul>
                                                             {% endif %}
