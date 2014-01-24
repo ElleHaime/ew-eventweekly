@@ -62,7 +62,7 @@ define('fb',
 
 			self.bindEvents = function()
 			{
-				$(self.settings.btnLogin).click(function(e) { 
+				$(self.settings.btnLogin).click(function(e) {
 					self.__login();
 				});
 
@@ -98,7 +98,7 @@ define('fb',
 		                    authParams = { uid: self.accessUid, 
 		                    			   access_token: self.accessToken };
 
-		                    $.when(self.__request('post', 'fblogin', authParams)).then(function(data) {
+		                    $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
 		                    		data = $.parseJSON(data);
 		                    		if (data.status == 'OK') {
 		                    			var userData = self.userData.join(',');
@@ -137,7 +137,7 @@ define('fb',
                            first_name: data.first_name,
                            last_name: data.last_name,
                            username: data.username };
-                $.when(self.__request('post', 'fbregister', params)).then(function(response) {
+                $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
                 		window.location.href = self.firstPage;

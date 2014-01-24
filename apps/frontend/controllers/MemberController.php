@@ -9,7 +9,8 @@ use Core\Utils as _U,
     Frontend\Models\Location,
     Frontend\Models\Tag,
     Frontend\Form\ChangePassForm,
-    Frontend\Form\MemberForm;
+    Frontend\Form\MemberForm,
+    Frontend\Form\LoginForm;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -355,5 +356,18 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->sendAjax($response);
+    }
+
+    /**
+     * @Route("/member/login", methods={'get'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function loginAction()
+    {
+        $form = new LoginForm();
+
+        $this -> view -> form = $form;
+
+        $this->view->pick('member/login');
     }
 }

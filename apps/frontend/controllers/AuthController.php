@@ -40,14 +40,24 @@ class AuthController extends \Core\Controller
                         'bind' => (array)$email));
 
                 if (!$member || !$this->security->checkHash($pass, $member->pass)) {
-                    $this->setFlash('Wrong login credentials!', 'error');
+                    if (!$this->request->isAjax()) {
+                        $this->setFlash('Wrong login credentials!', 'error');
+                    } else {
+                        echo json_encode(array('error' => 'Wrong login credentials!'));
+                        exit();
+                    }
                 }else {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 //_U::dump($this -> session -> get('location'));    
 
-                    $this -> response -> redirect('/map');
+                    if (!$this->request->isAjax()) {
+                        $this -> response -> redirect('/map');
+                    } else {
+                        echo json_encode(array('success' => 'true'));
+                        exit();
+                    }
                 }
             }
         }
