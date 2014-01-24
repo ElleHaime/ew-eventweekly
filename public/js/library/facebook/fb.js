@@ -1,6 +1,6 @@
 define('fb',
-	['jquery', 'utils', 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'],
-	function($, utils) {
+	['jquery', 'utils', 'noti', 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'],
+	function($, utils, noti) {
 
 		function fb($, utils) 
 		{
@@ -23,7 +23,9 @@ define('fb',
 				btnEventShare: '#event_share', 
 				errorBox: '#login_message',
 				status: true,
-				appId: ''
+				appId: '',
+
+                isLogged: '#isLogged'
 			};
 			self.eventStatuses = {
 				join: 'JOIN',
@@ -71,6 +73,11 @@ define('fb',
 				});*/
 
 				$(self.settings.btnEventGoing).click(function(e) {
+                    if ($(self.settings.isLogged).val() != 1) {
+                        noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
+                        return false;
+                    }
+
 					self.__goingEvent();
                     self.__shareEvent();
 				});
@@ -168,6 +175,11 @@ define('fb',
 
 			self.__changeUserEventState = function(status)
 			{
+                if ($(self.settings.isLogged).val() != 1) {
+                    noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
+                    return false;
+                }
+
 				$(self.settings.btnEventGoing).hide();
 				$(self.settings.btnEventMaybe).hide();
 				$(self.settings.btnEventDecline).hide();
@@ -189,7 +201,8 @@ define('fb',
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
-							window.location.href = '/#fb-login';
+							//window.location.href = '/#fb-login';
+                            noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
 							return false;
 						}
 					}
@@ -222,7 +235,7 @@ define('fb',
 			}
 		}
 
-		return new fb($, utils);
+		return new fb($, utils, noti);
 	}
 );
 

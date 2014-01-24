@@ -352,7 +352,7 @@ class MemberController extends \Core\Controllers\CrudController
             }
         } else {
             $response['errors'] = true;
-            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
+            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="#" onclick="return false;" class="fb-login-popup">login via Facebook</a>';
         }
 
         $this->sendAjax($response);
