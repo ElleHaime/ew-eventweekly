@@ -102,7 +102,13 @@ define('newGmapEvents',
 
                             // initialize click to marker on map for open information window
                             google.maps.event.addListener(marker, 'click', function() {
+                                marker.setIcon(marker.clickedIcon);
                                 InfoWindow.open(Map, marker);
+                            });
+
+                            // info window click handle
+                            google.maps.event.addListener(InfoWindow,'closeclick',function(){
+                                marker.setIcon(marker.defaultIcon);
                             });
                         }
                     });
@@ -126,8 +132,6 @@ define('newGmapEvents',
                     $(self.settings.eventsCounter).html(0);
                     noti.createNotification('No event in this area!', 'warning');
                 }
-
-                console.log(data.stop);
 
                 if (data.stop == true) {
                     clearInterval(interval);

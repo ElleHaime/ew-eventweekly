@@ -6,13 +6,13 @@ define('googleInfoWindow',
 
             self.createInfoPopupContentSimple = function(event) {
                 var date = Date.parse(event.start_date).toString('d MMM yyyy');
-                return '<div class="info-win music-category " id="content"> ' +
+                return '<div class="info-win '+event.category[0].key+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
                     '<img  class="events-img" src="'+event.image[0].image+'" alt="">' +
                     '<div class="events-date-box"><i class="icon-time"></i>'+date+'</div> ' +
                     '</div>' +
                     '<div class="events-descriptions-box">' +
-                    '<div class="venue-name">'+event.name+'</div><div>'+$.truncate(event.description, {length: 300})+'</div>' +
+                    '<div class="venue-name">'+event.name+'</div><div>'+$.truncate(event.description, {length: 150})+'</div>' +
                     '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a>' +
                     '</div>' +
                     '</div>';
@@ -21,7 +21,7 @@ define('googleInfoWindow',
             self.createInfoPopupContentMany = function(event) {
                 var date = Date.parse(event.start_date).toString('d MMM yyyy');
                 return '<div class="events-map">' +
-                    ' <div class="music-category">' +
+                    ' <div class="'+event.category[0].key+'-category">' +
                     '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +
                     '<span class="date-events-map">'+date+'</span> ' +
                     '<span class="events-map-text">'+event.name+'</span>' +
@@ -34,7 +34,8 @@ define('googleInfoWindow',
             var contentString = self.createInfoPopupContentSimple(event);
 
             var InfoWindow = new google.maps.InfoWindow({
-                content: contentString
+                content: contentString,
+                maxWidth: 480
             });
 
             InfoWindow.createInfoPopupContentSimple = self.createInfoPopupContentSimple;

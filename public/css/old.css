@@ -1841,7 +1841,7 @@ input[type="checkbox"]  {
 }
 .events-map .social-category:hover  .date-events-map
 {
-    border-right:1px solid #ED1E79;
+    border-right:1px solid #F6549B;
 }
 /*------special-----*/
 .events-list.special-category, .special-category  .events-img-box img {
