@@ -59,3 +59,12 @@
 .notiBlock .span12 {
     position: relative;
 }
+
+.wrapper {
+    position: relative;
+}
+.wrapper .notiBlock
+{
+    position: absolute;
+    top:-10px;
+}

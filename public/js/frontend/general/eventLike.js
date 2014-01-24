@@ -92,7 +92,7 @@ define('frontEventLike',
 		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
-		        		window.location.href = '/#fb-login';
+                        noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to like events', 'warning');
 		        	} else {
 			            noti.createNotification('Oops! Error occurred. Can\'t save you choice.', 'error');		        		
 		        	}

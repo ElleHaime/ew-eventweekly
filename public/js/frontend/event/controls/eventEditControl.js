@@ -185,7 +185,9 @@ define('frontEventEditControl',
                     if (!self.__checkDatesContradictions()) return false;
 
                     if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
-                        noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
+                        noti.createNotification(
+                            'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to publish events on facebook', 'warning'
+                        )
                         return false;
                     }
 

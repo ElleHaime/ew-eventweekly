@@ -53,8 +53,8 @@
 
             <div class="login-variants clearfix">
                 <div class="line-box clearfix">
-                    <div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>
-                    <div class="gplus icon"><a href="#" class="color-red">google+</a></div>
+                    {#<div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>#}
+                    {#<div class="gplus icon"><a href="#" class="color-red">google+</a></div>#}
                     <div class="link email"><a href="/login">e-mail</a></div>
                 </div>
                 <div class="line-box">

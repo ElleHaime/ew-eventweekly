@@ -261,7 +261,7 @@ define('frontSearchPanel',
                 if (response.errors) {
                     var err_msg = 'Some errors occurred! Call to administrator!';
                     if (_.isUndefined(response.error_msg) || _.isEmpty(response.error_msg) || _.isNull(response.error_msg) || _.isNull(response.error_msg)) {
-                        err_msg = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
+                        err_msg = 'Personalize search only for logged users. Please <a href="#" onclick="return false;" class="fb-login-popup">login via Facebook</a>';
                     }else {
                         err_msg = response.error_msg;
                     }

@@ -9,7 +9,8 @@ use Core\Utils as _U,
     Frontend\Models\Location,
     Frontend\Models\Tag,
     Frontend\Form\ChangePassForm,
-    Frontend\Form\MemberForm;
+    Frontend\Form\MemberForm,
+    Frontend\Form\LoginForm;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -351,9 +352,22 @@ class MemberController extends \Core\Controllers\CrudController
             }
         } else {
             $response['errors'] = true;
-            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="/#fb-login">login via Facebook</a>';
+            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="#" onclick="return false;" class="fb-login-popup">login via Facebook</a>';
         }
 
         $this->sendAjax($response);
+    }
+
+    /**
+     * @Route("/member/login", methods={'get'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function loginAction()
+    {
+        $form = new LoginForm();
+
+        $this -> view -> form = $form;
+
+        $this->view->pick('member/login');
     }
 }

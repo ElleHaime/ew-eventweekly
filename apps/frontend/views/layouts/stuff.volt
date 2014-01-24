@@ -2,6 +2,8 @@
 
 <div style="display:none;" id="current_location" latitude="{{ location.latitude }}" longitude="{{ location.longitude }}"></div>
 
+<input type="hidden" id="popupRedirect" value="">
+
 {% if flashMsgText is defined %}
 	<div style="display:none;" id="splash_messages" flashMsgText="{{ flashMsgText }}" flashMsgType="{{ flashMsgType }}"></div>
 {% endif %}
