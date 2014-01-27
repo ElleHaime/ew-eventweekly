@@ -53,6 +53,9 @@
 </head>
 
 <body>
+{% if eventPreview is defined %}
+    <div class="preview_overlay" style="height: 100%;width: 100%;z-index: 10000;top:0;left:0;position:fixed;"></div>
+{% endif %}
 <div class="overlay">
 </div>
 

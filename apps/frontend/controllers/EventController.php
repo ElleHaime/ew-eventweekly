@@ -833,4 +833,53 @@ class EventController extends \Core\Controllers\CrudController
 
         exit('DONE');
     }*/
+
+    /**
+     * @Route("/event/preview", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function eventPreviewAction()
+    {
+        $logo = $this->request->getUploadedFiles()[0];
+        $file = $this->config->application->uploadDir.'img/tmp/'.time().rand(1000, 9999).$logo->getName();
+        $logo->moveTo($file);
+
+        $post = $this->request->getPost();
+
+        $Event = new \stdClass();
+
+        $Event->id = 0;
+        $Event->name = $post['name'];
+        $Event->start_date = $post['start_date'];
+        $Event->start_time = $post['start_time'];
+        $Event->end_date = $post['end_date'];
+        $Event->end_time = $post['end_time'];
+        $Event->description = $post['description'];
+        $Event->tickets_url = $post['tickets_url'];
+        $loc = new \stdClass();
+        $loc->alias = $post['location'];
+        $Event->location = $loc;
+        $Event->address = $post['address'];
+        $Event->venue = $post['venue'];
+        $Event->event_site = $post['event_site'];
+        $Event->logo = $post['logo'];
+        $site = [];
+        foreach (explode(',', $post['event_site']) as $s) {
+            if (!empty($s)) {
+                $ss = new \stdClass();
+                $ss->url = $s;
+                $site[] = $ss;
+            }
+        }
+        $Event->site = $site;
+        $Event->category = Category::find('id = '.(int)$post['category']);
+        $Event->memberpart = null;
+
+        $this->view->setVar('currentWindowLocation', 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$Event->id);
+        $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$Event->id);
+
+        $this->view->setVar('event', $Event);
+
+        $this->view->pick('event/show');
+    }
 }		

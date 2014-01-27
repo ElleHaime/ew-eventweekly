@@ -66,7 +66,9 @@ define('frontEventEditControl',
                 defaultCategories: '#defaultCategories',
 
                 memberExtUid: '#member_ext_uid',
-                eventFbStatus: '#event_fb_status'
+                eventFbStatus: '#event_fb_status',
+
+                btnPreview: '#btn-preview'
 			},
 
 
@@ -192,7 +194,33 @@ define('frontEventEditControl',
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
                 });
+
+                console.log('here');
+
+                $(self.settings.form).on('click', self.settings.btnPreview, function(e) {
+                    e.preventDefault();
+                    self.__eventPreview();
+                })
 			}
+
+            self.__eventPreview = function() {
+                if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                    $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+                }
+
+                if (!self.__checkRequiredFields()) return false;
+                if (!self.__checkDatesContradictions()) return false;
+
+                if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
+                    noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
+                    return false;
+                }
+
+                $(self.settings.form).attr('target', '_blank').attr('action', '/event/preview').submit();
+                $(self.settings.form).removeAttr('target').removeAttr('action');
+                $(self.settings.btnSubmit).prop('disabled', false);
+                $(self.settings.btnSubmit).text('Save');
+            }
 
             self.__removeCategoryConflict = function()
             {
