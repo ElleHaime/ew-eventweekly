@@ -6,6 +6,24 @@ define('frontMemberEditControl',
         {
             var self = this;
 
+            self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
+                'user_groups,user_interests,user_likes,user_location,user_checkins,user_events,' +
+                'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
+                'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
+                'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights',
+
+            self.userData = [
+                'first_name',
+                'last_name',
+                'email',
+                'current_location',
+                'current_address',
+                'username',
+                'pic_big'
+            ],
+            self.accessToken = '',
+            self.accessUid = '',
+
             self.settings = {
                 btnImg: '#file',
                 btnImgUpload: '#logo',
@@ -32,7 +50,9 @@ define('frontMemberEditControl',
 
                 marker: '.marker',
                 disabledMarker: 'disabled-marker',
-                inpTagIds: '#tagIds'
+                inpTagIds: '#tagIds',
+
+                linkToFbAccBtn: '#linkToFbAcc'
             },
 
             self.init = function()
@@ -141,6 +161,53 @@ define('frontMemberEditControl',
 
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
+
+                $(self.settings.linkToFbAccBtn).click(function(){
+                    FB.login(
+                        function(response) {
+                            if (response.authResponse) {
+                                self.accessToken = response.authResponse.accessToken;
+                                self.accessUid = response.authResponse.userID;
+
+                                var userData = self.userData.join(',');
+                                FB.api(
+                                    { method: 'fql.query', query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
+                                    function(facebookData) {
+                                        if (!facebookData) {
+                                            alert('Can\'t get your info from FB acc');
+                                            return false;
+                                        }
+                                        self.__linkFBAccount(facebookData[0]);
+                                    }
+                                );
+                            }
+                        },
+                        { scope: self.permissions }
+                    );
+                });
+            }
+
+            self.__linkFBAccount = function(data)
+            {
+                params = { uid: self.accessUid,
+                    token: self.accessToken,
+                    address: data.current_address,
+                    location: data.current_location,
+                    email: data.email,
+                    logo: data.pic_big,
+                    first_name: data.first_name,
+                    last_name: data.last_name,
+                    username: data.username };
+                $.when(self.__request('post', '/member/link-fb', params)).then(function(response) {
+                    data = $.parseJSON(response);
+                    console.log(data);
+                    if (data.errors !== 'false') {
+                        noti.createNotification('Your account was successfully linked with Facebook account', 'warning');
+                        $(self.settings.linkToFbAccBtn).remove();
+                    } else {
+                        noti.createNotification('Error during linking accounts', 'error');
+                    }
+                });
             }
 
             self.checkFill = function(field)
@@ -214,6 +281,13 @@ define('frontMemberEditControl',
                     tagIds.splice( tagIds.indexOf($(this).attr('data-id')), 1);
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
+            }
+
+            self.__request = function(method, url, params)
+            {
+                return $.ajax({ url: url,
+                    data: params,
+                    type: method});
             }
         }
 

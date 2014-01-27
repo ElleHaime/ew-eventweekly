@@ -10,7 +10,8 @@ use Core\Utils as _U,
     Frontend\Models\Tag,
     Frontend\Form\ChangePassForm,
     Frontend\Form\MemberForm,
-    Frontend\Form\LoginForm;
+    Frontend\Form\LoginForm,
+    Frontend\Models\MemberNetwork;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -369,5 +370,45 @@ class MemberController extends \Core\Controllers\CrudController
         $this -> view -> form = $form;
 
         $this->view->pick('member/login');
+    }
+
+    /**
+     * @Route("/member/link-fb", methods={'get'})
+     * @Acl(roles={'member'});
+     */
+    public function linkToFBAccountAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        $userData = $this->request->getPost();
+
+        if ($this->session->has('member')) {
+            $member = $this->session->get('member');
+
+            $memberNetwork = new MemberNetwork();
+
+            $memberNetwork -> assign(array(
+                'member_id' => $member->id,
+                'network_id' => 1,
+                'account_uid' => $userData['uid'],
+                'account_id' => $userData['username']
+            ));
+
+            if ($memberNetwork -> save()) {
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                    'member' => $member,
+                    'uid' => $userData['uid'],
+                    'token' => $userData['token']
+                ));
+
+                $this->session->set('user_token', $userData['token']);
+                $this -> view -> setVar('acc_external', $memberNetwork);
+            }
+        }
+
+        echo json_encode($response);
     }
 }
