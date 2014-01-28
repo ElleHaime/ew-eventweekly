@@ -68,7 +68,8 @@ define('frontEventEditControl',
                 memberExtUid: '#member_ext_uid',
                 eventFbStatus: '#event_fb_status',
                 accSynced: '#acc_synced',
-                externalLogged: '#external_logged'
+                externalLogged: '#external_logged',
+                btnPreview: '#btn-preview'
 			},
 
 
@@ -77,7 +78,7 @@ define('frontEventEditControl',
                 utils.addEmptyOptionFirst($(self.settings.inpCategory), 'Choose categories');
 
                 if ($(self.settings.inpCampaignId).val() == '' || $(self.settings.inpCampaignId).val() == 0) {
-                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose event campaign');
                 } else {
                     utils.addNotSelectedEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
                 }
@@ -191,7 +192,32 @@ define('frontEventEditControl',
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
                 });
+
+                console.log('here');
+
+                $(self.settings.form).on('click', self.settings.btnPreview, function(e) {
+                    e.preventDefault();
+                    self.__eventPreview();
+                })
 			}
+
+            self.__eventPreview = function() {
+                if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                    $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+                }
+
+                if (!self.__checkRequiredFields()) return false;
+                if (!self.__checkDatesContradictions()) return false;
+
+                $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
+                $(self.settings.form).removeAttr('target').removeAttr('action');
+                $(self.settings.btnSubmit).prop('disabled', false);
+                $(self.settings.btnSubmit).text('Save');
+
+                $('#previewEvent').on('show', function () {
+                    modalBody = $(this).find('.modal-body');
+                });
+            }
 
             self.__removeCategoryConflict = function()
             {

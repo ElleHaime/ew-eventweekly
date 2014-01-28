@@ -176,6 +176,30 @@
 
 @media screen and (max-width: 790px) {
 
+    .facebook-button .button {
+        width: 50%;
+    }
+    .big-top {
+        margin-bottom: 0;
+    }
+    .how-it-works {
+        padding-bottom: 20px;
+    }
+    footer .login-variants .link a {
+        padding: 15px 27px 14px;
+    }
+    footer .login-variants div.read-more {
+        float: none;
+        clear: both;
+    }
+    footer .login-variants div.read-more a {
+        display: inline;
+    }
+
+    .how-it-works {
+       padding-top: 20px;
+        clear: both;
+    }
     .event-list-btn {
         float: left;
         clear: both;
@@ -306,6 +330,18 @@
 }
 
 @media screen and (max-width: 580px) {
+
+    .event-list_i {
+        padding: 0 3%;
+    }
+    .add-event_i {
+        padding: 0 3%;
+    }
+
+    .event-one-box {
+        padding: 0 3%;
+    }
+
 
     .event-one-box  #content_right
     {
@@ -445,7 +481,7 @@
     {
         max-height: 280px;
         overflow-y: scroll;
-}
+    }
 }
 @media screen and (max-height: 460px) {
     body {
@@ -503,5 +539,56 @@
     .row-fluid .show-list {
         margin-right: 20px;
     }
+    .how-it-works {
+        padding: 20px 0;
+        clear: both;
+    }
+    /*.facebook-button {*/
+        /*display: none;*/
+    /*}*/
+    /*.facebook-button_small {*/
+        /*display: block;*/
+        /*margin-top: 0;*/
+    /*}*/
+    .line-box:first-child {
+        float: right;
+    }
+    .big-top {
+        margin-bottom: 0;
+    }
+    .container-box {
+        padding: 0 3% 0 4%;
+    }
+    footer .login-variants {
+        width: auto;
+    }
+    footer .login-variants .link {
+        margin: 0;
+    }
+    .facebook-button {
+        padding: 46px 0 20px;
+    }
 
+    footer .login-variants .link a {
+        padding: 15px 26px 14px;
+    }
+    footer .login-variants div.read-more a {
+        display: block;
+    }
+    footer .login-variants div.read-more {
+        float: left;
+        clear: both;
+        width: 99%;
+    }
+    .facebook-button .button {
+        width: 100%
+    }
+    .facebook-button .button a {
+        width: 50%;
+        float: right;
+        margin-right: 6px;
+    }
+    .how-it-works {
+        padding-top: 20px;
+    }
 }
