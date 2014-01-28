@@ -20,6 +20,10 @@
     <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
 {% endif %}
 
+{% if acc_synced is defined %}
+    <input type="hidden" id="acc_synced" value="1">
+{% endif %}
+
 {% if member.id is defined %}
     <input id="isLogged" type="hidden" value="1" />
 {% else %}

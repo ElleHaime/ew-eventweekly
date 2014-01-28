@@ -1103,6 +1103,14 @@ input[type="color"]:focus, .uneditable-input:focus
     zoom: 1;
     *display: inline;
 }
+.date-box  span {
+    display: inline-block;
+    zoom: 1;
+    *display: inline;
+    color:#999999;
+    font-size: 11px;
+}
+
 .form-center .input-div input {
     margin-bottom: 3px;
     float: left;
