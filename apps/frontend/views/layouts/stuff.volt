@@ -33,3 +33,11 @@
 {% if isMobile is defined %}
     <input id="isMobile" type="hidden" value="{{ isMobile }}" />
 {% endif %}
+
+{% if fbAppId is defined %}
+    <input id="fbAppId" type="hidden" value="{{ fbAppId }}" />
+{% endif %}
+
+{% if fbAppSecret is defined %}
+    <input id="fbAppSecret" type="hidden" value="{{ fbAppSecret }}" />
+{% endif %}

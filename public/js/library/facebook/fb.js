@@ -1,5 +1,5 @@
 define('fb',
-	['jquery', 'utils', 'noti', 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=166657830211705'],
+	['jquery', 'utils', 'noti', 'http://connect.facebook.net/en_US/all.js'],
 	function($, utils, noti) {
 
 		function fb($, utils) 
@@ -23,7 +23,6 @@ define('fb',
 				btnEventShare: '#event_share', 
 				errorBox: '#login_message',
 				status: true,
-				appId: '',
 
                 isLogged: '#isLogged'
 			};
@@ -50,14 +49,15 @@ define('fb',
 
 			self.init = function(options)
 			{
-                /*self.settings = $.extend(self.settings, options);
+                /*self.settings = $.extend(self.settings, options);*/
 
-				if (_.isNull(FB)) {
-					FB.init({
-			            appId: self.settings.appId,
-			            status: self.settings.status
-			        });
-                 }*/
+
+                FB.init({
+                    appId: window.fbAppId,
+                    status: self.settings.status
+                });
+
+                console.log(FB);
 
 			    self.bindEvents();
 			}

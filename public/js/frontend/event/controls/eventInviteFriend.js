@@ -99,7 +99,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                     if ($($this.settings.isMobile).val() === '1') {
                         console.log($(this));
                         var friendId = $(this).attr('data-id');
-                        window.location = 'http://www.facebook.com/dialog/feed?app_id=166657830211705&link=' +
+                        window.location = 'http://www.facebook.com/dialog/feed?app_id='+window.fbAppId+'&link=' +
                             document.URL + '&redirect_uri=' + document.URL + '&to='+ friendId;
                     } else {
                         if ($this.__issetFB()) {

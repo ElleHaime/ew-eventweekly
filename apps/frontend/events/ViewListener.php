@@ -28,6 +28,9 @@ class ViewListener {
         $this->view = $subject->getSource();
         $config = $this->di->getShared('config');
 
+        $this->view->setVar('fbAppId', $config->application->facebook->appId);
+        $this->view->setVar('fbAppSecret', $config->application->facebook->appSecret);
+
         $params = $this->dispatcher->getReturnedValue();
         if (!empty($params) && is_array($params)) {
             foreach ($params as $key => $param) {

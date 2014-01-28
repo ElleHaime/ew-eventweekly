@@ -65,7 +65,11 @@ $cfg_settings = array(
 			'path' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 		),
         'uploadDir' => ROOT_APP . 'public/upload/',
-        'defaultLogo' => '/img/logo200.png'
+        'defaultLogo' => '/img/logo200.png',
+        'facebook' => [
+            'appId' => 166657830211705,
+            'appSecret' => 'e917842e47a57adb93a1e9761af4117a'
+        ]
     ),
 	
 	'modules' => array(
