@@ -48,13 +48,15 @@ class EventController extends \Core\Controllers\CrudController
 		if (count($events) > 0) {
 			$res['status'] = 'OK';
 			$res['message'] = $events;
-			echo json_encode($res);
-			die();
+            $this->sendAjax($res);
+			//echo json_encode($res);
+			//die();
 		} else {
 			$res['status'] = 'ERROR';
 			$res['message'] = 'no events';
-			echo json_encode($res);
-			die();
+            $this->sendAjax($res);
+			//echo json_encode($res);
+			//die();
 		}
 	}
 

@@ -85,10 +85,10 @@ class Event extends EventObject
             }
             $tryDate = date('d/m/Y', strtotime($this -> start_date));
             if ($tryDate != '0000-00-00') {
-                //$this -> start_date_nice = $tryDate;
+                $this -> start_date_nice = $tryDate;
                 $this -> start_date = $tryDate;
             } else {
-                //$this -> start_date_nice = '';
+                $this -> start_date_nice = '';
                 $this -> start_date = '';
             }
         } else {
@@ -104,10 +104,10 @@ class Event extends EventObject
             }
             $tryDate = date('d/m/Y', strtotime($this -> end_date));
             if ($tryDate != '0000-00-00') {
-                //$this -> end_date_nice = $tryDate;
+                $this -> end_date_nice = $tryDate;
                 $this -> end_date = $tryDate;
             } else {
-                //$this -> end_date_nice = '';
+                $this -> end_date_nice = '';
                 $this -> end_date = '';
             }
         } else {

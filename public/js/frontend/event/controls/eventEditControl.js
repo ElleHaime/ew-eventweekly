@@ -100,6 +100,8 @@ define('frontEventEditControl',
 				self.bindEvents();
 
                 self.__setupDateTimePicker();
+
+                self.__initFacebookPublish();
 			}
 
 			self.bindEvents = function()
@@ -187,11 +189,6 @@ define('frontEventEditControl',
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
 
-                    if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
-                        noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
-                        return false;
-                    }
-
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
                 });
@@ -205,17 +202,12 @@ define('frontEventEditControl',
 			}
 
             self.__eventPreview = function() {
-                /*if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                if ($(self.settings.inpCategoryReal).val().trim() == '') {
                     $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                 }
 
                 if (!self.__checkRequiredFields()) return false;
                 if (!self.__checkDatesContradictions()) return false;
-
-                if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
-                    noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
-                    return false;
-                }*/
 
                 $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
                 $(self.settings.form).removeAttr('target').removeAttr('action');
@@ -569,6 +561,17 @@ define('frontEventEditControl',
                         $(this).datetimepicker('show');
                     });
                 });
+            }
+
+            self.__initFacebookPublish = function()
+            {
+                if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
+                    $(self.settings.eventFbStatus).parent().append(
+                        '<br/><span>To publish events on facebook link or sync with your Facebook account at <a href="/profile">profile</a></span>'
+                    );
+                    $(self.settings.eventFbStatus).prop('checked', false);
+                    $(self.settings.eventFbStatus).attr('disabled', true);
+                }
             }
 		};
 
