@@ -204,7 +204,7 @@ define('frontEventEditControl',
 			}
 
             self.__eventPreview = function() {
-                if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                /*if ($(self.settings.inpCategoryReal).val().trim() == '') {
                     $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                 }
 
@@ -214,12 +214,16 @@ define('frontEventEditControl',
                 if ($(self.settings.eventFbStatus).prop('checked') && $(self.settings.memberExtUid).length == 0) {
                     noti.createNotification('Please use your facebook login to be able to publish events on facebook', 'error');
                     return false;
-                }
+                }*/
 
-                $(self.settings.form).attr('target', '_blank').attr('action', '/event/preview').submit();
+                $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
                 $(self.settings.form).removeAttr('target').removeAttr('action');
                 $(self.settings.btnSubmit).prop('disabled', false);
                 $(self.settings.btnSubmit).text('Save');
+
+                $('#previewEvent').on('show', function () {
+                    modalBody = $(this).find('.modal-body');
+                });
             }
 
             self.__removeCategoryConflict = function()
