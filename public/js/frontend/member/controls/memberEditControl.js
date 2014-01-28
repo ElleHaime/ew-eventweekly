@@ -52,7 +52,8 @@ define('frontMemberEditControl',
                 disabledMarker: 'disabled-marker',
                 inpTagIds: '#tagIds',
 
-                linkToFbAccBtn: '#linkToFbAcc'
+                linkToFbAccBtn: '#linkToFbAcc',
+                syncFbAccBtn: '#syncFbAcc'
             },
 
             self.init = function()
@@ -177,7 +178,31 @@ define('frontMemberEditControl',
                                             alert('Can\'t get your info from FB acc');
                                             return false;
                                         }
-                                        self.__linkFBAccount(facebookData[0]);
+                                        self.__linkFBAccount(facebookData[0], 'link');
+                                    }
+                                );
+                            }
+                        },
+                        { scope: self.permissions }
+                    );
+                });
+
+                $(self.settings.syncFbAccBtn).click(function(){
+                    FB.login(
+                        function(response) {
+                            if (response.authResponse) {
+                                self.accessToken = response.authResponse.accessToken;
+                                self.accessUid = response.authResponse.userID;
+
+                                var userData = self.userData.join(',');
+                                FB.api(
+                                    { method: 'fql.query', query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
+                                    function(facebookData) {
+                                        if (!facebookData) {
+                                            alert('Can\'t get your info from FB acc');
+                                            return false;
+                                        }
+                                        self.__linkFBAccount(facebookData[0], 'sync');
                                     }
                                 );
                             }
@@ -187,8 +212,18 @@ define('frontMemberEditControl',
                 });
             }
 
-            self.__linkFBAccount = function(data)
+            self.__linkFBAccount = function(data, action)
             {
+                var url = '/member/link-fb';
+                var successMsg = 'Your account was successfully linked with Facebook account';
+                var errorMsg = 'Error during linking accounts';
+
+                if (action == 'sync') {
+                    url = '/member/sync-fb';
+                    successMsg = 'Your account was successfully synced with Facebook account';
+                    errorMsg = 'Error during syncing accounts';
+                }
+
                 params = { uid: self.accessUid,
                     token: self.accessToken,
                     address: data.current_address,
@@ -198,14 +233,19 @@ define('frontMemberEditControl',
                     first_name: data.first_name,
                     last_name: data.last_name,
                     username: data.username };
-                $.when(self.__request('post', '/member/link-fb', params)).then(function(response) {
+                $.when(self.__request('post', url, params)).then(function(response) {
                     data = $.parseJSON(response);
                     console.log(data);
                     if (data.errors !== 'false') {
-                        noti.createNotification('Your account was successfully linked with Facebook account', 'warning');
-                        $(self.settings.linkToFbAccBtn).remove();
+                        noti.createNotification(successMsg, 'warning');
+
+                        if (action == 'link') {
+                            $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
+                            $(self.settings.linkToFbAccBtn).remove();
+                        }
+
                     } else {
-                        noti.createNotification('Error during linking accounts', 'error');
+                        noti.createNotification(errorMsg, 'error');
                     }
                 });
             }

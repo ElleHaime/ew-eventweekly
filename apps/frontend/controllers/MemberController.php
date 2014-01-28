@@ -405,7 +405,44 @@ class MemberController extends \Core\Controllers\CrudController
                 ));
 
                 $this->session->set('user_token', $userData['token']);
+                $this->session->set('acc_synced', true);
                 $this -> view -> setVar('acc_external', $memberNetwork);
+            }
+        }
+
+        echo json_encode($response);
+    }
+
+    /**
+     * @Route("/member/sync-fb", methods={'get'})
+     * @Acl(roles={'member'});
+     */
+    public function syncToFBAccountAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        $userData = $this->request->getPost();
+
+        if ($this->session->has('member')) {
+            $member = $this->session->get('member');
+
+            $memberNetwork = MemberNetwork::findFirst('member_id = ' . $member->id . ' AND account_uid = ' . $userData['uid']);
+
+            if ($memberNetwork->id) {
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                    'member' => $member,
+                    'uid' => $userData['uid'],
+                    'token' => $userData['token']
+                ));
+
+                $this->session->set('user_token', $userData['token']);
+                $this->session->set('acc_synced', true);
+                $this->view->setVar('acc_external', $memberNetwork);
+            } else {
+                $response = [ 'errors' => true ];
             }
         }
 

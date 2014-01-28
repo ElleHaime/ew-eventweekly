@@ -105,10 +105,18 @@ class Controller extends \Phalcon\Mvc\Controller
 					$this -> view -> setVar('acc_external', $this -> view -> member -> network);
 				}
 			}
+
+            if ($member->auth_type == 'email' && isset($member->network->account_uid)) {
+                $this -> view -> setVar('acc_external', $member->network);
+            }
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);
 		}
 		$this -> view -> setVar('location', $this -> session -> get('location'));
+
+        if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
+            $this ->view->setVar('acc_synced', 1);
+        }
 
         $this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
         $this -> view -> setVar('userEventsLiked', $this -> session -> get('userEventsLiked'));

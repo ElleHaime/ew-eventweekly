@@ -83,11 +83,10 @@
                     <div class="profile-btn">
                         {% if acc_external.account_uid is empty %}
                             <button id="linkToFbAcc" class="btn btn-block">Link to Facebook Account</button>
+                        {% else %}
+                            <button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>
+                            <p>import interests from facebook / login through facebook</p>
                         {% endif %}
-
-                        <button class="btn btn-block ">Facebook sinc</button>
-                        <p>import interests from facebook
-                            / login through facebook</p>
 
                         <div class="change-box">
                             <button class="btn btn-block" onclick="window.location = '/profile/change-password'">Change password</button>
