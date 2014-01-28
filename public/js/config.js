@@ -52,6 +52,8 @@ require.config({
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
 
+        'SingleEvent': 'frontend/list/singleEvent',
+        'listListener': 'frontend/list/listListener',
 
         // New
         'newGmapEvents': 'library/maps/newGmapEvents',
