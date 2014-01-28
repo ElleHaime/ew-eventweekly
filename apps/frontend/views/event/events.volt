@@ -102,10 +102,6 @@
                                     </div>
                                 </div>
                                 {% endfor %}
-
-                                <hr/>
-                                <hr/>
-
                             {% else %}
 
                                 <div   class="no-list"><i>No events found</i></div>
@@ -148,7 +144,9 @@
                             </div>
                         </div>
                         <div class="event-list-btn clearfix">
-                            <div rel="tooltip" title="" data-original-title="Odesa" class=" place-address tooltip-text"></div>
+                            <div rel="tooltip" title="" data-original-title="<%= event_venue %>" class=" place-address tooltip-text">
+                                <span><%= event_venue %></span>
+                            </div>
 
                             <div class="event-site clearfix">
                                 <a href="https://www.facebook.com/events/<%= event_fb_id %>" target="_blank">Facebook link</a>

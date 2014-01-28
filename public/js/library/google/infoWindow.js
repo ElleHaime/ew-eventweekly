@@ -6,9 +6,15 @@ define('googleInfoWindow',
 
             self.createInfoPopupContentSimple = function(event) {
                 var date = Date.parse(event.start_date).toString('d MMM yyyy');
+                var img = '';
+
+                if (!_.isUndefined(event.image[0])) {
+                    img = event.image[0].image;
+                }else {}
+
                 return '<div class="info-win '+event.category[0].key+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
-                    '<img  class="events-img" src="'+event.image[0].image+'" alt="">' +
+                    '<img  class="events-img" src="'+img+'" alt="">' +
                     '<div class="events-date-box"><i class="icon-time"></i>'+date+'</div> ' +
                     '</div>' +
                     '<div class="events-descriptions-box">' +

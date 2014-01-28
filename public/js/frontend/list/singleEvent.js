@@ -14,6 +14,12 @@ define('SingleEvent' ,['jquery', 'underscore', 'jTruncate', 'niceDate', 'domRead
 
         var template = $(settings.templateId).html();
 
+        var venue = '';
+
+        if (!_.isUndefined(event.venue)) {
+            venue = event.venue.name;
+        }
+
         self.getHtml = function() {
             return _.template(template,{
                 event_id: event.id,
@@ -23,7 +29,8 @@ define('SingleEvent' ,['jquery', 'underscore', 'jTruncate', 'niceDate', 'domRead
                 event_start_date: event.start_date,
                 event_start_time: event.start_date,
                 event_description: $.truncate(event.description, {length: 160}),
-                event_fb_id: event.fb_uid
+                event_fb_id: event.fb_uid,
+                event_venue: venue
             });
         };
 

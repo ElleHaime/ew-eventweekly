@@ -31,11 +31,11 @@ define('listListener' ,['jquery','noti','SingleEvent','utils','domReady','unders
                 $.each(data.events, function(index,event) {
                     var newEventHtml = new SingleEvent(event);
                     newEventHtml = newEventHtml.getHtml();
-
-                    console.log(newEventHtml);
-
                     eventsBlock.append(newEventHtml);
                 });
+
+                // initialize venue tooltips
+                $('.tooltip-text').tooltip();
             }
 
             if (data.stop == true) {
