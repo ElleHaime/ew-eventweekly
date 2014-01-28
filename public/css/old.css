@@ -4382,3 +4382,14 @@ a.view-btn  {
     right: 13px;
     width: auto!important;
 }
+
+.delete-logo {
+    background: url(../img/del.png) no-repeat;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    z-index: 10;
+    right:0;
+    bottom: 3px;
+    cursor: pointer;
+}
