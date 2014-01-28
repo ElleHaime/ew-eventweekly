@@ -261,7 +261,7 @@ footer .login-variants .link a{
 	color:#525252;
 	display: block;
 	text-decoration: none;
-	padding: 15px 50px 14px 50px;
+	padding: 15px 60px 14px 60px;
 }
 
 footer .label-or {
@@ -345,6 +345,9 @@ footer .login-variants div.read-more {
 
 /* how it works block */
 
+.how-it-works  {
+    clear: both;
+}
 .how-it-works h2{
 	font: 300 30px "Open Sans";
 	color:#525252;
@@ -352,9 +355,9 @@ footer .login-variants div.read-more {
 }
 
 .how-it-works .column {
-	float:left; 
-	width: 29%; 
-	margin-right:6.3%;
+	float:left;
+    margin-right: 1.3%;
+    width: 32%;
 }
 
 .how-it-works .column .number {
@@ -399,6 +402,9 @@ footer .login-variants div.read-more {
 	height:76px;
 }
 
+/*.btn-facebook {*/
+    /*float: right;*/
+/*}*/
 .facebook-button .button a {
 	background: #405a99 url(../img/facebook-logo.jpg) 50% 50% no-repeat;
 	width: 100%;
@@ -411,7 +417,12 @@ footer .login-variants div.read-more {
 .facebook-button .button a:hover {
 	opacity: 0.9;
 }
-
+.facebook-button_small {
+    margin-top: 0;
+}
+/*.facebook-button_small {*/
+    /*display: none;*/
+/*}*/
 .facebook-button .tip {
 	color:#4d4d4d;
 	width: 36.6%;
@@ -429,6 +440,7 @@ footer .login-variants div.read-more {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 0 3%;
+    position: relative;
 }
 
 .clear {
@@ -499,7 +511,6 @@ footer .login-variants div.read-more {
 
 	footer .login-variants{
 		margin: 40px auto;
-		width:305px;
 	}
 
 	footer .login-variants .line-box{
@@ -518,7 +529,6 @@ footer .login-variants div.read-more {
 	.big-top .square span{
 		font-weight: 300;
 		color: #fff;
-		padding: 0;
 	 	text-align:left;
 	 	float:right;
 	 	padding: 3% 0%;
@@ -593,7 +603,10 @@ footer .login-variants div.read-more {
 @media screen and (min-width: 768px) and (max-width: 1069px) {
 
     .big-top .square span{
-        padding:3% 22%;
+        padding:19% 22%;
+    }
+    footer .login-variants .link a {
+        padding: 15px 55px 14px;
     }
 
 	footer .login-variants .line-box{
@@ -608,7 +621,18 @@ footer .login-variants div.read-more {
 
 
 }
+@media screen and (max-width: 790px) {
+    .big-top .square span {
+        padding: 15% 22%;
+    }
 
+}
+@media screen and (max-width: 770px) {
+    .big-top .square span {
+        padding: 3%;
+    }
+
+}
 
 @media screen and (max-width: 860px) {
     .logo-box  a {
@@ -658,4 +682,20 @@ footer .login-variants div.read-more {
 .btn-show , .btn-show:hover, .btn-show:focus, .btn-show:active
 {
     padding: 0;
+}
+
+footer .login-variants .link a {
+    padding: 15px 45px 14px;
+}
+
+.text-label {
+    color: #525252;
+    margin-right: 60px;
+    font:300 14px "Open Sans";
+    margin-bottom: 10px;
+    position: absolute;
+    left:4.3%;
+}
+.text-label span {
+    font:300 30px "Open Sans";
 }

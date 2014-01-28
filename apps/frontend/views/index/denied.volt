@@ -7,7 +7,7 @@
 	        <div class="span4">
 	           {{ image('/img/demo/img1.jpg', 'alt': 'Guard') }}
 	                <div class="top-about-text">
-	                    <h4>Never miss an Event</h4>
+	                    <h4>Never miss an event</h4>
 	                </div>
 	        </div>
 	        <div class="span4">

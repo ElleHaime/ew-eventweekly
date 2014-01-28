@@ -78,7 +78,7 @@ define('frontEventEditControl',
                 utils.addEmptyOptionFirst($(self.settings.inpCategory), 'Choose categories');
 
                 if ($(self.settings.inpCampaignId).val() == '' || $(self.settings.inpCampaignId).val() == 0) {
-                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose event campaign');
                 } else {
                     utils.addNotSelectedEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
                 }

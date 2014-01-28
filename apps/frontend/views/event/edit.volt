@@ -36,7 +36,6 @@
                                                         {{ form.render('name') }}
 
                                                         <div class="arrow_box"> arrow</div>
-                                                        <span>description / example</span>
                                                     </div>
 
                                                     <div class="input-div_date clearfix">

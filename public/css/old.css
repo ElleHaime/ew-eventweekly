@@ -139,7 +139,7 @@ hr {
 /*------------------------------------------agreement css----------------------------------------------------------*/
 
 .agreement-box  {
-    padding: 3%;
+    padding: 1% 3%;
     background: #ffffff;
 }
 .agreement-box form {
@@ -282,8 +282,11 @@ hr {
     margin-top: 0;
     min-width: 180px;
     position: relative;
-    z-index: 12;
-
+    z-index: 200;
+}
+.form-horizontal .control-group
+{
+    margin-bottom: 15px;
 }
 .user-box  a:hover {
     text-decoration: none;
@@ -352,7 +355,7 @@ hr {
     width: 238px;
     padding: 22px 0 7px 0;
     box-shadow: 1px 2px 3px #777777;
-    z-index: 11;
+    z-index: 110;
 }
 
 .user-down {
@@ -766,9 +769,9 @@ div.grippie {
     margin-left: 0;
 }
 
-.controls .btn {
-    margin-top: 10px;
-}
+/*.controls .btn {*/
+    /*margin-top: 10px;*/
+/*}*/
 
 .location-search {
     display: none;
@@ -1160,6 +1163,12 @@ input[type="color"]:focus, .uneditable-input:focus
     clear: both;
     padding-bottom: 10px;
 }
+.date-box label {
+    margin-top: 10px;
+}
+.date-box label:first-child {
+    margin-top: 0;
+}
 input[type="checkbox"]  {
     margin-top: -2px;
 }
@@ -1247,7 +1256,7 @@ input[type="checkbox"]  {
     margin: 10px 0;
 }
 .profile-info  .btn {
-    width: 174px;
+    width: 228px;
 }
 
 .profile-btn  p {
