@@ -23,7 +23,9 @@ define('frontTopPanel',
 					container: '#userControlBox'
 				},
 
-				btnHz: '#back-to'
+				btnHz: '#back-to',
+
+                emailLoginBtn: '#email-login'
 		    },
 		    self.__city = null,
 		    
