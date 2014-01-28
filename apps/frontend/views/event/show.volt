@@ -168,7 +168,7 @@
                                             {% endif %}
                                         {% endif %}
 
-                                        <a href="/event/show/{{ event.id }}">
+                                        <a href="/event/{{ event.id }}">
                                             <img src="{{ image }}">
                                         </a>
                                     </div>
@@ -185,7 +185,7 @@
                             <div class="span12">
                                 <div class="comment-box">
                                     <h2>Leave comments</h2>
-                                    <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                                    <fb:comments href="http://events.apppicker.com/event/{{ event.id }}"></fb:comments>
                                 </div>
                             </div>
                         </div>
@@ -193,7 +193,7 @@
         </div>
     </div>
 </div>
-    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
+    <fb:ref href="http://events.apppicker.com/event/{{ event.id }}" />
 {% endblock %}
 
 
