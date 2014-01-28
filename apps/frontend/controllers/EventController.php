@@ -189,7 +189,7 @@ class EventController extends \Core\Controllers\CrudController
 
 	
 	/**
-	 * @Route("/event/show/{eventId:[0-9]+}", methods={"GET", "POST"})
+	 * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 	 	 
 	 */
 	public function showAction($eventId)

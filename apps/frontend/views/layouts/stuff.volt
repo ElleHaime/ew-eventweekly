@@ -2,6 +2,8 @@
 
 <div style="display:none;" id="current_location" latitude="{{ location.latitude }}" longitude="{{ location.longitude }}"></div>
 
+<input type="hidden" id="popupRedirect" value="">
+
 {% if flashMsgText is defined %}
 	<div style="display:none;" id="splash_messages" flashMsgText="{{ flashMsgText }}" flashMsgType="{{ flashMsgType }}"></div>
 {% endif %}
@@ -16,6 +18,10 @@
 
 {% if acc_external is defined %}
     <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
+{% endif %}
+
+{% if acc_synced is defined %}
+    <input type="hidden" id="acc_synced" value="1">
 {% endif %}
 
 {% if member.id is defined %}

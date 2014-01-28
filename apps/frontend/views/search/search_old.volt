@@ -58,7 +58,7 @@
                                         </div>
                                     </div>
                                     <div class="event-one-text">
-                                        <a href="/event/show/{{ node['event']['id'] }}"  class="name-link">{{ node['event']['name']|striptags|escape|truncate(160) }}</a>
+                                        <a href="/event/{{ node['event']['id'] }}"  class="name-link">{{ node['event']['name']|striptags|escape|truncate(160) }}</a>
                                         <div class="date-list">
                                             <i class="icon-time"></i>
                                             {% if node['event']['start_time'] is defined %}
@@ -90,7 +90,7 @@
                                         <span class="rating-icon"></span>
                                         <span class="rating-text">34</span>
                                     </div>
-                                    <button class="btn btn-more" onclick="javascript: window.location.href = '/event/show/{{ node['event']['id'] }}';">More</button>
+                                    <button class="btn btn-more" onclick="javascript: window.location.href = '/event/{{ node['event']['id'] }}';">More</button>
                                 </div>
                             </div>
                         </div>

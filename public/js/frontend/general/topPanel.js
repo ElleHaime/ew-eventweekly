@@ -23,7 +23,9 @@ define('frontTopPanel',
 					container: '#userControlBox'
 				},
 
-				btnHz: '#back-to'
+				btnHz: '#back-to',
+
+                emailLoginBtn: '#email-login'
 		    },
 		    self.__city = null,
 		    
@@ -35,6 +37,9 @@ define('frontTopPanel',
 
 		        // initialize clicks
 		        self.__bindClicks();
+
+                // initialize login popup
+                self.__popupLogin();
 		    }
 		    
 		    self.__bindClicks = function()
@@ -135,6 +140,31 @@ define('frontTopPanel',
 		    	}
                 controlList.toggle();
 		    }
+
+            self.__popupLogin = function()
+            {
+                var showPopup = function(){
+                    var width = 600;
+                    var height = 550;
+                    var left = (screen.width/2) - (width/2);
+                    var top = (screen.height/2) - (height/2);
+
+                    var popup = window.open(
+                        "/member/login", "_blank",
+                        "toolbar=yes, scrollbars=yes, resizable=yes, top=" + top + ", left=" + left + ", width=" + width + ", height=" + height
+                    );
+                    popup.onbeforeunload = function(){
+                        popup.close();
+
+                        var ppVal = $('#popupRedirect').val();
+                        if (ppVal == 'reload') {
+                            location.reload();
+                        }
+                    }
+                }
+
+                $('body').on('click', '.fb-login-popup', showPopup);
+            }
 		}; 
 		
 		return new frontTopPanel($, utils, gmapEvents); 

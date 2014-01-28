@@ -45,7 +45,7 @@
                                                 </div>
 
                                                 <div class="event-one-text">
-                                                    <a href="/event/show/{{ node['event']['id'] }}" class="name-link">{{ node['event']['name']|striptags|escape|truncate(160) }}</a>
+                                                    <a href="/event/{{ node['event']['id'] }}" class="name-link">{{ node['event']['name']|striptags|escape|truncate(160) }}</a>
 
                                                     <div class="date-list">
                                                     	<i class="icon-time"></i>

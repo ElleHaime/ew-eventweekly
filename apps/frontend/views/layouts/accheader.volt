@@ -6,7 +6,7 @@
                     {% if member.id is defined %}
                         <a href="/map" class="logo"></a>
                     {% else %}
-                        <a href="/#fb-login" class="logo"></a>
+                        <a href="/" class="logo"></a>
                     {% endif %}
                 </div>
 
@@ -75,7 +75,7 @@
                     {% if hideYouAreNotLoggedInBtn is empty %}
                         <div class=" user-block  no_user clearfix">
                             <div class="user-box">
-                                <a href="/#fb-login">
+                                <a href="#" onclick="return false" class="fb-login-popup">
                                     <i class="log-icon"></i>
                                     <span class="no_log">you are not logged in</span>
                                 </a>

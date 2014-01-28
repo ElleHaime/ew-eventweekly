@@ -67,7 +67,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 return function(event){
                     if ($($this.settings.isLogged).val() === '0' || $($this.settings.externalLogged).length == 0) {
                         noti.createNotification(
-                            'Please <a href="/#fb-login">login via Facebook</a> to be able to invite your friends to event', 'warning'
+                            'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', 'warning'
                         )
                     } else {
                         event.preventDefault();

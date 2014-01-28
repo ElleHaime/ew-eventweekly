@@ -205,6 +205,10 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                 return $res;
             });
+
+        $compiler->addFunction('toSlugUri', function($resolvedArgs, $exprArgs) {
+            return '\Core\Utils\SlugUri::slug('.$resolvedArgs.')';
+        });
     }
 
     public function initCoreTag($di)

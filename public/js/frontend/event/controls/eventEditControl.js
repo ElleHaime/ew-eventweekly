@@ -67,7 +67,8 @@ define('frontEventEditControl',
 
                 memberExtUid: '#member_ext_uid',
                 eventFbStatus: '#event_fb_status',
-
+                accSynced: '#acc_synced',
+                externalLogged: '#external_logged',
                 btnPreview: '#btn-preview'
 			},
 
