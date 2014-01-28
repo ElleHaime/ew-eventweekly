@@ -39,6 +39,7 @@ $cfg_settings = array(
 			'Core\Acl' => ROOT_APP . 'apps/library/Core/Acl/',
 			'Core\Controllers' => ROOT_APP . 'apps/library/Core/Controller/',
 			'Core\Traits' => ROOT_APP . 'apps/library/Core/Traits/',
+			'Core\Utils' => ROOT_APP . 'apps/library/Core/Utils/',
 			'Core\Mail' => ROOT_APP . 'apps/library/Core/Mail/',
 			'Core\Form\Element' => ROOT_APP . 'apps/library/Core/Form/Element/',
 			'Objects' => ROOT_APP . 'apps/objects/',
