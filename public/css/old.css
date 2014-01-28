@@ -651,12 +651,18 @@ select {
     padding:10px 10px 10px 4px;
     border: 1px solid #9CC3F4;
     color:#8aaad2;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
 }
 
 select option {
     padding: 5px;
 }
 
+.checkbox-block select option {
+    width: 270px;
+}
 .input-append input, .input-append input[type="text"]  {
     color:#010101;
     border: 1px solid #9cc3f4;
@@ -786,7 +792,9 @@ div.grippie {
     margin: 10px 0 0px 0;
     border-top:1px solid #cccccc;
     padding-top: 14px;
+    overflow: hidden;
 }
+
 .checkbox-block p {
     padding-top: 10px;
 }
@@ -2834,6 +2842,7 @@ ul.days-events  {
 .event-list-btn  .place-address span {
     height: 22px;
     overflow: hidden;
+    width: 115px;
 }
 
 
@@ -4382,6 +4391,16 @@ a.view-btn  {
     width: auto!important;
 }
 
+.delete-logo {
+    background: url(../img/del.png) no-repeat;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    z-index: 10;
+    right:0;
+    bottom: 3px;
+    cursor: pointer;
+}
 
 .modal, #previewEvent  {
     left: 10%;

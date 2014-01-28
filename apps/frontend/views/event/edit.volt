@@ -238,8 +238,10 @@
                                         <div class="all-img clearfix">
                                             {% if event.logo %}
                                                 <a href=""><img id='img-box' src="/upload/img/event/{{ event.logo }}" alt=""></a>
+												<span class="delete-logo"></span>
                                             {% else %}
                                                 <a href=""><img id='img-box' src="/img/demo/q1.jpg" alt=""></a>
+												<span class="delete-logo"></span>
                                             {% endif %}
 
                                         </div>
