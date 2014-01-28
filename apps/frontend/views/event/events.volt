@@ -49,7 +49,7 @@
                                                 </div>
 
                                                 <div class="event-one-text">
-                                                    <a href="event/show/{{ event['id'] }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
+                                                    <a href="/event/show/{{ event['id'] }}-{{ toSlugUri(event['name']) }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
 
                                                     <div class="date-list">
                                                         {% if event['start_date_nice'] != '0000-00-00' %}
