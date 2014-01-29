@@ -67,7 +67,7 @@ $cfg_settings = array(
         'uploadDir' => ROOT_APP . 'public/upload/',
         'defaultLogo' => '/img/logo200.png',
         'facebook' => [
-            'appId' => 166657830211705,
+            'appId' => '166657830211705',
             'appSecret' => 'e917842e47a57adb93a1e9761af4117a'
         ]
     ),
