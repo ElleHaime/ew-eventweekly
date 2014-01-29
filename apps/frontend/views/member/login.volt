@@ -83,6 +83,6 @@
     </div>
 
 </div>
-
+{% include 'layouts/stuff.volt' %}
 </body>
 </html>
