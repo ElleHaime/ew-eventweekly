@@ -7,11 +7,15 @@ use Core\Utils as _U;
 class Model extends \Phalcon\Mvc\Model
 {
 	public $extraOptions;
+	public $needCache = false;
+	public static $cacheData;
 
 
 	public function onConstruct()
 	{
 		$di = $this -> getDi();
+		self::$cacheData = $di -> get('cacheData');
+		$m = get_class($this);
 	}
 
 	public function getDependencyProperty()
@@ -111,13 +115,17 @@ class Model extends \Phalcon\Mvc\Model
 
 		return $this;
 	}
-	
 
 	public function createOnChange($argument)
 	{
 		return false;
 	}
 	
+
+	public static function setCache()
+	{
+	}
+
 	protected function getConfig()
 	{
 		$config = $this -> getDi() -> get('config');

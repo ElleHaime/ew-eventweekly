@@ -120,5 +120,164 @@ class Extractor
     }
   }
 
+  public function getQueriesScope()
+  {
+    $queries = array(
+      array(
+        'order' => 1,
+        'name' => 'user_event',
+        'query' => 'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
+                    FROM event
+                    WHERE eid IN (SELECT eid FROM event_member WHERE uid=$userUid)
+                    AND creator = $userUid
+                      AND start_time >= now()
+                      AND 
+                      ((venue.longitude < "$longMax" 
+                      AND venue.longitude > "$longMin" 
+                      AND venue.latitude < "$latMax" 
+                      AND venue.latitude > "$latMin")
+                OR
+                (strpos(venue.name, "$city") >= 0))
+                    ORDER BY eid',
+        'type' => 'final',
+        'start' => false,
+        'limit' => false,
+        'patterns' => array('/\$latMin/',
+                            '/\$latMax/',
+                            '/\$longMin/',
+                            '/\$longMax/',
+                            '/\$city/',
+                            '/\$userUid/')
+      ),
+      array(
+        'order' => 2,
+        'name' => 'friend_uid',
+        'query' => 'SELECT uid2 
+              FROM friend 
+              WHERE uid1 = $userUid',
+        'type' => 'prepare',
+        'start' => false,
+        'limit' => false,
+        'patterns' => array('/\$userUid/')
+      ),
+      array(
+        'order' => 3,
+        'name' => 'friend_event',
+        'query' => 'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
+                    FROM event
+                  WHERE creator IN ($friendsUid)
+                      AND start_time >= now()
+                      AND 
+                      ((venue.longitude < "$longMax" 
+                      AND venue.longitude > "$longMin" 
+                      AND venue.latitude < "$latMax" 
+                      AND venue.latitude > "$latMin")
+                      OR
+                (strpos(venue.name, "$city") >= 0))
+                    ORDER BY eid
+                    LIMIT $start, $lim',
+        'type' => 'final',
+        'start' => 0,
+        'limit' => 200,
+        'patterns' => array('/\$start/', 
+                            '/\$lim/', 
+                            '/\$latMin/',
+                            '/\$latMax/',
+                            '/\$longMin/',
+                            '/\$longMax/',
+                            '/\$city/',
+                            '/\$userUid/', 
+                            '/\$friendsUid/') 
+      ), 
+      array(
+        'order' => 4,
+        'name' => 'friend_going_eid',
+        'query' => 'SELECT eid
+              FROM event_member 
+              WHERE uid IN($friendsUid)
+                AND rsvp_status = "attending"',
+        'type' => 'prepare',
+        'start' => false,
+        'limit' => false,
+        'patterns' => array('/\$friendsUid/')
+      ),
+      array(
+        'order' => 5,
+        'name' => 'friend_going_event',
+        'query' => 'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
+                    FROM event
+                    WHERE eid IN ($eventsUid)
+                    AND creator != $userUid
+                    AND NOT (creator IN ($friendsUid))
+                      AND start_time >= now()
+                      AND 
+                      ((venue.longitude < "$longMax" 
+                      AND venue.longitude > "$longMin" 
+                      AND venue.latitude < "$latMax" 
+                      AND venue.latitude > "$latMin")
+                OR
+                (strpos(venue.name, "$city") >= 0))
+                    ORDER BY eid                  
+                    LIMIT $start, $lim',
+        'type' => 'final',
+        'start' => 0,
+        'limit' => 200,
+        'patterns' => array('/\$start/', 
+                            '/\$lim/', 
+                            '/\$latMin/',
+                            '/\$latMax/',
+                            '/\$longMin/',
+                            '/\$longMax/',
+                            '/\$city/',
+                            '/\$userUid/', 
+                            '/\$eventsUid/',
+                            '/\$friendsUid/')
+      ),
+      array(
+        'order' => 6,
+        'name' => 'page_uid',
+        'query' => 'SELECT page_id 
+              FROM page_fan
+              WHERE uid = $userUid',
+        'type' => 'prepare',
+        'start' => false,
+        'limit' => false,
+        'patterns' => array('/\$userUid/')
+      ),
+      array(
+        'order' => 7,
+        'name' => 'page_event',
+        'query' => 'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
+                    FROM event
+                    WHERE eid IN ($pageUid)
+                    AND creator != $userUid
+                      AND start_time >= now()
+                      AND 
+                      ((venue.longitude < "$longMax" 
+                      AND venue.longitude > "$longMin" 
+                      AND venue.latitude < "$latMax" 
+                      AND venue.latitude > "$latMin")
+                OR 
+                (strpos(venue.name, "$city") >= 0))
+                    ORDER BY eid                  
+                    LIMIT $start, $lim',
+        'type' => 'final',
+        'start' => 0,
+        'limit' => 200,
+        'patterns' => array('/\$start/', 
+                            '/\$lim/', 
+                            '/\$latMin/',
+                            '/\$latMax/',
+                            '/\$longMin/',
+                            '/\$longMax/',
+                            '/\$city/',
+                            '/\$userUid/', 
+                            '/\$pageUid/')
+      )
+    );
+
+    return $queries;
+  }
+
 }
 

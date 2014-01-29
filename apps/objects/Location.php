@@ -29,8 +29,25 @@ class Location extends Model
 		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaign'));
 		$this -> hasMany('id', '\Objects\Venue', 'location_id', array('alias' => 'venue'));
 	}
-	
-	
+
+	public static function setCache()
+	{
+		$locations = self::find();
+		$locationsCache = array();
+
+		if ($locations) {
+			foreach ($locations as $loc) {
+				$locationsCache[$loc -> id] = array('latMin' => $loc -> latitudeMin,
+								                      'lonMin' => $loc -> longitudeMin,
+								                      'latMax' => $loc -> latitudeMax,
+								                      'lonMax' => $loc -> longitudeMax,
+								                      'city' => $loc -> city,
+								                      'country' => $loc -> country);
+			}
+		}
+		self::$cacheData -> save('locations', $locationsCache);
+	}
+
 	public function createOnChange($argument = array(), $network = 'facebook')
 	{
 		$geo = $this -> getGeo();

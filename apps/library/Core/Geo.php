@@ -41,7 +41,7 @@ class Geo extends Plugin
 	public function setUserIp()
 	{
 		if ($this -> _config -> application -> debug) {
-			$this -> _userIp = '31.172.138.197';
+			$this -> _userIp = '134.249.172.183'; //31.172.138.197';
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}

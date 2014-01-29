@@ -66,7 +66,8 @@ define('googleMarker',
                 var eventIds = _.pluck(Map.events, 'ew_id');
                 var fbEventIds = _.pluck(Map.events, 'fb_id');
                 if (!_.contains(eventIds, Event.id) || (_.isUndefined(Event.id) && !_.contains(fbEventIds, Event.fb_uid))) {
-                    var newLatLng = new google.maps.LatLng(Event.venue.latitude, Event.venue.longitude);
+                    //var newLatLng = new google.maps.LatLng(Event.venue.latitude, Event.venue.longitude);
+                    var newLatLng = new google.maps.LatLng(Event.latitude, Event.longitude);
 
                     var Icon = {
                         icon: settings.icons[Event.category[0].key].icon,

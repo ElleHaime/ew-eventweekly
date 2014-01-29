@@ -231,6 +231,15 @@ die();*/
 
 	protected function _initCache(\Phalcon\DI $di)
 	{
+		$frontCache = new Phalcon\Cache\Frontend\Data(array('lifetime' => $this -> _config -> application -> cache -> lifetime));
+		$cache = new Phalcon\Cache\Backend\Memcache($frontCache, array(
+			'host' => $this -> _config -> application -> cache -> host,
+			'port' => $this -> _config -> application -> cache -> port,
+			'persistent' => $this -> _config -> application -> cache -> persistent
+		 ));
+
+		$di -> set('cacheData', $cache);
+
 		/*if (!$this -> _config -> application -> debug) {
 
             // Get the parameters
@@ -255,13 +264,6 @@ die();*/
 			// Cache:Models
 			$cacheModels = new $cacheAdapter($frontDataCache, $backEndOptions);
 			$di -> set('modelsCache', $cacheModels, true);
-
-		} else { */
-			$cache = new \Core\Cache\Mock(null);
-			$di -> set('cacheData', $cache);
-			$di -> set('cacheOutput', $cache);
-			$di -> set('modelsCache', $cache);
-			$di -> set('viewCache', $cache);
-		//}
+		} */
 	}
 }

@@ -10,6 +10,7 @@ namespace Frontend\Events;
 use Frontend\Models\Event,
     Frontend\Models\EventLike,
     Frontend\Models\EventMember,
+    Frontend\Models\EventMemberFriend,
     Frontend\Models\Location,
     Thirdparty\Facebook\Extractor;
 
@@ -75,6 +76,9 @@ class MemberListener {
 
             $model = new EventMember();
             $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
+
+            $model = new EventMemberFriend();
+            $this->subject->session->set('userFriendsEventsGoing', $model->getEventMemberFriendEventsCount($userId));
         }
     }
 
