@@ -30,20 +30,25 @@
 
                                 <div class="padd_30"> </div>
                                 <div class="event-discription">
-                                    {#<div class="event-photo">#}
-                                        {#<img src="../img/Tulips.jpg" alt="">#}
-                                    {#</div>#}
+                                    <!-- big photo 
+                                        <div class="event-photo">
+                                            <img src="../img/Tulips.jpg" alt="">
+                                        </div>
+                                    -->
+
                                     <div class="add-img">
                                         <div id="current_event_id" class="event-one-img" event="100038">
                                             <a href="/event/100038">
                                                 <img src="/upload/img/event/fb_1439101322986652.jpg">
                                             </a>
                                         </div>
-                                        <!--<div class="all-img clearfix">
-                                            <img src="/img/bgs/small-pic.jpg" alt="">
-                                            <img src="/img/bgs/small-pic2.jpg" alt="">
-                                            <a href="#" class="btn-all-img">54<span class="icon-all-img"></span></a>
-                                        </div> -->
+                                       <!--  galery
+                                           <div class="all-img clearfix">
+                                                <img src="/img/bgs/small-pic.jpg" alt="">
+                                                <img src="/img/bgs/small-pic2.jpg" alt="">
+                                                <a href="#" class="btn-all-img">54<span class="icon-all-img"></span></a>
+                                            </div>
+                                        -->
                                     </div>
                                     <div  style="padding-right: 20px">
                                         <h4 class="name-link">{{ event.name }}</h4>
