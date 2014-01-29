@@ -31,8 +31,11 @@ $cfg_settings = array(
 		'cache' => array(
 			'lifetime' => '86400',
 			'prefix' => 'pe_',
-			'adapter' => 'Memcached',
+			'adapter' => 'Memcache',
 			'cacheDir' => ROOT_APP . 'var/cache/data/',
+			'host' => 'localhost',
+			'port' => 11211,
+			'persistent' => false
 		),
 		'namespaces' => array(
 			'Core' => ROOT_APP . 'apps/library/Core/',

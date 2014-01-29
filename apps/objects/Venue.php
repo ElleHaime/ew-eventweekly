@@ -16,10 +16,31 @@ class Venue extends Model
 	public $latitude;  	// decimal (10, 8)
 	public $longitude;	// decimal (11, 8)
 
+	public $needCache = true;
+
 	public function initialize()
 	{
 		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
 		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
+	}
+	
+	public static function setCache()
+	{
+		$venues = self::find();
+		
+		if ($venues) {
+			foreach($venues as $venue) {
+				if (!self::$cacheData -> exists('venue_' . $venue -> fb_uid)) {
+            		self::$cacheData -> save('venue_' . $venue -> fb_uid, 
+            						array('venue_id' => $venue -> id,
+                                          'address' => $venue -> address,
+                                          'location_id' => $venue -> location_id,
+                                          'latitude' => $venue -> latitude,
+                                          'longitude' => $venue -> longitude));
+        		}
+			}
+			self::$cacheData -> save('fb_venues', 'cached');
+		}
 	}
 	
 	public function createOnChange($argument = array())

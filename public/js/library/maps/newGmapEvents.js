@@ -7,14 +7,16 @@ define('newGmapEvents',
 
         function newGmapEvents(Map, Mc, options) {
 
-            var debug = false;
+            var debug = true;
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 0, // TODO: set some interval
+                requestInterval: 1000, // TODO: set some interval
                 eventsUrl: '/event/test-get',
                 eventsCounter: '#events_count',
-                searchCityBtn: '.locationCity'
+                searchCityBtn: '.locationCity',
+                userEventsCreated: '#userEventsCreated',
+                userFriendsGoing: '#userFriendsGoing'
             };
 
             var interval = null;
@@ -84,11 +86,14 @@ define('newGmapEvents',
                         redirectToMap(data);
                     }
 
-                    $.each(data.events, function(index,event) {
+                    $.each(data.events, function(index, event) {
+                       
                         var InfoWindow = new googleInfoWindow(event);
 
-                        __lastLat = event.venue.latitude;
-                        __lastLng = event.venue.longitude;
+                        if (event.latitude != null && event.longitude != null) {
+                            __lastLat = event.latitude;
+                            __lastLng = event.longitude;
+                        }
 
                         var marker = new googleMarker({
                             Map: Map,
@@ -127,10 +132,18 @@ define('newGmapEvents',
                     // redraw clusterer
                     Mc.redraw();
 
-                }else {
+                } else {
                     Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
-                    $(self.settings.eventsCounter).html(0);
+                    $(settings.eventsCounter).html(0);
                     noti.createNotification('No event in this area!', 'warning');
+                }
+
+                if (data.eventsCreated) {
+                    $(settings.userEventsCreated).text(data.eventsCreated);
+                }
+
+                if (data.eventsFriendsGoing) {
+                    $(settings.userFriendsGoing).text(data.eventsFriendsGoing);
                 }
 
                 if (data.stop == true) {
@@ -185,7 +198,8 @@ define('newGmapEvents',
                 makeRequest();
 
                 if (settings.requestInterval > 0) {
-                    interval = setInterval(function(){
+                   interval = setInterval(function(){
+                        console.log('new request');
                         makeRequest();
                     }, settings.requestInterval);
                 }

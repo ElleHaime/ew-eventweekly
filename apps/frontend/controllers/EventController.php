@@ -13,7 +13,10 @@ use Core\Utils as _U,
     Objects\EventImage,
     Objects\EventSite,
     Objects\EventMember,
-    Frontend\Models\EventLike;
+    Frontend\Models\EventMemberFriend,
+    Frontend\Models\EventLike,
+    Objects\EventTag AS EventTagObject,
+    Objects\Tag AS TagObject;
 
 
 /**
@@ -23,6 +26,13 @@ class EventController extends \Core\Controllers\CrudController
 {
 
     use \Core\Traits\TCMember;
+
+    public $lastFetchedEvent 	= 0;
+    public $isGrabbed	 		= false;
+
+    protected $friendsUid 		= array();
+    protected $friendsGoingUid	= array();
+    protected $pagesUid 		= array();
 
 	/**
 	 * @Route("/map", methods={"GET", "POST"})
@@ -49,12 +59,12 @@ class EventController extends \Core\Controllers\CrudController
 			$res['status'] = 'OK';
 			$res['message'] = $events;
 			echo json_encode($res);
-			die();
+			//die();
 		} else {
 			$res['status'] = 'ERROR';
 			$res['message'] = 'no events';
 			echo json_encode($res);
-			die();
+			//die();
 		}
 	}
 
@@ -309,6 +319,27 @@ class EventController extends \Core\Controllers\CrudController
 		//die;
 	}
 
+
+	/**
+	 * @Route("/event/friends", methods={"GET", "POST"})
+	 * @Acl(roles={'member'});
+	 */
+	public function listFriendAction()
+	{
+        $event = new Event();
+
+		$this -> view -> setvar('listName', 'Friends events');
+
+        $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this -> session -> get('memberId'));
+        $event->addCondition('Frontend\Models\Event.start_date > now()');
+        $events = $event->fetchEvents();
+
+        $this->view->setvar('list', $events);
+        $this->view->setVar('listTitle', 'Friends events');
+        $this->view->pick('event/eventList');
+	}
+
+
 	/**
 	 * @Route("/event/liked", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});
@@ -329,10 +360,6 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
-
-		$this -> view -> setvar('list_type', 'like');
-        //$this -> view -> setvar('events', $events);
-        //$this -> view -> pick('event/userlist');
 
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Liked');
@@ -605,7 +632,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($vn) {
 		    $newEvent['venue_id'] = $vn -> id;
         }
-//_U::dump($newEvent);
+
 		// process address
 		$newEvent['address'] = $event['address'];
 
@@ -743,28 +770,279 @@ class EventController extends \Core\Controllers\CrudController
     public function testGetAction($lat = null, $lng = null, $city = null)
     {
         $Event = new Event();
+        $EventFriend = new EventMemberFriend();
 
-        //$events = $this->searchAction($lat, $lng, $city);
-        $loc = $this->session->get('location');
+        if(!empty($lat) && !empty($lng)) {
+            $newLocation = new Location();
+            $newLocation = $newLocation -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+			
+			if(!empty($city)) {
+	            $newLocation -> city = $city;
+	            $newLocation -> alias = $city;
+			}
 
-        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$loc->latitudeMin.' AND '.$loc->latitudeMax.' AND Frontend\Models\Event.longitude BETWEEN '.$loc->longitudeMin.' AND '.$loc->longitudeMax);
+            $this -> session -> set('location', $newLocation);
 
-        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, ['limit' => 10, 'page' => 1]);
-        $events = $events->items;
+            // check cache and reset if needed
+            $locationsScope = $this -> cacheData -> get('locations');
+            if (!isset($locationsScope[$newLocation -> id])) {
+            	$locationsScope[$newLocation -> id] = array(
+                                    'latMin' => $newLocation -> latitudeMin,
+                                    'lonMin' => $newLocation -> longitudeMin,
+                                    'latMax' => $newLocation -> latitudeMax,
+                                    'lonMax' => $newLocation -> longitudeMax,
+                                    'city' => $newLocation -> city,
+                                    'country' => $newLocation -> country);
+	            $this -> cacheData -> delete($locations);
+	            $this -> cacheData -> save('locations', $locationsScope);
+            }
+        }
+		$loc = $this -> session -> get('location');
 
+        $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
+        						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax);
+		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> lastFetchedEvent);        
+        $events = $Event -> fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
 
-        $eventsAll = $Event->fetchEvents(Event::FETCH_ARRAY);
+		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
+			$res['eventsCreated'] = $Event -> getCreatedEventsCount($this -> session -> get('memberId'));
+			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'));
+
+			$this -> session -> set('userEventsCreated', $res['eventsCreated']);
+	        $this -> session -> set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
+
+			$this -> view -> setVar('userEventsCreated', $res['eventsCreated']);
+	        $this -> view -> setVar('userFriendsGoing', $res['eventsFriendsGoing']);
+		} else {
+			$this -> isGrabbed = true;
+		}
 
         if (count($events) > 0) {
-            $events = array_merge($eventsAll, $events);
+            $this -> lastFetchedEvent = $events[count($events)-1]['id'];
             $res['status'] = true;
-            $res['stop'] = true;
             $res['events'] = $events;
-            $this->sendAjax($res);
         } else {
             $res['status'] = 'ERROR';
             $res['message'] = 'no events';
-            $this->sendAjax($res);
         }
+        $res['stop'] = $this -> isGrabbed;
+        $this -> sendAjax($res);
+
+		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		if ($this -> isGrabbed === true) {
+			fwrite($f, "isGrabbed is true\r\n");
+		} elseif($this -> isGrabbed === false) {
+			fwrite($f, "isGrabbed is false\r\n");
+		} else {
+			fwrite($f, "isGrabbed is oooops\r\n");
+		}
+		fclose($f);
+
+       	if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')
+    		&& $this -> isGrabbed === false) 
+        {
+        	$this -> grabNewEvents();	
+        } 
+    }
+
+
+    public function grabNewEvents()
+    {
+    	$loc = $this -> session -> get('location');
+    	$fb = new Extractor();
+    	$queries = $fb -> getQueriesScope();
+    	$e = new Event();
+    	$loc = $this -> session -> get('location');
+
+		foreach ($queries as $key => $query) {
+
+			if ($query['name'] == 'user_event') {
+				$replacements = array($loc -> latitudeMin, 
+									  $loc -> latitudeMax, 
+									  $loc -> longitudeMin, 
+									  $loc -> longitudeMax, 
+									  $loc -> city, 
+									  $this -> session -> get('user_fb_uid'));
+				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+
+				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
+													array('id' => $loc -> id,
+														  'latitudeMin' => $loc -> latitudeMin,
+														  'latitudeMax' => $loc -> latitudeMax,
+														  'longitudeMin' => $loc -> longitudeMin,
+														  'longitudeMax' => $loc -> longitudeMax));
+				} 
+				continue;
+			}
+
+			if ($query['name'] == 'friend_uid') {
+				$replacements = array($this -> session -> get('user_fb_uid'));
+				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+
+				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+						$this -> friendsUid[] = $v['uid2'];
+					}
+				}
+				//_U::dump($this -> friendsUid, true);
+				continue;
+			} 
+
+			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
+				$start = $query['start'];
+				$limit = $query['limit'];
+				$fUids = implode(',', $this -> friendsUid);
+
+				do {
+					$replacements = array($start, 
+										  $limit, 
+										  $loc -> latitudeMin, 
+										  $loc -> latitudeMax, 
+										  $loc -> longitudeMin, 
+										  $loc -> longitudeMax, 
+										  $loc -> city, 
+										  $this -> session -> get('user_fb_uid'), 
+										  $fUids);
+					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+					
+					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
+														array('id' => $loc -> id,
+															  'latitudeMin' => $loc -> latitudeMin,
+															  'latitudeMax' => $loc -> latitudeMax,
+															  'longitudeMin' => $loc -> longitudeMin,
+															  'longitudeMax' => $loc -> longitudeMax));
+						if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+							$start = false;
+						} else {
+							$start = $start + $limit;
+						}
+					}
+				} while($start !== false);
+				continue;
+			} 
+
+			if ($query['name'] == 'friend_going_eid' && !empty($this -> friendsUid)) {
+				$replacements = array(implode(',', $this -> friendsUid));
+				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+
+				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+						$this -> friendsGoingUid[] = $v['eid'];
+					}
+				}
+				//_U::dump($this -> friendsGoingUid, true);
+				continue;
+			}
+
+			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
+				$start = $query['start'];
+				$limit = $query['limit'];
+				$eids = implode(',', $this -> friendsGoingUid);
+				$friends = implode(',', $this -> friendsUid);
+
+				do {
+					$replacements = array($start, 
+										  $limit, 
+										  $loc -> latitudeMin, 
+										  $loc -> latitudeMax, 
+										  $loc -> longitudeMin, 
+										  $loc -> longitudeMax, 
+										  $loc -> city, 
+										  $this -> session -> get('user_fb_uid'), 
+										  $eids, 
+										  $friends);
+					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+					
+					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
+														array('id' => $loc -> id,
+															  'latitudeMin' => $loc -> latitudeMin,
+															  'latitudeMax' => $loc -> latitudeMax,
+															  'longitudeMin' => $loc -> longitudeMin,
+															  'longitudeMax' => $loc -> longitudeMax));
+						if (!empty($events)) {
+							foreach ($events as $i => $ev) {
+								$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
+														 'event_id' => $ev);
+								$emf = new EventMemberFriend();
+								$emf -> assign($friendsEvents);
+								$emf -> save();								
+							}
+						}
+						if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+							$start = false;
+						} else {
+							$start = $start + $limit;
+						}
+					}
+				} while($start !== false);
+
+				continue;
+			} 
+	
+			/*if ($query['name'] == 'page_uid') {
+				$replacements = array($this -> session -> get('user_fb_uid'));
+				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+	
+				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+						$this -> pagesUid[] = $v['page_id'];
+					}
+				}
+				continue;
+			}
+
+			if ($query['name'] == 'page_event' && !empty($this -> pagesUid)) {
+				$start = $query['start'];
+				$limit = $query['limit'];
+				$pids = implode(',', $this -> pagesUid);
+
+				do {
+					$replacements = array($start, 
+										  $limit, 
+										  $loc -> latitudeMin, 
+										  $loc -> latitudeMax, 
+										  $loc -> longitudeMin, 
+										  $loc -> longitudeMax, 
+										  $loc -> city, 
+										  $this -> session -> get('user_fb_uid'),  
+										  $pids);
+					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+
+					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
+														array('id' => $loc -> id,
+															  'latitudeMin' => $loc -> latitudeMin,
+															  'latitudeMax' => $loc -> latitudeMax,
+															  'longitudeMin' => $loc -> longitudeMin,
+															  'longitudeMax' => $loc -> longitudeMax));
+						if (count($result['MESSAGE'][0]['fql_result_set']) < $limit) {
+							$start = false;
+						} else {
+							$start = $start + $limit;
+						}
+					}
+				} while($start !== false);
+
+				continue;
+			}*/
+		}
+
+		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		fwrite($f, "end of foreach\r\n");
+		fclose($f);
+
+		$this -> isGrabbed = true;
+		exit;
     }
 }		
+

@@ -10,8 +10,8 @@ define('googleInfoWindow',
 
                 if (!_.isUndefined(event.image[0])) {
                     img = event.image[0].image;
-                }else {}
-
+                }
+                
                 return '<div class="info-win '+event.category[0].key+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
                     '<img  class="events-img" src="'+img+'" alt="">' +
@@ -49,6 +49,7 @@ define('googleInfoWindow',
 
             // initialize popup window
             return InfoWindow;
+
         }
 
         return InfoWindow;
