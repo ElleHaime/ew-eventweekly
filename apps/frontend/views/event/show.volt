@@ -162,7 +162,7 @@
                                 <div class="add-img">
                                     <div class="event-one-img" id="current_event_id" event="{{ event.id }}">
                                         {% if event.logo is defined %}
-                                            {% set image = '/upload/img/event/' ~ event.logo %}
+                                            {% set image = '/upload/img/event/'~event.id~'/'~ event.logo %}
                                             {% if event.logo is empty %}
                                                 {% set image = '/img/logo200.png' %}
                                             {% endif %}

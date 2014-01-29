@@ -52,10 +52,18 @@ define('frontEventEditControl',
 
 				removeSign: '.icon-remove',
 
-				boxImg: '#img-box',
-				btnImg: '#add-img-btn',
-				btnImgUpload: '#add-img-upload',
+                linkAddImg: '.add-img a',
+				boxImg: '.img-box',
+                btnImg: '.add-img-btn',
+
+                btnImgLogoUpload: '#add-img-logo-upload',
 				inpLogo: '#logo',
+
+                btnImgPosterUpload: '#add-img-poster-upload',
+                inpPoster: '#poster',
+
+                btnImgFlyerUpload: '#add-img-flyer-upload',
+                inpFlyer: '#flyer',
 
 				inpCampaign: '#campaign_id',
 				inpCampaignExists: '#is_campaign',
@@ -69,7 +77,8 @@ define('frontEventEditControl',
                 eventFbStatus: '#event_fb_status',
                 accSynced: '#acc_synced',
                 externalLogged: '#external_logged',
-                btnPreview: '#btn-preview'
+                btnPreview: '#btn-preview',
+                deleteImage: '.delete-logo'
 			},
 
 
@@ -107,12 +116,24 @@ define('frontEventEditControl',
 			self.bindEvents = function()
 			{
 				$(self.settings.btnImg).click(function() {
-					self.__imitateUpload();
+					self.__imitateUpload($(this).parent().find('input[type="file"]'));
 				});
 
-				$(self.settings.btnImgUpload).on('change', function(e) {
-					self.__loadImage(e);
-				});
+				/*$(self.settings.btnImgLogoUpload).on('change', function(e) {
+					self.__loadImage(e, self.settings.inpLogo);
+				});*/
+
+                $('body').on('change', self.settings.btnImgLogoUpload, function(e){
+                    self.__loadImage(e, self.settings.inpLogo);
+                });
+
+                $(self.settings.btnImgPosterUpload).on('change', function(e) {
+                    self.__loadImage(e, self.settings.inpPoster);
+                });
+
+                $(self.settings.btnImgFlyerUpload).on('change', function(e) {
+                    self.__loadImage(e, self.settings.inpFlyer);
+                });
 
 				// process date end time
 				$(self.settings.inpDateStart).on('changeDate', function(e) {
@@ -193,12 +214,29 @@ define('frontEventEditControl',
                     $(self.settings.btnSubmit).text('Saving...');
                 });
 
-                console.log('here');
-
                 $(self.settings.form).on('click', self.settings.btnPreview, function(e) {
                     e.preventDefault();
                     self.__eventPreview();
-                })
+                });
+
+                $(self.settings.linkAddImg).click(function(){
+                    return false;
+                });
+
+                $(self.settings.deleteImage).click(function(){
+                    var $image = $(this).prev().find('img');
+
+                    if ($image.hasClass('img-logo')) {
+                        $.post('/event/delete-logo', { id: $image.attr('data-id') }, function(data){});
+                        $image.removeClass('img-logo');
+                    } else if ($image.attr('data-id') != undefined) {
+                        $.post('/event/delete-image', { id: $image.attr('data-id') }, function(data){});
+                    }
+
+                    $image.removeAttr('data-id');
+                    $image.attr('src', '/img/demo/q1.jpg');
+                    $image.parents().eq(2).find('input[type="hidden"]').val('');
+                });
 			}
 
             self.__eventPreview = function() {
@@ -247,29 +285,50 @@ define('frontEventEditControl',
                 }
             }
 
-			self.__loadImage = function(content)
+			self.__loadImage = function(content, inpImage)
 			{
 				var reader = new FileReader();
 				var file = content.target.files[0];
 
 				reader.onload = (function(f) {
-					$(self.settings.inpLogo).attr('value', f.name);
+					$(inpImage).attr('value', f.name);
 					return function(e) {
                         var img = new Image();
                         img.src = e.target.result;
-                        //alert(img.width);
 
                         if (img.width < 180 || img.height < 60) {
-                            noti.createNotification('Image size should be min 180x60 for posting on facebook!', 'warning');
+                            noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
                         }
 
-                        $(self.settings.boxImg).attr('src', img.src);
+                        $(inpImage).parent().find(self.settings.boxImg).attr('src', img.src);
 					}
 				})(file);
 
 				reader.readAsDataURL(file);
 			}
 
+            /*self.__loadImage = function(content)
+            {
+                var reader = new FileReader();
+                var file = content.target.files[0];
+
+                reader.onload = (function(f) {
+                    $(self.settings.inpLogo).attr('value', f.name);
+                    return function(e) {
+                        var img = new Image();
+                        img.src = e.target.result;
+                        //alert(img.width);
+
+                        if (img.width < 180 || img.height < 60) {
+                            noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
+                        }
+
+                        $(self.settings.boxImg).attr('src', img.src);
+                    }
+                })(file);
+
+                reader.readAsDataURL(file);
+            }*/
 
 			self.__makePreview = function(img, size)
 			{
@@ -291,9 +350,9 @@ define('frontEventEditControl',
 			}
 
 
-			self.__imitateUpload = function()
+			self.__imitateUpload = function(fileElement)
 			{
-				$(self.settings.btnImgUpload).click();
+                fileElement.click();
 			}
 
 

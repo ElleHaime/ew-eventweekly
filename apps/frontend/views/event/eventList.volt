@@ -51,7 +51,7 @@
                                                         {% if event.logo is empty %}
                                                             {% set pic = defaultEventLogo %}
                                                         {% else %}
-                                                            {% set pic = '/upload/img/event/'~event.logo %}
+                                                            {% set pic = '/upload/img/event/'~event.id~'/'~event.logo %}
                                                         {% endif %}
                                                         <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}

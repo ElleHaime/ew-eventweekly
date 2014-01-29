@@ -20,9 +20,21 @@ class EventForm extends Form
 	{
 		$this -> addElement('hidden', 'id');		
 
-		$this -> addElement('hidden', 'logo', 'Add image');
-		$this -> addElement('file', 'add-img-upload', 'upload',
-								array('style' => 'display:none;'));	
+		$this -> addElement('hidden', 'logo', 'Add logo');
+		$this -> addElement('file', 'add-img-logo-upload', 'upload',
+								array('style' => 'display:none;'));
+
+        $this -> addElement('hidden', 'poster', 'Add poster');
+        $this -> addElement('file', 'add-img-poster-upload', 'upload',
+            array('style' => 'display:none;'));
+
+        $this -> addElement('hidden', 'flyer', 'Add flyer');
+        $this -> addElement('file', 'add-img-flyer-upload', 'upload',
+            array('style' => 'display:none;'));
+
+        $this -> addElement('hidden', 'gallery-img', 'Add image to gallery');
+        $this -> addElement('file', 'add-img-gallery-upload', 'upload',
+            array('style' => 'display:none;'));
 
 		$nameValidators = array(
 				'PresenceOf' => array('message' => 'Name is required')
