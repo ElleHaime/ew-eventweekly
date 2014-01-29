@@ -168,7 +168,7 @@
                                             {% endif %}
                                         {% endif %}
 
-                                        <a href="/event/show/{{ event.id }}">
+                                        <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">
                                             <img src="{{ image }}">
                                         </a>
                                     </div>
@@ -189,7 +189,7 @@
                                         <img src="/img/comment_tmp.png" alt=""/>
                                         <div style="height: 20px"></div>
                                     {% else %}
-                                        <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                                        <fb:comments href="http://events.apppicker.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
                                     {% endif %}
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
         </div>
     </div>
 </div>
-    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
+    <fb:ref href="http://events.apppicker.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
 {% endblock %}
 
 

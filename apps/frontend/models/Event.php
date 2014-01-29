@@ -20,7 +20,7 @@ use Objects\Event as EventObject,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
     Phalcon\Mvc\Model\Resultset;
-
+use Core\Utils\SlugUri as SUri;
 
 class Event extends EventObject
 {
@@ -113,6 +113,8 @@ class Event extends EventObject
         } else {
             $this -> end_time = $this -> end_date_nice = '';
         }
+
+        $this->slugUri = $this->id.'-'.SUri::slug($this->name);
 	}
 
 	public function grabEventsByFbId($token, $eventId)

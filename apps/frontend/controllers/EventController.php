@@ -14,6 +14,7 @@ use Core\Utils as _U,
     Objects\EventSite,
     Objects\EventMember,
     Frontend\Models\EventLike;
+use Core\Utils\SlugUri as SUri;
 
 
 /**
@@ -171,6 +172,7 @@ class EventController extends \Core\Controllers\CrudController
 						'start_date_nice' => $ev -> event -> start_date_nice,
 						'end_time' => $ev -> event -> end_time,
 						'end_date_nice' => $ev -> event -> end_date_nice,
+                        'slugUri' => $ev->event->slugUri
 					);
 
                     if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {
@@ -228,7 +230,7 @@ class EventController extends \Core\Controllers\CrudController
         $this -> view -> setVar('link_back_to_list', true);
 
         return array(
-            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$event->id,
+            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name),
             'eventMetaData' => $event
         );
 	}
@@ -877,8 +879,8 @@ class EventController extends \Core\Controllers\CrudController
         $Event->category = Category::find('id = '.(int)$post['category']);
         $Event->memberpart = null;
 
-        $this->view->setVar('currentWindowLocation', 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$Event->id);
-        $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$Event->id);
+        $this->view->setVar('currentWindowLocation', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
+        $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
 
