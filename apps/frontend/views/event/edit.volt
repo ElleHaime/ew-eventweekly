@@ -333,16 +333,20 @@
     {#<a href="#previewEvent" role="button" class="btn" data-toggle="modal">Launch demo modal</a>#}
 
     <!-- Modal -->
-    <div id="previewEvent" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 id="myModalLabel">Event Preview</h3>
-        </div>
 
+        <div class="modal fade" id="previewEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 id="myModalLabel">Event Preview</h3>
+                    </div>
+                    <div class="modal-body">
+                        <iframe name="eventPreview_iframe" src="http://events.apppicker.com" style="width: 100%; height: 100%;"></iframe>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
 
-        <div class="modal-body">
-            <iframe name="eventPreview_iframe" src="http://events.apppicker.com" style="width: 100%; height: 100%;"></iframe>
-        </div>
-    </div>
 
 {% endblock %}

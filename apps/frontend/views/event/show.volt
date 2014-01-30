@@ -64,23 +64,48 @@
                                                         {% else %}
                                                             <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="" /></a>
                                                         {% endif %}
-                                                        <div id="poster-img" class="modal" role="dialog" aria-hidden="true">
 
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 
-                                                            <div class="modal-body">
-                                                                {% if eventPreview is defined %}
-                                                                    {% if eventPreviewPoster is defined %}
-                                                                        <img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">
-                                                                    {% else %}
-                                                                        <img src="/upload/img/event/tmp/{{ poster }}" alt="">
-                                                                    {% endif %}
-                                                                {% else %}
-                                                                    <img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">
-                                                                {% endif %}
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="poster-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                    <div class="modal-body">
+                                                                        {% if eventPreview is defined %}
+                                                                            {% if eventPreviewPoster is defined %}
+                                                                                <img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">
+                                                                            {% else %}
+                                                                                <img src="/upload/img/event/tmp/{{ poster }}" alt="">
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            <img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">
+                                                                        {% endif %}
 
-                                                            </div>
-                                                        </div>
+                                                                    </div>
+
+                                                                </div><!-- /.modal-content -->
+                                                            </div><!-- /.modal-dialog -->
+                                                        </div><!-- /.modal -->
+
+
+                                                        {#<div id="poster-img" class="modal" role="dialog" aria-hidden="true">#}
+
+                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+
+                                                            {#<div class="modal-body">#}
+                                                                {#{% if eventPreview is defined %}#}
+                                                                    {#{% if eventPreviewPoster is defined %}#}
+                                                                        {#<img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">#}
+                                                                    {#{% else %}#}
+                                                                        {#<img src="/upload/img/event/tmp/{{ poster }}" alt="">#}
+                                                                    {#{% endif %}#}
+                                                                {#{% else %}#}
+                                                                    {#<img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">#}
+                                                                {#{% endif %}#}
+
+                                                            {#</div>#}
+                                                        {#</div>#}
                                                         {% set count = count + 1 %}
                                                     {% endif %}
 
@@ -95,22 +120,47 @@
                                                             <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" /></a>
                                                         {% endif %}
 
-                                                        <div id="flyer-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
 
-                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                                            <div class="modal-body">
-                                                                {% if eventPreview is defined %}
-                                                                    {% if eventPreviewFlyer is defined %}
-                                                                        <img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >
-                                                                    {% else %}
-                                                                        <img src="/upload/img/event/tmp/{{ flyer }}" alt="" >
-                                                                    {% endif %}
-                                                                {% else %}
-                                                                    <img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >
-                                                                {% endif %}
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="flyer-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                    <div class="modal-body">
 
-                                                            </div>
-                                                        </div>
+                                                                            {% if eventPreview is defined %}
+                                                                                {% if eventPreviewFlyer is defined %}
+                                                                                    <img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >
+                                                                                {% else %}
+                                                                                    <img src="/upload/img/event/tmp/{{ flyer }}" alt="" >
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                                <img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >
+                                                                            {% endif %}
+
+
+                                                                    </div>
+
+                                                                </div><!-- /.modal-content -->
+                                                            </div><!-- /.modal-dialog -->
+                                                        </div><!-- /.modal -->
+
+                                                        {#<div id="flyer-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">#}
+
+                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+                                                            {#<div class="modal-body">#}
+                                                                {#{% if eventPreview is defined %}#}
+                                                                    {#{% if eventPreviewFlyer is defined %}#}
+                                                                        {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >#}
+                                                                    {#{% else %}#}
+                                                                        {#<img src="/upload/img/event/tmp/{{ flyer }}" alt="" >#}
+                                                                    {#{% endif %}#}
+                                                                {#{% else %}#}
+                                                                    {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >#}
+                                                                {#{% endif %}#}
+
+                                                            {#</div>#}
+                                                        {#</div>#}
                                                         {% set count = count + 1 %}
                                                     {% endif %}
                                                     <a href="#" class="btn-all-img">{{ count }}<span class="icon-all-img"></span></a>
