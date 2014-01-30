@@ -1,8 +1,8 @@
 define('frontEventListControl',
-	['jquery', 'utils', 'fb', 'domReady'],
-	function($, utils, fb) {
+	['jquery', 'utils', 'fb', 'noti', 'domReady'],
+	function($, utils, fb, noti) {
 
-		function frontEventListControl($, utils) 
+		function frontEventListControl($, utils, fb, noti)
 		{
 			var self = this;
 
@@ -16,7 +16,10 @@ define('frontEventListControl',
 				btnPublish: '.publishEvent',
 				btnUnpublish: '.unpublishEvent',
 				classStatus: '.btn.eventStatus',
-				classElement: '.row-fluid.eventListing'
+				classElement: '.row-fluid.eventListing',
+
+                accSynced: '#acc_synced',
+                externalLogged: '#external_logged'
 			},
 			self.processedElement = null,
 
@@ -47,6 +50,12 @@ define('frontEventListControl',
 					self.__publish($(this));
 				});
 
+                if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
+                    noti.createNotification(
+                        'To see your facebook events please login using facebook or syncronise your <a href="/profile">Profile</a> with facebook account',
+                        'warning'
+                    );
+                }
 			},
 
 
@@ -142,6 +151,6 @@ define('frontEventListControl',
 			}
 		};
 		
-		return new frontEventListControl($, utils, fb);
+		return new frontEventListControl($, utils, fb, noti);
 	}
 );

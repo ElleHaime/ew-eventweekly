@@ -51,6 +51,7 @@ require.config({
         'frontMemberEditControl': 'frontend/member/controls/memberEditControl',
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
+        'eventFriendControl': 'frontend/event/controls/eventFriendControl',
 
         'SingleEvent': 'frontend/list/singleEvent',
         'listListener': 'frontend/list/listListener',
