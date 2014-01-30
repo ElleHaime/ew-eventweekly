@@ -266,7 +266,13 @@ console.log(data);
 
 
 		    self.__createInfoPopupContentSingle = function(event) {
-                var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                var date = '';
+                if (!_.isUndefined(event.start_date_nice)) {
+                    date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                }else if (!_.isUndefined(event.start_date)) {
+                    date = Date.parse(event.start_date).toString('d MMM yyyy');
+                }
+
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
                     eventlink = '/event/'+event.slugUri;
