@@ -118,16 +118,7 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            return self::find(array('member_id = ' . $uId . ' AND start_date >= now()')) -> count();
-        } else {
-            return 0;
-        }
-    }
-
-    public function getFriendGoingEventsCount($uId)
-    {
-        if ($uId) {
-         //   return self::find(array('start_date >= now() AND event_id = ' . $uId)) -> count();
+            return self::find(array('member_id = ' . $uId)) -> count();
         } else {
             return 0;
         }

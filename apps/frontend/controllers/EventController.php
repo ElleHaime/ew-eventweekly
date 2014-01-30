@@ -27,12 +27,38 @@ class EventController extends \Core\Controllers\CrudController
 
     use \Core\Traits\TCMember;
 
-    public $lastFetchedEvent 	= 0;
-    public $isGrabbed	 		= false;
-
     protected $friendsUid 		= array();
     protected $friendsGoingUid	= array();
     protected $pagesUid 		= array();
+
+
+	public function initialize()
+	{
+		parent::initialize();
+
+		if (!$this -> session -> get('isGrabbed')) {
+			$this -> session -> set('isGrabbed', false);
+			$this -> session -> set('grabOnce', false);
+			$this -> session -> set('lastFetchedEvent', 0);
+		}
+
+		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		if ($this -> session -> get('grabOnce') === true) {
+			fwrite($f, "init grabOnce is true\r\n");
+		} elseif($this -> session -> get('grabOnce') === false) {
+			fwrite($f, "init grabOnce is false\r\n");
+		} else {
+			fwrite($f, "init grabOnce is oooops\r\n");
+		}
+		if ($this -> session -> get('isGrabbed') === true) {
+			fwrite($f, "init isGrabbed is true\r\n");
+		} elseif($this -> session -> get('isGrabbed') === false) {
+			fwrite($f, "init isGrabbed is false\r\n");
+		} else {
+			fwrite($f, "init isGrabbed is oooops\r\n");
+		}
+		fclose($f);
+	}	
 
 	/**
 	 * @Route("/map", methods={"GET", "POST"})
@@ -258,7 +284,7 @@ class EventController extends \Core\Controllers\CrudController
                 $status['status'] = true;
             }
 
-        }else {
+        } else {
             $CategoryEvent = new EventCategory();
 
             if ($CategoryEvent->save(array(
@@ -785,6 +811,7 @@ class EventController extends \Core\Controllers\CrudController
 
             // check cache and reset if needed
             $locationsScope = $this -> cacheData -> get('locations');
+
             if (!isset($locationsScope[$newLocation -> id])) {
             	$locationsScope[$newLocation -> id] = array(
                                     'latMin' => $newLocation -> latitudeMin,
@@ -796,12 +823,17 @@ class EventController extends \Core\Controllers\CrudController
 	            $this -> cacheData -> delete($locations);
 	            $this -> cacheData -> save('locations', $locationsScope);
             }
+            $this -> logIt("location changed");
+            $this -> session -> set('isGrabbed', false);
+            $this -> session -> set('grabOnce', false);
+            $this -> session -> set('lastFetchedEvent', 0);
         }
 		$loc = $this -> session -> get('location');
 
         $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
-        						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax);
-		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> lastFetchedEvent);        
+        						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
+        						AND Frontend\Models\Event.start_date > now()');
+		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> session -> get('lastFetchedEvent'));
         $events = $Event -> fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
 
 		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
@@ -814,35 +846,81 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('userEventsCreated', $res['eventsCreated']);
 	        $this -> view -> setVar('userFriendsGoing', $res['eventsFriendsGoing']);
 		} else {
-			$this -> isGrabbed = true;
+			$this -> session -> set('isGrabbed', true);
 		}
 
+/*		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		if ($this -> session -> get('grabOnce') === true) {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is true\r\n");
+		} elseif($this -> session -> get('grabOnce') === false) {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is false\r\n");
+		} else {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is oooops\r\n");
+		}
+		if ($this -> session -> get('isGrabbed') === true) {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is true\r\n");
+		} elseif($this -> session -> get('isGrabbed') === false) {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is false\r\n");
+		} else {
+			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is oooops\r\n");
+		}
+		fclose($f);
+*/
         if (count($events) > 0) {
-            $this -> lastFetchedEvent = $events[count($events)-1]['id'];
+            $this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
             $res['status'] = true;
             $res['events'] = $events;
         } else {
             $res['status'] = 'ERROR';
             $res['message'] = 'no events';
         }
-        $res['stop'] = $this -> isGrabbed;
+
+/*		if ($this -> session -> get('grabOnce') === true) {
+			$this -> logIt("2-nd grabOnce is true");
+		} elseif($this -> session -> get('grabOnce') === false) {
+			$this -> logIt("2-nd grabOnce is false");
+		} else {
+			$this -> logIt("2-nd grabOnce is ooops");
+		}
+		if ($this -> session -> get('isGrabbed') === true) {
+			$this -> logIt("2-nd isGrabbed is true");
+		} elseif($this -> session -> get('isGrabbed') === false) {
+			$this -> logIt("2-nd isGrabbed is false");
+		} else {
+			$this -> logIt("2-nd isGrabbed is oooops");
+		}
+*/
+
+        $res['stop'] = $this -> session -> get('isGrabbed');
         $this -> sendAjax($res);
 
-		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-		if ($this -> isGrabbed === true) {
-			fwrite($f, "isGrabbed is true\r\n");
-		} elseif($this -> isGrabbed === false) {
-			fwrite($f, "isGrabbed is false\r\n");
+/*
+		if ($this -> session -> get('grabOnce') === true) {
+			$this -> logIt("3-rd grabOnce is true");
+		} elseif($this -> session -> get('grabOnce') === false) {
+			$this -> logIt("3-rd grabOnce is false");
 		} else {
-			fwrite($f, "isGrabbed is oooops\r\n");
+			$this -> logIt("3-rd grabOnce is oooops");
 		}
-		fclose($f);
 
-       	if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')
-    		&& $this -> isGrabbed === false) 
+		if ($this -> session -> get('isGrabbed') === true) {
+			$this -> logIt("3-rd isGrabbed is true");
+		} elseif($this -> session -> get('isGrabbed') === false) {
+			$this -> logIt("3-rd isGrabbed is false");
+		} else {
+			$this -> logIt("3-rd isGrabbed is oooops");
+		}
+*/
+       	if ($this -> session -> has('user_token') 
+       		&& $this -> session -> has('user_fb_uid')
+    		&& $this -> session -> get('isGrabbed') === false
+    		&& $this -> session -> get('grabOnce') === false) 
         {
+        	$this -> session -> set('grabOnce', true);
+			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
         } 
+       // $this -> grabNewEvents();
     }
 
 
@@ -852,17 +930,18 @@ class EventController extends \Core\Controllers\CrudController
     	$fb = new Extractor();
     	$queries = $fb -> getQueriesScope();
     	$e = new Event();
-    	$loc = $this -> session -> get('location');
 
 		foreach ($queries as $key => $query) {
 
 			if ($query['name'] == 'user_event') {
+				$this -> logIt("user_event");
 				$replacements = array($loc -> latitudeMin, 
 									  $loc -> latitudeMax, 
 									  $loc -> longitudeMin, 
 									  $loc -> longitudeMax, 
 									  $loc -> city, 
 									  $this -> session -> get('user_fb_uid'));
+
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
 
@@ -878,6 +957,7 @@ class EventController extends \Core\Controllers\CrudController
 			}
 
 			if ($query['name'] == 'friend_uid') {
+				$this -> logIt("friend_uid");
 				$replacements = array($this -> session -> get('user_fb_uid'));
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
@@ -887,11 +967,11 @@ class EventController extends \Core\Controllers\CrudController
 						$this -> friendsUid[] = $v['uid2'];
 					}
 				}
-				//_U::dump($this -> friendsUid, true);
 				continue;
 			} 
 
-			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
+/*			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
+				$this -> logIt("friend_event");
 				$start = $query['start'];
 				$limit = $query['limit'];
 				$fUids = implode(',', $this -> friendsUid);
@@ -908,39 +988,51 @@ class EventController extends \Core\Controllers\CrudController
 										  $fUids);
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-					
-					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
-														array('id' => $loc -> id,
-															  'latitudeMin' => $loc -> latitudeMin,
-															  'latitudeMax' => $loc -> latitudeMax,
-															  'longitudeMin' => $loc -> longitudeMin,
-															  'longitudeMax' => $loc -> longitudeMax));
-						if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-							$start = false;
+					if ($result['STATUS'] !== false) {
+						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
+															array('id' => $loc -> id,
+																  'latitudeMin' => $loc -> latitudeMin,
+																  'latitudeMax' => $loc -> latitudeMax,
+																  'longitudeMin' => $loc -> longitudeMin,
+																  'longitudeMax' => $loc -> longitudeMax));
+
+							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+								$start = false;
+							} else {
+								$start = $start + $limit;
+							}
 						} else {
-							$start = $start + $limit;
+							$start = false;
 						}
+					} else {
+						$start = false;
 					}
 				} while($start !== false);
+
 				continue;
-			} 
+			} */
 
 			if ($query['name'] == 'friend_going_eid' && !empty($this -> friendsUid)) {
+				$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+				fwrite($f, "friend_going_eid\r\n");
+				fclose($f);
 				$replacements = array(implode(',', $this -> friendsUid));
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-
+//_U::dump($result, true);
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
 						$this -> friendsGoingUid[] = $v['eid'];
 					}
 				}
-				//_U::dump($this -> friendsGoingUid, true);
 				continue;
 			}
 
-			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
+/*			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
+				$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+				fwrite($f, "friend_going_event\r\n");
+				fclose($f);
 				$start = $query['start'];
 				$limit = $query['limit'];
 				$eids = implode(',', $this -> friendsGoingUid);
@@ -960,14 +1052,16 @@ class EventController extends \Core\Controllers\CrudController
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 					
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
-														array('id' => $loc -> id,
-															  'latitudeMin' => $loc -> latitudeMin,
-															  'latitudeMax' => $loc -> latitudeMax,
-															  'longitudeMin' => $loc -> longitudeMin,
-															  'longitudeMax' => $loc -> longitudeMax));
-						if (!empty($events)) {
+//_U::dump($result, true);					
+					if ($result['STATUS'] !== false) { 
+						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
+															array('id' => $loc -> id,
+																  'latitudeMin' => $loc -> latitudeMin,
+																  'latitudeMax' => $loc -> latitudeMax,
+																  'longitudeMin' => $loc -> longitudeMin,
+																  'longitudeMax' => $loc -> longitudeMax));
+
 							foreach ($events as $i => $ev) {
 								$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
 														 'event_id' => $ev);
@@ -975,74 +1069,36 @@ class EventController extends \Core\Controllers\CrudController
 								$emf -> assign($friendsEvents);
 								$emf -> save();								
 							}
-						}
-						if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-							$start = false;
+
+							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+								$start = false;
+							} else {
+								$start = $start + $limit;
+							}
 						} else {
-							$start = $start + $limit;
+							$start = false;
 						}
+					} else {
+						$start = false;
 					}
 				} while($start !== false);
 
-				continue;
-			} 
-	
-			/*if ($query['name'] == 'page_uid') {
-				$replacements = array($this -> session -> get('user_fb_uid'));
-				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-	
-				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
-						$this -> pagesUid[] = $v['page_id'];
-					}
-				}
-				continue;
-			}
-
-			if ($query['name'] == 'page_event' && !empty($this -> pagesUid)) {
-				$start = $query['start'];
-				$limit = $query['limit'];
-				$pids = implode(',', $this -> pagesUid);
-
-				do {
-					$replacements = array($start, 
-										  $limit, 
-										  $loc -> latitudeMin, 
-										  $loc -> latitudeMax, 
-										  $loc -> longitudeMin, 
-										  $loc -> longitudeMax, 
-										  $loc -> city, 
-										  $this -> session -> get('user_fb_uid'),  
-										  $pids);
-					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-
-					if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-						$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
-														array('id' => $loc -> id,
-															  'latitudeMin' => $loc -> latitudeMin,
-															  'latitudeMax' => $loc -> latitudeMax,
-															  'longitudeMin' => $loc -> longitudeMin,
-															  'longitudeMax' => $loc -> longitudeMax));
-						if (count($result['MESSAGE'][0]['fql_result_set']) < $limit) {
-							$start = false;
-						} else {
-							$start = $start + $limit;
-						}
-					}
-				} while($start !== false);
-
-				continue;
-			}*/
+				break;
+			} */
 		}
 
-		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-		fwrite($f, "end of foreach\r\n");
-		fclose($f);
+		$this -> session -> set('isGrabbed', true);
+		$this -> logIt("end of grab, isGrabbed = " . $this -> session -> get('isGrabbed'));
 
-		$this -> isGrabbed = true;
-		exit;
+		exit; 
+    } 
+
+
+    public function logIt($mess)
+    {
+		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		fwrite($f, date('Y-m-d H:i:s') . ": " . $mess . "\r\n");
+		fclose($f);
     }
 }		
 
