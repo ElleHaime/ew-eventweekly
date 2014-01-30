@@ -30,27 +30,49 @@
 
                                 <div class="padd_30"> </div>
                                 <div class="event-discription">
-                                    <!-- big photo 
+                                    {% if event.image.cover is defined %}
                                         <div class="event-photo">
                                             <img src="../img/Tulips.jpg" alt="">
                                         </div>
-                                    -->
-
-                                    <div class="add-img">
-                                        <div id="current_event_id" class="event-one-img" event="100038">
-                                            <a href="/event/100038">
-                                                <img src="/upload/img/event/fb_1439101322986652.jpg">
-                                            </a>
-                                        </div>
-                                       <!--  galery
-                                           <div class="all-img clearfix">
-                                                <img src="/img/bgs/small-pic.jpg" alt="">
-                                                <img src="/img/bgs/small-pic2.jpg" alt="">
-                                                <a href="#" class="btn-all-img">54<span class="icon-all-img"></span></a>
+                                    {% else %}
+                                        <div class="add-img">
+                                            <div id="current_event_id" class="event-one-img" event="100038">
+                                                {#<a href="/event/100038">#}
+                                                <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
+                                                {#</a>#}
                                             </div>
-                                        -->
-                                    </div>
-                                    <div  style="padding-right: 20px">
+
+                                           {% if poster is defined or flyer is defined %}
+                                                <div class="all-img clearfix">
+                                                    {% set count = 0 %}
+                                                    {% if poster is defined %}
+                                                        <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="" /></a>
+                                                        <div id="poster-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                            </div>
+                                                            <img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="" />
+                                                        </div>
+                                                        {% set count = count + 1 %}
+                                                    {% endif %}
+
+                                                    {% if flyer is defined %}
+                                                        <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" /></a>
+                                                        <div id="flyer-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                            </div>
+                                                            <img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" />
+                                                        </div>
+                                                        {% set count = count + 1 %}
+                                                    {% endif %}
+                                                    <a href="#" class="btn-all-img">{{ count }}<span class="icon-all-img"></span></a>
+                                                </div>
+                                           {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div  style="padding-right: 20px; {% if event.image.cover is empty %}padding-left: 180px{% endif %}">
                                         <h4 class="name-link">{{ event.name }}</h4>
 
                                         <div class="date-list">

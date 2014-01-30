@@ -4409,7 +4409,7 @@ a.view-btn  {
     cursor: pointer;
 }
 
-.modal, #previewEvent  {
+ #previewEvent  {
     left: 10%;
     margin: 0 auto;
     width: 80%;
@@ -4433,4 +4433,9 @@ a.view-btn  {
 .sidebar-box {
     float: right;
     width: 300px;
+}
+
+.add-event_i #content_right_inner
+{
+    margin-left: 180px;
 }

@@ -119,13 +119,9 @@ define('frontEventEditControl',
 					self.__imitateUpload($(this).parent().find('input[type="file"]'));
 				});
 
-				/*$(self.settings.btnImgLogoUpload).on('change', function(e) {
+				$(self.settings.btnImgLogoUpload).on('change', function(e) {
 					self.__loadImage(e, self.settings.inpLogo);
-				});*/
-
-                $('body').on('change', self.settings.btnImgLogoUpload, function(e){
-                    self.__loadImage(e, self.settings.inpLogo);
-                });
+				});
 
                 $(self.settings.btnImgPosterUpload).on('change', function(e) {
                     self.__loadImage(e, self.settings.inpPoster);
