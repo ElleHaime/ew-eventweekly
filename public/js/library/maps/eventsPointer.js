@@ -50,10 +50,10 @@ define('eventsPointer',
                     console.log(event);
                 }
 
-                if (!_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude))
+                if (!_.isUndefined(event.latitude) && !_.isUndefined(event.longitude))
                 {
-                    $this.__lastLat = event.venue.latitude;
-                    $this.__lastLng = event.venue.longitude;
+                    $this.__lastLat = event.latitude;
+                    $this.__lastLng = event.longitude;
 
                     var InfoWindow = new googleInfoWindow(event);
 

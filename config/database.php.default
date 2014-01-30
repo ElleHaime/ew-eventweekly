@@ -6,5 +6,9 @@ $cfg_database = array(
   'username' => 'username',
   'password' => 'password',
   'dbname' => 'databasename',
-  'charset' =>'utf8'
+  'charset' =>'utf8',
+  'options' => array (
+      PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+      PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET utf8'
+  )
 );
