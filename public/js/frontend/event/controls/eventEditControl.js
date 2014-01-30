@@ -230,6 +230,7 @@ define('frontEventEditControl',
                     var $image = $(this).parent().find('img');
 
                     if ($image.hasClass('img-logo')) {
+                        console.log('img-logo');
                         $.post('/event/delete-logo', { id: $image.attr('data-id') }, function(data){});
                         $image.removeClass('img-logo');
                     } else if ($image.attr('data-id') != undefined) {
