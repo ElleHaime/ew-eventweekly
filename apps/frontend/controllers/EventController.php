@@ -1415,8 +1415,50 @@ class EventController extends \Core\Controllers\CrudController
 		$this -> logIt("end of grab, isGrabbed = " . $this -> session -> get('isGrabbed'));
 
 		exit; 
-    } 
+    }
 
+    /**
+     * @Route("/event/delete-logo", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function deleteEventLogoAction()
+    {
+        $post = $this->request->getPost();
+
+        $event = Event::findFirst('id = ' . $post['id']);
+
+        if ($event) {
+            $file = $this->config->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
+
+            if (file_exists($file)) {
+                unlink($file);
+
+                $event->logo = "";
+                $event->save();
+            }
+
+        }
+    }
+
+    /**
+     * @Route("/event/delete-image", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function deleteEventImageAction()
+    {
+        $post = $this->request->getPost();
+
+        $eventImage = EventImageModel::findFirst('id = ' . $post['id']);
+
+        if ($eventImage) {
+            $file = $this->config->application->uploadDir . 'img/event/' . $eventImage->event_id . '/' . $eventImage->type . '/' . $eventImage->image;
+            if (file_exists($file)) {
+                unlink($file);
+
+                $eventImage->delete();
+            }
+        }
+    }
 
     public function logIt($mess)
     {
