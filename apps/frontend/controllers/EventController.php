@@ -1138,7 +1138,7 @@ class EventController extends \Core\Controllers\CrudController
 	                                    'lonMax' => $newLocation -> longitudeMax,
 	                                    'city' => $newLocation -> city,
 	                                    'country' => $newLocation -> country);
-		            $this -> cacheData -> delete($locations);
+		            $this -> cacheData -> delete('locations');
 		            $this -> cacheData -> save('locations', $locationsScope);
 	            }
 	            $this -> logIt("location changed");
@@ -1166,7 +1166,6 @@ class EventController extends \Core\Controllers\CrudController
 
 			$this -> view -> setVar('userEventsCreated', $res['eventsCreated']);
 	        $this -> view -> setVar('userFriendsGoing', $res['eventsFriendsGoing']);
-	        $this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
 
 	        if (count($events) > 0) {
             	$this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);

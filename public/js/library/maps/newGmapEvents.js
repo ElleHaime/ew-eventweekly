@@ -85,6 +85,8 @@ define('newGmapEvents',
                     console.log(data);
                 }
 
+                $(settings.searchCityBtn).find('span').text(__newCity);
+
                 if (data.status == true && !_.isUndefined(data.events)) {
 
                     if (_.isNull(Map)) {
