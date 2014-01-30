@@ -13,10 +13,15 @@ define('newGmapEvents',
                 autoGetEvents: true,
                 requestInterval: 0, // TODO: set some interval
                 eventsUrl: '/eventmap',
+
+                //requestInterval: 2000, // TODO: set some interval
+                //eventsUrl: '/event/test-get',
+
                 eventsCounter: '#events_count',
                 searchCityBtn: '.locationCity',
                 userEventsCreated: '#userEventsCreated',
-                userFriendsGoing: '#userFriendsGoing'
+                userFriendsGoing: '#userFriendsGoing',
+                alreadyGrabbed: false
             };
 
             var interval = null;
@@ -85,6 +90,7 @@ define('newGmapEvents',
                     if (_.isNull(Map)) {
                         redirectToMap(data);
                     }
+                    settings.alreadyGrabbed = true;
 
                     $.each(data.events, function(index, event) {
                        
@@ -133,9 +139,11 @@ define('newGmapEvents',
                     Mc.redraw();
 
                 } else {
-                    Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
-                    $(settings.eventsCounter).html(0);
-                    noti.createNotification('No event in this area!', 'warning');
+                    if (data.stop == true && settings.alreadyGrabbed == false) {
+                        Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
+                        $(settings.eventsCounter).html(0);
+                        noti.createNotification('No event in this area!', 'warning');
+                    }
                 }
 
                 if (data.eventsCreated) {
@@ -147,6 +155,7 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
+                    console.log('interval cleared');
                     clearInterval(interval);
                 }
             };
