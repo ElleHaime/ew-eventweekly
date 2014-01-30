@@ -217,7 +217,9 @@ die();*/
 						array('host' => $config -> host,
 							  'username' => $config -> username,
 							  'password' => $config -> password,
-							  'dbname' => $config -> dbname
+							  'dbname' => $config -> dbname,
+                              'charset' => $config->charset,
+                              'options' => $config->options->toArray()
 						)
 					);
 

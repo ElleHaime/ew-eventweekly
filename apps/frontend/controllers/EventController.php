@@ -844,11 +844,19 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function eventPreviewAction()
     {
-        $logo = $this->request->getUploadedFiles()[0];
-        $file = $this->config->application->uploadDir.'img/tmp/'.time().rand(1000, 9999).$logo->getName();
-        $logo->moveTo($file);
-
         $post = $this->request->getPost();
+
+        $uploadedFiles = $this->request->getUploadedFiles();
+
+        if (!empty($uploadedFiles)) {
+            $logo = $uploadedFiles[0];
+            $file = $this->config->application->uploadDir.'img/event/'.time().rand(1000, 9999).$logo->getName();
+
+            $logoPieces = explode('/', $file);
+
+            $post['logo'] = end($logoPieces);
+            $logo->moveTo($file);
+        }
 
         $Event = new \stdClass();
 
