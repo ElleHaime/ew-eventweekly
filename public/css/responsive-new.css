@@ -90,6 +90,7 @@
     }
     .sidebar-box_event {
         float: left;
+        margin-top: 20px;
     }
     .event-site {
         margin-bottom: 0;
