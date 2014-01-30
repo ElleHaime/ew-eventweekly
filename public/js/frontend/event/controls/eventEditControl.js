@@ -553,7 +553,8 @@ define('frontEventEditControl',
                 if ($(self.settings.textTimeEnd).val() != '') {
                     endDate += ' ' + $(self.settings.textTimeEnd).val();
                 } else {
-                    endDate += ' ' + '23:59:59';
+                    //endDate += ' ' + '23:59:59';
+                    endDate += ' ' + '00:00:00';
                 }
                 endDate = self.__getTimeInMs(endDate);
 
