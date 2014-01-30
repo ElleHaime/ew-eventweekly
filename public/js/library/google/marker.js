@@ -73,7 +73,6 @@ define('googleMarker',
                         latitude = Event.latitude;
                         longitude = Event.longitude;
                     }else {
-                        console.log(Event.venue);
                         latitude = Event.venue.latitude;
                         longitude = Event.venue.longitude;
                     }
