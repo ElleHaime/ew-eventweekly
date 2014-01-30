@@ -15,6 +15,7 @@ use \Phalcon\Logger\Adapter\File as FileAdapter;
 class Application extends BaseApplication
 {
 	private $_config 			= null;
+	private $_facebookConfig	= null;
 	private $_databaseConfig 	= null;
 	private $_router 			= null;
 	protected $_loader			= null;
@@ -28,13 +29,16 @@ class Application extends BaseApplication
 	{
 		include_once(CONFIG_SOURCE);
 		include_once(DATABASE_CONFIG_SOURCE);
+		include_once(FACEBOOK_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
 		$this -> _databaseConfig = new Config($cfg_database);
+		$this -> _facebookConfig = new Config($cfg_facebook);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
-		
+		$di -> setShared('facebook_config', $this -> _facebookConfig);
+
 		if ($this -> _config -> application -> defaultModule) {
 			self::$defModule = $this -> _config -> application -> defaultModule;
 		}
