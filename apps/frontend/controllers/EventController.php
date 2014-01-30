@@ -43,23 +43,6 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> session -> set('grabOnce', false);
 			$this -> session -> set('lastFetchedEvent', 0);
 		}
-
-		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-		if ($this -> session -> get('grabOnce') === true) {
-			fwrite($f, "init grabOnce is true\r\n");
-		} elseif($this -> session -> get('grabOnce') === false) {
-			fwrite($f, "init grabOnce is false\r\n");
-		} else {
-			fwrite($f, "init grabOnce is oooops\r\n");
-		}
-		if ($this -> session -> get('isGrabbed') === true) {
-			fwrite($f, "init isGrabbed is true\r\n");
-		} elseif($this -> session -> get('isGrabbed') === false) {
-			fwrite($f, "init isGrabbed is false\r\n");
-		} else {
-			fwrite($f, "init isGrabbed is oooops\r\n");
-		}
-		fclose($f);
 	}	
 
 	/**
@@ -176,7 +159,7 @@ class EventController extends \Core\Controllers\CrudController
                 }
 			} 
 
-		} else {
+		} else { 
 			// user registered via email
 			$events = array();
 			$eventsList = $eventModel -> grabEventsByCoordinatesScale($loc -> latitude , $loc -> longitude, $this->session->get('memberId'));
@@ -1175,24 +1158,6 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> session -> set('isGrabbed', true);
 		}
 
-		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-		if ($this -> session -> get('grabOnce') === true) {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is true\r\n");
-		} elseif($this -> session -> get('grabOnce') === false) {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is false\r\n");
-		} else {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is oooops\r\n");
-		}
-		if ($this -> session -> get('isGrabbed') === true) {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is true\r\n");
-		} elseif($this -> session -> get('isGrabbed') === false) {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is false\r\n");
-		} else {
-			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is oooops\r\n");
-		}
-		fclose($f);
-
-
         if (count($events) > 0) {
             $res['status'] = true;
             $res['events'] = $events;
@@ -1201,40 +1166,8 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-		if ($this -> session -> get('grabOnce') === true) {
-			$this -> logIt("2-nd grabOnce is true");
-		} elseif($this -> session -> get('grabOnce') === false) {
-			$this -> logIt("2-nd grabOnce is false");
-		} else {
-			$this -> logIt("2-nd grabOnce is ooops");
-		}
-		if ($this -> session -> get('isGrabbed') === true) {
-			$this -> logIt("2-nd isGrabbed is true");
-		} elseif($this -> session -> get('isGrabbed') === false) {
-			$this -> logIt("2-nd isGrabbed is false");
-		} else {
-			$this -> logIt("2-nd isGrabbed is oooops");
-		}
-
         $res['stop'] = $this -> session -> get('isGrabbed');
         $this -> sendAjax($res);
-
-
-		if ($this -> session -> get('grabOnce') === true) {
-			$this -> logIt("3-rd grabOnce is true");
-		} elseif($this -> session -> get('grabOnce') === false) {
-			$this -> logIt("3-rd grabOnce is false");
-		} else {
-			$this -> logIt("3-rd grabOnce is oooops");
-		}
-
-		if ($this -> session -> get('isGrabbed') === true) {
-			$this -> logIt("3-rd isGrabbed is true");
-		} elseif($this -> session -> get('isGrabbed') === false) {
-			$this -> logIt("3-rd isGrabbed is false");
-		} else {
-			$this -> logIt("3-rd isGrabbed is oooops");
-		}
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
@@ -1346,7 +1279,6 @@ class EventController extends \Core\Controllers\CrudController
 				$replacements = array(implode(',', $this -> friendsUid));
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-//_U::dump($result, true);
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
 						$this -> friendsGoingUid[] = $v['eid'];
@@ -1376,7 +1308,6 @@ class EventController extends \Core\Controllers\CrudController
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 					
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-//_U::dump($result, true);					
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
