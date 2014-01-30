@@ -966,18 +966,54 @@ class EventController extends \Core\Controllers\CrudController
         $uploadedFiles = $this->request->getUploadedFiles();
 
         if (!empty($uploadedFiles)) {
-            $logo = $uploadedFiles[0];
-            $file = $this->config->application->uploadDir.'img/event/'.time().rand(1000, 9999).$logo->getName();
 
-            $logoPieces = explode('/', $file);
+            foreach ($this -> request -> getUploadedFiles() as $file) {
+                if ($file->getKey() == 'add-img-logo-upload') {
+                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
 
-            $post['logo'] = end($logoPieces);
-            $logo->moveTo($file);
+                    $logoPieces = explode('/', $filePath);
+
+                    $post['logo'] = end($logoPieces);
+                    $file->moveTo($filePath);
+
+                } else if ($file->getKey() == 'add-img-poster-upload') {
+                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
+
+                    $logoPieces = explode('/', $filePath);
+
+                    $post['poster'] = end($logoPieces);
+                    $file->moveTo($filePath);
+                } else if ($file->getKey() == 'add-img-flyer-upload') {
+                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
+
+                    $logoPieces = explode('/', $filePath);
+
+                    $post['flyer'] = end($logoPieces);
+                    $file->moveTo($filePath);
+                }
+            }
+
+        }
+
+        if (!empty($post['event_logo'])) {
+            $this->view->setVar('eventPreviewLogo', $post['event_logo']);
+        }
+
+        if (!empty($post['event_poster'])) {
+            $this->view->setVar('eventPreviewPoster', $post['event_poster']);
+        }
+
+        if (!empty($post['event_flyer'])) {
+            $this->view->setVar('eventPreviewFlyer', $post['event_flyer']);
         }
 
         $Event = new \stdClass();
 
-        $Event->id = 0;
+        if (isset($post['id'])) {
+            $Event->id = $post['id'];
+        }else {
+            $Event->id = 0;
+        }
         $Event->name = $post['name'];
         $Event->start_date = $post['start_date'];
         $Event->start_time = $post['start_time'];
@@ -1008,6 +1044,8 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
+        $this->view->setVar('poster', $post['poster']);
+        $this->view->setVar('flyer', $post['flyer']);
 
         $this->view->pick('event/show');
     }

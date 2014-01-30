@@ -250,6 +250,7 @@
                                                 <img class='img-box' src="/img/demo/q1.jpg" alt="" />
 												<span class="delete-logo"></span>
                                             {% endif %}
+                                            <input type="hidden" name="event_logo" value="{{ event.logo }}"/>
                                         </div>
 
                                         {{ form.render('logo') }}
@@ -271,6 +272,8 @@
                                                         src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
                                                         alt=""
                                                     />
+
+                                                <input type="hidden" name="event_poster" value="{{ poster.image }}"/>
 
                                                 <span class="delete-logo"></span>
                                             {% else %}
@@ -298,6 +301,8 @@
                                                         src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
                                                         alt=""
                                                     />
+
+                                                <input type="hidden" name="event_flyer" value="{{ flyer.image }}"/>
 
                                                 <span class="delete-logo"></span>
                                             {% else %}

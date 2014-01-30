@@ -120,14 +120,17 @@ define('frontEventEditControl',
 				});
 
 				$(self.settings.btnImgLogoUpload).on('change', function(e) {
+                    $('input[name="logo"]').val('');
 					self.__loadImage(e, self.settings.inpLogo);
 				});
 
                 $(self.settings.btnImgPosterUpload).on('change', function(e) {
+                    $('input[name="event_poster"]').val('');
                     self.__loadImage(e, self.settings.inpPoster);
                 });
 
                 $(self.settings.btnImgFlyerUpload).on('change', function(e) {
+                    $('input[name="event_flyer"]').val('');
                     self.__loadImage(e, self.settings.inpFlyer);
                 });
 
@@ -220,18 +223,23 @@ define('frontEventEditControl',
                 });
 
                 $(self.settings.deleteImage).click(function(){
-                    var $image = $(this).prev().find('img');
+                    var $image = $(this).parent().find('img');
 
                     if ($image.hasClass('img-logo')) {
                         $.post('/event/delete-logo', { id: $image.attr('data-id') }, function(data){});
                         $image.removeClass('img-logo');
                     } else if ($image.attr('data-id') != undefined) {
                         $.post('/event/delete-image', { id: $image.attr('data-id') }, function(data){});
+                    } else {
+                        $(this).parent().parent().find('#id').val('');
+//                        $(this).parent().find('input[name="event_logo"]').val('');
                     }
 
                     $image.removeAttr('data-id');
                     $image.attr('src', '/img/demo/q1.jpg');
                     $image.parents().eq(2).find('input[type="hidden"]').val('');
+
+                    $(this).closest('input[type="hidden"]').val('');
                 });
 			}
 
