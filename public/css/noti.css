@@ -1,7 +1,7 @@
 .notiBlock {
     position: fixed;
     width: 100%;
-    z-index: 82;
+    z-index: 78;
     line-height: 50px;
     height: 0;
     overflow: hidden;
@@ -58,4 +58,13 @@
 
 .notiBlock .span12 {
     position: relative;
+}
+
+.wrapper {
+    position: relative;
+}
+.wrapper .notiBlock
+{
+    position: absolute;
+    top:-10px;
 }

@@ -67,7 +67,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 return function(event){
                     if ($($this.settings.isLogged).val() === '0' || $($this.settings.externalLogged).length == 0) {
                         noti.createNotification(
-                            'Please <a href="/#fb-login">login via Facebook</a> to be able to invite your friends to event', 'warning'
+                            'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', 'warning'
                         )
                     } else {
                         event.preventDefault();
@@ -99,7 +99,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                     if ($($this.settings.isMobile).val() === '1') {
                         console.log($(this));
                         var friendId = $(this).attr('data-id');
-                        window.location = 'http://www.facebook.com/dialog/feed?app_id=166657830211705&link=' +
+                        window.location = 'http://www.facebook.com/dialog/feed?app_id='+window.fbAppId+'&link=' +
                             document.URL + '&redirect_uri=' + document.URL + '&to='+ friendId;
                     } else {
                         if ($this.__issetFB()) {

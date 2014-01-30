@@ -29,7 +29,7 @@ define('utils',
 			        };
                     options = $.extend(options, boundsOptions);
 			    }
-                //console.log(options);
+
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 			    return autocomplete;

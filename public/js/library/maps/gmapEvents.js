@@ -267,6 +267,10 @@ console.log(data);
 
 		    self.__createInfoPopupContentSingle = function(event) {
                 var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                var eventlink = window.location.origin+'/event/'+event.id;
+                if (!_.isUndefined(event.slugUri)) {
+                    eventlink = '/event/'+event.slugUri;
+                }
 		        return '<div class="info-win music-category " id="content"> ' +
                             '<div class="events-img-box">' +
                                 '<img  class="events-img" src="'+event.pic_big+'" alt="">' +
@@ -274,16 +278,20 @@ console.log(data);
                             '</div>' +
                             '<div class="events-descriptions-box">' +
                                 '<div class="venue-name">'+event.name+'</div><div>'+$.truncate(event.description, {length: 300})+'</div>' +
-                                '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a>' +
+                                '<a href="'+eventlink+'">Eventweekly link</a>' +
                             '</div>' +
 		                '</div>';
 		    },
 
             self.__createInfoPopupContentMany = function(event) {
                 var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                var eventlink = window.location.origin+'/event/'+event.id;
+                if (!_.isUndefined(event.slugUri)) {
+                    eventlink = '/event/'+event.slugUri;
+                }
                 return '<div class="events-map">' +
                     ' <div class="music-category">' +
-                    '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +
+                    '<a href="'+eventlink+'" class="clearfix">' +
                     '<span class="date-events-map">'+date+'</span> ' +
                     '<span class="events-map-text">'+event.name+'</span>' +
                     '</a>' +

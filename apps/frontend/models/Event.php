@@ -21,7 +21,7 @@ use Objects\Event as EventObject,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
     Phalcon\Mvc\Model\Resultset;
-
+use Core\Utils\SlugUri as SUri;
 
 class Event extends EventObject
 {
@@ -90,8 +90,10 @@ class Event extends EventObject
             $tryDate = date('d/m/Y', strtotime($this -> start_date));
             if ($tryDate != '0000-00-00') {
                 $this -> start_date_nice = $tryDate;
+                $this -> start_date = $tryDate;
             } else {
                 $this -> start_date_nice = '';
+                $this -> start_date = '';
             }
         } else {
             $this -> start_time = $this -> start_date_nice = '';
@@ -107,12 +109,16 @@ class Event extends EventObject
             $tryDate = date('d/m/Y', strtotime($this -> end_date));
             if ($tryDate != '0000-00-00') {
                 $this -> end_date_nice = $tryDate;
+                $this -> end_date = $tryDate;
             } else {
                 $this -> end_date_nice = '';
+                $this -> end_date = '';
             }
         } else {
             $this -> end_time = $this -> end_date_nice = '';
         }
+
+        $this->slugUri = $this->id.'-'.SUri::slug($this->name);
 	}
 
     public function getCreatedEventsCount($uId)
@@ -330,14 +336,14 @@ class Event extends EventObject
 
             $result = $paginator->getPaginate();
 
-            $totalRows = $builder->getQuery()->execute()->count();
+            $totalRows = $builder->getQuery()->execute()->count(); // WTF?
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
 
             if ($fetchType === self::FETCH_ARRAY) {
                 $result->items = $this->resultToArray($result->items);
             }
-        }else {
+        } else {
             $result = $builder->getQuery()->execute();
 
             if ($fetchType === self::FETCH_ARRAY) {

@@ -2,6 +2,8 @@
 
 <div style="display:none;" id="current_location" latitude="{{ location.latitude }}" longitude="{{ location.longitude }}"></div>
 
+<input type="hidden" id="popupRedirect" value="">
+
 {% if flashMsgText is defined %}
 	<div style="display:none;" id="splash_messages" flashMsgText="{{ flashMsgText }}" flashMsgType="{{ flashMsgType }}"></div>
 {% endif %}
@@ -18,6 +20,10 @@
     <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
 {% endif %}
 
+{% if acc_synced is defined %}
+    <input type="hidden" id="acc_synced" value="1">
+{% endif %}
+
 {% if member.id is defined %}
     <input id="isLogged" type="hidden" value="1" />
 {% else %}
@@ -26,4 +32,12 @@
 
 {% if isMobile is defined %}
     <input id="isMobile" type="hidden" value="{{ isMobile }}" />
+{% endif %}
+
+{% if fbAppId is defined %}
+    <input id="fbAppId" type="hidden" value="{{ fbAppId }}" />
+{% endif %}
+
+{% if fbAppSecret is defined %}
+    <input id="fbAppSecret" type="hidden" value="{{ fbAppSecret }}" />
 {% endif %}

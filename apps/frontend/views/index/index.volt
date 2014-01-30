@@ -5,7 +5,7 @@
 <div class="content-bg">
     <div class="big-top">
         <div class="square red">
-            <span>Never<br/> miss<br/> an Event!</span>
+            <span>Never<br/> miss<br/> an event!</span>
         </div>
         <div class="square white">
             <span>Get<br/> personalised<br/> listings</span>
@@ -14,6 +14,22 @@
             <span>See which<br/> of your friends<br/> are going</span>
         </div>
     </div>
+
+	{% if isMobile == 1 %}
+    <div class="facebook-button facebook-button_small">
+        <div class="container-box">
+            <div class="text-label"><span>Login</span> <br/>through Facebook:</div>
+            <div class="button">
+                <a href="#" onclick="return false;" id="fb-login">facebook</a>
+            </div>
+            <div class="tip clear">
+                <i class="fb-lock"></i>
+                <p>We respect your privacy and will not post any information without your permission to your social network accounts. </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="how-it-works container-box">
         <h2>How it works?</h2>
 
@@ -32,14 +48,17 @@
         <div class="column">
             <div class="number">3</div>
             <div class="text">
-                <p> Create event and invite more when 100 000 guests to attend from all over the world. </p>
+                <p> Create an event and invite more than 100 000 guests to attend if from all  over the  world.</p>
             </div>
         </div>
     </div>
+
+	{% if isMobile == 0 %}
     <div class="facebook-button">
         <div class="container-box">
-            <div class="button">
-                <a href="#" onclick="return false;" id="fb-login">facebook</a>
+            <div class="text-label"><span>Login</span> <br/>through Facebook:</div>
+            <div class="button clearfix">
+                <a href="#"  class="btn-facebook" onclick="return false;" id="fb-login">facebook</a>
             </div>
             <div class="tip clear">
                 <i class="fb-lock"></i>
@@ -47,15 +66,17 @@
             </div>
         </div>
     </div>
+    {% endif %}
+
     <footer>
         <div class="container-box">
             <h2>No Facebook? Ok, try:</h2>
 
             <div class="login-variants clearfix">
                 <div class="line-box clearfix">
-                    <div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>
-                    <div class="gplus icon"><a href="#" class="color-red">google+</a></div>
-                    <div class="link email"><a href="/login">e-mail</a></div>
+                    {#<div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>#}
+                    {#<div class="gplus icon"><a href="#" class="color-red">google+</a></div>#}
+                    <div class="link email"><a id="email-login" class="fb-login-popup" onclick="return false;" href="/login">e-mail</a></div>
                 </div>
                 <div class="line-box">
                     <div class="label-or"><span>or</span></div>

@@ -16,7 +16,9 @@ use Core\Utils as _U,
     Frontend\Models\EventMemberFriend,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
-    Objects\Tag AS TagObject;
+    Objects\Tag AS TagObject,
+	Core\Utils\SlugUri as SUri;
+
 
 
 /**
@@ -36,7 +38,7 @@ class EventController extends \Core\Controllers\CrudController
 	{
 		parent::initialize();
 
-		if (!$this -> session -> get('isGrabbed')) {
+		if (!$this -> session -> has('isGrabbed')) {
 			$this -> session -> set('isGrabbed', false);
 			$this -> session -> set('grabOnce', false);
 			$this -> session -> set('lastFetchedEvent', 0);
@@ -66,6 +68,7 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function mapAction()
 	{
+		$this -> session -> set('lastFetchedEvent', 0);
 		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
 		$this -> view -> setVar('link_to_list', true);
 	}	
@@ -82,15 +85,14 @@ class EventController extends \Core\Controllers\CrudController
 		$events = $this -> searchAction($lat, $lng, $city);
 
 		if (count($events) > 0) {
-			$res['status'] = true;
-			$res['events'] = array_merge($events[0], $events[1]);
-			echo json_encode($res);
-			//die();
+			$res['status'] = 'OK';
+			$res['message'] = $events;
+            $this->sendAjax($res);
 		} else {
 			$res['status'] = 'ERROR';
 			$res['message'] = 'no events';
-			echo json_encode($res);
-			//die();
+
+            $this->sendAjax($res);
 		}
 	}
 
@@ -101,6 +103,7 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function eventlistAction()
 	{
+		$this -> session -> set('lastFetchedEvent', 0);
 		$events = $this -> searchAction();
 
 		if (isset($events[0]) || isset($events[1])) {
@@ -205,6 +208,7 @@ class EventController extends \Core\Controllers\CrudController
 						'start_date_nice' => $ev -> event -> start_date_nice,
 						'end_time' => $ev -> event -> end_time,
 						'end_date_nice' => $ev -> event -> end_date_nice,
+                        'slugUri' => $ev->event->slugUri
 					);
 
                     if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {
@@ -225,7 +229,7 @@ class EventController extends \Core\Controllers\CrudController
 
 	
 	/**
-	 * @Route("/event/show/{eventId:[0-9]+}", methods={"GET", "POST"})
+	 * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 	 	 
 	 */
 	public function showAction($eventId)
@@ -262,7 +266,7 @@ class EventController extends \Core\Controllers\CrudController
         $this -> view -> setVar('link_back_to_list', true);
 
         return array(
-            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/show/'.$event->id,
+            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name),
             'eventMetaData' => $event
         );
 	}
@@ -580,7 +584,51 @@ class EventController extends \Core\Controllers\CrudController
 
 		return $result;
 	}
-	
+
+    public function saveEventAtFacebook($url, $fbParams)
+    {
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+        $response = $httpClient->post($url, $fbParams);
+        $result = $response->body;
+
+        $id = null;
+        if ($result) {
+            $result = json_decode($result, true);
+
+            if (!isset($result['error'])) {
+                $id = $result['id'];
+            }
+        }
+
+        return $id;
+    }
+
+    /**
+     * @Route("/event/facebook", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function facebookAction()
+    {
+
+        $http = $this->di->get('http');
+        $httpClient = $http::getProvider();
+        $httpClient->setBaseUri('https://graph.facebook.com/');
+
+
+        $response = $httpClient->post('me/events', array(
+            'access_token' => $this->session->get('user_token'),
+            'name' => "!!!",
+            'description' => "!!!",
+            //'start_time' => date('c', strtotime('2012-02-01 13:00:00')),
+            //'end_time' => date('c', strtotime('2012-02-01 14:00:00')),
+            'location' => 'Moldova',
+            'privacy_type' => 'SECRET'
+        ));
+        $result = $response->body;
+    }
 
 	public function processForm($form) 
 	{
@@ -601,6 +649,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['member_id'] = $this -> session -> get('memberId');
 		$newEvent['is_description_full'] = 1;
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
+        $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
 		$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
@@ -691,10 +740,65 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
+            // start prepare params for FB event
+            $fbParams = array(
+                'access_token' => $this->session->get('user_token'),
+                'name' => $newEvent['name'],
+                'description' => $newEvent['description'],
+                'start_time' => date('c', strtotime($newEvent['start_date'])),
+                'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
+            );
+
+            /*if ($newEvent['event_fb_status'] == 1) {
+                $fbParams['privacy_type'] = 'OPEN';
+            }*/
+
+            if ($newEvent['start_date'] !== $newEvent['end_date']) {
+                $fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
+            }
+
+            if ($event['venue'] != '') {
+                $fbParams['location'] = $event['venue'];
+            } else if ($event['address'] != '') {
+                $fbParams['location'] = $event['address'];
+            } else {
+                $fbParams['location'] = $event['location'];
+            }
+
 			// save image
+            $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
 			if (isset($logo)) {
-				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName());
-			}
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
+				$logo -> moveTo($file);
+			} else if ($ev->logo != '') {
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
+            } /*else {
+                if (!isset($ev->logo) || $ev->logo == '') {
+                    $file = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+                }
+            }*/
+
+            list($width, $height, $type, $attr) = getimagesize($file);
+            if ($width < 180 || $height < 60) {
+                $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+            } else {
+                $fbParams['cover.jpg'] = '@' . $file;
+            }
+            // finish prepare params for FB event
+
+            if ($newEvent['event_fb_status'] == 1) {
+                // add/edit event to facebook
+                if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
+                    $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+
+                    if (!is_null($fbEventId)) {
+                        $ev->fb_uid = $fbEventId;
+                        $ev->save();
+                    }
+                } else {
+                    $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
+                }
+            }
 
 			// process site
 			$eSites = EventSite::find('event_id = '. $ev -> id);
@@ -787,6 +891,66 @@ class EventController extends \Core\Controllers\CrudController
         exit('DONE');
     }*/
 
+
+    /** 
+     * @Route("/event/preview", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function eventPreviewAction()
+    {
+ 		$post = $this->request->getPost();
+
+        $uploadedFiles = $this->request->getUploadedFiles();
+
+        if (!empty($uploadedFiles)) {
+            $logo = $uploadedFiles[0];
+            $file = $this->config->application->uploadDir.'img/event/'.time().rand(1000, 9999).$logo->getName();
+
+            $logoPieces = explode('/', $file);
+
+            $post['logo'] = end($logoPieces);
+            $logo->moveTo($file);
+        }
+
+        $Event = new \stdClass();
+
+        $Event->id = 0;
+        $Event->name = $post['name'];
+        $Event->start_date = $post['start_date'];
+        $Event->start_time = $post['start_time'];
+        $Event->end_date = $post['end_date'];
+        $Event->end_time = $post['end_time'];
+        $Event->description = $post['description'];
+        $Event->tickets_url = $post['tickets_url'];
+        $loc = new \stdClass();
+        $loc->alias = $post['location'];
+        $Event->location = $loc;
+        $Event->address = $post['address'];
+        $Event->venue = $post['venue'];
+        $Event->event_site = $post['event_site'];
+        $Event->logo = $post['logo'];
+        $site = [];
+        foreach (explode(',', $post['event_site']) as $s) {
+            if (!empty($s)) {
+                $ss = new \stdClass();
+                $ss->url = $s;
+                $site[] = $ss;
+            }
+        }
+        $Event->site = $site;
+        $Event->category = Category::find('id = '.(int)$post['category']);
+        $Event->memberpart = null;
+
+        $this->view->setVar('currentWindowLocation', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
+        $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
+
+        $this->view->setVar('event', $Event);
+
+        $this->view->pick('event/show');
+    }
+
+
+
     /**
      * @Route("/event/test-get", methods={'GET'})
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
@@ -797,38 +961,43 @@ class EventController extends \Core\Controllers\CrudController
     {
         $Event = new Event();
         $EventFriend = new EventMemberFriend();
+		$loc = $this -> session -> get('location');
 
         if(!empty($lat) && !empty($lng)) {
             $newLocation = new Location();
             $newLocation = $newLocation -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-			
-			if(!empty($city)) {
-	            $newLocation -> city = $city;
-	            $newLocation -> alias = $city;
-			}
+		
+			if ($newLocation -> id != $loc -> id) {
+				if(!empty($city)) {
+		            $newLocation -> city = $city;
+		            $newLocation -> alias = $city;
+				}
 
-            $this -> session -> set('location', $newLocation);
+	            $this -> session -> set('location', $newLocation);
 
-            // check cache and reset if needed
-            $locationsScope = $this -> cacheData -> get('locations');
+	            // check cache and reset if needed
+	            $locationsScope = $this -> cacheData -> get('locations');
 
-            if (!isset($locationsScope[$newLocation -> id])) {
-            	$locationsScope[$newLocation -> id] = array(
-                                    'latMin' => $newLocation -> latitudeMin,
-                                    'lonMin' => $newLocation -> longitudeMin,
-                                    'latMax' => $newLocation -> latitudeMax,
-                                    'lonMax' => $newLocation -> longitudeMax,
-                                    'city' => $newLocation -> city,
-                                    'country' => $newLocation -> country);
-	            $this -> cacheData -> delete($locations);
-	            $this -> cacheData -> save('locations', $locationsScope);
-            }
-            $this -> logIt("location changed");
-            $this -> session -> set('isGrabbed', false);
-            $this -> session -> set('grabOnce', false);
-            $this -> session -> set('lastFetchedEvent', 0);
+	            if (!isset($locationsScope[$newLocation -> id])) {
+	            	$locationsScope[$newLocation -> id] = array(
+	                                    'latMin' => $newLocation -> latitudeMin,
+	                                    'lonMin' => $newLocation -> longitudeMin,
+	                                    'latMax' => $newLocation -> latitudeMax,
+	                                    'lonMax' => $newLocation -> longitudeMax,
+	                                    'city' => $newLocation -> city,
+	                                    'country' => $newLocation -> country);
+		            $this -> cacheData -> delete($locations);
+		            $this -> cacheData -> save('locations', $locationsScope);
+	            }
+	            $this -> logIt("location changed");
+
+	            $this -> session -> set('isGrabbed', false);
+	            $this -> session -> set('grabOnce', false);
+	            $this -> session -> set('lastFetchedEvent', 0);
+
+	            $loc = $this -> session -> get('location');
+	        }
         }
-		$loc = $this -> session -> get('location');
 
         $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
         						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
@@ -845,11 +1014,17 @@ class EventController extends \Core\Controllers\CrudController
 
 			$this -> view -> setVar('userEventsCreated', $res['eventsCreated']);
 	        $this -> view -> setVar('userFriendsGoing', $res['eventsFriendsGoing']);
+	        $this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
+
+	        if (count($events) > 0) {
+            	$this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
+            }
 		} else {
+			$this -> session -> set('lastFetchedEvent', 0);
 			$this -> session -> set('isGrabbed', true);
 		}
 
-/*		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
+		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
 		if ($this -> session -> get('grabOnce') === true) {
 			fwrite($f, date('Y-m-d H:i:s') . ": 1-st grabOnce is true\r\n");
 		} elseif($this -> session -> get('grabOnce') === false) {
@@ -865,9 +1040,9 @@ class EventController extends \Core\Controllers\CrudController
 			fwrite($f, date('Y-m-d H:i:s') . ": 1-st isGrabbed is oooops\r\n");
 		}
 		fclose($f);
-*/
+
+
         if (count($events) > 0) {
-            $this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
             $res['status'] = true;
             $res['events'] = $events;
         } else {
@@ -875,7 +1050,7 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-/*		if ($this -> session -> get('grabOnce') === true) {
+		if ($this -> session -> get('grabOnce') === true) {
 			$this -> logIt("2-nd grabOnce is true");
 		} elseif($this -> session -> get('grabOnce') === false) {
 			$this -> logIt("2-nd grabOnce is false");
@@ -889,12 +1064,11 @@ class EventController extends \Core\Controllers\CrudController
 		} else {
 			$this -> logIt("2-nd isGrabbed is oooops");
 		}
-*/
 
         $res['stop'] = $this -> session -> get('isGrabbed');
         $this -> sendAjax($res);
 
-/*
+
 		if ($this -> session -> get('grabOnce') === true) {
 			$this -> logIt("3-rd grabOnce is true");
 		} elseif($this -> session -> get('grabOnce') === false) {
@@ -910,7 +1084,7 @@ class EventController extends \Core\Controllers\CrudController
 		} else {
 			$this -> logIt("3-rd isGrabbed is oooops");
 		}
-*/
+
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
     		&& $this -> session -> get('isGrabbed') === false
@@ -922,6 +1096,7 @@ class EventController extends \Core\Controllers\CrudController
         } 
        // $this -> grabNewEvents();
     }
+
 
 
     public function grabNewEvents()
@@ -1014,9 +1189,7 @@ class EventController extends \Core\Controllers\CrudController
 			} */
 
 			if ($query['name'] == 'friend_going_eid' && !empty($this -> friendsUid)) {
-				$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-				fwrite($f, "friend_going_eid\r\n");
-				fclose($f);
+				$this -> logIt("friend_going_eid");
 				$replacements = array(implode(',', $this -> friendsUid));
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));

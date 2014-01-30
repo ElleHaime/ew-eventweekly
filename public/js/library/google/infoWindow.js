@@ -23,6 +23,11 @@ define('googleInfoWindow',
                     category = event.category[0].key;
                 }
                 
+                var eventlink = window.location.origin+'/event/'+event.id;
+                if (!_.isUndefined(event.slugUri)) {
+                    eventlink = '/event/'+event.slugUri;
+                }
+
                 return '<div class="info-win '+category+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
                     '<img  class="events-img" src="'+img+'" alt="">' +
@@ -30,7 +35,7 @@ define('googleInfoWindow',
                     '</div>' +
                     '<div class="events-descriptions-box">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+$.truncate(event.description, {length: 150})+'</div>' +
-                    '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a>' +
+                    '<a href="'+eventlink+'">Eventweekly link</a>' +
                     '</div>' +
                     '</div>';
             };
@@ -48,9 +53,14 @@ define('googleInfoWindow',
                     category = event.category[0].key;
                 }
 
+                var eventlink = window.location.origin+'/event/'+event.id;
+                if (!_.isUndefined(event.slugUri)) {
+                    eventlink = '/event/'+event.slugUri;
+                }
+
                 return '<div class="events-map">' +
                     ' <div class="'+category+'-category">' +
-                    '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +
+                    '<a href="'+eventlink+'" class="clearfix">' +
                     '<span class="date-events-map">'+date+'</span> ' +
                     '<span class="events-map-text">'+event.name+'</span>' +
                     '</a>' +

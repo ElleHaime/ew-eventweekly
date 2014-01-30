@@ -89,13 +89,19 @@ require.config({
 	callback: function(require) {
         'use strict';
 
-        var moduleName,
-        	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/;
-        if (re.test(location.pathname) != 'undefined') {
-			var fileName = location.pathname.replace(/(\/\d+)?$/, '');
+        window.fbAppId = document.getElementById('fbAppId').value;
+        window.fbAppSecret = document.getElementById('fbAppSecret').value;
+        var moduleName, fileName = '',
+        	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
+            re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
+        if (re1.test(location.pathname) == true) {
+            fileName = '/event/show';
+        } else if (re.test(location.pathname) != 'undefined') {
+            fileName = location.pathname.replace(/(\/\d+)?$/, '');
         } else {
-        	var fileName = location.pathname.match(/(\/\w+)*?$/)
+            fileName = location.pathname.match(/(\/\w+)*?$/)
         }
+
 
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';

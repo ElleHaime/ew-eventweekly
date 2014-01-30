@@ -61,8 +61,15 @@ define('frontEventEditControl',
 				inpCampaignExists: '#is_campaign',
 
 				btnCancel: '#btn-cancel',
+                btnSubmit: '#btn-submit',
 
-                defaultCategories: '#defaultCategories'
+                defaultCategories: '#defaultCategories',
+
+                memberExtUid: '#member_ext_uid',
+                eventFbStatus: '#event_fb_status',
+                accSynced: '#acc_synced',
+                externalLogged: '#external_logged',
+                btnPreview: '#btn-preview'
 			},
 
 
@@ -71,7 +78,7 @@ define('frontEventEditControl',
                 utils.addEmptyOptionFirst($(self.settings.inpCategory), 'Choose categories');
 
                 if ($(self.settings.inpCampaignId).val() == '' || $(self.settings.inpCampaignId).val() == 0) {
-                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
+                    utils.addEmptyOptionFirst($(self.settings.inpCampaign), 'Choose event campaign');
                 } else {
                     utils.addNotSelectedEmptyOptionFirst($(self.settings.inpCampaign), 'Choose promoter');
                 }
@@ -93,6 +100,8 @@ define('frontEventEditControl',
 				self.bindEvents();
 
                 self.__setupDateTimePicker();
+
+                self.__initFacebookPublish();
 			}
 
 			self.bindEvents = function()
@@ -177,11 +186,38 @@ define('frontEventEditControl',
                         $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                     }
 
-                    if (!self.__checkDatesContradictions()) return false;
                     if (!self.__checkRequiredFields()) return false;
                     if (!self.__checkDatesContradictions()) return false;
+
+                    $(self.settings.btnSubmit).prop('disabled', true);
+                    $(self.settings.btnSubmit).text('Saving...');
                 });
+
+                console.log('here');
+
+                $(self.settings.form).on('click', self.settings.btnPreview, function(e) {
+                    e.preventDefault();
+                    self.__eventPreview();
+                })
 			}
+
+            self.__eventPreview = function() {
+                if ($(self.settings.inpCategoryReal).val().trim() == '') {
+                    $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
+                }
+
+                if (!self.__checkRequiredFields()) return false;
+                if (!self.__checkDatesContradictions()) return false;
+
+                $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
+                $(self.settings.form).removeAttr('target').removeAttr('action');
+                $(self.settings.btnSubmit).prop('disabled', false);
+                $(self.settings.btnSubmit).text('Save');
+
+                $('#previewEvent').on('show', function () {
+                    modalBody = $(this).find('.modal-body');
+                });
+            }
 
             self.__removeCategoryConflict = function()
             {
@@ -219,7 +255,15 @@ define('frontEventEditControl',
 				reader.onload = (function(f) {
 					$(self.settings.inpLogo).attr('value', f.name);
 					return function(e) {
-						$(self.settings.boxImg).attr('src', e.target.result);
+                        var img = new Image();
+                        img.src = e.target.result;
+                        //alert(img.width);
+
+                        if (img.width < 180 || img.height < 60) {
+                            noti.createNotification('Image size should be min 180x60 for posting on facebook!', 'warning');
+                        }
+
+                        $(self.settings.boxImg).attr('src', img.src);
 					}
 				})(file);
 
@@ -517,6 +561,17 @@ define('frontEventEditControl',
                         $(this).datetimepicker('show');
                     });
                 });
+            }
+
+            self.__initFacebookPublish = function()
+            {
+                if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
+                    $(self.settings.eventFbStatus).parent().append(
+                        '<br/><span>To publish events on facebook link or sync with your Facebook account at <a href="/profile">profile</a></span>'
+                    );
+                    $(self.settings.eventFbStatus).prop('checked', false);
+                    $(self.settings.eventFbStatus).attr('disabled', true);
+                }
             }
 		};
 

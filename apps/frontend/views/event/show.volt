@@ -36,7 +36,7 @@
                                                 <div class="date-list">
                                                     {% if event.start_date_nice is defined  %}
                                                         <i class="icon-time"></i>
-                                                        <span class="date-start">{{ event.start_date_nice }}</  span>
+                                                        <span class="date-start">{{ event.start_date_nice }}</span>
                                                         {% if event.start_time is defined %}
                                                             start at
                                                             <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
@@ -168,7 +168,7 @@
                                             {% endif %}
                                         {% endif %}
 
-                                        <a href="/event/show/{{ event.id }}">
+                                        <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">
                                             <img src="{{ image }}">
                                         </a>
                                     </div>
@@ -185,7 +185,12 @@
                             <div class="span12">
                                 <div class="comment-box">
                                     <h2>Leave comments</h2>
-                                    <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                                    {% if eventPreview is defined %}
+                                        <img src="/img/comment_tmp.png" alt=""/>
+                                        <div style="height: 20px"></div>
+                                    {% else %}
+                                        <fb:comments href="http://events.apppicker.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -193,7 +198,7 @@
         </div>
     </div>
 </div>
-    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
+    <fb:ref href="http://events.apppicker.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
 {% endblock %}
 
 

@@ -131,11 +131,15 @@ define('eventsPointer',
             },
 
             __createInfoPopupContentSingle: function(event) {
+                var eventlink = window.location.origin+'/event/'+event.id;
+                if (!_.isUndefined(event.slugUri)) {
+                    eventlink = '/event/'+event.slugUri;
+                }
                 return '<div class="info-win" id="content">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
                     '<div>' +
                     '<a target="_blank" href="https://www.facebook.com/events/'+event.fb_uid+'">Facebook link</a> ' +
-                    '<a href="'+window.location.origin+'/event/show/'+event.id+'">Eventweekly link</a></div>' +
+                    '<a href="'+eventlink+'">Eventweekly link</a></div>' +
                     '</div>';
             }
 

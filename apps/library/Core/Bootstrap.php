@@ -41,6 +41,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initSession($di);
 		$this -> _initModels($di);
         $this -> initCoreTag($di);
+        $this -> _initHttp($di);
  
 	}
 
@@ -204,6 +205,10 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                 return $res;
             });
+
+        $compiler->addFunction('toSlugUri', function($resolvedArgs, $exprArgs) {
+            return '\Core\Utils\SlugUri::slug('.$resolvedArgs.')';
+        });
     }
 
     public function initCoreTag($di)
@@ -212,6 +217,13 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         $di->set('tag', function() use ($config) {
                 return new \Core\CoreTag($config);
             });
+    }
+
+    protected function _initHttp($di)
+    {
+        $di->set('http', function() use ($di) {
+            return new \Core\Http($di);
+        });
     }
 
 }

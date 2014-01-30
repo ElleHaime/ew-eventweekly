@@ -11,11 +11,11 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 0, // TODO: set some interval
-                eventsUrl: '/eventmap',
+                //requestInterval: 0, // TODO: set some interval
+                //eventsUrl: '/eventmap',
 
-                //requestInterval: 2000, // TODO: set some interval
-                //eventsUrl: '/event/test-get',
+                requestInterval: 2000, // TODO: set some interval
+                eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
                 searchCityBtn: '.locationCity',

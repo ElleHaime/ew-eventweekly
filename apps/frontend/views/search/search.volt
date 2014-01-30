@@ -64,7 +64,7 @@
                                 <div class="span12">
                                     <div class="event-one clearfix">
                                         <div class="event-one-img">
-                                            <a href="/event/show/{{ event.id }}">
+                                            <a href="/event/{{ event.id }}">
                                                 {% if event.logo is defined %}
                                                     <img src="/upload/img/event/{{ event.logo }}" width="132px" height ="132px">
                                                 {% else %}
@@ -74,7 +74,7 @@
                                         </div>
 
                                         <div class="event-one-text">
-                                            <a href="/event/show/{{ event.id }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
+                                            <a href="/event/{{ event.id }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
 
                                             <div class="date-list">
                                                 <i class="icon-time"></i>

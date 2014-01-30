@@ -21,7 +21,7 @@
                                 </div>
 
                                 <div class="event-one-text">
-                                    <a href="/event/show/{{ event.id }}" class="name-link">{{ event.name }}</a>
+                                    <a href="/event/{{ event.id }}" class="name-link">{{ event.name }}</a>
 
                                     <div class="date-list">
                                         <i class="icon-time"></i>
