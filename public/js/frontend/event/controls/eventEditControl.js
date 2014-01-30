@@ -200,6 +200,7 @@ define('frontEventEditControl',
                 $(self.settings.form).bind("keyup keypress", function(e) {
                     var code = e.keyCode || e.which;
                     if (code  == 13) {
+                        $(self.settings.btnPreview).change();
                         e.preventDefault();
                         return false;
                     }
@@ -230,7 +231,6 @@ define('frontEventEditControl',
                     var $image = $(this).parent().find('img');
 
                     if ($image.hasClass('img-logo')) {
-                        console.log('img-logo');
                         $.post('/event/delete-logo', { id: $image.attr('data-id') }, function(data){});
                         $image.removeClass('img-logo');
                     } else if ($image.attr('data-id') != undefined) {
@@ -651,10 +651,8 @@ define('frontEventEditControl',
                     if (!self.__checkDatesContradictions(false)) result = false;
 
                     if (result) {
-                        console.log("!!!!");
                         $(self.settings.btnPreview).prop('disabled', false);
                     } else {
-                        console.log("???" + $(self.settings.btnPreview).length);
                         $(self.settings.btnPreview).prop('disabled', true);
                     }
                 });
