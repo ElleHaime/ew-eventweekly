@@ -106,7 +106,7 @@ class Controller extends \Phalcon\Mvc\Controller
 				}
 			}
 
-            if ($member->auth_type == 'email' && isset($member->network->account_uid)) {
+            if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
                 $this -> view -> setVar('acc_external', $member->network);
             }
 		} else {

@@ -51,7 +51,7 @@
                                                         {% if event.logo is empty %}
                                                             {% set pic = defaultEventLogo %}
                                                         {% else %}
-                                                            {% set pic = '/upload/img/event/'~event.logo %}
+                                                            {% set pic = '/upload/img/event/'~event.id~'/'~event.logo %}
                                                         {% endif %}
                                                         <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}
@@ -84,7 +84,7 @@
                                                     <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don`t like</button>
                                                 </div>
                                                 {% endif %}
-                                            </div>
+
                                             <div class="event-list-btn clearfix">
                                                 {% if eventListCreatorFlag %}
                                                     <div class="status-btn clearfix">
@@ -131,6 +131,7 @@
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

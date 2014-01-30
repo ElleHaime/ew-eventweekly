@@ -13,7 +13,8 @@ use Core\Utils as _U,
     Objects\EventImage,
     Objects\EventSite,
     Objects\EventMember,
-    Frontend\Models\EventLike;
+    Frontend\Models\EventLike,
+	Frontend\Models\EventImage as EventImageModel;
 use Core\Utils\SlugUri as SUri;
 
 
@@ -229,6 +230,25 @@ class EventController extends \Core\Controllers\CrudController
 
         $this -> view -> setVar('link_back_to_list', true);
 
+        $posters = $flyers = $gallery = [];
+        if (isset($event->id)) {
+            $eventImages = EventImageModel::find('event_id = ' . $event->id);
+
+            foreach ($eventImages as $eventImage) {
+                if ($eventImage->type == 'poster') {
+                    $posters[] = $eventImage;
+                } else if ($eventImage->type == 'flyer') {
+                    $flyers[] = $eventImage;
+                } else if ($eventImage->type == 'gallery') {
+                    $gallery[] = $eventImage;
+                }
+            }
+        }
+
+        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null );
+        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null );
+        $this->view->setVar('gallery', $gallery);
+
         return array(
             'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name),
             'eventMetaData' => $event
@@ -398,6 +418,25 @@ class EventController extends \Core\Controllers\CrudController
         $this -> view -> setVar('categories', $category -> getDefaultIdsAsString());
 
 		parent::editAction();
+
+        $posters = $flyers = $gallery = [];
+        if (isset($this->obj->id)) {
+            $eventImages = EventImageModel::find('event_id = ' . $this->obj->id);
+
+            foreach ($eventImages as $eventImage) {
+                if ($eventImage->type == 'poster') {
+                    $posters[] = $eventImage;
+                } else if ($eventImage->type == 'flyer') {
+                    $flyers[] = $eventImage;
+                } else if ($eventImage->type == 'gallery') {
+                    $gallery[] = $eventImage;
+                }
+            }
+        }
+
+        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null );
+        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null );
+        $this->view->setVar('gallery', $gallery);
 	}
 
 	public function setEditExtraRelations()
@@ -421,7 +460,10 @@ class EventController extends \Core\Controllers\CrudController
 		if (isset($data['id']) && !empty($data['id'])) {
 			$event = Event::findFirst((int)$data['id']);
 			if ($event) {
-				$event -> delete();
+                //$event -> delete();
+                $event->event_status = 0;
+                $event->save();
+
 				$result['status'] = 'OK';
                 $result['id'] = $data['id'];
 
@@ -598,7 +640,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
-		$newEvent['logo'] = $event['logo'];
+		//$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
 		if (isset($this -> session -> get('member') -> network)) {
 			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
@@ -673,10 +715,16 @@ class EventController extends \Core\Controllers\CrudController
 			}
 		}
 
-		//process image
+		//process images
+        $logo = null; $poster = null; $flyer = null;
 		foreach ($this -> request -> getUploadedFiles() as $file) {
-			$newEvent['logo'] = $file -> getName();
-			$logo = $file;
+            if ($file->getKey() == 'add-img-logo-upload') {
+                $logo = $file;
+            } else if ($file->getKey() == 'add-img-poster-upload') {
+                $poster = $file;
+            } else if ($file->getKey() == 'add-img-flyer-upload') {
+                $flyer = $file;
+            }
 		}
 //_U::dump($newEvent);	
 
@@ -687,6 +735,11 @@ class EventController extends \Core\Controllers\CrudController
 		}
 		$ev -> assign($newEvent);
 		if ($ev -> save()) {
+            // create event dir if not exists
+            if (!is_dir($this->config->application->uploadDir . 'img/event/' . $ev->id)) {
+                mkdir($this->config->application->uploadDir . 'img/event/' . $ev->id);
+            }
+
             // start prepare params for FB event
             $fbParams = array(
                 'access_token' => $this->session->get('user_token'),
@@ -715,15 +768,17 @@ class EventController extends \Core\Controllers\CrudController
 			// save image
             $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
 			if (isset($logo)) {
-                $file = $this -> config -> application -> uploadDir . 'img/event/' . $logo -> getName();
-				$logo -> moveTo($file);
+                $filename = $this->uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->id . '/' . $filename;
+                $ev->logo = $filename;
+                $ev->save();
 			} else if ($ev->logo != '') {
-                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->logo;
-            } /*else {
-                if (!isset($ev->logo) || $ev->logo == '') {
-                    $file = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
-                }
-            }*/
+                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
+
+            } else {
+                $ev->logo = '';
+                $ev->save();
+            }
 
             list($width, $height, $type, $attr) = getimagesize($file);
             if ($width < 180 || $height < 60) {
@@ -785,6 +840,36 @@ class EventController extends \Core\Controllers\CrudController
 				}
 			}
 
+            // process poster and flyer
+            $addEventImage = function($image, $imageType) use ($ev) {
+                $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
+
+                $filename = $this->uploadImageFile(
+                    empty($eventPoster) ? '' : $eventPoster->image,
+                    $image,
+                    $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType
+                );
+
+                if ($eventPoster) {
+                    $eventPoster->image = $filename;
+                } else {
+                    $eventPoster = new EventImageModel();
+                    $eventPoster->event_id = $ev->id;
+                    $eventPoster->image = $filename;
+                    $eventPoster->type = $imageType;
+                }
+
+                $eventPoster->save();
+            };
+
+            if (!empty($poster)) {
+                $addEventImage($poster, 'poster');
+            }
+
+            if (!empty($flyer)) {
+                $addEventImage($flyer, 'flyer');
+            }
+
             if (empty($event['id'])) {
                 $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
                 $this -> session -> set('userEventsCreated', $userEventsCreated);
@@ -793,6 +878,38 @@ class EventController extends \Core\Controllers\CrudController
 
         $this -> loadRedirect();
 	}
+
+    /**
+     * @param $oldFilename string
+     * @param $file \Phalcon\Http\Request\FileInterface
+     * @param $path string
+     *
+     * Upload Image of type jpeg, png
+     *
+     * @return string
+     */
+    protected function uploadImageFile($oldFilename, $file, $path)
+    {
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+
+        $imgExts = array('image/jpeg', 'image/png');
+
+        $filename = '';
+        if (in_array($file->getType(), $imgExts)) {
+            $parts = pathinfo($file->getName());
+
+            $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
+            $file->moveTo($path . '/' . $filename);
+
+            if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
+                unlink($path . '/' . $oldFilename);
+            }
+        }
+
+        return $filename;
+    }
 
     /**
      * @Route("/event/import-categories", methods={"GET", "POST"})
@@ -893,5 +1010,48 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('event', $Event);
 
         $this->view->pick('event/show');
+    }
+
+    /**
+     * @Route("/event/delete-logo", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function deleteEventLogoAction()
+    {
+        $post = $this->request->getPost();
+
+        $event = Event::findFirst('id = ' . $post['id']);
+
+        if ($event) {
+            $file = $this->config->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
+
+            if (file_exists($file)) {
+                unlink($file);
+
+                $event->logo = "";
+                $event->save();
+            }
+
+        }
+    }
+
+    /**
+     * @Route("/event/delete-image", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function deleteEventImageAction()
+    {
+        $post = $this->request->getPost();
+
+        $eventImage = EventImageModel::findFirst('id = ' . $post['id']);
+
+        if ($eventImage) {
+            $file = $this->config->application->uploadDir . 'img/event/' . $eventImage->event_id . '/' . $eventImage->type . '/' . $eventImage->image;
+            if (file_exists($file)) {
+                unlink($file);
+
+                $eventImage->delete();
+            }
+        }
     }
 }		

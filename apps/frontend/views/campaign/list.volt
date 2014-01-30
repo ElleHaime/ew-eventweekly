@@ -45,7 +45,7 @@
                                                         <button class="btn editCampaign" id="{{ campaign.id }}">Edit</button>
 									                    <button class="btn deleteCampaign"  id="{{ campaign.id }}" {% if campaign.event|length %} disabled="true" {% endif %}>Delete</button>
                                                     </div>
-                                                </div>
+
                                                 
                                                 <div class="event-list-btn clearfix">
 													{% if campaign.location_id %}
@@ -61,6 +61,7 @@
 				                                        {% endif %}
 				                                    </div>
 				                                </div>
+                                            </div>
                                             </div>
 
                                         </div>
