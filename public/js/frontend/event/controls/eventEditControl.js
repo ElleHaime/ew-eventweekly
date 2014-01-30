@@ -8,6 +8,7 @@ define('frontEventEditControl',
 
 			self.settings = {
                 form: 'form',
+                addEventForm: 'form[name="addEventForm"]',
 
                 inpName: '#name',
                 inpCampaignId: '#hiddenCampaignId',
@@ -105,6 +106,9 @@ define('frontEventEditControl',
                 self.__initCategoryList();
 
                 self.__initFieldsForDateTimePicker();
+
+                self.__checkEnablePreviewBtn();
+                $(self.settings.btnPreview).change();
 
 				self.bindEvents();
 
@@ -206,8 +210,8 @@ define('frontEventEditControl',
                         $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                     }
 
-                    if (!self.__checkRequiredFields()) return false;
-                    if (!self.__checkDatesContradictions()) return false;
+                    if (!self.__checkRequiredFields(true)) return false;
+                    if (!self.__checkDatesContradictions(true)) return false;
 
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
@@ -248,8 +252,8 @@ define('frontEventEditControl',
                     $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());
                 }
 
-                if (!self.__checkRequiredFields()) return false;
-                if (!self.__checkDatesContradictions()) return false;
+                if (!self.__checkRequiredFields(true)) return false;
+                if (!self.__checkDatesContradictions(true)) return false;
 
                 $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
                 $(self.settings.form).removeAttr('target').removeAttr('action');
@@ -545,7 +549,7 @@ define('frontEventEditControl',
 				}
 			}
 
-            self.__checkDatesContradictions = function()
+            self.__checkDatesContradictions = function(showNoti)
             {
                 var isValid = true;
 
@@ -566,7 +570,7 @@ define('frontEventEditControl',
                 }
                 endDate = self.__getTimeInMs(endDate);
 
-                if (startDate > endDate) {
+                if (startDate > endDate && showNoti) {
                     isValid = false;
                     noti.createNotification('Start date cannot be greater than end date', 'error');
                 }
@@ -584,7 +588,7 @@ define('frontEventEditControl',
                 return Date.parse(newDate);
             }
 
-            self.__checkRequiredFields = function()
+            self.__checkRequiredFields = function(showNoti)
             {
                 var isValid = true;
 
@@ -603,7 +607,7 @@ define('frontEventEditControl',
                     }
                 });
 
-                if (!isValid) {
+                if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
                     noti.createNotification(text, 'error');
                 }
@@ -636,6 +640,23 @@ define('frontEventEditControl',
                     $(self.settings.eventFbStatus).prop('checked', false);
                     $(self.settings.eventFbStatus).attr('disabled', true);
                 }
+            }
+
+            self.__checkEnablePreviewBtn = function()
+            {
+                $(self.settings.addEventForm).change(function(){
+                    var result = true;
+                    if (!self.__checkRequiredFields(false)) result = false;
+                    if (!self.__checkDatesContradictions(false)) result = false;
+
+                    if (result) {
+                        console.log("!!!!");
+                        $(self.settings.btnPreview).prop('disabled', false);
+                    } else {
+                        console.log("???" + $(self.settings.btnPreview).length);
+                        $(self.settings.btnPreview).prop('disabled', true);
+                    }
+                });
             }
 		};
 
