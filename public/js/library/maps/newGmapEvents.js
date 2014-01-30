@@ -93,6 +93,9 @@ define('newGmapEvents',
                         if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
                             __lastLat = event.latitude;
                             __lastLng = event.longitude;
+                        }else if (!_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
+                            __lastLat = event.venue.latitude;
+                            __lastLng = event.venue.longitude;
                         }
 
                         var marker = new googleMarker({

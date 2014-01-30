@@ -67,11 +67,27 @@ define('googleMarker',
                 var fbEventIds = _.pluck(Map.events, 'fb_id');
                 if (!_.contains(eventIds, Event.id) || (_.isUndefined(Event.id) && !_.contains(fbEventIds, Event.fb_uid))) {
                     //var newLatLng = new google.maps.LatLng(Event.venue.latitude, Event.venue.longitude);
-                    var newLatLng = new google.maps.LatLng(Event.latitude, Event.longitude);
+
+                    var latitude, longitude;
+                    if (!_.isUndefined(Event.latitude) && !_.isUndefined(Event.longitude)) {
+                        latitude = Event.latitude;
+                        longitude = Event.longitude;
+                    }else {
+                        console.log(Event.venue);
+                        latitude = Event.venue.latitude;
+                        longitude = Event.venue.longitude;
+                    }
+
+                    var newLatLng = new google.maps.LatLng(latitude, longitude);
+
+                    var category = 'other';
+                    if (!_.isUndefined(Event.category) && !_.isUndefined(Event.category[0].key)) {
+                        category = Event.category[0].key;
+                    }
 
                     var Icon = {
-                        icon: settings.icons[Event.category[0].key].icon,
-                        clickedIcon: settings.icons[Event.category[0].key].clickedIcon
+                        icon: settings.icons[category].icon,
+                        clickedIcon: settings.icons[category].clickedIcon
                     };
 
                     // create marker

@@ -5,7 +5,7 @@ define('googleInfoWindow',
         function InfoWindow(event) {
 
             self.createInfoPopupContentSimple = function(event) {
-                var date = '', img = '';
+                var date = '', img = '', category = 'other';
 
                 if (!_.isUndefined(event.start_date)) {
                     date = Date.parse(event.start_date).toString('d MMM yyyy');
@@ -18,8 +18,12 @@ define('googleInfoWindow',
                 }else if (!_.isUndefined(event.pic_big)) {
                     img = event.pic_big;
                 }
+
+                if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0].key)) {
+                    category = event.category[0].key;
+                }
                 
-                return '<div class="info-win '+event.category[0].key+'-category " id="content"> ' +
+                return '<div class="info-win '+category+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
                     '<img  class="events-img" src="'+img+'" alt="">' +
                     '<div class="events-date-box"><i class="icon-time"></i>'+date+'</div> ' +
@@ -32,7 +36,7 @@ define('googleInfoWindow',
             };
 
             self.createInfoPopupContentMany = function(event) {
-                var date = '';
+                var date = '', category = 'other';
 
                 if (!_.isUndefined(event.start_date)) {
                     date = Date.parse(event.start_date).toString('d MMM yyyy');
@@ -40,8 +44,12 @@ define('googleInfoWindow',
                     date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 }
 
+                if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0].key)) {
+                    category = event.category[0].key;
+                }
+
                 return '<div class="events-map">' +
-                    ' <div class="'+event.category[0].key+'-category">' +
+                    ' <div class="'+category+'-category">' +
                     '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +
                     '<span class="date-events-map">'+date+'</span> ' +
                     '<span class="events-map-text">'+event.name+'</span>' +
