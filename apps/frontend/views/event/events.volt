@@ -70,7 +70,7 @@
                                                         <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
                                                         <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
                                                     </div>
-                                                </div>
+
                                                 <div class="event-list-btn clearfix">
                                                     <div class=" place-address tooltip-text"  data-original-title="   {{ event['location'] }}" title="" rel="tooltip">
                                                         <span>
@@ -97,6 +97,7 @@
                                                         </div>
                                                     {% endif %}
                                                 </div>
+                                            </div>
                                             </div>
                                         </div>
                                     </div>

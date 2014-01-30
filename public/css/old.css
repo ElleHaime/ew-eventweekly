@@ -14,7 +14,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    /*min-width: 460px;*/
+    min-width: 460px;
     color:#333333;
     background: #f3f3f3;
     padding: 0;
@@ -972,7 +972,7 @@ input[type="color"]:focus, .uneditable-input:focus
     padding-bottom: 10px;
 }
 
-.event-site  a {
+.event-site > a {
     color: #0088C4;
     display: inline-block;
     zoom: 1;
@@ -1055,6 +1055,9 @@ input[type="color"]:focus, .uneditable-input:focus
 
 .plans-box .btn, .btn-hide .btn  {
     min-width: 174px;
+}
+.event-discription .btn-hide  {
+    float: left;
 }
 .btn-hide .event-site .btn {
     margin-right:7px;
@@ -2201,40 +2204,24 @@ input[type="checkbox"]  {
     height: auto;
     border: 1px solid #ccc;;
 }
-.event-one-img a {
-    text-align: center;
-    display: block;
-    width: 159px;
-    height: 120px;
-    position: relative;
-    padding: 0;
-    overflow: hidden;
-}
 .event-one-img {
     float: left;
-    margin: 0 20px 10px 0;
+    margin: 0 20px 0 0;
     position: relative;
-    width: 159px;
-    height: auto;
-    border: 1px solid #ccc;;
+    width: 416px;
+    height: 275px;
+    border: 1px solid #ccc;
+    overflow: hidden;
 }
-.event-one-img a {
-    text-align: center;
-    display: block;
-    width: 159px;
-    height: 120px;
-}
-
-
-.event-one-img img {
-    position: absolute;
-    top: 0;
-    right: 0;
+.event-one-img a , .event-one-img  img {
     bottom: 0;
     left: 0;
     margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
 }
-
 .event-one-text p {
     color:#4D4D4D;
     padding: 5px 0;
@@ -2269,8 +2256,6 @@ input[type="checkbox"]  {
     display: inline-block;
     zoom: 1;
     *display: inline;
-    /*max-width: 240px;*/
-    float: right;
     margin: 0;
 }
 
@@ -2383,9 +2368,6 @@ input[type="checkbox"]  {
 }
 /*------------------------------------------end plans box css----------------------------------------------------------*/
 
-.event-list-btn {
-    float: right;
-}
 .event-site .btn {
     margin-bottom: 10px;
 }
@@ -2677,11 +2659,6 @@ ul.days-events  {
     position: relative;
 }
 
-.img-box {
-    max-width: 200px;
-    max-height: 200px;
-    border: 1px solid #cccccc;
-}
 
 .search-img {
     background: url(../img/demo/icons.png) no-repeat 0 0 ;
@@ -2693,6 +2670,9 @@ ul.days-events  {
     top:11px;
 }
 
+.event-one-img  .all-img {
+    height: 157px;
+}
 .btn-show {
     float: none;
 }
@@ -2842,10 +2822,8 @@ ul.days-events  {
 .event-list-btn  .place-address span {
     height: 22px;
     overflow: hidden;
-    width: 115px;
+    padding-right: 15px;
 }
-
-
 
 .cities_box {
     padding-top: 30px;
@@ -3823,9 +3801,16 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
     margin-top: 10px;
     height: 42px;
     padding: 0 10px;
+    width: 174px;
+    clear: both;
+    float: left;
 }
 .status-btn .btn:first-child {
     margin-top: 0;
+}
+.add-img .event-one-img {
+    width: 159px;
+    height: 157px;
 }
 
 i.icon-map {
@@ -3897,6 +3882,11 @@ i.icon-map {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
+}
+
+.event-list-btn .tooltip-inner  {
+    width: 343px;
+    max-width: 359px;
 }
 .tooltip-arrow {
     position: absolute;
@@ -4069,10 +4059,10 @@ i.icon-map {
     float: right;
     margin-left: -300px;
 }
-#content_right_inner
-{
-    margin-left: 180px;
-}
+/*#content_right_inner*/
+/*{*/
+    /*margin-left: 180px;*/
+/*}*/
 #content_center
 {
     width: 100%;
@@ -4089,6 +4079,10 @@ i.icon-map {
     float: right;
 }
 
+.sidebar-box .add-img
+{
+    margin-bottom: 0;
+}
 .sidebar-box .input-append  input{
     height: 32px;
     width: 228px;
@@ -4106,7 +4100,6 @@ i.icon-map {
     height: 42px;
 }
 
-.event-one-text a { color:#464646}
 
 .page-top {
     padding: 12px 12px 0 12px ;
@@ -4129,8 +4122,7 @@ i.icon-map {
 
 
 .event-list-btn {
-    float:right;
-    width:300px;
+    width:359px;
 }
 #cont {
     margin-left:300px;
@@ -4161,10 +4153,6 @@ i.icon-map {
     margin-left:-300px;
     width:100%;
     margin-top: 10px;
-}
-.event-list-btn {
-    float:right;
-    width:174px;
 }
 .sidebar-box  .event-list-btn {
     width:300px;
@@ -4233,7 +4221,7 @@ i.icon-map {
 }
 
 .page-top .event-one {
-    padding: 12px 12px 0;
+    padding: 12px 0 7px 0;
 }
 .btn-hide .event-site {
     margin-bottom: 0;
@@ -4244,6 +4232,26 @@ i.icon-map {
     display: inline-block;
 }
 
+
+.event-photo  {
+    margin-bottom: 10px;
+    width: 100%;
+    height: 264px;
+    overflow: hidden;
+}
+.event-discription .add-img {
+    width: 264px;
+    margin-bottom: 0;
+}
+.btn-all-img:hover {
+    color:#fff;
+}
+
+
+.event-discription .add-img .event-one-img {
+    height: 157px;
+    width: 260px;
+}
 /*-------markers style---*/
 
 .events-img-box {
@@ -4402,17 +4410,69 @@ a.view-btn  {
     cursor: pointer;
 }
 
-.modal, #previewEvent  {
+ #previewEvent  {
     left: 10%;
     margin: 0 auto;
     width: 80%;
     height: 78%;
 }
-.modal-body {
+#previewEvent   .modal-body {
     height:100%;
     max-height: 80%;
 }
 .modal .close {
     font-size: 63px;
     line-height: 38px;
+}
+
+
+.event-discription {
+    float: left;
+    width: 75%;
+}
+.sidebar-box {
+    float: right;
+    width: 300px;
+}
+.share-box  {
+    margin-top: 20px;
+}
+.add-event_i #content_right_inner
+{
+    margin-left: 180px;
+}
+.all-img {
+    position: relative;
+}
+.all-img > a {
+    border: 1px solid #ccc;
+    margin-left: 7px;
+}
+.all-img > a:first-child {
+    margin-left: 0;
+}
+.btn-all-img {
+    position:absolute;
+    right:1px;
+}
+.all-img .modal {
+    max-width: 800px;
+    margin: 0 auto;
+    left: 5%;
+    height: 80%;
+    right: 5%;
+    border-radius: 0;
+}
+.all-img .modal-header {
+    border-radius: 0;
+    border: 0;
+}
+.all-img  .close {
+    position: absolute;
+    right:6px;
+    top:6px;
+}
+.all-img .modal-body {
+    padding: 0;
+    max-height: 100%;
 }

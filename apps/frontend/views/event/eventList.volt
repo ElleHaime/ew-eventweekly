@@ -46,12 +46,12 @@
                                     <div class="span12">
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
-                                                <a href="/event/{{ event.id }}">
+                                                <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">
                                                     {% if event.logo is defined %}
                                                         {% if event.logo is empty %}
                                                             {% set pic = defaultEventLogo %}
                                                         {% else %}
-                                                            {% set pic = '/upload/img/event/'~event.logo %}
+                                                            {% set pic = '/upload/img/event/'~event.id~'/'~event.logo %}
                                                         {% endif %}
                                                         <img src="{{ pic }}" width="132px" height ="132px">
                                                     {% else %}
@@ -61,7 +61,7 @@
                                             </div>
 
                                             <div class="event-one-text">
-                                                <a href="/event/{{ event.id }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
+                                                <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
 
                                                 <div class="date-list">
                                                     {% if event.start_date_nice is defined %}
@@ -84,7 +84,7 @@
                                                     <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don`t like</button>
                                                 </div>
                                                 {% endif %}
-                                            </div>
+
                                             <div class="event-list-btn clearfix">
                                                 {% if eventListCreatorFlag %}
                                                     <div class="status-btn clearfix">
@@ -131,6 +131,7 @@
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

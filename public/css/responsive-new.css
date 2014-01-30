@@ -63,6 +63,9 @@
     .event-one   .event-one-text  {
         max-width: 51%;
     }
+    .event-discription {
+        width: 70%;
+    }
 }
 
 @media screen and (max-width: 1050px) {
@@ -82,10 +85,12 @@
     .location-place_country .location-search {
         left: -213px;
     }
-    /*.location-search input {*/
-        /*width: 68%;*/
-    /*}*/
-
+    .event-discription {
+        width: 100%;
+    }
+    .sidebar-box_event {
+        float: left;
+    }
     .event-site {
         margin-bottom: 0;
     }
@@ -94,13 +99,8 @@
 
 @media screen and (max-width: 980px) {
 
-    .event-one .event-list-btn {
-        float: left;
-        padding-left: 180px;
-        clear: both;
-    }
     .event-one .event-one-text {
-        max-width: 74%;
+        max-width: 45%;
     }
 
     .events-list_nbr .event-one-text {
@@ -111,11 +111,20 @@
         float: right;
         padding: 0;
     }
+    .event-one-box {
+        padding: 0 3%;
+    }
 }
 
 @media screen and (max-width: 890px) {
     .location-place_country .location-search {
         left: -266px;
+    }
+    .event-one .event-one-text {
+        max-width: 95%;
+    }
+    .event-one-text {
+        padding: 0 20px;
     }
     .sidebar-box
     {
@@ -124,6 +133,20 @@
         clear: both;
     }
 
+    .active-events {
+        padding: 0 3%;
+    }
+    .date-list {
+        padding: 5px 0;
+    }
+    .signleEventListElement .event-one
+    {
+        padding:0 0  12px 0;
+    }
+    .event-one-img
+    {
+        width: 99.6%;
+    }
     #content-box {
         margin-right: 0;
     }
@@ -132,17 +155,9 @@
         margin-right: 0;
     }
 
-    .event-one .event-list-btn {
-        float: left;
-        padding-left: 182px;
-    }
     .event-list-btn {
         float: left;
         clear: both;
-    }
-    .events-list_nbr .event-list-btn {
-        float: left;
-        padding-left:182px;
     }
 
     .events-list_nbr .event-one-text {
@@ -220,7 +235,7 @@
     }
 
     .event-one .event-one-text {
-        max-width: 66%;
+        max-width: 100%;
     }
     .user-box a > span {
        display: none;
@@ -537,19 +552,12 @@
         width: 91.4% !important;
     }
     .row-fluid .show-list {
-        margin-right: 20px;
+        margin-right: 17px;
     }
     .how-it-works {
         padding: 20px 0;
         clear: both;
     }
-    /*.facebook-button {*/
-        /*display: none;*/
-    /*}*/
-    /*.facebook-button_small {*/
-        /*display: block;*/
-        /*margin-top: 0;*/
-    /*}*/
     .line-box:first-child {
         float: right;
     }
