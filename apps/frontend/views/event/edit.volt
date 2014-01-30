@@ -237,17 +237,17 @@
                                     <div class="event-one-img">
                                         <div class="all-img clearfix">
                                             {% if event.logo %}
-                                                <a href="">
+
                                                     <img
                                                         data-id="{{ event.id }}"
                                                         class='img-box img-logo'
                                                         src="/upload/img/event/{{ event.id }}/{{ event.logo }}"
                                                         alt=""
                                                     />
-                                                </a>
+
 												<span class="delete-logo"></span>
                                             {% else %}
-                                                <a href=""><img class='img-box' src="/img/demo/q1.jpg" alt="" /></a>
+                                                <img class='img-box' src="/img/demo/q1.jpg" alt="" />
 												<span class="delete-logo"></span>
                                             {% endif %}
                                         </div>
@@ -264,17 +264,17 @@
                                     <div class="event-one-img">
                                         <div class="all-img clearfix">
                                             {% if poster is defined %}
-                                                <a href="">
+
                                                     <img
                                                         data-id="{{ poster.id }}"
                                                         class='img-box'
                                                         src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
                                                         alt=""
                                                     />
-                                                </a>
+
                                                 <span class="delete-logo"></span>
                                             {% else %}
-                                                <a href=""><img class='img-box' src="/img/demo/q1.jpg" alt="" /></a>
+                                                <img class='img-box' src="/img/demo/q1.jpg" alt="" />
                                                 <span class="delete-logo"></span>
                                             {% endif %}
                                         </div>
@@ -291,17 +291,17 @@
                                     <div class="event-one-img">
                                         <div class="all-img clearfix">
                                             {% if flyer is defined %}
-                                                <a href="">
+
                                                     <img
                                                         data-id="{{ flyer.id }}"
                                                         class='img-box'
                                                         src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
                                                         alt=""
                                                     />
-                                                </a>
+
                                                 <span class="delete-logo"></span>
                                             {% else %}
-                                                <a href=""><img class='img-box' src="/img/demo/q1.jpg" alt="" /></a>
+                                            <img class='img-box' src="/img/demo/q1.jpg" alt="" />
                                                 <span class="delete-logo"></span>
                                             {% endif %}
                                         </div>
