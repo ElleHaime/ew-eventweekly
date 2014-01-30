@@ -1244,8 +1244,9 @@ class EventController extends \Core\Controllers\CrudController
         	$this -> session -> set('grabOnce', true);
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
-        } 
-       // $this -> grabNewEvents();
+        }  
+
+//        $this -> grabNewEvents();
     }
 
 
@@ -1296,13 +1297,14 @@ class EventController extends \Core\Controllers\CrudController
 				continue;
 			} 
 
-/*			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
+			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
 				$this -> logIt("friend_event");
 				$start = $query['start'];
 				$limit = $query['limit'];
 				$fUids = implode(',', $this -> friendsUid);
 
 				do {
+					$this -> logIt($start . ' entry');
 					$replacements = array($start, 
 										  $limit, 
 										  $loc -> latitudeMin, 
@@ -1337,7 +1339,7 @@ class EventController extends \Core\Controllers\CrudController
 				} while($start !== false);
 
 				continue;
-			} */
+			} 
 
 			if ($query['name'] == 'friend_going_eid' && !empty($this -> friendsUid)) {
 				$this -> logIt("friend_going_eid");
@@ -1353,10 +1355,8 @@ class EventController extends \Core\Controllers\CrudController
 				continue;
 			}
 
-/*			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
-				$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-				fwrite($f, "friend_going_event\r\n");
-				fclose($f);
+			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
+				$this -> logIt('friend_going_event');
 				$start = $query['start'];
 				$limit = $query['limit'];
 				$eids = implode(',', $this -> friendsGoingUid);
@@ -1408,7 +1408,7 @@ class EventController extends \Core\Controllers\CrudController
 				} while($start !== false);
 
 				break;
-			} */
+			} 
 		}
 
 		$this -> session -> set('isGrabbed', true);
