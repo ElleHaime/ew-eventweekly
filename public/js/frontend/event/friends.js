@@ -2,21 +2,22 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
-	'frontEventLike',
+    'eventFriendControl',
 	'noti',	
 	'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontEventLike, noti) {
+	function($, frontTopPanel, fb, eventFriendControl, noti) {
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
 		fb.init(); 
-		frontEventLike.init();
 		noti.init();
+
+        eventFriendControl.init();
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');
