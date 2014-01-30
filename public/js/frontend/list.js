@@ -20,9 +20,9 @@ require([
 		
 		frontEventLike.init();
 
-        var listListener = new listListener({
+        /*var listListener = new listListener({
             eventsBlock: '.active-events'
-        });
+        });*/
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');

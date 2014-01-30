@@ -5,11 +5,18 @@ define('googleInfoWindow',
         function InfoWindow(event) {
 
             self.createInfoPopupContentSimple = function(event) {
-                var date = Date.parse(event.start_date).toString('d MMM yyyy');
-                var img = '';
+                var date = '', img = '';
 
-                if (!_.isUndefined(event.image[0])) {
+                if (!_.isUndefined(event.start_date)) {
+                    date = Date.parse(event.start_date).toString('d MMM yyyy');
+                }else if (!_.isUndefined(event.start_date_nice)) {
+                    date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                }
+
+                if (!_.isUndefined(event.image) && !_.isUndefined(event.image[0])) {
                     img = event.image[0].image;
+                }else if (!_.isUndefined(event.pic_big)) {
+                    img = event.pic_big;
                 }
                 
                 return '<div class="info-win '+event.category[0].key+'-category " id="content"> ' +
@@ -25,7 +32,14 @@ define('googleInfoWindow',
             };
 
             self.createInfoPopupContentMany = function(event) {
-                var date = Date.parse(event.start_date).toString('d MMM yyyy');
+                var date = '';
+
+                if (!_.isUndefined(event.start_date)) {
+                    date = Date.parse(event.start_date).toString('d MMM yyyy');
+                }else if (!_.isUndefined(event.start_date_nice)) {
+                    date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
+                }
+
                 return '<div class="events-map">' +
                     ' <div class="'+event.category[0].key+'-category">' +
                     '<a href="'+window.location.origin+'/event/show/'+event.id+'" class="clearfix">' +

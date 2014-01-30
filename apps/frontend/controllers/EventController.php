@@ -56,8 +56,8 @@ class EventController extends \Core\Controllers\CrudController
 		$events = $this -> searchAction($lat, $lng, $city);
 
 		if (count($events) > 0) {
-			$res['status'] = 'OK';
-			$res['message'] = $events;
+			$res['status'] = true;
+			$res['events'] = array_merge($events[0], $events[1]);
 			echo json_encode($res);
 			//die();
 		} else {

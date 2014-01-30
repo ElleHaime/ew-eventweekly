@@ -90,7 +90,7 @@ define('newGmapEvents',
                        
                         var InfoWindow = new googleInfoWindow(event);
 
-                        if (event.latitude != null && event.longitude != null) {
+                        if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
                             __lastLat = event.latitude;
                             __lastLng = event.longitude;
                         }

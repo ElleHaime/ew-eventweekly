@@ -119,7 +119,7 @@ class SearchController extends \Core\Controller
                 if ($postData['searchType'] == 'in_map') {
                     $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     $countResults = count($result);
-                    $result = json_encode($result);
+                    $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 }else {
                     $page = $this->request->getQuery('page');
                     if (empty($page)) {
