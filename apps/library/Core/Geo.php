@@ -28,6 +28,7 @@ class Geo extends Plugin
 	{
 		if ($dependencyInjector) {
 			$this -> _config = $dependencyInjector -> get('config');
+			$this -> _fb_config = $dependencyInjector -> get('facebook_config');
 		} else {
 			include(CONFIG_SOURCE);
 			$this -> _config = json_decode(json_encode($cfg_settings), false);
@@ -40,7 +41,7 @@ class Geo extends Plugin
 	
 	public function setUserIp()
 	{
-		if ($this -> _config -> application -> debug) {
+		if ($this -> _fb_config -> debug) {
 			//$this -> _userIp = '134.249.172.183';
 			$this -> _userIp = '31.172.138.197';
 		} else {
