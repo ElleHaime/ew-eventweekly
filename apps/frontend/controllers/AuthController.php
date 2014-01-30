@@ -123,6 +123,7 @@ class AuthController extends \Core\Controller
             }
            
             $this -> session -> set('user_token', $access_token);
+            $this -> session -> set('user_fb_uid', $uid);
             $this -> session -> set('role', Acl::ROLE_MEMBER);
 
             $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);

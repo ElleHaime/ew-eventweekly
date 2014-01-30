@@ -1,4 +1,55 @@
 require([
+    'jquery',
+    'frontTopPanel',
+    'fb',
+    'googleMap',
+    'newGmapEvents',
+    'googleMc',
+    'utils',
+    'noti',
+    'domReady',
+    'underscore',
+    'jCookie'
+],
+    function($, frontTopPanel, fb, googleMap, newGmapEvents, googleMc, utils, noti) {
+        noti.init();
+        var locationElem = $('#current_location');
+
+        console.log('type');
+        console.log(typeof googleMap);
+
+        var map = new googleMap({
+            mapCenter: {
+                lat: locationElem.attr('latitude'),
+                lng: locationElem.attr('longitude')
+            }
+        });
+
+        var Mc = new googleMc({
+            Map: map,
+            markers: []
+        });
+
+        var newGmapEvents = new newGmapEvents(map, Mc);
+
+        frontTopPanel.init({
+            searchCityBlock: '.searchCityBlock'
+        });
+        fb.init();
+
+        if ($('#conflict_location').length > 0) {
+            noti.createNotification('Your location from Facebook does not match to location from IP. Please confirm your location in <a href="/profile">profile</a> settings.', 'warning');
+        }
+
+        if ($('#splash_messages').length > 0) {
+            var fMessage = $('#splash_messages');
+            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+        }
+    }
+);
+
+/*
+require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
@@ -36,4 +87,4 @@ require([
 			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
 		}
 	}
-);
+);*/

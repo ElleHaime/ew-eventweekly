@@ -31,8 +31,11 @@ $cfg_settings = array(
 		'cache' => array(
 			'lifetime' => '86400',
 			'prefix' => 'pe_',
-			'adapter' => 'Memcached',
+			'adapter' => 'Memcache',
 			'cacheDir' => ROOT_APP . 'var/cache/data/',
+			'host' => 'localhost',
+			'port' => 11211,
+			'persistent' => false
 		),
 		'namespaces' => array(
 			'Core' => ROOT_APP . 'apps/library/Core/',
@@ -65,11 +68,7 @@ $cfg_settings = array(
 			'path' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 		),
         'uploadDir' => ROOT_APP . 'public/upload/',
-        'defaultLogo' => '/img/logo200.png',
-        'facebook' => [
-            'appId' => '166657830211705',
-            'appSecret' => 'e917842e47a57adb93a1e9761af4117a'
-        ]
+        'defaultLogo' => '/img/logo200.png'
     ),
 	
 	'modules' => array(

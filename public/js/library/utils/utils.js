@@ -29,6 +29,7 @@ define('utils',
 			        };
                     options = $.extend(options, boundsOptions);
 			    }
+
 			    var autocomplete = new google.maps.places.Autocomplete(input, options);
 
 			    return autocomplete;

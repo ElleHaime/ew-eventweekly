@@ -91,7 +91,7 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax') && (($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'private') || ($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))) {
-                $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].'AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].'AND '.$postData['searchLocationLngMax']);
+                $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
 
                 $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                 $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
@@ -119,7 +119,7 @@ class SearchController extends \Core\Controller
                 if ($postData['searchType'] == 'in_map') {
                     $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     $countResults = count($result);
-                    $result = json_encode($result);
+                    $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 }else {
                     $page = $this->request->getQuery('page');
                     if (empty($page)) {

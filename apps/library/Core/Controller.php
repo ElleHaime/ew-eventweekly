@@ -7,6 +7,10 @@ use Phalcon\Filter,
 	Core\Utils as _U,
 	Frontend\Form\SearchForm,
     Frontend\Models\Location,
+    Frontend\Models\Event,
+    Frontend\Models\Venue,
+    Frontend\Models\EventMemberFriend,
+    Frontend\Models\MemberNetwork,
     Frontend\Models\EventCategory AS CountEvent,
     Thirdparty\MobileDetect\MobileDetect;
 
@@ -18,10 +22,10 @@ class Controller extends \Phalcon\Mvc\Controller
 	protected $model				= false;
 	protected $module 				= false;
 	protected $memberId				= false;
-	protected $locator				= false;
 
-    public $eventListCreatorFlag = false;
+    public $eventListCreatorFlag 	= false;
 	
+
 	
 	public function initialize()
 	{
@@ -33,32 +37,31 @@ class Controller extends \Phalcon\Mvc\Controller
 			$this -> session -> start();
 		}
 
-		if (!$this -> locator) {
-			$this -> plugLocator();
-		}
 		$this -> plugSearch();
+		$this -> checkCache();
 
         $member = $this -> session -> get('member');
         $loc = $this -> session -> get('location');
 
-		if (!$loc || (is_object($member) && $loc->id != $member->location_id) && $loc instanceof \stdClass) {
+		if (!$loc 
+			|| ($member === NULL)
+			|| ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id)) 
+			&& $loc instanceof \stdClass) 
+		{
+			$location = false;
+			$locModel = new Location();
             if ($member) {
-                $location = Location::findFirst('id = '.$member->location_id);
+                $location = $locModel::findFirst('id = '.$member->location_id);
             }
-            if (!isset($location)) {
-                $location = $this -> locator -> createOnChange();
+  
+            if ($location === false) {
+                $location = $locModel -> createOnChange();
             }
 			$this -> session -> set('location', $location);
 		}
-
         $loc = $this -> session -> get('location');
 
 		if (!$loc -> latitude && !$loc -> longitude) {
-			//$geo = new \Core\Geo();
-			//$coords = $geo -> getUserLocation();
-			//$loc -> latitude = $coords['latitude'];
-			//$loc -> longitude = $coords['longitude'];
-
             $loc -> latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
 			$loc -> longitude = (float)(($loc->longitudeMin + $loc->longitudeMax) / 2);
 			$loc -> latitudeMin = (float)$loc -> latitudeMin;
@@ -117,10 +120,20 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this ->view->setVar('acc_synced', 1);
         }
+		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
+			$eventsCreatedObject = new Event();
+			$eventsFriendsObject = new EventMemberFriend();
 
+			$this -> session -> set('userEventsCreated', $eventsCreatedObject -> getCreatedEventsCount($this -> session -> get('memberId')));
+	        $this -> session -> set('userFriendsEventsGoing', $eventsFriendsObject -> getEventMemberFriendEventsCount($this -> session -> get('memberId')));
+		}
+
+		$this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
+        $this -> view -> setVar('userFriendsGoing', $this -> session -> get('userFriendsEventsGoing'));
         $this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
         $this -> view -> setVar('userEventsLiked', $this -> session -> get('userEventsLiked'));
         $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
+        $this -> view -> setVar('userFriendsGoing', $this -> session -> get('userFriendsEventsGoing'));
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
 
@@ -209,14 +222,6 @@ class Controller extends \Phalcon\Mvc\Controller
 		$this -> view -> setVar('formCategories', $categories);
 	}
 	
-	
-	public function plugLocator()
-	{
-		$locModel = 'Location';
-		$locPath = $this -> getModelPath() . $locModel;
-		$this -> locator = new $locPath;
-	}
-
     protected function setFlash($text = '', $type = 'info') {
         $this->session->set('flashMsgText', $text);
         $this->session->set('flashMsgType', $type);
@@ -228,5 +233,31 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setJsonContent($data);
         $this->response->send();
+    }
+
+    public function checkCache()
+    {
+    	if ($this -> config -> application -> debug) {
+			$keys = $this -> cacheData -> queryKeys();
+			foreach ($keys as $key) {
+			    $this -> cacheData -> delete($key);
+			}
+		}
+
+		if (is_null($this -> cacheData -> get('locations'))) {
+			Location::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_venues'))) {
+			Venue::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_events'))) {
+			Event::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_members'))) {
+			MemberNetwork::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_friend_events'))) {
+			EventMemberFriend::setCache();
+		}
     }
 }

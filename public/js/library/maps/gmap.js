@@ -52,6 +52,9 @@ define('gmap',
 		        // create map
 		        self.Map = new google.maps.Map(document.getElementById(self.settings.mapContainer), mapOptions);
 
+                self.Map.markers = [];
+                self.Map.events = [];
+
 		        return _.isNull(self.Map);
 		    } 
 

@@ -15,6 +15,7 @@ use \Phalcon\Logger\Adapter\File as FileAdapter;
 class Application extends BaseApplication
 {
 	private $_config 			= null;
+	private $_facebookConfig	= null;
 	private $_databaseConfig 	= null;
 	private $_router 			= null;
 	protected $_loader			= null;
@@ -28,13 +29,16 @@ class Application extends BaseApplication
 	{
 		include_once(CONFIG_SOURCE);
 		include_once(DATABASE_CONFIG_SOURCE);
+		include_once(FACEBOOK_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
 		$this -> _databaseConfig = new Config($cfg_database);
+		$this -> _facebookConfig = new Config($cfg_facebook);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
-		
+		$di -> setShared('facebook_config', $this -> _facebookConfig);
+
 		if ($this -> _config -> application -> defaultModule) {
 			self::$defModule = $this -> _config -> application -> defaultModule;
 		}
@@ -233,6 +237,15 @@ die();*/
 
 	protected function _initCache(\Phalcon\DI $di)
 	{
+		$frontCache = new Phalcon\Cache\Frontend\Data(array('lifetime' => $this -> _config -> application -> cache -> lifetime));
+		$cache = new Phalcon\Cache\Backend\Memcache($frontCache, array(
+			'host' => $this -> _config -> application -> cache -> host,
+			'port' => $this -> _config -> application -> cache -> port,
+			'persistent' => $this -> _config -> application -> cache -> persistent
+		 ));
+
+		$di -> set('cacheData', $cache);
+
 		/*if (!$this -> _config -> application -> debug) {
 
             // Get the parameters
@@ -257,13 +270,6 @@ die();*/
 			// Cache:Models
 			$cacheModels = new $cacheAdapter($frontDataCache, $backEndOptions);
 			$di -> set('modelsCache', $cacheModels, true);
-
-		} else { */
-			$cache = new \Core\Cache\Mock(null);
-			$di -> set('cacheData', $cache);
-			$di -> set('cacheOutput', $cache);
-			$di -> set('modelsCache', $cache);
-			$di -> set('viewCache', $cache);
-		//}
+		} */
 	}
 }

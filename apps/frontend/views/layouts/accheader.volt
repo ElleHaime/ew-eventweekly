@@ -60,6 +60,10 @@
                                         <span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
                                         <span class="btn-text">Liked by you</span>
                                     </button>
+                                    <button class="btn btn-block" onclick="location.href='/event/friends'">
+                                        <span class="btn-count" id="userFriendsGoing">{{ userFriendsGoing }}</span>
+                                        <span class="btn-text">Friends events</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

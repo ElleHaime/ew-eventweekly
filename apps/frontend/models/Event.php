@@ -15,6 +15,7 @@ use Objects\Event as EventObject,
     Frontend\Models\Category,
     Frontend\Models\MemberFilter,
     Frontend\Models\EventMember as EventMemberModel,
+    Frontend\Models\EventMemberFriend,
     Frontend\Models\EventLike,
     Objects\EventCategory AS EventCategoryObject,
     Objects\EventTag AS EventTagObject,
@@ -34,6 +35,10 @@ class Event extends EventObject
 
     const ORDER_DESC = 4;
 
+    const CONDITION_SIMPLE = 5;
+
+    const CONDITION_COMPLEX = 6;
+
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 
@@ -42,14 +47,13 @@ class Event extends EventObject
 										  '1' => 'Daily',
 										  '7' => 'Weekly');
 	protected $locator = false;
-
 	private $conditions = [];
-
 	private $selector = ' AND';
 
     public function afterDelete()
     {
         $di = $this -> getDi();
+
         if ($di -> has('session')) {
             $session = $di -> getShared('session');
 
@@ -117,36 +121,22 @@ class Event extends EventObject
         $this->slugUri = $this->id.'-'.SUri::slug($this->name);
 	}
 
-	public function grabEventsByFbId($token, $eventId)
-	{
-		$eventObj = self::findFirst('id = ' . $eventId);
-		$fbId = $eventObj -> fb_uid;
+    public function getCreatedEventsCount($uId)
+    {
+        if ($uId) {
+            return self::find(array('member_id = ' . $uId)) -> count();
+        } else {
+            return 0;
+        }
+    }
 
-		$this -> facebook = new Extractor();
-		$event = $this -> facebook -> getEventById($fbId, $token);
-		$event = $event[0]['fql_result_set'][0];
+    public function grabEventsByFbToken($token, $location)
+    {
+        $this -> facebook = new Extractor();
+        $events = $this -> facebook -> getEventsSimpleByLocation($token, $location);
 
-		return $event;
-	}
-
-
-	public function grabEventsByEwId($eventId)
-	{
-        $this -> hasManyToMany('id', '\Objects\EventCategory', 'event_id', 'category_id', '\Objects\Category', 'id',  array('alias' => 'event_category'));
-		$eventObj = self::findFirst('id = ' . $eventId);
-
-		return $eventObj;
-	}
-	
-
-	public function grabEventsByFbToken($token, $location)
-	{
-		$this -> facebook = new Extractor();
-		$events = $this -> facebook -> getEventsSimpleByLocation($token, $location);
-
-		return $events;
-	}
-
+        return $events;
+    }
 
     public function grabEventsByCoordinatesScale($lat, $lng, $uId)
 	{
@@ -219,6 +209,300 @@ class Event extends EventObject
 	}
 
 
+    public function setCondition($condition)
+    {
+        if (!empty($condition)) {
+            $this -> conditions[] = (string)$condition;
+        }
+       
+        return $this;
+    }
+
+    public function setSelector($selector)
+    {
+    	if (!empty($selector)) {
+    		$this -> selector = (string)$selector;
+    	}
+    	 
+    	return $this;
+    }
+
+    public function listEvent()
+    {
+        $query = '
+                SELECT event.*, category.*, location.*, venue.name AS venue
+                FROM \Frontend\Models\Event AS event
+                LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
+                LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
+                LEFT JOIN \Frontend\Models\Location AS location ON (event.location_id = location.id)
+                LEFT JOIN \Frontend\Models\Venue AS venue ON (location.id = venue.location_id AND event.fb_creator_uid = venue.fb_uid)
+                LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event.id = event_like.event_id AND event_like.status = 1)
+                LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
+            ';
+
+        if (!empty($this -> conditions)) {
+            $query .= ' WHERE';
+            $count = count($this -> conditions);
+            for ($i = 0; $i < $count; $i++) {
+                if ($i !== 0) {
+                	$query .= $this -> selector;
+               	}
+                $query .= " " . $this -> conditions[$i];
+            }
+
+            $query .= ' GROUP BY event.id';
+            $result = $this -> getModelsManager() -> executeQuery($query);
+            $result -> setHydrateMode(Resultset::HYDRATE_ARRAYS);
+
+            $result = $result->toArray();
+        }
+        return $result;
+    }
+
+
+    /**
+     * Add condition to model for fetching
+     *
+     * @param $condition
+     * @param int $type
+     * @return $this
+     */
+    public function addCondition($condition, $type = self::CONDITION_COMPLEX)
+    {
+	    if (!empty($condition)) {
+            $cond = [
+                'type' => $type,
+                'condition' => (string)$condition
+            ];
+	    	$this -> conditions[] = $cond;
+	    }
+	    
+	    return $this;
+    }
+
+    /**
+     * Get event by conditions which set through Frontend\Models\Event::addCondition()
+     *
+     * @param int $fetchType
+     * @param int $order
+     * @param array $pagination
+     * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
+     */
+    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_DESC, $pagination = [])
+    {
+        $builder = $this->getModelsManager()->createBuilder();
+
+        $builder->from('Frontend\Models\Event');
+
+        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
+            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id')
+            ->leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id')
+            ->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Location.id = Frontend\Models\Venue.id AND Frontend\Models\Event.fb_creator_uid = Frontend\Models\Venue.fb_uid')
+            ->leftJoin('Objects\EventSite', 'Objects\EventSite.event_id = Frontend\Models\Event.id')
+            ->leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id')
+            ->leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id')
+            ->leftJoin('Objects\EventMember', 'Objects\EventMember.event_id = Frontend\Models\Event.id');
+
+        if (!empty($this->conditions)) {
+            foreach ($this->conditions as $condition) {
+                $prevCondition = $builder->getWhere();
+
+                if (!empty($prevCondition)) {
+                    if ($condition['type'] === self::CONDITION_COMPLEX) {
+                        $builder->where($prevCondition.' AND '.$condition['condition']);
+                    }elseif ($condition['type'] === self::CONDITION_SIMPLE) {
+                        $builder->where($prevCondition.' '.$condition['condition']);
+                    }
+                }else {
+                    $builder->where($condition['condition']);
+                }
+            }
+        }
+
+        if ($order === self::ORDER_DESC) {
+            $builder->orderBy('Frontend\Models\Event.id DESC');
+        }elseif ($order === self::ORDER_ASC) {
+            $builder->orderBy('Frontend\Models\Event.id ASC');
+        }
+
+        $builder->groupBy('Frontend\Models\Event.id');
+
+        if (!empty($pagination)) {
+            $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
+                'builder' => $builder,
+                'limit'=> $pagination['limit'],
+                'page' => $pagination['page']
+            ));
+
+            $result = $paginator->getPaginate();
+
+            $totalRows = $builder->getQuery()->execute()->count(); // WTF?
+            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
+            $result->total_items = $totalRows;
+
+            if ($fetchType === self::FETCH_ARRAY) {
+                $result->items = $this->resultToArray($result->items);
+            }
+        } else {
+            $result = $builder->getQuery()->execute();
+
+            if ($fetchType === self::FETCH_ARRAY) {
+                $result = $this->resultToArray($result);
+            }
+        }
+
+        return $result;
+    }
+
+
+    public function parseNewEvents($data, $locationData = false)
+    {
+        $cfg = $this -> getConfig();
+        $newEvents = array();
+        $lastParsedEvent = 0;
+
+        if (!empty($data)) {
+            foreach($data as $item => $ev) {
+             
+                if (is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue']) && !empty($ev['venue'])) {
+                    $result = array();
+                    $result['fb_uid'] = $ev['eid'];
+                    $result['fb_creator_uid'] = $ev['creator'];
+                    $result['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $ev['description']);
+                    $result['name'] = $ev['name'];
+                    $result['location_id'] = $locationData['id'];
+
+                    if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
+                        $ext = explode('.', $ev['pic_big']);
+                        $logo = 'fb_' . $ev['eid'] . '.' . end($ext);
+
+                        $ch =  curl_init($ev['pic_big']);
+                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
+                        $content = curl_exec($ch);
+                        if ($content) {
+                            $f = fopen($cfg -> application -> uploadDir . 'img/event/' . $logo, 'wb');
+                            fwrite($f, $content);
+                            fclose($f);
+
+                            $result['logo'] = $logo;
+                        }
+                    }
+
+                    if (!empty($ev['start_time'])) {
+                        $result['start_date'] = date('Y-m-d', strtotime($ev['start_time']));
+                        $result['start_time'] = date('H:i', strtotime($ev['start_time']));
+                    }
+                    if (!empty($ev['end_time'])) {
+                        $result['end_date'] = date('Y-m-d', strtotime($ev['end_time']));
+                        $result['end_time'] = date('H:i', strtotime($ev['end_time']));
+                    }
+
+                    if (empty($result['end_date']) && !empty($result['start_date'])) {
+                        $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
+                    }
+
+                    if (!is_null(self::$cacheData -> get('member_' . $ev['creator']))) {
+                        $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
+                    }
+
+                    if (isset($ev['venue']['id']) && is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
+                        if (isset($ev['venue']['latitude']) && isset($ev['venue']['longitude']) && 
+                            $ev['venue']['latitude'] != '' && $ev['venue']['longitude'] != '') 
+                        {
+                            $result['latitude'] = $ev['venue']['latitude'];
+                            $result['longitude'] = $ev['venue']['longitude'];
+                        }
+
+                        $venueObj = new Venue();
+                        $venueObj -> assign(array(
+                                'fb_uid' => $ev['venue']['id'],
+                                'location_id' => $result['location_id'],
+                                'name' => $ev['location'],
+                                'address' => $ev['venue']['street'],
+                                'latitude' => $ev['venue']['latitude'],
+                                'longitude' => $ev['venue']['longitude']
+                            ));
+                        if ($venueObj -> save()) {
+                            $result['venue_id'] = $venueObj -> id;
+                            $result['address'] = $venueObj -> address;
+                            $result['location_id'] = $venueObj -> location_id;
+
+                            self::$cacheData -> save('venue_' . $venueObj -> fb_uid, 
+                                                    array('venue_id' => $venueObj -> id,
+                                                          'address' => $venueObj -> address,
+                                                          'location_id' => $venueObj -> location_id,
+                                                          'latitude' => $venueObj->latitude,
+                                                          'longitude' => $venueObj->longitude));
+                        }
+                    } elseif (isset($ev['venue']['id']) && !is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
+                        $venue = self::$cacheData -> get('venue_' . $ev['venue']['id']);
+                        $result['venue_id'] = $venue['venue_id'];
+                        $result['address'] = $venue['address'];
+                        $result['latitude'] = $venue['latitude'];
+                        $result['longitude'] = $venue['longitude'];
+                    } else {
+                        $result['latitude'] = ($locationData['latitudeMin'] + $locationData['latitudeMax'])/2;
+                        $result['longitude'] = ($locationData['longitudeMin'] + $locationData['longitudeMax'])/2;
+                    }
+
+                    $Text = new Text();
+                    $Text -> addContent($result['name'])
+                          -> addContent($result['description'])
+                          -> returnTag(true);
+
+                    $categoryzator = new Categoryzator($Text);
+
+                    $newText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
+
+                    $cats = array();
+                    $tags = array();
+
+                    foreach ($newText->category as $key => $c) {
+                        $cat = Category::findFirst("key = '".$c."'");
+                        $cats[$key] = new EventCategoryObject();
+                        $cats[$key]->category_id = $cat->id;
+                    }
+
+                    foreach ($newText->tag as $c) {
+                        foreach ($c as $key => $tag) {
+                            $Tag = TagObject::findFirst("key = '".$tag."'");
+                            if ($Tag) {
+                                $tags[$key] = new EventTagObject();
+                                $tags[$key]->tag_id = $Tag->id;
+                            }
+                        }
+                    }
+
+                    $result['event_category'] = $cats;
+                    $result['event_tag'] = $tags;
+
+                    $this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
+                    $this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
+                    $eventObj = new self;
+
+                    $eventObj -> assign($result);
+                    if ($eventObj -> save()) {
+                        $images = new EventImage();
+                        $images -> assign(array(
+                                'event_id' => $eventObj -> id,
+                                'image' => $ev['pic_big']
+                            ));
+                        $images -> save();
+
+                        $result['id'] = $eventObj -> id;
+                        $result['logo'] = $eventObj -> logo;
+
+                        self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
+                        $newEvents[] = $eventObj -> id;
+                    }
+                } 
+            }
+        }
+
+        return $newEvents;
+    }
+
     public function parseEvent($data)
     {
         $membersList = MemberNetwork::find();
@@ -241,7 +525,10 @@ class Event extends EventObject
             foreach ($eventsList as $ev) {
                 $eventsScope[$ev -> fb_uid] = array('id' => $ev -> id,
                     'start_date' => $ev -> start_date,
-                    'end_date' => $ev -> end_date);
+                    'end_date' => $ev -> end_date,
+                    'latitude' => $ev -> latitude,
+                    'longitude' => $ev -> longitude,
+                    'category' => $ev -> category);
             }
         }
 
@@ -338,7 +625,7 @@ class Event extends EventObject
                                 // create new location from coordinates
                                 if ($eventLocation == '') {
                                     $loc = $locator -> createOnChange(array('latitude' => $ev['venue']['latitude'],
-                                            'longitude' => $ev['venue']['longitude']));
+                                        'longitude' => $ev['venue']['longitude']));
                                     $eventLocation = $loc -> id;
 
                                     $locationsScope[$loc -> id] = array(
@@ -352,13 +639,13 @@ class Event extends EventObject
 
                                 $venueObj = new Venue();
                                 $venueObj -> assign(array(
-                                        'fb_uid' => $ev['venue']['id'],
-                                        'location_id' => $eventLocation,
-                                        'name' => $ev['location'],
-                                        'address' => $ev['venue']['street'],
-                                        'latitude' => $ev['venue']['latitude'],
-                                        'longitude' => $ev['venue']['longitude']
-                                    ));
+                                    'fb_uid' => $ev['venue']['id'],
+                                    'location_id' => $eventLocation,
+                                    'name' => $ev['location'],
+                                    'address' => $ev['venue']['street'],
+                                    'latitude' => $ev['venue']['latitude'],
+                                    'longitude' => $ev['venue']['longitude']
+                                ));
                                 if ($venueObj -> save()) {
                                     $result['venue_id'] = $venueObj -> id;
                                     $result['address'] = $ev['venue']['street'];
@@ -394,7 +681,10 @@ class Event extends EventObject
                         $cats = array();
                         $tags = array();
 
+                        $data[$source][$item]['category'] = [];
+
                         foreach ($newText->category as $key => $c) {
+                            $data[$source][$item]['category'][]['key'] = $c;
                             $cat = Category::findFirst("key = '".$c."'");
                             $cats[$key] = new EventCategoryObject();
                             $cats[$key]->category_id = $cat->id;
@@ -452,9 +742,9 @@ class Event extends EventObject
                         if ($eventObj -> save()) {
                             $images = new EventImage();
                             $images -> assign(array(
-                                    'event_id' => $eventObj -> id,
-                                    'image' => $ev['pic_big']
-                                ));
+                                'event_id' => $eventObj -> id,
+                                'image' => $ev['pic_big']
+                            ));
                             $images -> save();
 
                             $data[$source][$item]['id'] = $eventObj -> id;
@@ -470,9 +760,22 @@ class Event extends EventObject
                             $data[$source][$item]['start_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
                             $data[$source][$item]['start_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['start_date']));
                         }
+
                         if (!empty($eventsScope[$ev['eid']]['end_date'])) {
                             $data[$source][$item]['end_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
                             $data[$source][$item]['end_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['end_date']));
+                        }
+
+                        if (!empty($eventsScope[$ev['eid']]['category'])) {
+                            $data[$source][$item]['category'] = $eventsScope[$ev['eid']]['category']->toArray();
+                        }
+
+                        if (!empty($eventsScope[$ev['eid']]['latitude'])) {
+                            $data[$source][$item]['latitude'] = $eventsScope[$ev['eid']]['latitude'];
+                        }
+
+                        if (!empty($eventsScope[$ev['eid']]['longitude'])) {
+                            $data[$source][$item]['longitude'] = $eventsScope[$ev['eid']]['longitude'];
                         }
                     }
                 }
@@ -480,149 +783,5 @@ class Event extends EventObject
         }
 
         return $data;
-    }
-
-    public function setCondition($condition)
-    {
-        if (!empty($condition)) {
-            $this -> conditions[] = (string)$condition;
-        }
-       
-        return $this;
-    }
-
-    public function setSelector($selector)
-    {
-    	if (!empty($selector)) {
-    		$this -> selector = (string)$selector;
-    	}
-    	 
-    	return $this;
-    }
-
-    public function listEvent()
-    {
-        $query = '
-                SELECT event.*, category.*, location.*, venue.name AS venue
-                FROM \Frontend\Models\Event AS event
-                LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
-                LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-                LEFT JOIN \Frontend\Models\Location AS location ON (event.location_id = location.id)
-                LEFT JOIN \Frontend\Models\Venue AS venue ON (location.id = venue.location_id AND event.fb_creator_uid = venue.fb_uid)
-                LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event.id = event_like.event_id AND event_like.status = 1)
-                LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
-            ';
-
-        if (!empty($this -> conditions)) {
-            $query .= ' WHERE';
-            $count = count($this -> conditions);
-            for ($i = 0; $i < $count; $i++) {
-                if ($i !== 0) {
-                	$query .= $this -> selector;
-               	}
-                $query .= " " . $this -> conditions[$i];
-            }
-
-            $query .= ' GROUP BY event.id';
-            $result = $this -> getModelsManager() -> executeQuery($query);
-            $result -> setHydrateMode(Resultset::HYDRATE_ARRAYS);
-
-            $result = $result->toArray();
-        }
-        return $result;
-    }
-
-
-    /**
-     * Add condition to model for fetching
-     *
-     * @param $condition
-     * @return $this
-     */
-    public function addCondition($condition)
-    {
-	    if (!empty($condition)) {
-	    	$this -> conditions[] = (string)$condition;
-	    }
-	    
-	    return $this;
-    }
-
-    public function getCreatedEventsCount($uId)
-    {
-        if ($uId) {
-            return self::find(array('member_id = ' . $uId . ' AND event_status = 1'))->count();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Get event by conditions which set through Frontend\Models\Event::addCondition()
-     *
-     * @param int $fetchType
-     * @param int $order
-     * @param array $pagination
-     * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
-     */
-    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_DESC, $pagination = [])
-    {
-        $builder = $this->getModelsManager()->createBuilder();
-
-        $builder->from('Frontend\Models\Event');
-
-        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
-            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id')
-            ->leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id')
-            ->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Location.id = Frontend\Models\Venue.id AND Frontend\Models\Event.fb_creator_uid = Frontend\Models\Venue.fb_uid')
-            ->leftJoin('Objects\EventSite', 'Objects\EventSite.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Objects\EventMember', 'Objects\EventMember.event_id = Frontend\Models\Event.id');
-
-        if (!empty($this->conditions)) {
-            foreach ($this->conditions as $condition) {
-                $prevCondition = $builder->getWhere();
-
-                if (!empty($prevCondition)) {
-                    $builder->where($prevCondition.' AND '.$condition);
-                }else {
-                    $builder->where($condition);
-                }
-            }
-        }
-
-        if ($order === self::ORDER_DESC) {
-            $builder->orderBy('Frontend\Models\Event.id DESC');
-        }elseif ($order === self::ORDER_ASC) {
-            $builder->orderBy('Frontend\Models\Event.id ASC');
-        }
-
-        $builder->groupBy('Frontend\Models\Event.id');
-
-        if (!empty($pagination)) {
-            $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
-                'builder' => $builder,
-                'limit'=> $pagination['limit'],
-                'page' => $pagination['page']
-            ));
-
-            $result = $paginator->getPaginate();
-
-            $totalRows = $builder->getQuery()->execute()->count();
-            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
-            $result->total_items = $totalRows;
-
-            if ($fetchType === self::FETCH_ARRAY) {
-                $result->items = $this->resultToArray($result->items);
-            }
-        }else {
-            $result = $builder->getQuery()->execute();
-
-            if ($fetchType === self::FETCH_ARRAY) {
-                $result = $this->resultToArray($result);
-            }
-        }
-
-        return $result;
     }
 } 

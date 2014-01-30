@@ -10,6 +10,7 @@ namespace Frontend\Events;
 use Frontend\Models\Event,
     Frontend\Models\EventLike,
     Frontend\Models\EventMember,
+    Frontend\Models\EventMemberFriend,
     Frontend\Models\Location,
     Thirdparty\Facebook\Extractor;
 
@@ -53,6 +54,10 @@ class MemberListener {
             $this->subject->session->set('role', $params->role);
             $this->subject->session->set('memberId', $params->id);
         }
+
+        $this -> subject -> session -> set('isGrabbed', false);
+        $this -> subject -> session -> set('grabOnce', false);
+        $this -> subject -> session -> set('lastFetchedEvent', 0);
     }
 
     /**
@@ -75,6 +80,9 @@ class MemberListener {
 
             $model = new EventMember();
             $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
+
+            $model = new EventMemberFriend();
+            $this->subject->session->set('userFriendsEventsGoing', $model->getEventMemberFriendEventsCount($userId));
         }
     }
 

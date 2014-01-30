@@ -27,6 +27,7 @@ class Event extends Model
 	public $address;
 	public $logo;
 	public $is_description_full = 0;
+	public $needCache = true;
 
 
 	public function initialize()
@@ -37,6 +38,7 @@ class Event extends Model
 																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Objects\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
 		//$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
@@ -50,6 +52,21 @@ class Event extends Model
 							   		 							'baseField' => 'name'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
+
+	
+	public static function setCache()
+	{
+		$events = self::find();
+		if ($events) {
+			foreach($events as $event) {
+				if ($event -> fb_uid && !self::$cacheData -> exists('fbe_' . $event -> fb_uid)) {
+					self::$cacheData -> save('fbe_' . $event -> fb_uid, array($event -> id));
+				}
+			}
+			self::$cacheData -> save('fb_events', 'cached');
+		}
+	}
+
 
 	public function beforeValidationOnCreate()
 	{

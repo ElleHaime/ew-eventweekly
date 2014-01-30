@@ -1,6 +1,6 @@
 define('eventsPointer',
-	['jquery', 'gmap', 'noti', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	function($, gmap, noti) {
+	['jquery', 'gmap', 'noti', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	function($, gmap, noti, googleMarker, googleInfoWindow) {
 
         return {
 
@@ -35,7 +35,7 @@ define('eventsPointer',
                     });
 
                     // add markers to clusterer
-                    gmap.MC.addMarkers(gmap.markers);
+                    gmap.MC.addMarkers(gmap.Map.markers);
                     // redraw clusterer
                     gmap.MC.redraw();
 
@@ -50,9 +50,35 @@ define('eventsPointer',
                     console.log(event);
                 }
 
-                if (!_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude))
+                if (!_.isUndefined(event.latitude) && !_.isUndefined(event.longitude))
                 {
-                    // prepare HTML for popup window on map
+                    $this.__lastLat = event.latitude;
+                    $this.__lastLng = event.longitude;
+
+                    var InfoWindow = new googleInfoWindow(event);
+
+                    var marker = new googleMarker({
+                        Map: gmap.Map,
+                        Event: event,
+                        InfoWindow: InfoWindow
+                    });
+
+                    if (!_.isEmpty(marker)) {
+                        // push new marker to storage
+                        gmap.Map.markers.push(marker);
+
+                        // initialize click to marker on map for open information window
+                        google.maps.event.addListener(marker, 'click', function() {
+                            marker.setIcon(marker.clickedIcon);
+                            InfoWindow.open(gmap.Map, marker);
+                        });
+
+                        // info window click handle
+                        google.maps.event.addListener(InfoWindow,'closeclick',function(){
+                            marker.setIcon(marker.defaultIcon);
+                        });
+                    }
+                    /*// prepare HTML for popup window on map
                     var contentString = $this.__createInfoPopupContentSingle(event);
 
                     // initialize popup window
@@ -100,7 +126,7 @@ define('eventsPointer',
                     // initialize click to marker on map for open information window
                     google.maps.event.addListener(marker, 'click', function() {
                         infoWindow.open(gmap.Map, marker);
-                    });
+                    });*/
                 }
             },
 

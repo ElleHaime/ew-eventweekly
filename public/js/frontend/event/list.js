@@ -14,7 +14,8 @@ require([
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
-		fb.init(); 
+		fb.init();
+        noti.init();
 		frontEventListControl.init();
 		
 		if ($('#splash_messages').length > 0) {

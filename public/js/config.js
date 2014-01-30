@@ -21,13 +21,13 @@ require.config({
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
 		'jCookie': 'library/vendors/jquery.cookie',
+		'jTruncate': 'library/vendors/jquery.truncate',
 		'underscore': 'library/vendors/underscore',
 		'resizer': 'library/vendors/resizer',
 		'bootstrap': 'library/vendors/bootstrap.min',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
 		'niceDate': 'library/vendors/date',
-        'jTruncate': 'library/vendors/jquery.truncate',
 
 		// maps
 		'gmap': 'library/maps/gmap',
@@ -50,7 +50,18 @@ require.config({
 		'frontCampaignListControl': 'frontend/campaign/controls/campaignListControl',
         'frontMemberEditControl': 'frontend/member/controls/memberEditControl',
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
-        'frontSearchPanel': 'frontend/general/searchPanel'
+        'frontSearchPanel': 'frontend/general/searchPanel',
+        'eventFriendControl': 'frontend/event/controls/eventFriendControl',
+
+        'SingleEvent': 'frontend/list/singleEvent',
+        'listListener': 'frontend/list/listListener',
+
+        // New
+        'newGmapEvents': 'library/maps/newGmapEvents',
+        'googleMap': 'library/google/map',
+        'googleMc': 'library/google/mc',
+        'googleMarker': 'library/google/marker',
+        'googleInfoWindow': 'library/google/infoWindow'
 	},
 
 	shim: {
