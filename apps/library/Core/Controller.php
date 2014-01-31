@@ -239,6 +239,7 @@ class Controller extends \Phalcon\Mvc\Controller
     {
     	/*if ($this -> config -> application -> debug) {
 			$keys = $this -> cacheData -> queryKeys();
+			
 			foreach ($keys as $key) {
 			    $this -> cacheData -> delete($key);
 			}

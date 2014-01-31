@@ -318,6 +318,11 @@ class AuthController extends \Core\Controller
      */
     public function logoutAction()
     {
+        $keys = $this -> cacheData -> queryKeys();
+        foreach ($keys as $key) {
+            $this -> cacheData -> delete($key);
+        }
+        
 		$this -> session -> destroy();
 		return $this -> response -> redirect('/');
     }
