@@ -2,6 +2,7 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
+    'frontEventLike',
     'eventFriendControl',
 	'noti',	
 	'utils',
@@ -9,13 +10,14 @@ require([
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, eventFriendControl, noti) {
+	function($, frontTopPanel, fb, frontEventLike, eventFriendControl, noti) {
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});
 		fb.init(); 
 		noti.init();
+        frontEventLike.init();
 
         eventFriendControl.init();
 		
