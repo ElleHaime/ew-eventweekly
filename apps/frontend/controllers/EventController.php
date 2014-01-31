@@ -285,7 +285,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('gallery', $gallery);
 
         return array(
-            'currentWindowLocation' => 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name),
+            'currentWindowLocation' => urlencode('http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name)),
             'eventMetaData' => $event
         );
 	}
