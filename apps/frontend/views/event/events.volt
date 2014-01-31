@@ -116,48 +116,4 @@
         </div>
 </div>
 
-    <script type="template" id="eventListTemplate">
-        <div event-id="<%= event_id %>" class="events-list <%= event_category %>-category signleEventListElement">
-            <div class="row-fluid ">
-                <div class="span12">
-                    <div class="event-one clearfix">
-                        <div class="event-one-img">
-                            <a href="event/show/253">
-                                <img height="132px" width="132px" src="/upload/img/event/<%= event_img %>">
-                            </a>
-                        </div>
-
-                        <div class="event-one-text">
-                            <a class="name-link" href="event/show/<%= event_id %>"><%- event_name %></a>
-
-                            <div class="date-list">
-                                <i class="icon-time"></i>
-                                <span class="date-start"><%= event_start_date %></span>
-                                start at
-                                <span class="date-time"><%= event_start_time %></span>
-
-                            </div>
-                            <p><%- event_description %></p>
-
-                            <div class="plans-box clearfix">
-                                <button data-id="<%= event_id %>" data-status="1" class="btn eventLikeBtn">Like</button>
-                                <button data-id="<%= event_id %>" data-status="0" class="btn eventDislikeBtn">Don`t like</button>
-                            </div>
-                        </div>
-                        <div class="event-list-btn clearfix">
-                            <div rel="tooltip" title="" data-original-title="<%= event_venue %>" class=" place-address tooltip-text">
-                                <span><%= event_venue %></span>
-                            </div>
-
-                            <div class="event-site clearfix">
-                                <a href="https://www.facebook.com/events/<%= event_fb_id %>" target="_blank">Facebook link</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </script>
-
-
 {% endblock %}

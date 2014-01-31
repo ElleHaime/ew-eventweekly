@@ -101,7 +101,7 @@ class Geo extends Plugin
                         }
                     }
                 }
-				if ($scope) {			
+				if (isset($scope)) {			
 					foreach ($scope -> address_components as $obj => $lvl) {
 						if ($lvl -> types[0] == 'locality') {
 							// city								
