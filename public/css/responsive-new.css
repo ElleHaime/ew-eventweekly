@@ -363,9 +363,6 @@
     {
         margin-top: 140px;
     }
-    #content_right {
-        margin-top: 195px;
-    }
     #content_right_inner {
         margin-left: 0;
     }
@@ -548,6 +545,21 @@
     }
 }
 
+
+@media screen and (max-width: 510px) {
+    .add-event_i #content_right_inner{
+        margin-left: 0;
+    }
+.add-event_i  #content_right {
+    width: auto;
+    margin: 466px 0 0 0;
+}
+.add-img-box {
+    position: absolute;
+    top:65px;
+}
+
+}
 @media screen and (max-width: 490px) {
     .location-place_country .searchCityBlock {
         width: 91.4% !important;
