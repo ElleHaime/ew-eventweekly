@@ -359,7 +359,7 @@ class Event extends EventObject
     }
 
 
-    public function parseNewEvents($data, $locationData = false)
+    public function parseNewEvents($data, $locationData = false, $returnExists = false)
     {
         $cfg = $this -> getConfig();
         $newEvents = array();
@@ -500,7 +500,9 @@ class Event extends EventObject
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
                         $newEvents[] = $eventObj -> id;
                     }
-                } 
+                } elseif ($returnExists !== false && !is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue'])) {
+                        $newEvents[] = self::$cacheData -> get('fbe_' . $ev['eid']);
+                }
             }
         }
 

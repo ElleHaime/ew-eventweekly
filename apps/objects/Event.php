@@ -61,7 +61,7 @@ class Event extends Model
 		if ($events) {
 			foreach($events as $event) {
 				if ($event -> fb_uid && !self::$cacheData -> exists('fbe_' . $event -> fb_uid)) {
-					self::$cacheData -> save('fbe_' . $event -> fb_uid, array($event -> id));
+					self::$cacheData -> save('fbe_' . $event -> fb_uid, $event -> id);
 				}
 			}
 			self::$cacheData -> save('fb_events', 'cached');
