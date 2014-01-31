@@ -8,7 +8,7 @@
                 {#<div class="fb-like" data-colorscheme="light" data-layout="button_count" data-action="like"
                      data-show-faces="false" data-send="true" data-href="{{ currentWindowLocation }}"></div>#}
 
-                <iframe src="//www.facebook.com/plugins/like.php?href={{ currentWindowLocation }}&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=35&amp;appId=542401642534003" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:35px;" allowTransparency="true"></iframe>
+                <iframe src="//www.facebook.com/plugins/like.php?href={{ currentWindowLocation }}&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=35&amp;locale=en_US&amp;appId=542401642534003" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:35px;" allowTransparency="true"></iframe>
 
                 <!--Google +-->
                 <!-- Place this tag where you want the +1 button to render. -->
