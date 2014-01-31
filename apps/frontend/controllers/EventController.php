@@ -1226,14 +1226,13 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-
         $res['stop'] = $this -> session -> get('isGrabbed');
 
         if ($needGrab === false) {
         	return $events;
         } 
 
-		/*$this -> sendAjax($res);
+		$this -> sendAjax($res);
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
@@ -1244,9 +1243,7 @@ class EventController extends \Core\Controllers\CrudController
         	$this -> session -> set('grabOnce', true);
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
-        }  */
-
-        $this -> grabNewEvents();	
+        }  
     }
 
 
@@ -1257,13 +1254,6 @@ class EventController extends \Core\Controllers\CrudController
     	$fb = new Extractor();
     	$queries = $fb -> getQueriesScope();
     	$e = new Event();
-//_U::dump($this -> cacheData -> queryKeys());
-
-    	$keys = $this -> cacheData -> queryKeys();
-		foreach ($keys as $key) {
-		    $this -> cacheData -> delete($key);
-		}
-
 
 		foreach ($queries as $key => $query) {
 
@@ -1446,7 +1436,7 @@ class EventController extends \Core\Controllers\CrudController
 
 		$this -> session -> set('isGrabbed', true);
 		$this -> logIt("end of grab, isGrabbed = " . $this -> session -> get('isGrabbed'));
-echo 'done';
+
 		exit; 
     }
 
