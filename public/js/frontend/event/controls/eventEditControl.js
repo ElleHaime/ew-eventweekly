@@ -305,11 +305,13 @@ define('frontEventEditControl',
                         var img = new Image();
                         img.src = e.target.result;
 
-                        if (img.width < 180 || img.height < 60) {
-                            noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
-                        }
+                        img.onload = function() {
+                            if (this.width < 180 || this.height < 60) {
+                                noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
+                            }
 
-                        $(inpImage).parent().find(self.settings.boxImg).attr('src', img.src);
+                            $(inpImage).parent().find(self.settings.boxImg).attr('src', this.src);
+                        };
 					}
 				})(file);
 
