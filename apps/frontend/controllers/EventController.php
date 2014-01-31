@@ -1152,7 +1152,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
         						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
-        						AND Frontend\Models\Event.start_date > now()');
+        						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s') . '"');
 		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> session -> get('lastFetchedEvent'));
 		$Event -> addCondition('Frontend\Models\Event.event_status = 1');
         $events = $Event -> fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);

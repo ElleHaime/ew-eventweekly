@@ -130,7 +130,7 @@ class Extractor
                     FROM event
                     WHERE eid IN (SELECT eid FROM event_member WHERE uid=$userUid)
                     AND creator = $userUid
-                      AND start_time >= now()
+                      AND start_time >= ' . time() . '
                       AND 
                       ((venue.longitude < "$longMax" 
                       AND venue.longitude > "$longMin" 
@@ -166,7 +166,7 @@ class Extractor
         'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
                   WHERE creator IN ($friendsUid)
-                      AND start_time >= now()
+                      AND start_time >= ' . time() . '
                       AND 
                       ((venue.longitude < "$longMax" 
                       AND venue.longitude > "$longMin" 
@@ -209,7 +209,7 @@ class Extractor
                     WHERE eid IN ($eventsUid)
                     AND creator != $userUid
                     AND NOT (creator IN ($friendsUid))
-                      AND start_time >= now()
+                      AND start_time >= ' . time() . '
                       AND 
                       ((venue.longitude < "$longMax" 
                       AND venue.longitude > "$longMin" 
@@ -252,7 +252,7 @@ class Extractor
                     FROM event
                     WHERE eid IN ($userEventsUid)
                     AND creator != $userUid
-                      AND start_time >= now()
+                      AND start_time >= ' . time() . '
                       AND 
                       ((venue.longitude < "$longMax" 
                       AND venue.longitude > "$longMin" 
@@ -293,7 +293,7 @@ class Extractor
                     FROM event
                     WHERE eid IN ($pageUid)
                     AND creator != $userUid
-                      AND start_time >= now()
+                      AND start_time >= ' . time() . '
                       AND 
                       ((venue.longitude < "$longMax" 
                       AND venue.longitude > "$longMin" 
