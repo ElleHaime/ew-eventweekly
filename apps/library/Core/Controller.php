@@ -237,12 +237,12 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function checkCache()
     {
-    	if ($this -> config -> application -> debug) {
+    	/*if ($this -> config -> application -> debug) {
 			$keys = $this -> cacheData -> queryKeys();
 			foreach ($keys as $key) {
 			    $this -> cacheData -> delete($key);
 			}
-		}
+		}*/
 
 		if (is_null($this -> cacheData -> get('locations'))) {
 			Location::setCache();

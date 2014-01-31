@@ -2,93 +2,93 @@
 
 {% block content %}
 
-<div class="container" id="content_noBorder">
+    <div class="container" id="content_noBorder">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="padd_30"></div>
+                <div class="active-events">
                     <div class="row-fluid">
                         <div class="span12">
-                            <div class="padd_30"></div>
-                            <div class="active-events">
-                                <div class="row-fluid">
-                                    <div class="span12">
-                                        <h3 class="title-page">New events</h3>
-                                        <div class="events-result">
-                                            search result:
-                                            <span>123</span>
-                                            from
-                                            <span>2 334</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% if events is defined %}    
-                                {% for event in events %}
+                            <h3 class="title-page">New events</h3>
+                            {#<div class="events-result">
+                                search result:
+                                <span>123</span>
+                                from
+                                <span>2 334</span>
+                            </div>#}
+                        </div>
+                    </div>
+                    {% if events is defined %}
+                        {% for event in events %}
 
-                                {% set disabled = '' %}
-                                {% if likedEventsIds is defined %}
-                                    {% for likedEventsId in likedEventsIds %}
-                                        {% if likedEventsId == event['id'] %}
-                                            {% set disabled = 'disabled' %}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-                                <div class="events-list music-category signleEventListElement" event-id="{{ event['id'] }}">
-                                    <div class="row-fluid ">
-                                        <div class="span12">
-                                            <div class="event-one clearfix">
-                                                <div class="event-one-img">
-                                                    <a href="event/show/{{ event['id'] }}">
-                                                        {% if event['logo'] is defined %}
-                                                            {% if event['logo'] is empty %}
-                                                                {% set pic = defaultEventLogo %}
-                                                            {% else %}
-                                                                {% set pic = '/upload/img/event/'~event['id']~'/'~event['logo'] %}
-                                                            {% endif %}
-                                                            <img src="{{ pic }}" width="132px" height ="132px">
+                            {% set disabled = '' %}
+                            {% if likedEventsIds is defined %}
+                                {% for likedEventsId in likedEventsIds %}
+                                    {% if likedEventsId == event['id'] %}
+                                        {% set disabled = 'disabled' %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                            <div class="events-list {{ event['category'][0]['key'] }}-category signleEventListElement" event-id="{{ event['id'] }}">
+                                <div class="row-fluid ">
+                                    <div class="span12">
+                                        <div class="event-one clearfix">
+                                            <div class="event-one-img">
+                                                <a href="event/show/{{ event['id'] }}">
+                                                    {% if event['logo'] is defined %}
+                                                        {% if event['logo'] is empty %}
+                                                            {% set pic = defaultEventLogo %}
                                                         {% else %}
-                                                            <img src="{{ event['pic_big'] }}">
+                                                            {% set pic = '/upload/img/event/'~event['id']~'/'~event['logo'] %}
                                                         {% endif %}
-                                                    </a>
+                                                        <img src="{{ pic }}" width="132px" height ="132px">
+                                                    {% else %}
+                                                        <img src="{{ event['pic_big'] }}">
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+
+                                            <div class="event-one-text">
+                                                <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
+
+                                                <div class="date-list">
+                                                    {% if event['start_date_nice'] != '0000-00-00' %}
+                                                        <i class="icon-time"></i>
+                                                        <span class="date-start">{{ event['start_date_nice'] }}</span>
+                                                        {% if event['start_time'] != '00:00' %}
+                                                            start at
+                                                            <span class="date-time">{{ event['start_time'] }}</span>
+                                                        {% endif %}
+
+                                                    {% endif %}
+                                                </div>
+                                                <p>
+                                                    {{ event['description']|striptags|escape|truncate(350) }}
+                                                </p>
+
+                                                <div class="plans-box clearfix">
+                                                    <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
+                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
                                                 </div>
 
-                                                <div class="event-one-text">
-                                                    <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
-
-                                                    <div class="date-list">
-                                                        {% if event['start_date_nice'] != '0000-00-00' %}
-                                                            <i class="icon-time"></i>
-                                                            <span class="date-start">{{ event['start_date_nice'] }}</span> 
-                                                            {% if event['start_time'] != '00:00' %}
-                                                                start at
-                                                                <span class="date-time">{{ event['start_time'] }}</span>
-                                                            {% endif %}
-
-                                                        {% endif %}
-                                                    </div>
-                                                    <p>
-                                                        {{ event['description']|striptags|escape|truncate(350) }}
-                                                    </p>
-
-                                                    <div class="plans-box clearfix">
-                                                        <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
-                                                        <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
-                                                    </div>
-
                                                 <div class="event-list-btn clearfix">
-                                                    <div class=" place-address tooltip-text"  data-original-title="   {{ event['location'] }}" title="" rel="tooltip">
+                                                    <div class=" place-address tooltip-text"  data-original-title="   {{ event['location']['alias'] }}" title="" rel="tooltip">
                                                         <span>
-                                                            {% if event['venue']['street'] is empty %}
-                                                                {% if event['location'] is empty %}
+                                                            {% if event['venue']['address'] is empty %}
+                                                                {% if event['location']['alias'] is empty %}
                                                                     Undefined place
                                                                 {% else %}
-                                                                    {{ event['location'] }}
+                                                                    {{ event['location']['alias'] }}
                                                                 {% endif %}
                                                             {% else %}
-                                                                {{ event['venue']['street'] }}
+                                                                {{ event['venue']['address'] }}
                                                             {% endif %}
                                                         </span>
                                                     </div>
                                                     {% if event.site is defined %}
-	                                                    <div class="event-site clearfix">
-	                                                        <p>web-site : <a href="#">http://www.dpdp.com</a></p>
-	                                                    </div>
+                                                        <div class="event-site clearfix">
+                                                            <p>web-site : <a href="#">http://www.dpdp.com</a></p>
+                                                        </div>
                                                     {% endif %}
 
                                                     {% if event['eid'] is defined %}
@@ -98,66 +98,22 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {% endfor %}
-                            {% else %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
 
-                                <div   class="no-list"><i>No events found</i></div>
+                        <div   class="no-list"><i>No events found</i></div>
 
-                            {% endif %}
-                             </div>
-                        </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-</div>
-
-    <script type="template" id="eventListTemplate">
-        <div event-id="<%= event_id %>" class="events-list <%= event_category %>-category signleEventListElement">
-            <div class="row-fluid ">
-                <div class="span12">
-                    <div class="event-one clearfix">
-                        <div class="event-one-img">
-                            <a href="event/show/253">
-                                <img height="132px" width="132px" src="/upload/img/event/<%= event_img %>">
-                            </a>
-                        </div>
-
-                        <div class="event-one-text">
-                            <a class="name-link" href="event/show/<%= event_id %>"><%- event_name %></a>
-
-                            <div class="date-list">
-                                <i class="icon-time"></i>
-                                <span class="date-start"><%= event_start_date %></span>
-                                start at
-                                <span class="date-time"><%= event_start_time %></span>
-
-                            </div>
-                            <p><%- event_description %></p>
-
-                            <div class="plans-box clearfix">
-                                <button data-id="<%= event_id %>" data-status="1" class="btn eventLikeBtn">Like</button>
-                                <button data-id="<%= event_id %>" data-status="0" class="btn eventDislikeBtn">Don`t like</button>
-                            </div>
-                        </div>
-                        <div class="event-list-btn clearfix">
-                            <div rel="tooltip" title="" data-original-title="<%= event_venue %>" class=" place-address tooltip-text">
-                                <span><%= event_venue %></span>
-                            </div>
-
-                            <div class="event-site clearfix">
-                                <a href="https://www.facebook.com/events/<%= event_fb_id %>" target="_blank">Facebook link</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </script>
-
+    </div>
+    </div>
+    </div>
+    </div>
 
 {% endblock %}
