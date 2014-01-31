@@ -125,6 +125,17 @@ class Event extends EventObject
         $this->slugUri = $this->id.'-'.SUri::slug($this->name);
 	}
 
+    public function beforeUpdate()
+    {
+        if (strlen($this->start_date) <= 10) {
+            $this->start_date = date('Y-m-d H:i:s', strtotime(str_replace('/', '-', $this->start_date) . ' ' . $this->start_time));
+        }
+
+        if (strlen($this->end_date) <= 10) {
+            $this->end_date = date('Y-m-d H:i:s', strtotime(str_replace('/', '-', $this->end_date) . ' ' . $this->start_time));
+        }
+    }
+
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
