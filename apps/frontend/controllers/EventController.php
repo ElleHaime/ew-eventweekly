@@ -531,8 +531,22 @@ class EventController extends \Core\Controllers\CrudController
 				$result['status'] = 'OK';
                 $result['id'] = $data['id'];
 
-                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
-                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
+                $tmpEvent = new Event();
+                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
+                $response['likeCounter'] = $result['userEventsLiked'];
+                $this->session->set('userEventsLiked', $result['userEventsLiked']);
+
+                $tmpEvent = new Event();
+                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();
+                $this->session->set('userEventsGoing', $result['userEventsGoing']);
+//                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
+//                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
 
                 $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;
                 $this -> session -> set('userEventsCreated', $userEventsCreated);
@@ -570,8 +584,22 @@ class EventController extends \Core\Controllers\CrudController
        			$response['member_like'] = $status;
        			$response['event_id'] = $eventId;
 
-                $response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
-                $this -> session -> set('userEventsLiked', $response['likeCounter']);
+                $tmpEvent = new Event();
+                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
+                $response['likeCounter'] = $result['userEventsLiked'];
+                $this->session->set('userEventsLiked', $response['likeCounter']);
+
+                /*$tmpEvent = new Event();
+                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();*/
+
+                /*$response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
+                $this -> session -> set('userEventsLiked', $response['likeCounter']);*/
 
        			$this -> eventsManager -> fire('App.Event:afterLike', $this);
         	}
