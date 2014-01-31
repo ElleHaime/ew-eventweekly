@@ -36,7 +36,7 @@
                                         </div>
                                     {% else %}
                                         <div class="add-img">
-                                            <div id="current_event_id" class="event-one-img" event="100038">
+                                            <div id="current_event_id" class="event-one-img" event="{{ event.id }}">
                                                 {#<a href="/event/100038">#}
                                                 {% if eventPreview is defined %}
                                                     {% if eventPreviewLogo is defined %}

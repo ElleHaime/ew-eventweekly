@@ -380,6 +380,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this -> session -> get('memberId'));
         $event->addCondition('Frontend\Models\Event.start_date > now()');
+        $event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $event->fetchEvents();
 
         $this->view->setvar('list', $events);
@@ -403,6 +404,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $event->addCondition('Frontend\Models\EventLike.member_id = '.$this->session->get('memberId'));
         $event->addCondition('Frontend\Models\EventLike.status = 1');
+        $event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -425,6 +427,7 @@ class EventController extends \Core\Controllers\CrudController
 
 		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
 		$event->addCondition('Objects\EventMember.member_status = 1');
+        $event->addCondition('Frontend\Models\Event.event_status = 1');
 		$events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -447,7 +450,17 @@ class EventController extends \Core\Controllers\CrudController
 	 */
 	public function listAction()
 	{
-		parent::listAction();
+		//parent::listAction();
+        $event = new Event();
+
+        $event->addCondition('Frontend\Models\Event.member_id = '.$this->session->get('memberId'));
+        $event->addCondition('Frontend\Models\Event.event_status = 1');
+        $events = $event->fetchEvents();
+
+        if ($events -> count()) {
+            $this -> view -> setVar('object', $events);
+            $this -> view -> setVar('list', $events);
+        }
 
         $this->view->setVar('listTitle', 'Created');
 
