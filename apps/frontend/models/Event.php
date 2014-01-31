@@ -390,18 +390,7 @@ class Event extends EventObject
                     if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
                         $ext = explode('.', $ev['pic_big']);
                         $logo = 'fb_' . $ev['eid'] . '.' . end($ext);
-
-                        $ch =  curl_init($ev['pic_big']);
-                        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                        curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
-                        $content = curl_exec($ch);
-                        if ($content) {
-                            $f = fopen($cfg -> application -> uploadDir . 'img/event/' . $logo, 'wb');
-                            fwrite($f, $content);
-                            fclose($f);
-
-                            $result['logo'] = $logo;
-                        }
+                        $result['logo'] = $logo;
                     }
 
                     if (!empty($ev['start_time'])) {
@@ -498,6 +487,22 @@ class Event extends EventObject
 
                     $eventObj -> assign($result);
                     if ($eventObj -> save()) {
+
+                        if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
+                            $ch =  curl_init($ev['pic_big']);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            $content = curl_exec($ch);
+                            if ($content) {
+                                if (!is_dir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id)) {
+                                    mkdir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id);
+                                }
+                                $f = fopen($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/'.$logo, 'wb');
+                                fwrite($f, $content);
+                                fclose($f);
+                            }
+                        }
+
                         $images = new EventImage();
                         $images -> assign(array(
                                 'event_id' => $eventObj -> id,
