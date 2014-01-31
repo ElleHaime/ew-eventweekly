@@ -404,6 +404,7 @@ class MemberController extends \Core\Controllers\CrudController
                     'token' => $userData['token']
                 ));
 
+                $this -> session -> set('user_fb_uid', $userData['uid']);
                 $this->session->set('user_token', $userData['token']);
                 $this->session->set('acc_synced', true);
                 $this -> view -> setVar('acc_external', $memberNetwork);
@@ -438,6 +439,7 @@ class MemberController extends \Core\Controllers\CrudController
                     'token' => $userData['token']
                 ));
 
+                $this -> session -> set('user_fb_uid', $userData['uid']);
                 $this->session->set('user_token', $userData['token']);
                 $this->session->set('acc_synced', true);
                 $this->view->setVar('acc_external', $memberNetwork);
