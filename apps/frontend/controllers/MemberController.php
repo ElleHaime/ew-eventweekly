@@ -373,7 +373,7 @@ class MemberController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/member/link-fb", methods={'get'})
+     * @Route("/member/link-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
     public function linkToFBAccountAction()
@@ -415,7 +415,7 @@ class MemberController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/member/sync-fb", methods={'get'})
+     * @Route("/member/sync-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
     public function syncToFBAccountAction()
