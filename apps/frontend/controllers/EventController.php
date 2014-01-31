@@ -454,7 +454,7 @@ class EventController extends \Core\Controllers\CrudController
         $event = new Event();
 
         $event->addCondition('Frontend\Models\Event.member_id = '.$this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\Event.event_status = 1');
+        //$event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $event->fetchEvents();
 
         if ($events -> count()) {
