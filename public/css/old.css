@@ -4597,3 +4597,13 @@ a.view-btn  {
     height: 90%;
 
 }
+
+.share-box-icon {
+    margin-top: 3px;
+    height: 22px;
+}
+.frame-facebook {
+    width: 100px;
+    overflow: hidden;
+    float: left;
+}

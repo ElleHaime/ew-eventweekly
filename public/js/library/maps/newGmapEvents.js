@@ -21,6 +21,7 @@ define('newGmapEvents',
                 searchCityBtn: '.locationCity',
                 userEventsCreated: '#userEventsCreated',
                 userFriendsGoing: '#userFriendsGoing',
+                userEventsGoing: '#userEventsGoing',
                 alreadyGrabbed: false
             };
 
@@ -157,6 +158,10 @@ define('newGmapEvents',
 
                 if (data.eventsFriendsGoing) {
                     $(settings.userFriendsGoing).text(data.eventsFriendsGoing);
+                }
+
+                if (data.userEventsGoing) {
+                    $(settings.userEventsGoing).text(data.userEventsGoing);
                 }
 
                 if (data.stop == true) {
