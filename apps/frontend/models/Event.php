@@ -50,6 +50,10 @@ class Event extends EventObject
 	private $conditions = [];
 	private $selector = ' AND';
 
+    public $virtualFields = [
+        'slugUri' => 'self->id.\'-\'.\Core\Utils\SlugUri::slug(self->name)'
+    ];
+
     public function afterDelete()
     {
         $di = $this -> getDi();

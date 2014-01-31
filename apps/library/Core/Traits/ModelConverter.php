@@ -24,6 +24,15 @@ trait ModelConverter {
         $i = 0;
         foreach ($result as $event) {
             $returnArr[$i] = $event->toArray();
+
+            if (isset($event->virtualFields) && is_array($event->virtualFields) && !empty($event->virtualFields)) {
+                foreach ($event->virtualFields as $key => $code) {
+                    $code = preg_replace('/self/', '$event', $code);
+
+                    $returnArr[$i][$key] = eval('return '.$code.';');
+                }
+            }
+
             $getRelations = function($relations) use (&$returnArr, $event, $i) {
                 foreach ($relations as $relation) {
                     $alias = $relation->getOptions()['alias'];

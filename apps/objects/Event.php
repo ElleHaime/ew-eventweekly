@@ -28,6 +28,7 @@ class Event extends Model
 	public $logo;
 	public $is_description_full = 0;
 	public $needCache = true;
+	public $slugUri;
 
 
 	public function initialize()
