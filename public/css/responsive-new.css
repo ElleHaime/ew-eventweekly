@@ -275,6 +275,14 @@
 }
 @media screen and (max-width: 640px) {
 
+    .text-description {
+        clear: both;
+        margin-top: 10px;
+    }
+    .text-description  .name-link {
+        padding-top: 10px;
+    }
+
     #end_dateSearch, #start_dateSearch {
         width: 153px;
     }
