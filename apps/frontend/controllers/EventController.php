@@ -1200,7 +1200,7 @@ class EventController extends \Core\Controllers\CrudController
 
 		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
 			$res['eventsCreated'] = $Event -> getCreatedEventsCount($this -> session -> get('memberId'));
-			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'));
+			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'))->count();
 			$res['userEventsGoing'] = $this -> session -> get('userEventsGoing');
 
 			$this -> session -> set('userEventsCreated', $res['eventsCreated']);
@@ -1232,7 +1232,13 @@ class EventController extends \Core\Controllers\CrudController
         	return $events;
         } 
 
+		//header("Connection: close");
+		//header("Content-Length: " . mb_strlen(serialize($res)));
+
 		$this -> sendAjax($res);
+
+		//flush();
+		//print "\n";
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
@@ -1243,11 +1249,15 @@ class EventController extends \Core\Controllers\CrudController
         	$this -> session -> set('grabOnce', true);
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
-        }  
+        } 
+        //$this -> grabNewEvents();	 
     }
 
 
-
+ 	/**
+     * @Route("/event/grab", methods={'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
     public function grabNewEvents()
     {
     	$loc = $this -> session -> get('location');
@@ -1263,7 +1273,7 @@ class EventController extends \Core\Controllers\CrudController
 
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-			
+		
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
 				} 
@@ -1351,12 +1361,15 @@ class EventController extends \Core\Controllers\CrudController
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
 
-							foreach ($events as $i => $ev) {
-								$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
-														 'event_id' => $ev);
-								$emf = new EventMemberFriend();
-								$emf -> assign($friendsEvents);
-								$emf -> save();								
+							foreach ($events as $id => $ev) {
+								if (!$this -> cacheData -> exists('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id)) {
+									$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
+														   'event_id' => $id);
+									$emf = new EventMemberFriend();
+									$emf -> assign($friendsEvents);
+									$emf -> save();	
+									$this -> cacheData -> save('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
+								}
 							}
 
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
@@ -1406,15 +1419,19 @@ class EventController extends \Core\Controllers\CrudController
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
-							foreach ($events as $i => $ev) {
-								$userGEvents = array('member_id' => $this -> session -> get('memberId'),
-														 'event_id' => $ev,
-														 'member_status' => 1);
-								$emf = new EventMember();
-								$emf -> assign($userGEvents);
-								$emf -> save();	
-								$userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
-								$this -> session -> set('userEventsGoing', $userEventsGoing);
+						
+							foreach ($events as $id => $ev) {
+								if (!$this -> cacheData -> exists('member.go.' . $this -> session -> get('memberId') . '.' . $id)) {
+									$userGEvents = array('member_id' => $this -> session -> get('memberId'),
+															 'event_id' => $id,
+															 'member_status' => 1);
+									$emf = new EventMember();
+									$emf -> assign($userGEvents);
+									$emf -> save();	
+									$userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+									$this -> session -> set('userEventsGoing', $userEventsGoing);
+									$this -> cacheData -> save('member.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
+								}
 							}
 
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {

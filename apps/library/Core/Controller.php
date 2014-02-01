@@ -9,6 +9,7 @@ use Phalcon\Filter,
     Frontend\Models\Location,
     Frontend\Models\Event,
     Frontend\Models\Venue,
+    Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
     Frontend\Models\MemberNetwork,
     Frontend\Models\EventCategory AS CountEvent,
@@ -120,12 +121,15 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this ->view->setVar('acc_synced', 1);
         }
-		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
+//_U::dump($this -> session -> get('memberId'));
+		if ($this -> session -> has('role') && 
+				$this -> session -> get('role') == Acl::ROLE_MEMBER &&
+				!is_null($this -> session -> get('member'))) {
 			$eventsCreatedObject = new Event();
 			$eventsFriendsObject = new EventMemberFriend();
 
 			$this -> session -> set('userEventsCreated', $eventsCreatedObject -> getCreatedEventsCount($this -> session -> get('memberId')));
-	        $this -> session -> set('userFriendsEventsGoing', $eventsFriendsObject -> getEventMemberFriendEventsCount($this -> session -> get('memberId')));
+	        $this -> session -> set('userFriendsEventsGoing', $eventsFriendsObject -> getEventMemberFriendEventsCount($this -> session -> get('memberId')) -> count());
 		}
 
 		$this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
@@ -243,7 +247,7 @@ class Controller extends \Phalcon\Mvc\Controller
 			foreach ($keys as $key) {
 			    $this -> cacheData -> delete($key);
 			}
-		}*/
+		} */
 
 		if (is_null($this -> cacheData -> get('locations'))) {
 			Location::setCache();
@@ -256,9 +260,6 @@ class Controller extends \Phalcon\Mvc\Controller
 		}
 		if (is_null($this -> cacheData -> get('fb_members'))) {
 			MemberNetwork::setCache();
-		}
-		if (is_null($this -> cacheData -> get('fb_friend_events'))) {
-			EventMemberFriend::setCache();
 		}
     }
 }

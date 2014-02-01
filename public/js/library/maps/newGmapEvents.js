@@ -211,7 +211,6 @@ define('newGmapEvents',
                 var makeRequest = function() {
                     console.log('make request');
                     $.when(request(lat, lng, city)).then(function(response) {
-                        console.log('response request');
                         responseHandler(response);
                     });
                 };

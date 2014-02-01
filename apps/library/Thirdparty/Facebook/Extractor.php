@@ -82,6 +82,8 @@ class Extractor
 
 public function getQueriesScope()
   {
+    $timelimit = strtotime(date('Y-m-d H:i:s', strtotime('today -1 minute')));
+
     $queries = array(
       array(
         'order' => 1,
@@ -90,7 +92,7 @@ public function getQueriesScope()
                     FROM event
                     WHERE eid IN (SELECT eid FROM event_member WHERE uid=$userUid)
                     AND creator = $userUid
-                     AND start_time >= now()
+                     AND start_time > ' . $timelimit . '
                     ORDER BY eid',
         'type' => 'final',
         'start' => false,
@@ -114,7 +116,7 @@ public function getQueriesScope()
         'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
                   WHERE creator IN ($friendsUid)
-                      AND start_time >= now() 
+                      AND start_time > ' . $timelimit . ' 
                   ORDER BY eid
                   LIMIT $start, $lim',
         'type' => 'final',
@@ -145,7 +147,7 @@ public function getQueriesScope()
                     WHERE eid IN ($eventsUid)
                     AND creator != $userUid
                     AND NOT (creator IN ($friendsUid))
-                      AND start_time >= now()
+                      AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',
         'type' => 'final',
@@ -176,7 +178,7 @@ public function getQueriesScope()
                     FROM event
                     WHERE eid IN ($userEventsUid)
                     AND creator != $userUid
-                      AND start_time >= now()
+                      AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',
         'type' => 'final',
@@ -205,7 +207,7 @@ public function getQueriesScope()
                     FROM event
                     WHERE eid IN ($pageUid)
                     AND creator != $userUid
-                      AND start_time >= now()
+                      AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',
         'type' => 'final',

@@ -144,7 +144,6 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            //return self::find(array('member_id = ' . $uId . ' AND event_status = 1')) -> count();
             return self::find(array('member_id = ' . $uId)) -> count();
         } else {
             return 0;
@@ -416,6 +415,7 @@ class Event extends EventObject
                     if (!is_null(self::$cacheData -> get('member_' . $ev['creator']))) {
                         $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
                     }
+
                     $result['location_id'] = '';
                     if (isset($ev['venue']['id']) && is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
 
@@ -514,9 +514,7 @@ class Event extends EventObject
                           -> returnTag(true);
 
                     $categoryzator = new Categoryzator($Text);
-
                     $newText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
-
                     $cats = array();
                     $tags = array();
 
@@ -526,7 +524,7 @@ class Event extends EventObject
                         $cats[$key]->category_id = $cat->id;
                     }
 
-                    foreach ($newText->tag as $c) {
+                   /* foreach ($newText->tag as $c) {
                         foreach ($c as $key => $tag) {
                             $Tag = TagObject::findFirst("key = '".$tag."'");
                             if ($Tag) {
@@ -534,13 +532,13 @@ class Event extends EventObject
                                 $tags[$key]->tag_id = $Tag->id;
                             }
                         }
-                    }
+                    }*/
 
                     $result['event_category'] = $cats;
-                    $result['event_tag'] = $tags;
+                    //$result['event_tag'] = $tags;
 
                     $this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
-                    $this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
+                    //$this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
                     $eventObj = new self;
                     $eventObj -> assign($result);
 
@@ -567,11 +565,11 @@ class Event extends EventObject
                             ));
                         $images -> save();
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
-                        $newEvents[] = $eventObj -> id;
+                        $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
 
                     }
                 } elseif ($returnExists !== false && !is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue'])) {
-                    $newEvents[] = self::$cacheData -> get('fbe_' . $ev['eid']);
+                    $newEvents[self::$cacheData -> get('fbe_' . $ev['eid'])] = $ev['eid'];
                 }
             }
         }
