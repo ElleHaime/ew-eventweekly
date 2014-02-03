@@ -541,6 +541,7 @@ class EventController extends \Core\Controllers\CrudController
                 $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
                 $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
                 $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
                 $response['likeCounter'] = $result['userEventsLiked'];
                 $this->session->set('userEventsLiked', $result['userEventsLiked']);
@@ -549,6 +550,7 @@ class EventController extends \Core\Controllers\CrudController
                 $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
                 $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
                 $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();
                 $this->session->set('userEventsGoing', $result['userEventsGoing']);
 //                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
