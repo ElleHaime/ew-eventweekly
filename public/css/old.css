@@ -4026,8 +4026,11 @@ i.icon-map {
 
 /*-------------------------------------------- uncategorized_label----------------------------------------------------*/
 .uncategorized_label, .btn.suggest-btn {
-    padding: 0 47px;
     text-align: left;
+    padding: 0 47px;
+}
+.uncategorized_label {
+    padding: 0;
 }
 .suggest-btn {
      background: url(../img/icon-q.png) no-repeat 18px 50% #5097E5;
