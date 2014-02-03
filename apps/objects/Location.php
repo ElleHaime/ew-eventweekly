@@ -52,7 +52,7 @@ class Location extends Model
 	{
 		$geo = $this -> getGeo();
 		$isGeoObject = false;
-		$newLoc = false;
+		$newLoc = array();
 		
 		if (empty($argument)) {
 			$argument = $geo -> getLocation();
@@ -89,13 +89,15 @@ class Location extends Model
 				}
 			}
 			
-			$this -> assign($newLoc);
-			$this -> save();
-			
-			$isLocationExists = $this;
+			if (!empty($newLoc)) {
+				$this -> assign($newLoc);
+				$this -> save();
+
+				$isLocationExists = $this;
+			}
 		}
 
-		if ($newLoc !== false) {
+		if (!empty($newLoc)) {
 			$isLocationExists -> latitude = $newLoc['latitude'];
 			$isLocationExists -> longitude = $newLoc['longitude'];
 		} else {
@@ -106,7 +108,7 @@ class Location extends Model
 		$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
 		$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
 		$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
-//_U::dump($isLocationExists);		
+	
 		return $isLocationExists;
 	} 
 }
