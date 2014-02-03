@@ -27,6 +27,7 @@ class Event extends Model
 	public $address;
 	public $logo;
 	public $is_description_full = 0;
+    public $deleted = 0;
 	public $needCache = true;
 	public $slugUri;
 
