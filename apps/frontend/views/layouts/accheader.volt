@@ -16,7 +16,7 @@
                         <div class="user-box">
                             <a id="user-down-caret">
                                 <div class="user-img" style=" overflow:hidden;float:left;border: 2px solid #484846;margin-top: -5px;width: 47px; height: 46px;">
-                                    <img style="height: auto; border: 0;margin: 0; width: 100%;" alt=""
+                                    <img style="height: 100%; border: 0;margin: 0; width: 100%;" alt=""
                                             {% if member.logo != '' %}
                                                 src="{{ member.logo }}"
                                             {% else %}
