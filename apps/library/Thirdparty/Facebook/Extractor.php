@@ -83,6 +83,7 @@ class Extractor
 public function getQueriesScope()
   {
     $timelimit = strtotime(date('Y-m-d H:i:s', strtotime('today -1 minute')));
+    //$timelimit = strtotime(date('Y-m-d H:i:s', strtotime('today -25 days')));
 
     $queries = array(
       array(

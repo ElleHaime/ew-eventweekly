@@ -1143,6 +1143,47 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->pick('event/show');
     }
 
+
+    public function resetLocation($lat = null, $lng = null, $city = null)
+    {
+    	$loc = $this -> session -> get('location');
+    	$newLocation = new Location();
+        $newLocation = $newLocation -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+	
+		if ($newLocation -> id != $loc -> id) {
+			if(!empty($city)) {
+	            $newLocation -> city = $city;
+	            $newLocation -> alias = $city;
+			}
+
+            $this -> session -> set('location', $newLocation);
+
+            // check cache and reset if needed
+            $locationsScope = $this -> cacheData -> get('locations');
+
+            if (!isset($locationsScope[$newLocation -> id])) {
+            	$locationsScope[$newLocation -> id] = array(
+                                    'latMin' => $newLocation -> latitudeMin,
+                                    'lonMin' => $newLocation -> longitudeMin,
+                                    'latMax' => $newLocation -> latitudeMax,
+                                    'lonMax' => $newLocation -> longitudeMax,
+                                    'city' => $newLocation -> city,
+                                    'country' => $newLocation -> country);
+	            $this -> cacheData -> delete('locations');
+	            $this -> cacheData -> save('locations', $locationsScope);
+            }
+            $this -> logIt("location changed");
+
+            $this -> session -> set('isGrabbed', false);
+            $this -> session -> set('grabOnce', false);
+            $this -> session -> set('lastFetchedEvent', 0);
+
+            $loc = $this -> session -> get('location');
+        }
+
+        return $loc;
+    }
+
     /**
      * @Route("/event/test-get", methods={'GET'})
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
@@ -1151,45 +1192,17 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
     {
+$this -> logIt(date('H:i:s') . ': COME IN');
         $Event = new Event();
         $EventFriend = new EventMemberFriend();
 		$loc = $this -> session -> get('location');
 
         if(!empty($lat) && !empty($lng)) {
-            $newLocation = new Location();
-            $newLocation = $newLocation -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-		
-			if ($newLocation -> id != $loc -> id) {
-				if(!empty($city)) {
-		            $newLocation -> city = $city;
-		            $newLocation -> alias = $city;
-				}
-
-	            $this -> session -> set('location', $newLocation);
-
-	            // check cache and reset if needed
-	            $locationsScope = $this -> cacheData -> get('locations');
-
-	            if (!isset($locationsScope[$newLocation -> id])) {
-	            	$locationsScope[$newLocation -> id] = array(
-	                                    'latMin' => $newLocation -> latitudeMin,
-	                                    'lonMin' => $newLocation -> longitudeMin,
-	                                    'latMax' => $newLocation -> latitudeMax,
-	                                    'lonMax' => $newLocation -> longitudeMax,
-	                                    'city' => $newLocation -> city,
-	                                    'country' => $newLocation -> country);
-		            $this -> cacheData -> delete('locations');
-		            $this -> cacheData -> save('locations', $locationsScope);
-	            }
-	            $this -> logIt("location changed");
-
-	            $this -> session -> set('isGrabbed', false);
-	            $this -> session -> set('grabOnce', false);
-	            $this -> session -> set('lastFetchedEvent', 0);
-
-	            $loc = $this -> session -> get('location');
-	        }
+        	$loc = $this -> resetLocation($lat, $lng, $city);
+        } else {
+        	$loc = $this -> session -> get('location');
         }
+
         $this -> logIt('lastFetched is ' . $this -> session -> get('lastFetchedEvent'));
         $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
         						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
@@ -1197,6 +1210,8 @@ class EventController extends \Core\Controllers\CrudController
 		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> session -> get('lastFetchedEvent'));
 		$Event -> addCondition('Frontend\Models\Event.event_status = 1');
         $events = $Event -> fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
+		
+$this -> logIt(date('H:i:s') . ': QUERY FETCHED with ' .  count($events) . ' EVENTS');
 
 		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
 			$res['eventsCreated'] = $Event -> getCreatedEventsCount($this -> session -> get('memberId'));
@@ -1217,7 +1232,7 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> session -> set('lastFetchedEvent', 0);
 			$this -> session -> set('isGrabbed', true);
 		}
-
+$this -> logIt(date('H:i:s') . ': SESSION STUFF');
         if (count($events) > 0) {
             $res['status'] = true;
             $res['events'] = $events;
@@ -1232,13 +1247,13 @@ class EventController extends \Core\Controllers\CrudController
         	return $events;
         } 
 
-		//header("Connection: close");
-		//header("Content-Length: " . mb_strlen(serialize($res)));
+//$this -> logIt(date('H:i:s') . ': READY');
 
+
+		//ob_start();
 		$this -> sendAjax($res);
-
-		//flush();
-		//print "\n";
+		//ob_flush();
+		//ob_end_flush();
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
