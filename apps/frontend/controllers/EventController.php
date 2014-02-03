@@ -1192,7 +1192,9 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
     {
-$this -> logIt(date('H:i:s') . ': COME IN');
+
+		$this -> logIt(date('H:i:s') . ': COME IN');
+
         $Event = new Event();
         $EventFriend = new EventMemberFriend();
 		$loc = $this -> session -> get('location');
@@ -1247,7 +1249,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
         	return $events;
         } 
 
-//$this -> logIt(date('H:i:s') . ': READY');
+$this -> logIt(date('H:i:s') . ': READY');
 
 
 		//ob_start();
@@ -1264,8 +1266,8 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
         	$this -> session -> set('grabOnce', true);
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
-        } 
-        //$this -> grabNewEvents();	 
+        }  
+        ///$this -> grabNewEvents();	 
     }
 
 
@@ -1288,9 +1290,8 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-		
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
+					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true, 'user_event');
 				} 
 				continue;
 			}
@@ -1374,7 +1375,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
 
 							foreach ($events as $id => $ev) {
 								if (!$this -> cacheData -> exists('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id)) {
@@ -1383,7 +1384,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 									$emf = new EventMemberFriend();
 									$emf -> assign($friendsEvents);
 									$emf -> save();	
-									$this -> cacheData -> save('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
+									$this -> cacheData -> save('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id, $ev);
 								}
 							}
 

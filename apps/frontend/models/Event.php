@@ -375,7 +375,7 @@ class Event extends EventObject
     }
 
 
-    public function parseNewEvents($data, $returnExists = false)
+    public function parseNewEvents($data, $returnExists = false, $queryType = false)
     {
         $cfg = $this -> getConfig();
         $newEvents = array();
@@ -385,8 +385,9 @@ class Event extends EventObject
         if (!empty($data)) {
             foreach($data as $item => $ev) {
 
-                if (is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue']) && !empty($ev['venue'])) {
-
+                if (!self::$cacheData -> exists('fbe_' . $ev['eid']) && 
+                    (isset($ev['venue']) && !empty($ev['venue']) || $queryType == 'user_event')) 
+                {
                     $result = array();
                     $result['fb_uid'] = $ev['eid'];
                     $result['fb_creator_uid'] = $ev['creator'];
@@ -412,12 +413,12 @@ class Event extends EventObject
                         $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
                     }
 
-                    if (!is_null(self::$cacheData -> get('member_' . $ev['creator']))) {
+                    if (self::$cacheData -> exists('member_' . $ev['creator'])) {
                         $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
                     }
 
                     $result['location_id'] = '';
-                    if (isset($ev['venue']['id']) && is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
+                    if (isset($ev['venue']['id']) && !(self::$cacheData -> exists('venue_' . $ev['venue']['id']))) {
 
                         if (isset($ev['venue']['latitude']) && isset($ev['venue']['longitude']) && 
                             $ev['venue']['latitude'] != '' && $ev['venue']['longitude'] != '') 
@@ -485,7 +486,7 @@ class Event extends EventObject
                                                               'longitude' => $venueObj->longitude));
                             }
                         }
-                    } elseif (isset($ev['venue']['id']) && !is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
+                    } elseif (isset($ev['venue']['id']) && self::$cacheData -> exists('venue_' . $ev['venue']['id'])) {
                         $venue = self::$cacheData -> get('venue_' . $ev['venue']['id']);
                         $result['venue_id'] = $venue['venue_id'];
                         $result['address'] = $venue['address'];
@@ -493,10 +494,10 @@ class Event extends EventObject
                         $result['longitude'] = $venue['longitude'];
                         $result['location_id'] = $venue['location_id'];
                     } else {
-                        if (isset($ev['venue']['name']) && $ev['venue']['name'] != '' && !empty($locationScope)) 
+                        if (isset($ev['location']) && $ev['location'] != '' && !empty($locationScope)) 
                         {
                             foreach ($locationsScope as $loc_id => $coords) {
-                                if (strpos($ev['venue']['name'], $coords['city']))
+                                if (strpos($ev['location'], $coords['city']))
                                 {
                                     $result['location_id'] = $loc_id;
                                     $result['latitude'] = ($coords['latMin'] + $coords['latMax']) / 2;
@@ -568,9 +569,9 @@ class Event extends EventObject
                         $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
 
                     }
-                } elseif ($returnExists !== false && !is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue'])) {
+                } elseif ($returnExists !== false && self::$cacheData -> exists('fbe_' . $ev['eid']) && isset($ev['venue'])) {
                     $newEvents[self::$cacheData -> get('fbe_' . $ev['eid'])] = $ev['eid'];
-                }
+                } 
             }
         }
 
