@@ -9,6 +9,7 @@
                 <div class="span12">
 
                     <h4>Reset your password</h4>
+                    {% if form is defined %}
                     <form class="form-horizontal" method="post">
                         <div class="control-group">
                             <label class="control-label" for="inputEmail">{{ form.label('password') }}</label>
@@ -32,6 +33,7 @@
                             </div>
                         </div>
                     </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

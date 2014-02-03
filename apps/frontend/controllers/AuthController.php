@@ -261,11 +261,11 @@ class AuthController extends \Core\Controller
      */
     public function resetAction($hash = false)
     {
-        $form = new ResetForm();
+        //$form = new ResetForm();
 
         if ($hash) {
             if ($hash == $this -> session -> get('reset_uri')) {
-                //$form = new ResetForm();
+                $form = new ResetForm();
 
                 if ($this -> request -> isPost()) {
                     $password = $this -> request -> getPost('password', 'string');
@@ -286,11 +286,11 @@ class AuthController extends \Core\Controller
                     }
                 }
 
-                //$this -> view -> form = $form;
+                $this -> view -> form = $form;
             }
         }
 
-        $this -> view -> form = $form;
+        //$this -> view -> form = $form;
     }
 
    /**

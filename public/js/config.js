@@ -103,6 +103,10 @@ require.config({
             fileName = location.pathname.match(/(\/\w+)*?$/)
         }
 
+        var restoreRel = /\/reset\/.+/;
+        if (restoreRel.test(location.pathname)) {
+            fileName = '/restore'
+        }
 
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
