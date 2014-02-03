@@ -21,6 +21,8 @@
                     {% if events is defined %}
                         {% for event in events %}
 
+                            {#{{ dateToFormat(event['start_date'], '%m-%d-%y') }}#}
+
                             {% set disabled = '' %}
                             {% if likedEventsIds is defined %}
                                 {% for likedEventsId in likedEventsIds %}
