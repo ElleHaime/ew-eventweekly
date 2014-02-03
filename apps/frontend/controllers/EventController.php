@@ -1190,7 +1190,7 @@ class EventController extends \Core\Controllers\CrudController
 	            $loc = $this -> session -> get('location');
 	        }
         }
-
+        $this -> logIt('lastFetched is ' . $this -> session -> get('lastFetchedEvent'));
         $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
         						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s') . '"');
@@ -1200,7 +1200,7 @@ class EventController extends \Core\Controllers\CrudController
 
 		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
 			$res['eventsCreated'] = $Event -> getCreatedEventsCount($this -> session -> get('memberId'));
-			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'));
+			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'))->count();
 			$res['userEventsGoing'] = $this -> session -> get('userEventsGoing');
 
 			$this -> session -> set('userEventsCreated', $res['eventsCreated']);
@@ -1226,16 +1226,19 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-
         $res['stop'] = $this -> session -> get('isGrabbed');
 
-        if ($needGrab === true) {
-			$this -> sendAjax($res);
-        } else {
+        if ($needGrab === false) {
         	return $events;
-        }
+        } 
 
-        flush();
+		//header("Connection: close");
+		//header("Content-Length: " . mb_strlen(serialize($res)));
+
+		$this -> sendAjax($res);
+
+		//flush();
+		//print "\n";
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
@@ -1247,12 +1250,14 @@ class EventController extends \Core\Controllers\CrudController
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
         } 
-
-        ///$this -> grabNewEvents();	
+        //$this -> grabNewEvents();	 
     }
 
 
-
+ 	/**
+     * @Route("/event/grab", methods={'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
     public function grabNewEvents()
     {
     	$loc = $this -> session -> get('location');
@@ -1264,23 +1269,13 @@ class EventController extends \Core\Controllers\CrudController
 
 			if ($query['name'] == 'user_event') {
 				$this -> logIt("user_event");
-				$replacements = array($loc -> latitudeMin, 
-									  $loc -> latitudeMax, 
-									  $loc -> longitudeMin, 
-									  $loc -> longitudeMax, 
-									  $loc -> city, 
-									  $this -> session -> get('user_fb_uid'));
+				$replacements = array($this -> session -> get('user_fb_uid'));
 
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-
+		
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
-													array('id' => $loc -> id,
-														  'latitudeMin' => $loc -> latitudeMin,
-														  'latitudeMax' => $loc -> latitudeMax,
-														  'longitudeMin' => $loc -> longitudeMin,
-														  'longitudeMax' => $loc -> longitudeMax));
+					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
 				} 
 				continue;
 			}
@@ -1306,27 +1301,17 @@ class EventController extends \Core\Controllers\CrudController
 				$fUids = implode(',', $this -> friendsUid);
 
 				do {
-					$this -> logIt($start . ' entry');
 					$replacements = array($start, 
 										  $limit, 
-										  $loc -> latitudeMin, 
-										  $loc -> latitudeMax, 
-										  $loc -> longitudeMin, 
-										  $loc -> longitudeMax, 
-										  $loc -> city, 
 										  $this -> session -> get('user_fb_uid'), 
 										  $fUids);
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+	
 					if ($result['STATUS'] !== false) {
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], 
-															array('id' => $loc -> id,
-																  'latitudeMin' => $loc -> latitudeMin,
-																  'latitudeMax' => $loc -> latitudeMax,
-																  'longitudeMin' => $loc -> longitudeMin,
-																  'longitudeMax' => $loc -> longitudeMax));
-
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
+											
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
 								$start = false;
 							} else {
@@ -1366,11 +1351,6 @@ class EventController extends \Core\Controllers\CrudController
 				do {
 					$replacements = array($start, 
 										  $limit, 
-										  $loc -> latitudeMin, 
-										  $loc -> latitudeMax, 
-										  $loc -> longitudeMin, 
-										  $loc -> longitudeMax, 
-										  $loc -> city, 
 										  $this -> session -> get('user_fb_uid'), 
 										  $eids, 
 										  $friends);
@@ -1379,19 +1359,17 @@ class EventController extends \Core\Controllers\CrudController
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
-															array('id' => $loc -> id,
-																  'latitudeMin' => $loc -> latitudeMin,
-																  'latitudeMax' => $loc -> latitudeMax,
-																  'longitudeMin' => $loc -> longitudeMin,
-																  'longitudeMax' => $loc -> longitudeMax));
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
 
-							foreach ($events as $i => $ev) {
-								$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
-														 'event_id' => $ev);
-								$emf = new EventMemberFriend();
-								$emf -> assign($friendsEvents);
-								$emf -> save();								
+							foreach ($events as $id => $ev) {
+								if (!$this -> cacheData -> exists('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id)) {
+									$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
+														   'event_id' => $id);
+									$emf = new EventMemberFriend();
+									$emf -> assign($friendsEvents);
+									$emf -> save();	
+									$this -> cacheData -> save('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
+								}
 							}
 
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
@@ -1433,11 +1411,6 @@ class EventController extends \Core\Controllers\CrudController
 				do {
 					$replacements = array($start, 
 										  $limit, 
-										  $loc -> latitudeMin, 
-										  $loc -> latitudeMax, 
-										  $loc -> longitudeMin, 
-										  $loc -> longitudeMax, 
-										  $loc -> city, 
 										  $this -> session -> get('user_fb_uid'), 
 										  $eids);
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
@@ -1445,21 +1418,20 @@ class EventController extends \Core\Controllers\CrudController
 
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'],
-															array('id' => $loc -> id,
-																  'latitudeMin' => $loc -> latitudeMin,
-																  'latitudeMax' => $loc -> latitudeMax,
-																  'longitudeMin' => $loc -> longitudeMin,
-																  'longitudeMax' => $loc -> longitudeMax), true);
-							foreach ($events as $i => $ev) {
-								$userGEvents = array('member_id' => $this -> session -> get('memberId'),
-														 'event_id' => $ev,
-														 'member_status' => 1);
-								$emf = new EventMember();
-								$emf -> assign($userGEvents);
-								$emf -> save();	
-								$userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
-								$this -> session -> set('userEventsGoing', $userEventsGoing);
+							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
+						
+							foreach ($events as $id => $ev) {
+								if (!$this -> cacheData -> exists('member.go.' . $this -> session -> get('memberId') . '.' . $id)) {
+									$userGEvents = array('member_id' => $this -> session -> get('memberId'),
+															 'event_id' => $id,
+															 'member_status' => 1);
+									$emf = new EventMember();
+									$emf -> assign($userGEvents);
+									$emf -> save();	
+									$userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
+									$this -> session -> set('userEventsGoing', $userEventsGoing);
+									$this -> cacheData -> save('member.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
+								}
 							}
 
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {

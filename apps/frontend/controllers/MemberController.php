@@ -373,7 +373,7 @@ class MemberController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/member/link-fb", methods={'get'})
+     * @Route("/member/link-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
     public function linkToFBAccountAction()
@@ -404,6 +404,7 @@ class MemberController extends \Core\Controllers\CrudController
                     'token' => $userData['token']
                 ));
 
+                $this -> session -> set('user_fb_uid', $userData['uid']);
                 $this->session->set('user_token', $userData['token']);
                 $this->session->set('acc_synced', true);
                 $this -> view -> setVar('acc_external', $memberNetwork);
@@ -414,7 +415,7 @@ class MemberController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/member/sync-fb", methods={'get'})
+     * @Route("/member/sync-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
     public function syncToFBAccountAction()
@@ -438,6 +439,7 @@ class MemberController extends \Core\Controllers\CrudController
                     'token' => $userData['token']
                 ));
 
+                $this -> session -> set('user_fb_uid', $userData['uid']);
                 $this->session->set('user_token', $userData['token']);
                 $this->session->set('acc_synced', true);
                 $this->view->setVar('acc_external', $memberNetwork);

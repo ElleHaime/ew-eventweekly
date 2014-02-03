@@ -51,7 +51,7 @@ class Event extends EventObject
 	private $selector = ' AND';
 
     public $virtualFields = [
-        'slugUri' => 'self->id.\'-\'.\Core\Utils\SlugUri::slug(self->name)',
+        'slugUri' => 'self->id.\'-\'.\Core\Utils\SlugUri::slug(self -> name)',
         'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
         'end_date_nice' => 'date(\'d/m/Y\', strtotime(self -> end_date))',
         'start_time' => 'date(\'H:i\', strtotime(self -> start_date))',
@@ -96,7 +96,7 @@ class Event extends EventObject
             } else {
                 $this -> start_time = '';
             }
-            $tryDate = date('d/m/Y', strtotime($this -> start_date));
+            $tryDate = date('d/m/Y', strtotime($this -> start_date));;
             if ($tryDate != '0000-00-00') {
                 $this -> start_date_nice = $tryDate;
                 $this -> start_date = $tryDate;
@@ -144,7 +144,6 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            //return self::find(array('member_id = ' . $uId . ' AND event_status = 1')) -> count();
             return self::find(array('member_id = ' . $uId)) -> count();
         } else {
             return 0;
@@ -376,22 +375,23 @@ class Event extends EventObject
     }
 
 
-    public function parseNewEvents($data, $locationData = false, $returnExists = false)
+    public function parseNewEvents($data, $returnExists = false)
     {
         $cfg = $this -> getConfig();
         $newEvents = array();
         $lastParsedEvent = 0;
+        $locationsScope = self::$cacheData -> get('locations');
 
         if (!empty($data)) {
             foreach($data as $item => $ev) {
-             
+
                 if (is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue']) && !empty($ev['venue'])) {
+
                     $result = array();
                     $result['fb_uid'] = $ev['eid'];
                     $result['fb_creator_uid'] = $ev['creator'];
                     $result['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $ev['description']);
                     $result['name'] = $ev['name'];
-                    $result['location_id'] = $locationData['id'];
 
                     if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
                         $ext = explode('.', $ev['pic_big']);
@@ -416,34 +416,74 @@ class Event extends EventObject
                         $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
                     }
 
+                    $result['location_id'] = '';
                     if (isset($ev['venue']['id']) && is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
+
                         if (isset($ev['venue']['latitude']) && isset($ev['venue']['longitude']) && 
                             $ev['venue']['latitude'] != '' && $ev['venue']['longitude'] != '') 
                         {
-                            $result['latitude'] = $ev['venue']['latitude'];
-                            $result['longitude'] = $ev['venue']['longitude'];
-                        }
 
-                        $venueObj = new Venue();
-                        $venueObj -> assign(array(
-                                'fb_uid' => $ev['venue']['id'],
-                                'location_id' => $result['location_id'],
-                                'name' => $ev['location'],
-                                'address' => $ev['venue']['street'],
-                                'latitude' => $ev['venue']['latitude'],
-                                'longitude' => $ev['venue']['longitude']
+                            if (!empty($locationsScope)) {
+                                foreach ($locationsScope as $loc_id => $coords) {
+                                    if ($ev['venue']['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $ev['venue']['latitude'] &&
+                                        $ev['venue']['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $ev['venue']['longitude'])
+                                    {
+                                        $result['location_id'] = $loc_id;
+
+                                        if ($ev['venue']['street'] != '') {
+                                            $result['latitude'] = $ev['venue']['latitude'];
+                                            $result['longitude'] = $ev['venue']['longitude'];
+                                        } else {
+                                            $result['latitude'] = ($coords['latMin'] + $coords['latMax']) / 2;
+                                            $result['longitude'] = ($coords['lonMin'] + $coords['lonMax']) / 2;
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if ($result['location_id'] == '') {
+                                $locator = new Location();
+                                $loc = $locator -> createOnChange(array('latitude' => $ev['venue']['latitude'],
+                                                                        'longitude' => $ev['venue']['longitude']));
+                                $locationsScope[$loc -> id] = array('latMin' => $loc -> latitudeMin,
+                                                                    'lonMin' => $loc -> longitudeMin,
+                                                                    'latMax' => $loc -> latitudeMax,
+                                                                    'lonMax' => $loc -> longitudeMax,
+                                                                    'city' => $loc -> city,
+                                                                    'country' => $loc -> country);
+                                 
+                                self::$cacheData -> delete('locations');
+                                self::$cacheData -> save('locations', $locationsScope);  
+
+                                $result['location_id'] = $loc -> id;
+                                $result['latitude'] = ($loc -> latitudeMin + $loc -> latitudeMax) / 2;
+                                $result['longitude'] = ($loc -> longitudeMin + $loc -> longitudeMax) / 2;
+                            }                                
+                        } 
+
+                        if ($ev['venue']['street'] != '') {
+                            $venueObj = new Venue();
+                            $venueObj -> assign(array(
+                                    'fb_uid' => $ev['venue']['id'],
+                                    'location_id' => $result['location_id'],
+                                    'name' => $ev['location'],
+                                    'address' => $ev['venue']['street'],
+                                    'latitude' => $ev['venue']['latitude'],
+                                    'longitude' => $ev['venue']['longitude']
                             ));
-                        if ($venueObj -> save()) {
-                            $result['venue_id'] = $venueObj -> id;
-                            $result['address'] = $venueObj -> address;
-                            $result['location_id'] = $venueObj -> location_id;
+                            if ($venueObj -> save()) {
+                                $result['venue_id'] = $venueObj -> id;
+                                $result['address'] = $venueObj -> address;
 
-                            self::$cacheData -> save('venue_' . $venueObj -> fb_uid, 
-                                                    array('venue_id' => $venueObj -> id,
-                                                          'address' => $venueObj -> address,
-                                                          'location_id' => $venueObj -> location_id,
-                                                          'latitude' => $venueObj->latitude,
-                                                          'longitude' => $venueObj->longitude));
+                                self::$cacheData -> save('venue_' . $venueObj -> fb_uid, 
+                                                        array('venue_id' => $venueObj -> id,
+                                                              'address' => $venueObj -> address,
+                                                              'location_id' => $venueObj -> location_id,
+                                                              'latitude' => $venueObj->latitude,
+                                                              'longitude' => $venueObj->longitude));
+                            }
                         }
                     } elseif (isset($ev['venue']['id']) && !is_null(self::$cacheData -> get('venue_' . $ev['venue']['id']))) {
                         $venue = self::$cacheData -> get('venue_' . $ev['venue']['id']);
@@ -451,9 +491,21 @@ class Event extends EventObject
                         $result['address'] = $venue['address'];
                         $result['latitude'] = $venue['latitude'];
                         $result['longitude'] = $venue['longitude'];
+                        $result['location_id'] = $venue['location_id'];
                     } else {
-                        $result['latitude'] = ($locationData['latitudeMin'] + $locationData['latitudeMax'])/2;
-                        $result['longitude'] = ($locationData['longitudeMin'] + $locationData['longitudeMax'])/2;
+                        if (isset($ev['venue']['name']) && $ev['venue']['name'] != '' && !empty($locationScope)) 
+                        {
+                            foreach ($locationsScope as $loc_id => $coords) {
+                                if (strpos($ev['venue']['name'], $coords['city']))
+                                {
+                                    $result['location_id'] = $loc_id;
+                                    $result['latitude'] = ($coords['latMin'] + $coords['latMax']) / 2;
+                                    $result['longitude'] = ($coords['lonMin'] + $coords['lonMax']) / 2;
+
+                                    break;
+                                }
+                            }
+                        }
                     }
 
                     $Text = new Text();
@@ -462,9 +514,7 @@ class Event extends EventObject
                           -> returnTag(true);
 
                     $categoryzator = new Categoryzator($Text);
-
                     $newText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
-
                     $cats = array();
                     $tags = array();
 
@@ -474,7 +524,7 @@ class Event extends EventObject
                         $cats[$key]->category_id = $cat->id;
                     }
 
-                    foreach ($newText->tag as $c) {
+                   /* foreach ($newText->tag as $c) {
                         foreach ($c as $key => $tag) {
                             $Tag = TagObject::findFirst("key = '".$tag."'");
                             if ($Tag) {
@@ -482,18 +532,17 @@ class Event extends EventObject
                                 $tags[$key]->tag_id = $Tag->id;
                             }
                         }
-                    }
+                    }*/
 
                     $result['event_category'] = $cats;
-                    $result['event_tag'] = $tags;
+                    //$result['event_tag'] = $tags;
 
                     $this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
-                    $this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
+                    //$this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
                     $eventObj = new self;
-
                     $eventObj -> assign($result);
-                    if ($eventObj -> save()) {
 
+                    if ($eventObj -> save()) {
                         if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
                             $ch =  curl_init($ev['pic_big']);
                             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -515,301 +564,16 @@ class Event extends EventObject
                                 'image' => $ev['pic_big']
                             ));
                         $images -> save();
-
-                        $result['id'] = $eventObj -> id;
-                        $result['logo'] = $eventObj -> logo;
-
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
-                        $newEvents[] = $eventObj -> id;
+                        $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
+
                     }
                 } elseif ($returnExists !== false && !is_null(self::$cacheData -> get('fbe_' . $ev['eid'])) && isset($ev['venue'])) {
-                        $newEvents[] = self::$cacheData -> get('fbe_' . $ev['eid']);
+                    $newEvents[self::$cacheData -> get('fbe_' . $ev['eid'])] = $ev['eid'];
                 }
             }
         }
 
         return $newEvents;
-    }
-
-    public function parseEvent($data)
-    {
-        $membersList = MemberNetwork::find();
-        $eventsList = self::find();
-        $locationsList = Location::find();
-        $venuesList = Venue::find();
-        $locator = new Location();
-        $cfg = $this -> getConfig();
-        $geo = $this -> getGeo();
-
-        if ($membersList) {
-            $membersScope = array();
-            foreach ($membersList as $mn) {
-                $membersScope[$mn -> account_uid] = $mn -> member_id;
-            }
-        }
-
-        if ($eventsList) {
-            $eventsScope = array();
-            foreach ($eventsList as $ev) {
-                $eventsScope[$ev -> fb_uid] = array('id' => $ev -> id,
-                    'start_date' => $ev -> start_date,
-                    'end_date' => $ev -> end_date,
-                    'latitude' => $ev -> latitude,
-                    'longitude' => $ev -> longitude,
-                    'category' => $ev -> category);
-            }
-        }
-
-        if ($venuesList) {
-            $venuesScope = array();
-            foreach ($venuesList as $vn) {
-                $venuesScope[$vn -> fb_uid] = array('venue_id' => $vn -> id,
-                    'address' => $vn -> address,
-                    'location_id' => $vn -> location_id,
-                    'latitude' => $vn -> latitude,
-                    'longitude' => $vn -> longitude);
-            }
-        }
-
-        if ($locationsList) {
-            $locationsScope = array();
-            foreach ($locationsList as $loc) {
-                $locationsScope[$loc -> id] = array('latMin' => $loc -> latitudeMin,
-                    'lonMin' => $loc -> longitudeMin,
-                    'latMax' => $loc -> latitudeMax,
-                    'lonMax' => $loc -> longitudeMax,
-                    'city' => $loc -> city,
-                    'country' => $loc -> country);
-            }
-        }
-
-        foreach($data as $source => $events) {
-
-            if (!empty($events)) {
-                foreach($events as $item => $ev) {
-                    if (!isset($eventsScope[$ev['eid']])) {
-                        $result = array();
-                        $result['fb_uid'] = $ev['eid'];
-                        $result['fb_creator_uid'] = $ev['creator'];
-                        $ev['description'] = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $ev['description']);
-                        $result['description'] = $ev['description'];
-                        $result['name'] = $ev['name'];
-
-                        if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
-                            $ext = explode('.', $ev['pic_big']);
-                            $logo = 'fb_' . $ev['eid'] . '.' . end($ext);
-
-                            $ch =  curl_init($ev['pic_big']);
-                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
-                            $content = curl_exec($ch);
-                            if ($content) {
-                                $f = fopen($cfg -> application -> uploadDir . 'img/event/' . $logo, 'wb');
-                                fwrite($f, $content);
-                                fclose($f);
-
-                                $result['logo'] = $logo;
-                            }
-                        }
-
-                        if (!empty($ev['start_time'])) {
-                            $result['start_date'] = date('Y-m-d', strtotime($ev['start_time']));
-                            $result['start_time'] = date('H:i', strtotime($ev['start_time']));
-                        }
-                        if (!empty($ev['end_time'])) {
-                            $result['end_date'] = date('Y-m-d', strtotime($ev['end_time']));
-                            $result['end_time'] = date('H:i', strtotime($ev['end_time']));
-                        }
-
-                        if (empty($result['end_date']) && !empty($result['start_date'])) {
-                            $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
-                        }
-
-                        if (isset($membersScope[$ev['creator']])) {
-                            $result['member_id'] = $membersScope[$ev['creator']];
-                        }
-
-                        $eventLocation = '';
-
-                        if (!empty($ev['venue'])) {
-                            if (!isset($venuesScope[$ev['venue']['id']])) {
-                                if ($ev['venue']['latitude'] != '' && $ev['venue']['longitude'] != '') {
-                                    $result['latitude'] = $ev['venue']['latitude'];
-                                    $result['longitude'] = $ev['venue']['longitude'];
-                                }
-
-                                // check location by venue coordinates
-                                if ($eventLocation == '') {
-                                    foreach ($locationsScope as $loc_id => $coords) {
-                                        if ($ev['venue']['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $ev['venue']['latitude'] &&
-                                            $ev['venue']['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $ev['venue']['longitude'])
-                                        {
-                                            $eventLocation = $loc_id;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                // create new location from coordinates
-                                if ($eventLocation == '') {
-                                    $loc = $locator -> createOnChange(array('latitude' => $ev['venue']['latitude'],
-                                        'longitude' => $ev['venue']['longitude']));
-                                    $eventLocation = $loc -> id;
-
-                                    $locationsScope[$loc -> id] = array(
-                                        'latMin' => $loc -> latitudeMin,
-                                        'lonMin' => $loc -> longitudeMin,
-                                        'latMax' => $loc -> latitudeMax,
-                                        'lonMax' => $loc -> longitudeMax,
-                                        'city' => $loc -> city,
-                                        'country' => $loc -> country);
-                                }
-
-                                $venueObj = new Venue();
-                                $venueObj -> assign(array(
-                                    'fb_uid' => $ev['venue']['id'],
-                                    'location_id' => $eventLocation,
-                                    'name' => $ev['location'],
-                                    'address' => $ev['venue']['street'],
-                                    'latitude' => $ev['venue']['latitude'],
-                                    'longitude' => $ev['venue']['longitude']
-                                ));
-                                if ($venueObj -> save()) {
-                                    $result['venue_id'] = $venueObj -> id;
-                                    $result['address'] = $ev['venue']['street'];
-                                    $result['location_id'] = $venueObj -> location_id;
-
-                                    $venuesScope[$venueObj -> fb_uid] = array(
-                                        'venue_id' => $venueObj -> id,
-                                        'address' => $venueObj -> address,
-                                        'location_id' => $venueObj -> location_id,
-                                        'latitude' => $venueObj->latitude,
-                                        'longitude' => $venueObj->longitude);
-                                }
-                            } else {
-                                $result['venue_id'] = $venuesScope[$ev['venue']['id']]['venue_id'];
-                                $result['address'] = $venuesScope[$ev['venue']['id']]['address'];
-                                $result['location_id'] = $venuesScope[$ev['venue']['id']]['location_id'];
-                                $result['latitude'] = $venuesScope[$ev['venue']['id']]['latitude'];
-                                $result['longitude'] = $venuesScope[$ev['venue']['id']]['longitude'];
-                            }
-                        }
-
-
-                        $Text = new Text();
-
-                        $Text->addContent($result['name'])
-                            ->addContent($result['description'])
-                            ->returnTag(true);
-
-                        $categoryzator = new Categoryzator($Text);
-
-                        $newText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
-
-                        $cats = array();
-                        $tags = array();
-
-                        $data[$source][$item]['category'] = [];
-
-                        foreach ($newText->category as $key => $c) {
-                            $data[$source][$item]['category'][]['key'] = $c;
-                            $cat = Category::findFirst("key = '".$c."'");
-                            $cats[$key] = new EventCategoryObject();
-                            $cats[$key]->category_id = $cat->id;
-                        }
-
-                        foreach ($newText->tag as $c) {
-                            foreach ($c as $key => $tag) {
-                                $Tag = TagObject::findFirst("key = '".$tag."'");
-                                if ($Tag) {
-                                    $tags[$key] = new EventTagObject();
-                                    $tags[$key]->tag_id = $Tag->id;
-                                }
-                            }
-                        }
-
-                        $result['event_category'] = $cats;
-                        $result['event_tag'] = $tags;
-
-                        /*$categoryzator = new Categoryzator($result['name']);
-                        $titleText = $categoryzator->analiz(Categoryzator::MULTI_CATEGORY);
-
-                        $categoryzator2 = new Categoryzator($result['description']);
-                        $descriptionText = $categoryzator2->analiz(Categoryzator::MULTI_CATEGORY);
-
-                        $titleCategory = $titleText->category;
-
-                        $descriptionCategory = $descriptionText->category;
-
-                        if (!empty($titleCategory) || !empty($descriptionCategory)) {
-                            $categories = array_unique(array_merge($titleCategory, $descriptionCategory));
-
-                            // TODO: small dirty code. need refactoring in categoryzator
-                            if (count($categories) > 1 && in_array('other', $categories)) {
-                                $categories = array_flip($categories);
-                                unset($categories['other']);
-                                $categories = array_flip($categories);
-                            }
-
-                            $cats = array();
-                            foreach ($categories as $key => $c) {
-                                $cat = Category::findFirst("key = '".$c."'");
-                                $cats[$key] = new EventCategoryObject();
-                                $cats[$key]->category_id = $cat->id;
-                            }
-
-                            $result['event_category'] = $cats;
-                        }*/
-
-                        $this->hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
-                        $this->hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
-                        $eventObj = new self;
-
-
-                        $eventObj -> assign($result);
-                        if ($eventObj -> save()) {
-                            $images = new EventImage();
-                            $images -> assign(array(
-                                'event_id' => $eventObj -> id,
-                                'image' => $ev['pic_big']
-                            ));
-                            $images -> save();
-
-                            $data[$source][$item]['id'] = $eventObj -> id;
-                            $data[$source][$item]['logo'] = $eventObj -> logo;
-
-                            $eventsScope[$ev['eid']] = $eventObj -> id;
-                        }
-
-                    } else {
-                        $data[$source][$item]['id'] = $eventsScope[$ev['eid']]['id'];
-                        //$data[$source][$item]['logo'] = $eventsScope[$ev['eid']]['logo'];
-                        if (!empty($eventsScope[$ev['eid']]['start_date'])) {
-                            $data[$source][$item]['start_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['start_date']));
-                            $data[$source][$item]['start_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['start_date']));
-                        }
-
-                        if (!empty($eventsScope[$ev['eid']]['end_date'])) {
-                            $data[$source][$item]['end_time'] = date('H:i', strtotime($eventsScope[$ev['eid']]['end_date']));
-                            $data[$source][$item]['end_date_nice'] = date('d/m/Y', strtotime($eventsScope[$ev['eid']]['end_date']));
-                        }
-
-                        if (!empty($eventsScope[$ev['eid']]['category'])) {
-                            $data[$source][$item]['category'] = $eventsScope[$ev['eid']]['category']->toArray();
-                        }
-
-                        if (!empty($eventsScope[$ev['eid']]['latitude'])) {
-                            $data[$source][$item]['latitude'] = $eventsScope[$ev['eid']]['latitude'];
-                        }
-
-                        if (!empty($eventsScope[$ev['eid']]['longitude'])) {
-                            $data[$source][$item]['longitude'] = $eventsScope[$ev['eid']]['longitude'];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $data;
     }
 } 

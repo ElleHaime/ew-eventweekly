@@ -46,11 +46,10 @@ class AuthController extends \Core\Controller
                         echo json_encode(array('error' => 'Wrong login credentials!'));
                         exit();
                     }
-                }else {
+                } else {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
-//_U::dump($this -> session -> get('location'));    
 
                     if (!$this->request->isAjax()) {
                         $this -> response -> redirect('/map');
@@ -318,6 +317,11 @@ class AuthController extends \Core\Controller
      */
     public function logoutAction()
     {
+        $keys = $this -> cacheData -> queryKeys();
+        foreach ($keys as $key) {
+            $this -> cacheData -> delete($key);
+        }
+        
 		$this -> session -> destroy();
 		return $this -> response -> redirect('/');
     }

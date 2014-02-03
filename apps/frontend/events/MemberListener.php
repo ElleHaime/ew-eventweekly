@@ -60,6 +60,7 @@ class MemberListener {
         $this -> subject -> session -> set('lastFetchedEvent', 0);
     }
 
+
     /**
      * Writer custom, liked, following event counts in session
      *
@@ -79,12 +80,29 @@ class MemberListener {
             $this->subject->session->set('userEventsLiked', $model->getLikedEventsCount($userId));
 
             $model = new EventMember();
-            $this->subject->session->set('userEventsGoing', $model->getEventMemberEventsCount($userId));
+            $emSummary = $model->getEventMemberEventsCount($userId);
+            // set counter
+            $this->subject->session->set('userEventsGoing', $emSummary->count());
+            // set cache
+            foreach ($emSummary as $item) {
+                if (!$this -> subject -> cacheData -> exists('member.go.' . $userId . '.' . $item -> id)) {
+                    $this -> subject -> cacheData -> save('member.go.' . $userId . '.' . $item -> id, $item -> fb_uid);
+                }
+            }
 
             $model = new EventMemberFriend();
-            $this->subject->session->set('userFriendsEventsGoing', $model->getEventMemberFriendEventsCount($userId));
+            $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
+            // set counter
+            $this->subject->session->set('userFriendsEventsGoing', $emfSummary -> count());
+            // set cache
+            foreach ($emfSummary as $item) {
+                if (!$this -> subject -> cacheData -> exists('member.friends.go.' . $userId . '.' . $item -> event_id)) {
+                    $this -> subject -> cacheData -> save('member.friends.go.' . $userId . '.' . $item -> event_id, $item -> event_id);
+                }
+            }
         }
     }
+
 
     public function checkLocationMatch($subject)
     {

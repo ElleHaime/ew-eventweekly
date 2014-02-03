@@ -14,7 +14,7 @@ define('newGmapEvents',
                 //requestInterval: 0, // TODO: set some interval
                 //eventsUrl: '/eventmap',
 
-                requestInterval: 2000, // TODO: set some interval
+                requestInterval: 4000, // TODO: set some interval
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
@@ -209,6 +209,7 @@ define('newGmapEvents',
                 __newCity = city;
 
                 var makeRequest = function() {
+                    console.log('make request');
                     $.when(request(lat, lng, city)).then(function(response) {
                         responseHandler(response);
                     });
