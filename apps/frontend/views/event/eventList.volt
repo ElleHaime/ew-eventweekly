@@ -81,7 +81,7 @@
                                                 {% else %}
                                                 <div class="plans-box clearfix">
                                                     <button class="btn eventLikeBtn" data-status="1" data-id="{{ event.id }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
-                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don`t like</button>
+                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don't like</button>
                                                 </div>
                                                 {% endif %}
 

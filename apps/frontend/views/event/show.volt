@@ -192,20 +192,20 @@
                                         <div class="btn-hide clearfix">
 
                                             {% if not (event.memberpart|length) %}
-                                                <span>So, whats your plan?</span>
+                                                <span>So, what's your plan?</span>
                                             {% endif %}
                                             <div class="event-site clearfix">
                                                 {% if not (event.memberpart|length) %}
-                                                    <button class="btn" id="event-join">I`m going!</button>
-                                                    <button class="btn" id="event-maybe">I`m interested!</button>
-                                                    <button class="btn" id="event-decline">Don`t like</button>
+                                                    <button class="btn" id="event-join">I'm going!</button>
+                                                    <button class="btn" id="event-maybe">I'm interested!</button>
+                                                    <button class="btn" id="event-decline">Don't like</button>
                                                 {% else %}
                                                     {% if event.memberpart == 1 %}
-                                                        <button class="btn" id="event-join" disabled = true>I`m going!</button>
+                                                        <button class="btn" id="event-join" disabled = true>I'm going!</button>
                                                     {% endif %}
 
                                                     {% if event.memberpart == 2 %}
-                                                        <button class="btn" id="event-maybe" disabled = true>I`m interested!</button>
+                                                        <button class="btn" id="event-maybe" disabled = true>I'm interested!</button>
                                                     {% endif %}
                                                 {% endif %}
                                             </div>

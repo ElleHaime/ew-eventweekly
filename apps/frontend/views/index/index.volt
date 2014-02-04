@@ -31,7 +31,7 @@
     {% endif %}
 
     <div class="how-it-works container-box">
-        <h2>How it works?</h2>
+        <h2>How does it work ?</h2>
 
         <div class="column">
             <div class="number">1</div>
@@ -48,7 +48,7 @@
         <div class="column">
             <div class="number">3</div>
             <div class="text">
-                <p> Create an event and invite more than 100 000 guests to attend if from all  over the  world.</p>
+                <p> Create an event and invite more than 100 000 guests to attend from all  over the  world.</p>
             </div>
         </div>
     </div>
