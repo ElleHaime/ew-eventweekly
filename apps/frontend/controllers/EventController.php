@@ -251,10 +251,10 @@ class EventController extends \Core\Controllers\CrudController
 
         $logoFile = '';
         if ($event -> logo != '') {
-           $logoFile = $cfg -> application -> uploadDir . 'img/event/'. $event -> logo;
+           $logoFile = $cfg -> application -> uploadDir . 'img/event/'. $event->id . '/' . $event -> logo;
         }
 
-        $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> logo;
+        $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> id . '/' . $event -> logo;
         if (!file_exists($logoFile)) {
             $logo = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
         }
