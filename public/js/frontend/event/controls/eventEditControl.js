@@ -613,8 +613,8 @@ define('frontEventEditControl',
                 ];
 
                 var validFields = [
-                    { element : self.settings.inpTicketsUrl, text : 'valid url address' },
-                    { element : self.settings.inpSites, text : 'valid url address' }
+                    { element : self.settings.inpTicketsUrl, text : 'valid url address' }
+                    //{ element : self.settings.inpSites, text : 'valid url address' }
                 ];
 
                 var text = 'Please enter: ';
