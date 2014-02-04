@@ -79,7 +79,12 @@ define('frontEventEditControl',
                 accSynced: '#acc_synced',
                 externalLogged: '#external_logged',
                 btnPreview: '#btn-preview',
-                deleteImage: '.delete-logo'
+                deleteImage: '.delete-logo',
+
+                inpTicketsUrl: '#tickets_url',
+                inpSites: '#sites',
+
+                urlPattern: new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')
 			},
 
 
@@ -420,6 +425,11 @@ define('frontEventEditControl',
 			{
 				var url = self.settings.inpSite.val();
 
+                if (url != '' && !self.settings.urlPattern.test(url)) {
+                    noti.createNotification('Please enter a valid url', 'error');
+                    return false;
+                }
+
 				if (url.length != 0) {
 			        if (url.indexOf('http', 0) < 0) {
 			            url = 'http://' + url;
@@ -602,10 +612,22 @@ define('frontEventEditControl',
                     { element : self.settings.inpLocation, text : 'location' }
                 ];
 
+                var validFields = [
+                    { element : self.settings.inpTicketsUrl, text : 'valid url address' },
+                    { element : self.settings.inpSites, text : 'valid url address' }
+                ];
+
                 var text = 'Please enter: ';
                 fields.forEach(function(field) {
                     if ($(field.element).val() == '') {
                         text += field.text + ', ';
+                        isValid = false;
+                    }
+                });
+
+                validFields.forEach(function(validField) {
+                    if ($(validField.element).val() != '' && !self.settings.urlPattern.test($(validField.element).val())) {
+                        text += validField.text + ', ';
                         isValid = false;
                     }
                 });
