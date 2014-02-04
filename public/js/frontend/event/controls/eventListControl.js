@@ -36,8 +36,10 @@ define('frontEventListControl',
 				});
 
 				$(self.settings.btnDelete).click(function(e) {
-                    e.preventDefault($(this));
-					self.__delete($(this));
+                    if (confirm('Are you sure you want to remove this event?')) {
+                        e.preventDefault($(this));
+					    self.__delete($(this));
+                    }
 				});
 
 				$(self.settings.btnPublish).click(function(e) {

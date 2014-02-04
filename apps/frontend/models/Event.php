@@ -48,6 +48,12 @@ class Event extends EventObject
 										  '7' => 'Weekly');
 	protected $locator = false;
 	private $conditions = [];
+    private $defaultConditions = [
+        [
+            'type' => self::CONDITION_COMPLEX,
+            'condition' => '\Frontend\Models\Event.deleted = 0'
+        ]
+    ];
 	private $selector = ' AND';
 
     public $virtualFields = [
@@ -144,7 +150,7 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            return self::find(array('member_id = ' . $uId)) -> count();
+            return self::find(array('member_id = ' . $uId . ' AND deleted = 0')) -> count();
         } else {
             return 0;
         }
@@ -221,6 +227,9 @@ class Event extends EventObject
             $query .= ' AND (event_like.status != 0 OR event_like.status IS NULL)';
         }
 
+        $query .= ' AND event.event_status = 1';
+        $query .= ' AND event.deleted = 0';
+
         $query .= ' GROUP BY event.id';
 
 		$eventsList = $this -> getModelsManager() -> executeQuery($query);
@@ -259,6 +268,8 @@ class Event extends EventObject
                 LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event.id = event_like.event_id AND event_like.status = 1)
                 LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
             ';
+
+        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 
         if (!empty($this -> conditions)) {
             $query .= ' WHERE';
@@ -322,6 +333,8 @@ class Event extends EventObject
             ->leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id')
             ->leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id')
             ->leftJoin('Objects\EventMember', 'Objects\EventMember.event_id = Frontend\Models\Event.id');
+
+        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 
         if (!empty($this->conditions)) {
             foreach ($this->conditions as $condition) {

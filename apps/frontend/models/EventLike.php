@@ -13,6 +13,7 @@ class EventLike extends EventLikeObject
             $event->addCondition('Frontend\Models\EventLike.member_id = ' . $uId);
             $event->addCondition('Frontend\Models\EventLike.status = 1');
             $event->addCondition('Frontend\Models\Event.event_status = 1');
+            $event->addCondition('Frontend\Models\Event.deleted = 0');
 
             return $event->fetchEvents()->count();
         } else {

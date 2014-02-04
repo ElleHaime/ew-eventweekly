@@ -207,6 +207,7 @@ class EventController extends \Core\Controllers\CrudController
 						'start_date_nice' => $ev -> event -> start_date_nice,
 						'end_time' => $ev -> event -> end_time,
 						'end_date_nice' => $ev -> event -> end_date_nice,
+                        'deleted' => $ev -> event -> deleted,
                         'slugUri' => $ev->event->slugUri
 					);
 
@@ -381,6 +382,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this -> session -> get('memberId'));
         $event->addCondition('Frontend\Models\Event.start_date > now()');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
+        $event->addCondition('Frontend\Models\Event.deleted = 0');
         $events = $event->fetchEvents();
 
         $this->view->setvar('list', $events);
@@ -405,6 +407,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\EventLike.member_id = '.$this->session->get('memberId'));
         $event->addCondition('Frontend\Models\EventLike.status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
+        $event->addCondition('Frontend\Models\Event.deleted = 0');
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -428,6 +431,7 @@ class EventController extends \Core\Controllers\CrudController
 		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
 		$event->addCondition('Objects\EventMember.member_status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
+        $event->addCondition('Frontend\Models\Event.deleted = 0');
 		$events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -454,7 +458,8 @@ class EventController extends \Core\Controllers\CrudController
         $event = new Event();
 
         $event->addCondition('Frontend\Models\Event.member_id = '.$this->session->get('memberId'));
-        //$event->addCondition('Frontend\Models\Event.event_status = 1');
+        $event->addCondition('Frontend\Models\Event.deleted = 0');
+        $event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
         $events = $event->fetchEvents();
 
         if ($events -> count()) {
@@ -526,6 +531,7 @@ class EventController extends \Core\Controllers\CrudController
 			if ($event) {
                 //$event -> delete();
                 $event->event_status = 0;
+                $event->deleted = 1;
                 $event->save();
 
 				$result['status'] = 'OK';
@@ -535,6 +541,7 @@ class EventController extends \Core\Controllers\CrudController
                 $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
                 $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
                 $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
                 $response['likeCounter'] = $result['userEventsLiked'];
                 $this->session->set('userEventsLiked', $result['userEventsLiked']);
@@ -543,6 +550,7 @@ class EventController extends \Core\Controllers\CrudController
                 $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
                 $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
                 $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();
                 $this->session->set('userEventsGoing', $result['userEventsGoing']);
 //                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
@@ -732,6 +740,7 @@ class EventController extends \Core\Controllers\CrudController
 		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
 		$newEvent['recurring'] = $event['recurring'];
+        $newEvent['deleted'] = 0;
 		//$newEvent['logo'] = $event['logo'];
 		$newEvent['campaign_id'] = $event['campaign_id'];
 		if (isset($this -> session -> get('member') -> network)) {
