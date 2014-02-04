@@ -4142,7 +4142,7 @@ i.icon-map {
 }
 
 .sidebar-box .place-address   {
-    max-width: 359px;
+    width: 359px;
 }
 
 .sidebar-box .input-append  input{
