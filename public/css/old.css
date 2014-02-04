@@ -282,7 +282,7 @@ hr {
     margin-top: 0;
     min-width: 180px;
     position: relative;
-    z-index: 200;
+    z-index: 130;
 }
 .form-horizontal .control-group
 {
@@ -511,7 +511,7 @@ hr {
     *display: inline;
     width: 285px;
     position: relative;
-    z-index: 120;
+    z-index: 140;
     cursor: pointer;
     font-size: 11px;
     text-align: center;
@@ -615,7 +615,7 @@ a.location-city  {
     top:42px;
     width: auto;
     padding: 22px 22px 10px 22px;
-    z-index: 100;
+    z-index: 135;
 }
 .active-box > a {
     padding-bottom:6px;
