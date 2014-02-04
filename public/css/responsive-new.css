@@ -123,22 +123,22 @@
         margin-top: 10px;
     }
 
-    .plans-box  {
+   .event-one-text .plans-box  {
         position: absolute;
         top:10px;
         left:250px;
     }
 
-    .event-list-btn {
+    .event-one-text .event-list-btn {
         position: absolute;
         left:250px;
         top:80px
     }
 
-    .place-address {
+    .event-one-text .place-address {
        max-width: 174px;
     }
-    .place-address span {
+   .event-one-text  .place-address span {
         margin-right: 20px;
         display: block;
     }
@@ -168,7 +168,7 @@
     {
         padding:0 0  12px 0;
     }
-    .event-one-img {
+    .event-one .event-one-img {
         margin-top: 20px;
         margin-left: 20px;
     }
@@ -298,7 +298,8 @@
 
 }
 @media screen and (max-width: 640px) {
-    .event-list-btn {
+
+   .event-one-text  .event-list-btn {
         position: absolute;
         left:250px;
         top:125px

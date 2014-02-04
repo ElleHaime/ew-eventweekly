@@ -2211,7 +2211,7 @@ input[type="checkbox"]  {
     position: relative;
     width: 220px;
     height: 220px;
-    /*border: 1px solid #ccc;*/
+    border: 1px solid #ccc;
     overflow: hidden;
 
 }
@@ -2222,11 +2222,20 @@ input[type="checkbox"]  {
     position: absolute;
     right: 0;
     top: 0;
-    /*width: 100%;*/
-    /*height: 100%;*/
-    padding: 10px;
-    background: #eee;
 }
+
+.event-discription .add-img  .event-one-img img{
+    height: 100%;
+}
+
+.event-one  .event-one-img {
+    border: 0;
+}
+.event-one  .event-one-img a {
+    background: #eee;
+    padding: 10px;
+}
+
 .add-img img {
     width: auto;
 }
@@ -3898,7 +3907,7 @@ i.icon-map {
     font: 400 13px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif;
     text-align: center;
     text-decoration: none;
-    background-color: #eeeeee;
+    background-color: #393939;
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
@@ -3955,9 +3964,10 @@ i.icon-map {
 }
 
 .event-list-btn   .tooltip-inner {
-   color:#212121;
+    color:#212121;
     min-height: 30px;
     line-height: 30px;
+    background: #eeeeee;
 }
 
 .event-list-btn  .tooltip.right .tooltip-arrow
@@ -4130,6 +4140,11 @@ i.icon-map {
 {
     margin-bottom: 0;
 }
+
+.sidebar-box .place-address   {
+    max-width: 359px;
+}
+
 .sidebar-box .input-append  input{
     height: 32px;
     width: 228px;
