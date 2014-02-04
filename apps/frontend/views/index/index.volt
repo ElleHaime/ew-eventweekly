@@ -82,7 +82,7 @@
                     <div class="label-or"><span>or</span></div>
                     <div class="link register-later"><a href="/map">Register later</a></div>
                 </div>
-                <div class="link read-more"><a href="#">Read more about Event Weekly</a></div>
+                {#<div class="link read-more"><a href="#">Read more about Event Weekly</a></div>#}
             </div>
             <div class="clear"></div>
         </div>

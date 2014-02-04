@@ -84,7 +84,7 @@
                         {% if acc_external.account_uid is empty %}
                             <button id="linkToFbAcc" class="btn btn-block">Link to Facebook Account</button>
                         {% else %}
-                            <button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>
+                            <button id="syncFbAcc" class="btn btn-block ">Facebook sync </button>
                             <p>import interests from facebook / login through facebook</p>
                         {% endif %}
 
