@@ -377,7 +377,7 @@ class EventController extends \Core\Controllers\CrudController
 	{
         $event = new Event();
 
-		$this -> view -> setvar('listName', 'Friends events');
+		$this -> view -> setvar('listName', 'Friend\'s events');
 
         $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this -> session -> get('memberId'));
         $event->addCondition('Frontend\Models\Event.start_date > now()');
@@ -386,7 +386,7 @@ class EventController extends \Core\Controllers\CrudController
         $events = $event->fetchEvents();
 
         $this->view->setvar('list', $events);
-        $this->view->setVar('listTitle', 'Friends events');
+        $this->view->setVar('listTitle', 'Friend\'s events');
         $this->view->pick('event/eventList');
 	}
 
@@ -426,7 +426,7 @@ class EventController extends \Core\Controllers\CrudController
 	public function listJoinedAction()
 	{
 		$event = new Event();
-		$this -> view -> setvar('listName', 'Where I Go');
+		$this -> view -> setvar('listName', 'Where I am going');
 
 		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
 		$event->addCondition('Objects\EventMember.member_status = 1');
@@ -443,7 +443,7 @@ class EventController extends \Core\Controllers\CrudController
 		//$this -> view -> pick('event/userlist');
 
         $this->view->setvar('list', $events);
-        $this->view->setVar('listTitle', 'Where I Go');
+        $this->view->setVar('listTitle', 'Where I am going');
         $this->view->pick('event/eventList');
 	}
 

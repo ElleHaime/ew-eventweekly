@@ -54,7 +54,7 @@
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/event/joined'">
                                         <span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span>
-                                        <span class="btn-text">Where I go</span>
+                                        <span class="btn-text">Where I am going</span>
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/liked'">
                                         <span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
@@ -62,7 +62,7 @@
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/friends'">
                                         <span class="btn-count" id="userFriendsGoing">{{ userFriendsGoing }}</span>
-                                        <span class="btn-text">Friends events</span>
+                                        <span class="btn-text">Friend's events</span>
                                     </button>
                                 </div>
                             </div>
@@ -104,25 +104,23 @@
                         </button>
                     {% else %}
                         <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
-                                onclick="location.href='/map'" data-original-title="Show all map"><i class="icon-map"></i>
+                                onclick="location.href='/map'" data-original-title="Event map"><i class="icon-map"></i>
                         </button>
                     {% endif %}
                 </div>
 
                 <div class="location clearfix">
                     {% if eventsTotal is defined %}
-                        <span class="location-count tooltip-text" 
+                        <span class="location-count"
                               data-placement="bottom" 
-                              rel="tooltip" 
-                              title=""        
+                              title=""
                               id="events_count"
                               data-original-title="All events {{ eventsTotal }}">{{ eventsTotal }}
                         </span>
                     {% else %}
-                        <span class="location-count tooltip-text" 
+                        <span class="location-count"
                               data-placement="bottom" 
-                              rel="tooltip" 
-                              title="" 
+                              title=""
                               id="events_count"
                               data-original-title="0">0</span>
                     {% endif %}
@@ -135,7 +133,7 @@
 
                         <div class="location-search searchCityBlock clearfix" style="display: none;">
                             <div class="input-append" style="float: none">
-                                <input class="input-large" size="16" type="text" placeholder="Search city" id="topSearchCity">
+                                <input class="input-large" size="16" type="text" placeholder="Search for a city" id="topSearchCity">
                                 <button class="btn" type="button">Find</button>
                             </div>
                         </div>

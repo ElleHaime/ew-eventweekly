@@ -177,7 +177,7 @@
                                                 <i class="icon-time"></i>
                                                 <span class="date-start">{{ event.start_date_nice }}</span>
                                                 {% if event.start_time is defined %}
-                                                    start at
+                                                    starts at
                                                     <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
                                                 {% endif %}
                                             {% endif %}
@@ -439,19 +439,20 @@
 
                             {% include 'layouts/sharebar.volt' %}
 
-                        <div class="row-fluid">
-                            <div class="span12">
-                                <div class="comment-box">
-                                    <h2>Leave comments</h2>
-                                    {% if eventPreview is defined %}
-                                        <img src="/img/comment_tmp.png" alt=""/>
-                                        <div style="height: 20px"></div>
-                                    {% else %}
-                                        <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                        <div class="padd_30"></div>
+                        {#<div class="row-fluid">#}
+                            {#<div class="span12">#}
+                                {#<div class="comment-box">#}
+                                    {#<h2>Leave comments</h2>#}
+                                    {#{% if eventPreview is defined %}#}
+                                        {#<img src="/img/comment_tmp.png" alt=""/>#}
+                                        {#<div style="height: 20px"></div>#}
+                                    {#{% else %}#}
+                                        {#<fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>#}
+                                    {#{% endif %}#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
             </div>
         </div>
     </div>

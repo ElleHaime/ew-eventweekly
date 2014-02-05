@@ -56,7 +56,7 @@
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ event['start_date_nice'] }}</span>
                                                         {% if event['start_time'] != '00:00' %}
-                                                            start at
+                                                            starts at
                                                             <span class="date-time">{{ event['start_time'] }}</span>
                                                         {% endif %}
 
