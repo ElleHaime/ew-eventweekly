@@ -77,9 +77,10 @@
                     {#<div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>#}
                     {#<div class="gplus icon"><a href="#" class="color-red">google+</a></div>#}
                     <div class="link email"><a id="email-login" class="fb-login-popup" onclick="return false;" href="/login">e-mail</a></div>
+                    <div class="label-or"><span>or</span></div>
                 </div>
                 <div class="line-box">
-                    <div class="label-or"><span>or</span></div>
+
                     <div class="link register-later"><a href="/map">Register later</a></div>
                 </div>
                 {#<div class="link read-more"><a href="#">Read more about Event Weekly</a></div>#}
