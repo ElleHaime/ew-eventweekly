@@ -58,7 +58,7 @@
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ dateToFormat(event['start_date'], '%d %b %Y') }}</span>
                                                         {% if dateToFormat(event['start_date'], '%R') != '00:00' %}
-                                                            start at
+                                                            starts at
                                                             <span class="date-time">{{ dateToFormat(event['start_date'], '%R') }}</span>
                                                         {% endif %}
                                                     {% endif %}
