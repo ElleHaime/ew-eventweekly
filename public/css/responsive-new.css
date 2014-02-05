@@ -389,6 +389,10 @@
 
 @media screen and (max-width: 580px) {
 
+
+    .wrapper {
+        min-width: 480px;
+    }
     .event-list_i {
         padding: 0 3%;
     }
@@ -705,9 +709,6 @@
         padding-left: 71px;
     }
 
-}
-
-@media screen and (max-width: 370px) {
     .big-top .square span {
         text-align: center;
         margin: 0 auto;
@@ -717,6 +718,11 @@
     .big-top .square.white span {
         color:#000;
     }
+
+}
+
+@media screen and (max-width: 370px) {
+
     .campaign-box .form-center {
         clear: both;
         padding-left: 0px;
