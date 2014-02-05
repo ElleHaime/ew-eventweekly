@@ -52,7 +52,7 @@
                                                     	{% if node['event']['start_date'] != '0000-00-00 00:00:00' %}
 	                                                        <span class="date-start">{{ node['event']['start_date'] }}</span>
 	                                                    {% else %}
-	                                                        <span class="date-start">start not defined</span>	                                                    	
+	                                                        <span class="date-start">starts not defined</span>
 	                                                    {% endif %}
                                                     </div>
                                                     <p>
