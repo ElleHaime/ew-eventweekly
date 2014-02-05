@@ -12,6 +12,7 @@ use \Phalcon\Mvc\ModuleDefinitionInterface,
 	\Core\Geo,
 	\Core\Acl,
     Frontend\Events\ViewListener;
+use \Core\Utils\DateTime as DTime;
 
 abstract class Bootstrap implements ModuleDefinitionInterface
 {
@@ -25,6 +26,8 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	{  
 		$this -> _di = DI::getDefault();
 		$this -> _config = $this -> _di -> getConfig();
+
+        DTime::setConfig($this -> _config);
 	}
 		
 	public function registerAutoloaders()
@@ -208,6 +211,11 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
         $compiler->addFunction('toSlugUri', function($resolvedArgs, $exprArgs) {
             return '\Core\Utils\SlugUri::slug('.$resolvedArgs.')';
+        });
+
+        $compiler->addFunction('dateToFormat', function($resolvedArgs) {
+            $args = explode(',', $resolvedArgs);
+            return '\Core\Utils\DateTime::format('.trim($args[0]).', '.trim($args[1]).')';
         });
     }
 

@@ -25,13 +25,21 @@
 
                                     <div class="date-list">
                                         <i class="icon-time"></i>
-                                        {% if event.start_date is defined %}
+                                        {% if event.start_date != '0000-00-00' %}
+                                            <i class="icon-time"></i>
+                                            <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
+                                            {% if dateToFormat(event.start_date, '%R') != '00:00' %}
+                                                starts at
+                                                <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
+                                            {% endif %}
+                                        {% endif %}
+                                        {#{% if event.start_date is defined %}
                                             <span class="date-start">{{ event.start_date_nice }}</span>
                                             {% if event.start_time is defined %}
                                                 starts at <span
                                                 class="date-time">{{ event.start_time }}</span>
                                             {% endif %}
-                                        {% endif %}
+                                        {% endif %}#}
                                     </div>
                                     <div class="event-text">
                                         <p> {{ event.description|striptags|escape|truncate(300) }}</p>

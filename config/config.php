@@ -13,6 +13,7 @@ $cfg_settings = array(
 	'application' => array(
 		'debug' => true,
 		'baseUri' => '',
+        'timezone' => 'UTC',
 		'defaultModule' => 'frontend',
 		'defaultNamespace' => 'Frontend\Controllers',
 		'defaultController' => 'index',

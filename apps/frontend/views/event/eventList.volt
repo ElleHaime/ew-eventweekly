@@ -64,14 +64,22 @@
                                                 <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
 
                                                 <div class="date-list">
-                                                    {% if event.start_date_nice is defined %}
+                                                    {% if event.start_date != '0000-00-00' %}
+                                                        <i class="icon-time"></i>
+                                                        <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
+                                                        {% if dateToFormat(event.start_date, '%R') != '00:00' %}
+                                                            starts at
+                                                            <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {#{% if event.start_date_nice is defined %}
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ event.start_date_nice }}</span> 
                                                         {% if event.start_time is defined %}
                                                             starts at
                                                             <span class="date-time">{{ event.start_time }}</span>
                                                         {% endif %}
-                                                    {% endif %}
+                                                    {% endif %}#}
                                                 </div>
                                                 <p>
                                                     {{ event.description|striptags|escape|truncate(350) }}

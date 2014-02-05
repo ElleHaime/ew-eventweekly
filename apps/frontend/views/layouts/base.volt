@@ -6,7 +6,7 @@
     <meta name="keywords" content=""/>
     <meta name="description" content=""/>
 
-    <script type="text/javascript">
+   {# <script type="text/javascript">
         var meta = document.createElement('meta'), content = '';
         meta.setAttribute('name', 'viewport');
         if (window.innerWidth <= 480) {
@@ -18,7 +18,7 @@
         var title = document.getElementsByTagName('title')[0];
         title.parentNode.insertBefore(meta, title);
     </script>
-
+#}
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if eventMetaData is defined %}
@@ -36,8 +36,9 @@
 
 
     {{ stylesheet_link('/css/bootstrap.min.css') }}
-    {{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}
-    {{ stylesheet_link('/css/datepicker.css') }}
+    {#{{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}#}
+    {{ stylesheet_link('/css/normalBootstrapDateTimepicker.min.css') }}
+    {#{{ stylesheet_link('/css/datepicker.css') }}#}
     {{ stylesheet_link('/css/styles.css') }}
     {{ stylesheet_link('/css/jake.css') }}    
 	{{ stylesheet_link('/css/old.css') }}

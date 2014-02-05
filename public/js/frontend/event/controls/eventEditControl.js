@@ -1,8 +1,8 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'datetimepicker', 'noti', 'domReady'],
-	function($, utils, datetimepicker, noti) {
+	['jquery', 'utils', 'normalDatePicker', 'noti', 'domReady'],
+	function($, utils, normalDatePicker, noti) {
 
-		function frontEventEditControl($, utils, datetimepicker, noti)
+		function frontEventEditControl($, utils, normalDatePicker, noti)
 		{
 			var self = this;
 
@@ -103,21 +103,21 @@ define('frontEventEditControl',
 					$(self.settings.inpCampaign + ' option[value=' + camp + ']').attr('selected', true);
 				}
 
-				self.__presetDate($(self.settings.inpDateStart), $(self.settings.textDateStart), 'start');
+				/*self.__presetDate($(self.settings.inpDateStart), $(self.settings.textDateStart), 'start');
 				self.__presetDate($(self.settings.inpDateEnd), $(self.settings.textDateEnd), 'end');
 				self.__presetTime($(self.settings.inpTimeStart), $(self.settings.textTimeStart));
-				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));
+				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));*/
 
                 self.__initCategoryList();
 
-                self.__initFieldsForDateTimePicker();
+//                self.__initFieldsForDateTimePicker();
 
                 self.__checkEnablePreviewBtn();
                 $(self.settings.btnPreview).change();
 
 				self.bindEvents();
 
-                self.__setupDateTimePicker();
+//                self.__setupDateTimePicker();
 
                 self.__initFacebookPublish();
 			}
@@ -145,16 +145,13 @@ define('frontEventEditControl',
 
 				// process date end time
 				$(self.settings.inpDateStart).on('changeDate', function(e) {
-					self.__drawDateLeft(e.localDate, 'changeLeft');
+					self.__drawDateLeft(e.date, 'changeLeft');
 				});
 
 				$(self.settings.inpDateEnd).on('changeDate', function(e) {
-					self.__drawDateLeft(e.localDate);
+					self.__drawDateLeft(e.date);
 				});
 
-				$(self.settings.inpTimeStart).on('changeDate', function(e) {
-					self.__drawTimeLeft(e.localDate);
-				});
 
 				// process locations
 				$(self.settings.inpLocation).keyup(function() {
@@ -217,7 +214,7 @@ define('frontEventEditControl',
                     }
 
                     if (!self.__checkRequiredFields(true)) return false;
-                    if (!self.__checkDatesContradictions(true)) return false;
+//                    if (!self.__checkDatesContradictions(true)) return false;
 
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
@@ -251,6 +248,20 @@ define('frontEventEditControl',
 
                     $(this).closest('input[type="hidden"]').val('');
                 });
+
+                var startDate = $(self.settings.textDateStart).datetimepicker({
+                    autoclose: true,
+                    startDate: new Date()
+                }).on('changeDate', function(ev){
+                    var offsetTime = new Date(ev.date.getTime() + (0.00 * 60 + ev.date.getTimezoneOffset()) * 60 * 1000);
+                    endDate.datetimepicker('setStartDate', offsetTime);
+
+                });
+
+                var endDate = $(self.settings.textDateEnd).datetimepicker({
+                    autoclose: true,
+                    startDate: new Date()
+                });
 			}
 
             self.__eventPreview = function() {
@@ -259,7 +270,7 @@ define('frontEventEditControl',
                 }
 
                 if (!self.__checkRequiredFields(true)) return false;
-                if (!self.__checkDatesContradictions(true)) return false;
+//                if (!self.__checkDatesContradictions(true)) return false;
 
                 $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
                 $(self.settings.form).removeAttr('target').removeAttr('action');
@@ -469,6 +480,7 @@ define('frontEventEditControl',
 				if (changeLeft) {
 					$(self.settings.daysLeftCount).html(utils.daysDifference(daysBetween));
 					$(self.settings.dateLeft).html(utils.dateFormat('%d %b %Y', val));
+                    self.__drawTimeLeft(val);
 
 					$(self.settings.stringLeft).show();
 				}
@@ -477,12 +489,12 @@ define('frontEventEditControl',
 			self.__drawTimeLeft = function(val)
 			{
 				var elem = $(self.settings.inpTimeStart);
-				if (val != '00:00' && val != '') {
+				if (val != '') {
 					$(self.settings.timeLeft).html(utils.dateFormat('%H:%M', val));
 				}
 			}
 
-			self.__presetDate = function(elem, txt, type)
+             /*self.__presetDate = function(elem, txt, type)
 			{
 				elem.datetimepicker({ pickTime: false,
 									  startDate: new Date() });
@@ -497,7 +509,7 @@ define('frontEventEditControl',
 				if (txt.val() == '') {
 					txt.attr('placeholder', 'at ' + '00:00');
 				}
-			}
+			}*/
 
 			self.__checkInputFill = function(input, list)
 			{
@@ -510,7 +522,7 @@ define('frontEventEditControl',
 			}
 
             // setup datetimepicker to close on click
-            self.__setupDateTimePicker = function()
+            /*self.__setupDateTimePicker = function()
             {
                 var startDate = $(self.settings.inpDateStart).datetimepicker()
                     .on('changeDate', function(ev) {
@@ -521,7 +533,7 @@ define('frontEventEditControl',
                     .on('changeDate', function(ev) {
                         endDate.datetimepicker('hide');
                     });
-            }
+            }*/
 
 			// input -- input element (usualy type == text)
 			// list -- destination element (found values will be rendered here)
@@ -562,7 +574,7 @@ define('frontEventEditControl',
 				}
 			}
 
-            self.__checkDatesContradictions = function(showNoti)
+self.__checkDatesContradictions = function(showNoti)
             {
                 var isValid = true;
 
@@ -590,6 +602,7 @@ define('frontEventEditControl',
 
                 return isValid;
             }
+
 
             self.__getTimeInMs = function(date)
             {
@@ -640,7 +653,7 @@ define('frontEventEditControl',
                 return isValid;
             }
 
-            self.__initFieldsForDateTimePicker = function()
+            /*self.__initFieldsForDateTimePicker = function()
             {
                 var fields = [
                     $(self.settings.inpDateStart),
@@ -654,7 +667,7 @@ define('frontEventEditControl',
                         $(this).datetimepicker('show');
                     });
                 });
-            }
+            }*/
 
             self.__initFacebookPublish = function()
             {
@@ -672,7 +685,7 @@ define('frontEventEditControl',
                 $(self.settings.addEventForm).change(function(){
                     var result = true;
                     if (!self.__checkRequiredFields(false)) result = false;
-                    if (!self.__checkDatesContradictions(false)) result = false;
+//                    if (!self.__checkDatesContradictions(false)) result = false;
 
                     if (result) {
                         $(self.settings.btnPreview).prop('disabled', false);
@@ -683,6 +696,6 @@ define('frontEventEditControl',
             }
 		};
 
-		return new frontEventEditControl($, utils, datetimepicker, noti);
+		return new frontEventEditControl($, utils, normalDatePicker, noti);
 	}
 );

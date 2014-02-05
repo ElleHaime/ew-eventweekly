@@ -3,7 +3,7 @@ require([
 	'frontTopPanel',
 	'fb',
 	'frontEventEditControl',
-	'datetimepicker',
+	'normalDatePicker',
 	'utils',
 	//'resizer',
 	'noti',
@@ -11,8 +11,8 @@ require([
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontEventEditControl, datetimepicker, utils, noti) {
-		noti.init();	
+	function($, frontTopPanel, fb, frontEventEditControl, normalDatePicker, utils, noti) {
+		noti.init();
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
 				});

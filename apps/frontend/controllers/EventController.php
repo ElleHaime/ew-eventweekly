@@ -203,11 +203,9 @@ class EventController extends \Core\Controllers\CrudController
                         'location' => $ev -> location,
 						'description' => $ev -> event -> description,
 						'logo' => $ev -> logo,
-						'start_time' =>$ev -> event -> start_time,
-						'start_date_nice' => $ev -> event -> start_date_nice,
-						'end_time' => $ev -> event -> end_time,
-						'end_date_nice' => $ev -> event -> end_date_nice,
-                        'deleted' => $ev -> event -> deleted,
+						'start_date_' => $ev -> event -> start_date,
+						'end_date' => $ev -> event -> end_date,
+						'deleted' => $ev -> event -> deleted,
                         'slugUri' => $ev->event->slugUri
 					);
 
@@ -803,17 +801,11 @@ class EventController extends \Core\Controllers\CrudController
 
 		// process date and time
 		if (!empty($event['start_date'])) {
-			$newEvent['start_date'] = implode('-', array_reverse(explode('/', $event['start_date'])));  
-			if (!empty($event['start_time'])) {
-				$newEvent['start_date'] = $newEvent['start_date'] . ' ' . $event['start_time'];  
-			} 
+            $newEvent['start_date'] = $event['start_date'];
 		}
-		
+
 		if (!empty($event['end_date'])) {
-			$newEvent['end_date'] = implode('-', array_reverse(explode('/', $event['end_date'])));
-			if (!empty($event['end_time'])) {
-				$newEvent['end_date'] = $newEvent['end_date'] . ' ' . $event['end_time'];
-			}
+            $newEvent['end_date'] = $event['end_date'];
 		}
 
 		//process images
@@ -1201,9 +1193,7 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
     {
-
-		$this -> logIt(date('H:i:s') . ': COME IN');
-
+$this -> logIt(date('H:i:s') . ': COME IN');
         $Event = new Event();
         $EventFriend = new EventMemberFriend();
 		$loc = $this -> session -> get('location');
@@ -1258,7 +1248,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
         	return $events;
         } 
 
-$this -> logIt(date('H:i:s') . ': READY');
+//$this -> logIt(date('H:i:s') . ': READY');
 
 
 		//ob_start();
@@ -1275,8 +1265,8 @@ $this -> logIt(date('H:i:s') . ': READY');
         	$this -> session -> set('grabOnce', true);
 			$this -> logIt("in pointer");
         	$this -> grabNewEvents();	
-        }  
-        ///$this -> grabNewEvents();	 
+        } 
+        //$this -> grabNewEvents();	 
     }
 
 
@@ -1299,6 +1289,7 @@ $this -> logIt(date('H:i:s') . ': READY');
 
 				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
 				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+		
 				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
 					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true, 'user_event');
 				} 

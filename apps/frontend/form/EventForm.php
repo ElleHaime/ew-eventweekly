@@ -78,12 +78,7 @@ class EventForm extends Form
 									  'data-type' => 'event_date',
 									  'placeholder' => 'Start date',
                                       'autocomplete' => 'off'));
-		
-		$this -> addElement('date', 'start_time', 'Start time',
-								array('data-format' => 'hh:mm',
-									  'data-type' => 'event_time',
-									  'placeholder' => 'Start time',
-                                      'autocomplete' => 'off'));
+
 		
 		$this -> addElement('date', 'end_date', 'End date',
 								array('data-format' => 'dd/MM/yyyy',
@@ -91,11 +86,6 @@ class EventForm extends Form
 									  'placeholder' => 'End date',
                                       'autocomplete' => 'off'));
 
-		$this -> addElement('date', 'end_time', 'End time',
-								array('data-format' => 'hh:mm',
-									  'data-type' => 'event_time',
-									  'placeholder' => 'End time',
-                                      'autocomplete' => 'off'));
 
 		$this -> addElement('select', 'event_category', 'Suggest category', 
 								array('options' => \Frontend\Models\Category::find(),
