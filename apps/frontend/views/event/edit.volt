@@ -331,7 +331,7 @@
                         <h3 id="myModalLabel">Event Preview</h3>
                     </div>
                     <div class="modal-body">
-                        {#<iframe name="eventPreview_iframe" src="http://events.apppicker.com" style="width: 100%; height: 100%;"></iframe>#}
+                        <iframe name="eventPreview_iframe" src="http://dev.eventweekly.com" style="width: 100%; height: 100%;"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
