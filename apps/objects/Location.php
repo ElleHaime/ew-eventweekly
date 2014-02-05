@@ -70,7 +70,13 @@ class Location extends Model
 		}
 
 		$query = implode(' and ', $query);
-		$isLocationExists = self::findFirst($query);
+
+        if (!empty($query)) {
+            $isLocationExists = self::findFirst($query);
+        }else {
+            $isLocationExists = false;
+        }
+
 
 		if (!$isLocationExists) {
 			if (!$isGeoObject) {
