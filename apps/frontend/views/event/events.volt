@@ -71,8 +71,22 @@
                                                     <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
                                                 </div>
 
+                                                {% set eVenue = 'Undefined place' %}
+                                                {% if event['venue']['address'] is empty %}
+                                                    {% if event['location']['city'] is empty %}
+                                                        {% set eVenue = 'Undefined place' %}
+                                                    {% else %}
+                                                        {% set eVenue = event['location']['city'] %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if event['location']['city'] %}
+                                                        {% set eVenue = event['location']['city']~', '~event['venue']['name']~', '~event['venue']['address'] %}
+                                                    {% else %}
+                                                        {% set eVenue = event['venue']['name']~' '~event['venue']['address'] %}
+                                                    {% endif %}
+                                                {% endif %}
                                                 <div class="event-list-btn clearfix">
-                                                    <div class=" place-address tooltip-text"  data-original-title="   {{ event['location']['alias'] }}" title="" rel="tooltip">
+                                                    <div class=" place-address tooltip-text"  data-original-title="{{ eVenue }}" title="" rel="tooltip">
                                                         <span>
                                                             {% if event['venue']['address'] is empty %}
                                                                 {% if event['location']['alias'] is empty %}
