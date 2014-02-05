@@ -47,7 +47,8 @@ class Geo extends Plugin
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}
-		
+        \Core\Logger::logFile('ips');
+        \Core\Logger::log($this -> _userIp);
 		return;
 	}
 
