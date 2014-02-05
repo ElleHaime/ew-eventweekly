@@ -17,6 +17,7 @@ body {
     color:#333333;
     background: #f3f3f3;
     padding: 0;
+    min-width: 310px;
     margin: 0;
 }
 
@@ -702,8 +703,12 @@ input[type="color"]:focus, .uneditable-input:focus
     color:#8aaad2;
 }
 .controls input[type="text"],.controls input[type="password"] {
-    height: 37px;
+    height: 42px;
     padding: 0 10px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    width: 100%;
 }
 .location-search  .input-append {
     float: right;
@@ -773,10 +778,6 @@ div.grippie {
 .btn-add_group .btn:first-child {
     margin-left: 0;
 }
-
-/*.controls .btn {*/
-    /*margin-top: 10px;*/
-/*}*/
 
 .location-search {
     display: none;

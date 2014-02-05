@@ -655,3 +655,104 @@
         padding-top: 20px;
     }
 }
+
+
+@media screen and (max-width: 460px) {
+    .header .span7 {
+        width: auto;
+    }
+
+    a.location-city {
+        max-width: 80px;
+        width: auto;
+    }
+    .span7.location-box {
+        float: left;
+    }
+
+    .location-count
+    {
+        display: none;
+    }
+    .event-one-text .plans-box ,
+    .event-one-text .event-list-btn
+    {
+        position: relative;
+        left:0;
+        top:0;
+        clear: both;
+    }
+    .profile-info  {
+        padding-top: 15px;
+    }
+    .agreement-box h4 {
+        padding-top: 15px;
+    }
+    .agreement-box .form-horizontal .controls {
+        margin-left: 0;
+        clear: both;
+    }
+    .agreement-box  .form-horizontal .control-label {
+        padding-bottom: 6px;
+    }
+    .agreement-box form {
+        float: none;
+    }
+    .title-page {
+        padding-right: 20px;
+    }
+    .text p {
+        padding-left: 71px;
+    }
+
+}
+
+@media screen and (max-width: 370px) {
+    .big-top .square span {
+        text-align: center;
+        margin: 0 auto;
+        float: none;
+        line-height: 28px;
+    }
+    .big-top .square.white span {
+        color:#000;
+    }
+    .campaign-box .form-center {
+        clear: both;
+        padding-left: 0px;
+    }
+    .add-event_i #content_right {
+        margin: 687px 0 0;
+        width: auto;
+    }
+    .location-place a.location-city span
+    {
+        display: none;
+    }
+    a.location-city {
+        padding-left: 20px;
+    }
+    .header .span5 {
+        width: 29%;
+    }
+
+    .location-place_country .searchCityBlock {
+        width: 88% !important;
+    }
+
+    .date-picker .input-div {
+        width: 47.3%;
+    }
+    .location-place a.location-city  .caret {
+        right:17px;
+    }
+    .switch-box > h5 {
+        margin-bottom: 10px;
+    }
+
+    .table-box-row {
+        width: 100%;
+        clear: both;
+    }
+
+}
