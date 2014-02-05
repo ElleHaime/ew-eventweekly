@@ -38,7 +38,8 @@ require([
         fb.init();
 
         if ($('#conflict_location').length > 0) {
-            noti.createNotification('Your location from Facebook does not match to location from IP. Please confirm your location in <a href="/profile">profile</a> settings.', 'warning');
+//            noti.createNotification('Your location from Facebook does not match to location from IP. Please confirm your location in <a href="/profile">profile</a> settings.', 'warning');
+            noti.createNotification('Your current location does not match with your facebook profile location. Set your <a href="/profile">default location</a> for Eventweekly', 'warning');
         }
 
         if ($('#splash_messages').length > 0) {

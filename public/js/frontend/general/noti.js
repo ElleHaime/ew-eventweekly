@@ -27,7 +27,7 @@ define('noti',
 			self.settings = {
 		        notiBtn: '.notiBtn',
 		        notiBlock: '.notiBlock',
-		        timeOut: 9000,
+		        timeOut: 10000,
 		        defaultHeight: 50,
 		        defaultSpeed: 300,
 		        yesText: 'Ok',
