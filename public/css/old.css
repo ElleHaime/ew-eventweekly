@@ -842,7 +842,7 @@ input[type="color"]:focus, .uneditable-input:focus
     max-width: 690px;
     margin-right: 10px;
     float: left;
-    position: relative;
+    /*position: relative;*/
 }
 .icon-time {
     vertical-align: middle;
@@ -1158,6 +1158,7 @@ input[type="color"]:focus, .uneditable-input:focus
     float: none;
     margin-right: 0;
     margin-bottom: 15px;
+    position: relative;
 }
 
 .input-div_small input {
@@ -2202,16 +2203,17 @@ input[type="checkbox"]  {
     position: relative;
     width: 159px;
     height: auto;
-    border: 1px solid #ccc;;
+    /*border: 1px solid #ccc;;*/
 }
 .event-one-img {
     float: left;
     margin: 0 20px 0 0;
     position: relative;
-    width: 416px;
-    height: 275px;
+    width: 220px;
+    height: 220px;
     border: 1px solid #ccc;
     overflow: hidden;
+
 }
 .event-one-img a , .event-one-img  img {
     bottom: 0;
@@ -2220,9 +2222,20 @@ input[type="checkbox"]  {
     position: absolute;
     right: 0;
     top: 0;
-    width: 100%;
+}
+
+.event-discription .add-img  .event-one-img img{
     height: 100%;
 }
+
+.event-one  .event-one-img {
+    border: 0;
+}
+.event-one  .event-one-img a {
+    background: #eee;
+    padding: 10px;
+}
+
 .add-img img {
     width: auto;
 }
@@ -3901,7 +3914,7 @@ i.icon-map {
 }
 
 .event-list-btn .tooltip-inner  {
-    width: 343px;
+    width: 158px;
     max-width: 359px;
 }
 .tooltip-arrow {
@@ -3938,6 +3951,31 @@ i.icon-map {
     margin-left: -5px;
     border-width: 0 5px 5px;
     border-bottom-color: #393939;
+}
+
+.event-list-btn .tooltip.bottom .tooltip-arrow
+{
+    border-bottom-color: #eee;
+}
+
+.event-list-btn   .tooltip.left .tooltip-arrow
+{
+    border-left-color: #eee;
+}
+
+.event-list-btn   .tooltip-inner {
+    color:#212121;
+    min-height: 30px;
+    line-height: 30px;
+    background: #eeeeee;
+}
+
+.event-list-btn  .tooltip.right .tooltip-arrow
+{
+    border-right-color: #eee;
+}
+.event-list-btn  .tooltip.top .tooltip-arrow {
+    border-top-color: #eee;
 }
 
 /*-----------------------------------------END TOOLTIP--------------------------------------------------------------------*/
@@ -4026,8 +4064,11 @@ i.icon-map {
 
 /*-------------------------------------------- uncategorized_label----------------------------------------------------*/
 .uncategorized_label, .btn.suggest-btn {
-    padding: 0 47px;
     text-align: left;
+    padding: 0 47px;
+}
+.uncategorized_label {
+    padding: 0;
 }
 .suggest-btn {
      background: url(../img/icon-q.png) no-repeat 18px 50% #5097E5;
@@ -4099,6 +4140,11 @@ i.icon-map {
 {
     margin-bottom: 0;
 }
+
+.sidebar-box .place-address   {
+    width: 359px;
+}
+
 .sidebar-box .input-append  input{
     height: 32px;
     width: 228px;
@@ -4137,9 +4183,15 @@ i.icon-map {
 }
 
 
-.event-list-btn {
-    width:359px;
+.place-address {
+    width: 174px;
 }
+
+.place-address span {
+    margin-right: 20px;
+    display: block;
+}
+
 #cont {
     margin-left:300px;
 }
@@ -4236,6 +4288,9 @@ i.icon-map {
     background: url(../img/spinner.gif) no-repeat 50% 50% rgba( 0, 0, 0, 0.7);
 }
 
+.event-one {
+    position: relative;
+}
 .page-top .event-one {
     padding: 12px 0 7px 0;
 }

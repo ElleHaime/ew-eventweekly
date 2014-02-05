@@ -14,6 +14,7 @@ class EventMember extends EventMemberObject
             $event->addCondition('Objects\EventMember.member_id = ' . $uId);
             $event->addCondition('Objects\EventMember.member_status = 1');
             $event->addCondition('Frontend\Models\Event.event_status = 1');
+            $event->addCondition('Frontend\Models\Event.deleted = 0');
 
             return $event->fetchEvents();
         } else {

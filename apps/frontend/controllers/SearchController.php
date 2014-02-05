@@ -17,9 +17,9 @@ class SearchController extends \Core\Controller
 {
 
     /**
-     * @Route("/search", methods={"POST"})
-     * @Route("/search/list", methods={"POST"})
-     * @Route("/search/map", methods={"POST"})
+     * @Route("/search", methods={"GET", "POST"})
+     * @Route("/search/list", methods={"GET", "POST"})
+     * @Route("/search/map", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function searchAction()

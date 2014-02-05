@@ -53,7 +53,7 @@
                                                         {% else %}
                                                             {% set pic = '/upload/img/event/'~event.id~'/'~event.logo %}
                                                         {% endif %}
-                                                        <img src="{{ pic }}" width="132px" height ="132px">
+                                                        <img src="{{ pic }}" >
                                                     {% else %}
                                                         <img src="{{ event.pic_big }}">
                                                     {% endif %}
