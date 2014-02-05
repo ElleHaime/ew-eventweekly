@@ -31,24 +31,24 @@
     {% endif %}
 
     <div class="how-it-works container-box">
-        <h2>How it works?</h2>
+        <h2>How does it work ?</h2>
 
         <div class="column">
             <div class="number">1</div>
             <div class="text">
-                <p>Use Facebook login to get your personalized event listings. </p>
+                <p>Use Facebook login to get your personalised event listings. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">2</div>
             <div class="text">
-                <p>Stay informed and updated with current and upcoming events in your city and all over the world. </p>
+                <p>Stay informed and up to date with current and upcoming events in your city and all over the world. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">3</div>
             <div class="text">
-                <p> Create an event and invite more than 100 000 guests to attend if from all  over the  world.</p>
+                <p> Create events and invite more than 100,000 guests to attend from all  over the  world.</p>
             </div>
         </div>
     </div>
@@ -56,13 +56,13 @@
 	{% if isMobile == 0 %}
     <div class="facebook-button">
         <div class="container-box">
-            <div class="text-label"><span>Login</span> <br/>through Facebook:</div>
+            <div class="text-label"><span>Login</span> <br/>with Facebook:</div>
             <div class="button clearfix">
                 <a href="#"  class="btn-facebook" onclick="return false;" id="fb-login">facebook</a>
             </div>
             <div class="tip clear">
                 <i class="fb-lock"></i>
-                <p>We respect your privacy and will not post any information without your permission to your social network accounts. </p>
+                <p>We respect your privacy and will not post  information without your permission to your social network accounts. </p>
             </div>
         </div>
     </div>

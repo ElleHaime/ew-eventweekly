@@ -36,7 +36,7 @@
                                         {#{% if event.start_date is defined %}
                                             <span class="date-start">{{ event.start_date_nice }}</span>
                                             {% if event.start_time is defined %}
-                                                start at <span
+                                                starts at <span
                                                 class="date-time">{{ event.start_time }}</span>
                                             {% endif %}
                                         {% endif %}#}

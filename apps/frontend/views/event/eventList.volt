@@ -76,7 +76,7 @@
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ event.start_date_nice }}</span> 
                                                         {% if event.start_time is defined %}
-                                                            start at
+                                                            starts at
                                                             <span class="date-time">{{ event.start_time }}</span>
                                                         {% endif %}
                                                     {% endif %}#}
@@ -89,7 +89,7 @@
                                                 {% else %}
                                                 <div class="plans-box clearfix">
                                                     <button class="btn eventLikeBtn" data-status="1" data-id="{{ event.id }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
-                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don`t like</button>
+                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don't like</button>
                                                 </div>
                                                 {% endif %}
 

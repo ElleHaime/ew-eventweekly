@@ -69,7 +69,7 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <p>You didn't create campaigns yet</p><br/>
+                            <p>You haven't created any campaigns yet</p><br/>
                         {% endif %}
                             </div>
                         </div>

@@ -147,6 +147,7 @@
     }
     .event-one .event-one-text {
         max-width: 95%;
+        clear: both;
     }
     .event-one-text {
         padding: 0 20px;
