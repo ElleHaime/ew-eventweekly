@@ -42,7 +42,7 @@ $('.settings-box-one .checkbox').click(function () {
 });
 
 $(function() {
-    $( "#from" ).datepicker({
+    /*$( "#from" ).datepicker({
         defaultDate: "+1w",
         changeMonth: true,
         numberOfMonths: 1,
@@ -57,5 +57,5 @@ $(function() {
         onClose: function( selectedDate ) {
             $( "#from" ).datepicker( "option", "maxDate", selectedDate );
         }
-    });
+    });*/
 });

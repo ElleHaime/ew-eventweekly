@@ -173,14 +173,22 @@
                                         <h4 class="name-link">{{ event.name }}</h4>
 
                                         <div class="date-list">
-                                            {% if event.start_date_nice is defined  %}
+                                            {% if event.start_date != '0000-00-00' %}
+                                                <i class="icon-time"></i>
+                                                <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
+                                                {% if dateToFormat(event.start_date, '%R') != '00:00' %}
+                                                    start at
+                                                    <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
+                                                {% endif %}
+                                            {% endif %}
+                                            {#{% if event.start_date_nice is defined  %}
                                                 <i class="icon-time"></i>
                                                 <span class="date-start">{{ event.start_date_nice }}</span>
                                                 {% if event.start_time is defined %}
                                                     start at
                                                     <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
                                                 {% endif %}
-                                            {% endif %}
+                                            {% endif %}#}
                                         </div>
                                         <div class="description-text">
                                             <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>

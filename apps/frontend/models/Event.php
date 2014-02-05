@@ -52,10 +52,10 @@ class Event extends EventObject
 
     public $virtualFields = [
         'slugUri' => 'self->id.\'-\'.\Core\Utils\SlugUri::slug(self -> name)',
-        'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
-        'end_date_nice' => 'date(\'d/m/Y\', strtotime(self -> end_date))',
-        'start_time' => 'date(\'H:i\', strtotime(self -> start_date))',
-        'end_time' => 'date(\'H:i\', strtotime(self -> end_date))'
+//        'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
+//        'end_date_nice' => 'date(\'d/m/Y\', strtotime(self -> end_date))',
+//        'start_time' => 'date(\'H:i\', strtotime(self -> start_date))',
+//        'end_time' => 'date(\'H:i\', strtotime(self -> end_date))'
 
     ];
 
@@ -89,7 +89,7 @@ class Event extends EventObject
 	
 	public function afterFetch()
 	{
-        if ($this -> start_date) {
+        /*if ($this -> start_date) {
             $tryTime = date('H:i', strtotime($this -> start_date));
             if ($tryTime != '00:00') {
                 $this -> start_time = $tryTime;
@@ -125,7 +125,7 @@ class Event extends EventObject
             }
         } else {
             $this -> end_time = $this -> end_date_nice = '';
-        }
+        }*/
 
         $this->slugUri = $this->id.'-'.SUri::slug($this->name);
 	}

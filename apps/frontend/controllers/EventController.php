@@ -203,10 +203,8 @@ class EventController extends \Core\Controllers\CrudController
                         'location' => $ev -> location,
 						'description' => $ev -> event -> description,
 						'logo' => $ev -> logo,
-						'start_time' =>$ev -> event -> start_time,
-						'start_date_nice' => $ev -> event -> start_date_nice,
-						'end_time' => $ev -> event -> end_time,
-						'end_date_nice' => $ev -> event -> end_date_nice,
+						'start_date_' => $ev -> event -> start_date,
+						'end_date' => $ev -> event -> end_date,
                         'slugUri' => $ev->event->slugUri
 					);
 
@@ -794,17 +792,11 @@ class EventController extends \Core\Controllers\CrudController
 
 		// process date and time
 		if (!empty($event['start_date'])) {
-			$newEvent['start_date'] = implode('-', array_reverse(explode('/', $event['start_date'])));  
-			if (!empty($event['start_time'])) {
-				$newEvent['start_date'] = $newEvent['start_date'] . ' ' . $event['start_time'];  
-			} 
+            $newEvent['start_date'] = $event['start_date'];
 		}
-		
+
 		if (!empty($event['end_date'])) {
-			$newEvent['end_date'] = implode('-', array_reverse(explode('/', $event['end_date'])));
-			if (!empty($event['end_time'])) {
-				$newEvent['end_date'] = $newEvent['end_date'] . ' ' . $event['end_time'];
-			}
+            $newEvent['end_date'] = $event['end_date'];
 		}
 
 		//process images
