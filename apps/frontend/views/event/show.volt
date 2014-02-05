@@ -448,24 +448,25 @@
                             {% include 'layouts/sharebar.volt' %}
 
                         <div class="padd_30"></div>
-                        {#<div class="row-fluid">#}
-                            {#<div class="span12">#}
-                                {#<div class="comment-box">#}
-                                    {#<h2>Leave comments</h2>#}
-                                    {#{% if eventPreview is defined %}#}
-                                        {#<img src="/img/comment_tmp.png" alt=""/>#}
-                                        {#<div style="height: 20px"></div>#}
-                                    {#{% else %}#}
-                                        {#<fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>#}
-                                    {#{% endif %}#}
-                                {#</div>#}
-                            {#</div>#}
-                        {#</div>#}
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="comment-box">
+                                    <h2>Leave comments</h2>
+                                    {% if eventPreview is defined %}
+                                        <img src="/img/comment_tmp.png" alt=""/>
+                                        <div style="height: 20px"></div>
+                                    {% else %}
+                                        <fb:comments href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
+                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" data-numposts="2" data-colorscheme="light"></div>#}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
             </div>
         </div>
     </div>
 </div>
-    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
+    <fb:ref href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
 {% endblock %}
 
 
