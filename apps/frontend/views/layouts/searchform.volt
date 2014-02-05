@@ -1,4 +1,4 @@
-<form action="/search" method="post" class="form-horizontal" id="topSearchForm">
+<form action="/search" method="get" class="form-horizontal" id="topSearchForm">
     <div class="input-append" style="float: none">
         {% if userSearch is defined and userSearch['searchTitle'] is defined %}
             {% set searchTitle = userSearch['searchTitle'] %}
