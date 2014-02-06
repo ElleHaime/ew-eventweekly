@@ -43,12 +43,10 @@ class Geo extends Plugin
 	{
 		if ($this -> _fb_config -> debug) {
 			//$this -> _userIp = '134.249.172.183';
-			$this -> _userIp = '31.172.138.197';
+			$this -> _userIp = '81.99.246.79';
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}
-        \Core\Logger::logFile('ips');
-        \Core\Logger::log($this -> _userIp);
 		return;
 	}
 
@@ -63,6 +61,12 @@ class Geo extends Plugin
 		} else {
 			$this -> _userIp = $this -> getUserIp();
 		}
+
+        \Core\Logger::logFile('ips');
+        \Core\Logger::log($this -> _userIp);
+        if (isset($city)) {
+            \Core\Logger::log($city);
+        }
 	}
 
 	public function getUserLocation()
