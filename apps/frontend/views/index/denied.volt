@@ -5,20 +5,20 @@
 	<div class="container content">
 	    <div class="row-fluid top-about">
 	        <div class="span4">
-	           {{ image('img/demo/img1.jpg', 'alt': 'Guard') }}
+	           {{ image('/img/demo/img1.jpg', 'alt': 'Guard') }}
 	                <div class="top-about-text">
-	                    <h4>Never miss an Event</h4>
+	                    <h4>Never miss an event</h4>
 	                </div>
 	        </div>
 	        <div class="span4">
-	            {{ image('img/demo/img2.jpg', 'alt': 'Grab') }}
+	            {{ image('/img/demo/img2.jpg', 'alt': 'Grab') }}
 	            <div class="top-about-text">
 	                <h4>Get personalised listing</h4>
 	            </div>
 	
 	        </div>
 	        <div class="span4">
-	            {{ image('img/demo/img3.jpg', 'alt': 'Know') }}
+	            {{ image('/img/demo/img3.jpg', 'alt': 'Know') }}
 	                <div class="top-about-text">
 	                  <h4>See which of your friends are going</h4>
 	                </div>

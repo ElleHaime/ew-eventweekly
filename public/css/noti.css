@@ -1,0 +1,70 @@
+.notiBlock {
+    position: fixed;
+    width: 100%;
+    z-index: 78;
+    line-height: 50px;
+    height: 0;
+    overflow: hidden;
+    background: #f3f3f3;
+    /*border-bottom: 2px solid #ccc;*/
+    left:0;
+    margin-top: 77px;
+    /*top:-2px;*/
+}
+
+.notiBlock p {
+    padding-left: 30px;
+}
+.notiBlock a {
+    color: #008de8 !important;
+    font-weight: bold !important;
+}
+
+.notiWindowTypeInfo {
+    background: #FFFFFF;
+}
+
+.notiWindowTypeError {
+    background: #ff9e9d;
+}
+
+.notiWindowTypeWarning {
+    background: #ffce7d;
+}
+
+.notiHide {
+    display: inline-block;
+    line-height: 15px;
+    position: absolute;
+    right:11px;
+    top:18px;
+}
+#notiText {
+    padding: 0 10px;
+}
+.notiABtn {
+    display: inline-block;
+    margin-left: 20px;
+    background: #6170b3;
+    color: #ffffff;
+    line-height: 15px;
+    padding: 1px 3px;
+}
+
+.notiABtn:hover {
+    text-decoration: none;
+    background: #4a5992;
+}
+
+.notiBlock .span12 {
+    position: relative;
+}
+
+.wrapper {
+    position: relative;
+}
+.wrapper .notiBlock
+{
+    position: absolute;
+    top:-10px;
+}

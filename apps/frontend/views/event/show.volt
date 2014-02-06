@@ -1,133 +1,472 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-<div class="padd_70"></div>
-    <div class="container content_noBorder">
-    <input type="hidden" id="event_id" value="{{ event['id'] }}">
-    <div class="row-fluid ">
-    <div class="span12">
-    {#<div class="category-title">
-        <span>Misic</span>
-    </div>#}
-    <div class="row-fluid ">
-    <div class="span9">
-        <div class="list-event clearfix">
-            <div class="list-event-img">
-                <a href="#"><img src="/upload/img/event/{{ event['logo'] }}"></a>
-            </div>
+{% if event.category|length %}
+	{% for cat in event.category %}
+        <div class="top-line {{ cat.key }}-color">
+	        <div class="container-fluid">
+	            <div class="row-fluid">
+	                <div class="span12">
 
-            <div class="list-event-text">
-                <a href="#">{{ event['name'] }}</a>
-                <div class="date-list">
-                    <i class="icon-time"></i>
-                    Start at: <span class="date-start">{{ event['start_time'] }}</span>
-                </div>
-                <p>{{ event['description']|nl2br }} </p>
-                {% if event['answer'] != 3 %}
-                    <div class="plans-box clearfix">
-                        <span>So, whats your plan?</span>
-                        <div class="btn-hide clearfix">
-                            <div class="event-site">
-                                    <div class="event-category categ_green clearfix {% if event['answer'] == 1 %} active-btn {% endif %}">
-                                        <span class="color-type green">Im going!</span>
-                                        <span class="arrow arrow_green"></span>
+                            <div class="event-title ">
+                                <span>{{ cat.name }}</span>
+                            </div>
+	                     </div>
+	                </div>
+	             </div>
+	        </div>
+        
+	   {% break %}
+	{% endfor %}
+{% endif %}
+
+<div class="container" id="content_noBorder">
+    <div class="row-fluid ">
+        <div class="span12">
+
+            <div class="event-one-box">
+                        <div class="row-fluid ">
+                            <div class="span12">
+
+                                <div class="padd_30"> </div>
+                                <div class="event-discription">
+                                    {% if event.image.cover is defined %}
+                                        <div class="event-photo">
+                                            <img src="../img/Tulips.jpg" alt="">
+                                        </div>
+                                    {% else %}
+                                        <div class="add-img">
+                                            <div id="current_event_id" class="event-one-img" event="{{ event.id }}">
+                                                {#<a href="/event/100038">#}
+                                                {% if eventPreview is defined %}
+                                                    {% if eventPreviewLogo is defined %}
+                                                        <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
+                                                    {% else %}
+                                                        <img src="/upload/img/event/tmp/{{ event.logo }}">
+                                                    {% endif %}
+                                                {% else %}
+                                                    <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
+                                                {% endif %}
+
+                                                {#</a>#}
+                                            </div>
+
+                                           {% if poster is defined or flyer is defined %}
+                                                <div class="all-img clearfix">
+                                                    {% set count = 0 %}
+                                                    {% if poster is defined %}
+                                                        {% if eventPreview is defined %}
+                                                            {% if eventPreviewPoster is defined %}
+                                                                <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="" /></a>
+                                                            {% else %}
+                                                                <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ poster }}" alt="" /></a>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="" /></a>
+                                                        {% endif %}
+
+
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="poster-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                    <div class="modal-body">
+                                                                        {% if eventPreview is defined %}
+                                                                            {% if eventPreviewPoster is defined %}
+                                                                                <img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">
+                                                                            {% else %}
+                                                                                <img src="/upload/img/event/tmp/{{ poster }}" alt="">
+                                                                            {% endif %}
+                                                                        {% else %}
+                                                                            <img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">
+                                                                        {% endif %}
+
+                                                                    </div>
+
+                                                                </div><!-- /.modal-content -->
+                                                            </div><!-- /.modal-dialog -->
+                                                        </div><!-- /.modal -->
+
+
+                                                        {#<div id="poster-img" class="modal" role="dialog" aria-hidden="true">#}
+
+                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+
+                                                            {#<div class="modal-body">#}
+                                                                {#{% if eventPreview is defined %}#}
+                                                                    {#{% if eventPreviewPoster is defined %}#}
+                                                                        {#<img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">#}
+                                                                    {#{% else %}#}
+                                                                        {#<img src="/upload/img/event/tmp/{{ poster }}" alt="">#}
+                                                                    {#{% endif %}#}
+                                                                {#{% else %}#}
+                                                                    {#<img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">#}
+                                                                {#{% endif %}#}
+
+                                                            {#</div>#}
+                                                        {#</div>#}
+                                                        {% set count = count + 1 %}
+                                                    {% endif %}
+
+                                                    {% if flyer is defined %}
+                                                        {% if eventPreview is defined %}
+                                                            {% if eventPreviewFlyer is defined %}
+                                                                <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" /></a>
+                                                            {% else %}
+                                                                <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ flyer }}" alt="" /></a>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" /></a>
+                                                        {% endif %}
+
+
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="flyer-img" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                                    <div class="modal-body">
+
+                                                                            {% if eventPreview is defined %}
+                                                                                {% if eventPreviewFlyer is defined %}
+                                                                                    <img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >
+                                                                                {% else %}
+                                                                                    <img src="/upload/img/event/tmp/{{ flyer }}" alt="" >
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                                <img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >
+                                                                            {% endif %}
+
+
+                                                                    </div>
+
+                                                                </div><!-- /.modal-content -->
+                                                            </div><!-- /.modal-dialog -->
+                                                        </div><!-- /.modal -->
+
+                                                        {#<div id="flyer-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">#}
+
+                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
+                                                            {#<div class="modal-body">#}
+                                                                {#{% if eventPreview is defined %}#}
+                                                                    {#{% if eventPreviewFlyer is defined %}#}
+                                                                        {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >#}
+                                                                    {#{% else %}#}
+                                                                        {#<img src="/upload/img/event/tmp/{{ flyer }}" alt="" >#}
+                                                                    {#{% endif %}#}
+                                                                {#{% else %}#}
+                                                                    {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >#}
+                                                                {#{% endif %}#}
+
+                                                            {#</div>#}
+                                                        {#</div>#}
+                                                        {% set count = count + 1 %}
+                                                    {% endif %}
+                                                    <a href="#" class="btn-all-img">{{ count }}<span class="icon-all-img"></span></a>
+                                                </div>
+                                           {% endif %}
+                                        </div>
+                                    {% endif %}
+
+                                    <div   class="text-description" style="padding-right: 20px;">
+                                        <h4 class="name-link">{{ event.name }}</h4>
+
+                                        <div class="date-list">
+                                            {% if event.start_date != '0000-00-00' %}
+                                                <i class="icon-time"></i>
+                                                <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
+                                                {% if dateToFormat(event.start_date, '%R') != '00:00' %}
+                                                    starts at
+                                                    <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
+                                                {% endif %}
+                                            {% endif %}
+                                            {#{% if event.start_date_nice is defined  %}
+                                                <i class="icon-time"></i>
+                                                <span class="date-start">{{ event.start_date_nice }}</span>
+                                                {% if event.start_time is defined %}
+                                                    starts at
+                                                    <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
+                                                {% endif %}
+                                            {% endif %}#}
+                                        </div>
+                                        <div class="description-text">
+                                            <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>
+
+                                            {% if event.tickets_url != '' %}
+                                                <a href="{{ event.tickets_url }}" target="_blank">You can buy tickets here</a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="btn-hide clearfix">
+
+                                            {% if not (event.memberpart|length) %}
+                                                <span>So, what's your plan?</span>
+                                            {% endif %}
+                                            <div class="event-site clearfix">
+                                                {% if not (event.memberpart|length) %}
+                                                    <button class="btn" id="event-join">I'm going!</button>
+                                                    <button class="btn" id="event-maybe">I'm interested!</button>
+                                                    <button class="btn" id="event-decline">Don't like</button>
+                                                {% else %}
+                                                    {% if event.memberpart == 1 %}
+                                                        <button class="btn" id="event-join" disabled = true>I'm going!</button>
+                                                    {% endif %}
+
+                                                    {% if event.memberpart == 2 %}
+                                                        <button class="btn" id="event-maybe" disabled = true>I'm interested!</button>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="event-category categ_yellow clearfix {% if event['answer'] == 2 %} active-btn {% endif %}">
-                                        <span class="color-type yellow">Its interesting, maybe im going</span>
-                                        <span class="arrow arrow_yellow"></span>
+                                </div>
+                                <div class="sidebar-box sidebar-box_event">
+
+                                    <div class="event-list-btn">
+                                        <div class=" clearfix">
+                                            {% if event.venue.name is defined %}
+                                                <div class=" place-address">
+                                                    <span>{{ event.venue.name|striptags }}</span>
+                                                </div>
+                                            {% else %}
+                                                {% if event.location.alias is defined %}
+                                                    <div class=" place-address">
+                                                        <span>{{ event.location.alias|striptags }}</span>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+
+                                            <button class="btn btn-block btn_invite" type="button" id="fb-invite">
+                                                <img alt="" src="/img/demo/btn-m.png">
+                                                Invite friends
+                                            </button>
+                                            <div id="friendsBlock"></div>
+                                            <input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>
+                                            {% if event.site|length %}
+                                                <div class="event-site clearfix">
+                                                    {% for site in event.site %}
+                                                        <p>web-site : <a href="val" target="_blank">{{ site.url }}</a></p>
+                                                    {% endfor %}
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="event-list-category">
+
+                                                {% if event.category|length %}
+
+                                                    {% for cat in event.category %}
+                                                        <span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>
+                                                    {% endfor %}
+
+                                                    {#--------- comment tags
+
+                                                    <div class="sub_category clearfix">
+                                                       <div>
+                                                           <a href="#"><span>pop rock</span></a>
+                                                       </div>
+                                                       <div>
+                                                           <a href="#"><span>new album</span></a>
+                                                       </div>
+                                                       <div>
+                                                           <a href="#"><span>event of the year 2014</span></a>
+                                                       </div>
+                                                    </div>
+                                                    <a href="#" class="show-all">show all tags</a>
+                                                    #}
+
+                                                    {% if event.category.getFirst().key == 'other' %}
+                                                        <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
+                                                        <ul id="suggestCategoriesBlock"  class="select-category">
+                                                            {% for index, node in categories %}
+                                                                <li><a data-catkey="{{ node['key'] }}" href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="btn btn-block suggest-btn uncategorized_label" id="suggestCategoryBtn" >Suggest category</span>
+
+                                                    {#<span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>#}
+                                                    <ul id="suggestCategoriesBlock"  class="select-category">
+                                                        {% for index, node in categories %}
+                                                            <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </div>
+
+                                            {% if event.fb_uid is defined %}
+                                                <div class="event-site clearfix">
+                                                    <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">Facebook link</a>
+                                                </div>
+                                            {% endif %}
+
+                                        </div>
                                     </div>
-                                {% if !event['answer'] %}
-                                    <button class="btn" id="event-join">Join</button>
-                                    <button class="btn" id="event-maybe">Maybe</button>
-                                    <button class="btn" id="event-decline">Decline</button>
-                                {% endif %}
+                                </div>
+                                {#<div id="content_right">#}
+                                    {#<div id="content_right_inner">#}
+                                        {#<div id="content_center">#}
+                                            {#<div class="event-photo">#}
+                                                {#<img src="../img/big.jpg" alt="">#}
+                                            {#</div>#}
+                                            {#<div id="content-box" style="padding-right: 20px">#}
+                                                {#<h4 class="name-link">{{ event.name }}</h4>#}
+
+                                                {#<div class="date-list">#}
+                                                    {#{% if event.start_date_nice is defined  %}#}
+                                                        {#<i class="icon-time"></i>#}
+                                                        {#<span class="date-start">{{ event.start_date_nice }}</span>#}
+                                                        {#{% if event.start_time is defined %}#}
+                                                            {#start at#}
+                                                            {#<span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>#}
+                                                        {#{% endif %}#}
+                                                    {#{% endif %}#}
+                                                {#</div>#}
+                                                {#<div class="description-text">#}
+                                                    {#<p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>#}
+
+                                                    {#{% if event.tickets_url != '' %}#}
+                                                       {#<a href="{{ event.tickets_url }}" target="_blank">You can buy tickets here</a>#}
+                                                    {#{% endif %}#}
+                                                {#</div>#}
+                                                {#<div class="btn-hide clearfix">#}
+
+                                                    {#{% if not (event.memberpart|length) %}#}
+                                                        {#<span>So, whats your plan?</span>#}
+                                                    {#{% endif %}#}
+                                                    {#<div class="event-site clearfix">#}
+                                                        {#{% if not (event.memberpart|length) %}#}
+                                                            {#<button class="btn" id="event-join">I`m going!</button>#}
+                                                            {#<button class="btn" id="event-maybe">I`m interested!</button>#}
+                                                            {#<button class="btn" id="event-decline">Don`t like</button>#}
+                                                        {#{% else %}#}
+                                                            {#{% if event.memberpart == 1 %}#}
+                                                                {#<button class="btn" id="event-join" disabled = true>I`m going!</button>#}
+                                                            {#{% endif %}#}
+
+                                                            {#{% if event.memberpart == 2 %}#}
+                                                                {#<button class="btn" id="event-maybe" disabled = true>I`m interested!</button>#}
+                                                            {#{% endif %}#}
+                                                        {#{% endif %}#}
+                                                    {#</div>#}
+                                                {#</div>#}
+                                            {#</div>#}
+                                        {#</div>#}
+
+                                        {#<div class="sidebar-box">#}
+
+
+                                            {#<div class="event-list-btn">#}
+                                                {#<div class=" clearfix">#}
+                                                    {#{% if event.venue.name is defined %}#}
+                                                        {#<div class=" place-address">#}
+                                                            {#<span>{{ event.venue.name|striptags }}</span>#}
+                                                        {#</div>#}
+                                                    {#{% else %}#}
+                                                        {#{% if event.location.alias is defined %}#}
+                                                            {#<div class=" place-address">#}
+                                                                {#<span>{{ event.location.alias|striptags }}</span>#}
+                                                            {#</div>#}
+                                                        {#{% endif %}#}
+                                                    {#{% endif %}#}
+
+                                                    {#<button class="btn btn-block btn_invite" type="button" id="fb-invite">#}
+                                                        {#<img alt="" src="/img/demo/btn-m.png">#}
+                                                        {#Invite friends#}
+                                                    {#</button>#}
+                                                    {#<div id="friendsBlock"></div>#}
+                                                    {#<input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>#}
+                                                    {#{% if event.site|length %}#}
+                                                        {#<div class="event-site clearfix">#}
+                                                            {#{% for site in event.site %}#}
+                                                                {#<p>web-site : <a href="val" target="_blank">{{ site.url }}</a></p>#}
+                                                            {#{% endfor %}#}
+                                                        {#</div>#}
+                                                    {#{% endif %}#}
+
+                                                    {#<div class="event-list-category">#}
+
+                                                        {#{% if event.category|length %}#}
+
+                                                            {#{% for cat in event.category %}#}
+                                                                {#<span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>#}
+                                                            {#{% endfor %}#}
+
+                                                            {#&#123;&#35;--------- comment tags#}
+
+                                                            {#<div class="sub_category clearfix">#}
+                                                               {#<div>#}
+                                                                   {#<a href="#"><span>pop rock</span></a>#}
+                                                               {#</div>#}
+                                                               {#<div>#}
+                                                                   {#<a href="#"><span>new album</span></a>#}
+                                                               {#</div>#}
+                                                               {#<div>#}
+                                                                   {#<a href="#"><span>event of the year 2014</span></a>#}
+                                                               {#</div>#}
+                                                            {#</div>#}
+                                                            {#<a href="#" class="show-all">show all tags</a>#}
+                                                            {#&#35;&#125;#}
+
+                                                            {#{% if event.category.getFirst().key == 'other' %}#}
+                                                                {#<span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>#}
+                                                                {#<ul id="suggestCategoriesBlock"  class="select-category">#}
+                                                                    {#{% for index, node in categories %}#}
+                                                                        {#<li><a data-catkey="{{ node['key'] }}" href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>#}
+                                                                    {#{% endfor %}#}
+                                                                {#</ul>#}
+                                                            {#{% endif %}#}
+                                                        {#{% else %}#}
+                                                            {#<span class="btn btn-block suggest-btn uncategorized_label" id="suggestCategoryBtn" >Suggest category</span>#}
+
+                                                            {#&#123;&#35;<span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>&#35;&#125;#}
+                                                            {#<ul id="suggestCategoriesBlock"  class="select-category">#}
+                                                                {#{% for index, node in categories %}#}
+                                                                    {#<li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>#}
+                                                                {#{% endfor %}#}
+                                                            {#</ul>#}
+                                                        {#{% endif %}#}
+                                                    {#</div>#}
+
+                                                    {#{% if event.fb_uid is defined %}#}
+                                                        {#<div class="event-site clearfix">#}
+                                                            {#<a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">Facebook link</a>#}
+                                                        {#</div>#}
+                                                    {#{% endif %}#}
+
+                                                {#</div>#}
+                                            {#</div>#}
+                                        {#</div>#}
+                                    {#</div>#}
+                                {#</div>#}
+
+
+
+                                </div>
+                        </div>
+
+                            {% include 'layouts/sharebar.volt' %}
+
+                        <div class="padd_30"></div>
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <div class="comment-box">
+                                    <h2>Leave comments</h2>
+                                    {% if eventPreview is defined %}
+                                        <img src="/img/comment_tmp.png" alt=""/>
+                                        <div style="height: 20px"></div>
+                                    {% else %}
+                                        <fb:comments href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
+                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" data-numposts="2" data-colorscheme="light"></div>#}
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="share-box clearfix">
-                    <span class="share-box-title">Share this article:</span>
-                    <div class="share-box-icon">
-                        <!--Facebook-->
-                        <div class="fb-share-button" data-type="button"></div>
-                        <!--Google +-->
-                        <!-- Place this tag where you want the +1 button to render. -->
-                        <div class="g-plusone" data-size="medium" data-annotation="none"></div>
-                        <!-- Place this tag after the last +1 button tag. -->
-                        <script type="text/javascript">
-                            (function() {
-                                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                                po.src = 'https://apis.google.com/js/plusone.js';
-                                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                            })();
-                        </script>
-
-                        <!--Twitter-->
-                        <a href="https://twitter.com/share" class="twitter-share-button" data-via="Apppicker" data-count="none">Tweet</a>
-                        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-
-                        <!--StumbleUpon-->
-                        <!-- Place this tag where you want the su badge to render -->
-                        <su:badge layout="1"></su:badge>
-                        <!-- Place this snippet wherever appropriate -->
-                        <script type="text/javascript">
-                            (function() {
-                                var li = document.createElement('script'); li.type = 'text/javascript'; li.async = true;
-                                li.src = ('https:' == document.location.protocol ? 'https:' : 'http:') + '//platform.stumbleupon.com/1/widgets.js';
-                                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(li, s);
-                            })();
-                        </script>
-
-                        <!--Reddit-->
-                        <a href="http://reddit.com/submit" onclick="window.location = 'http://reddit.com/submit?url=' + encodeURIComponent(window.location); return false"> <img src="http://reddit.com/static/spreddit7.gif" alt="submit to reddit" border="0" /> </a>
-
-                        <!--Pinterest-->
-                        <a href="//www.pinterest.com/pin/create/button/?url=http%3A%2F%2Fwww.apppicker.com%2Fapplists%2F2732%2FThe-best-sports-trivia-apps-for-iPhone-and-iPad&media=http%3A%2F%2Fwww.apppicker.com%2Fupload%2F2013%2F01%2F22%2Fgzpztqzohy.png&description=The+best+sports+trivia+apps+for+iPhone+and+iPad" data-pin-do="buttonPin" data-pin-config="none"><img src="//assets.pinterest.com/images/pidgets/pin_it_button.png" /></a>
-                        <script type="text/javascript">
-                            (function(d){
-                                var f = d.getElementsByTagName('SCRIPT')[0], p = d.createElement('SCRIPT');
-                                p.type = 'text/javascript';
-                                p.async = true;
-                                p.src = '//assets.pinterest.com/js/pinit.js';
-                                f.parentNode.insertBefore(p, f);
-                            }(document));
-                        </script>
-                    </div>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="comment-box">
-                    <h2>Leave a comment:</h2>
-                    <fb:comments href="http://events.apppicker.com/event/show/{{ event['id'] }}"></fb:comments>
-                </div>
             </div>
         </div>
     </div>
-    {% if event['eid'] is defined %}
-        <div class="span3">
-            <div class="sidebar">
-                <button type="button" class="btn btn_invite" id="fb-invite"><img src="/img/demo/btn-m.png" alt="">Invite friends</button>
-                <div class="event-site">
-                    <p>Event web-site :</p>
-                    <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">https://www.facebook.com/events/{{ event['eid'] }}</a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-    </div>
-
-    </div>
-    </div>
-
-
-    </div>
-
+</div>
+    <fb:ref href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
 {% endblock %}
+
+

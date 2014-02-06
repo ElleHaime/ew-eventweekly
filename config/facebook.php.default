@@ -1,0 +1,9 @@
+<?php
+
+$cfg_facebook = array(
+  'facebook' => array(
+      'appId' => 'fb app ID',
+      'appSecret' => 'fb app secret'
+  ),
+  'debug' => true
+);

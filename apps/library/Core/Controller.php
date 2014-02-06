@@ -4,7 +4,16 @@ namespace Core;
 
 use Phalcon\Filter,
 	Core\Acl,
-	Core\Utils as _U;
+	Core\Utils as _U,
+	Frontend\Form\SearchForm,
+    Frontend\Models\Location,
+    Frontend\Models\Event,
+    Frontend\Models\Venue,
+    Frontend\Models\EventMember,
+    Frontend\Models\EventMemberFriend,
+    Frontend\Models\MemberNetwork,
+    Frontend\Models\EventCategory AS CountEvent,
+    Thirdparty\MobileDetect\MobileDetect;
 
 class Controller extends \Phalcon\Mvc\Controller
 {
@@ -14,32 +23,81 @@ class Controller extends \Phalcon\Mvc\Controller
 	protected $model				= false;
 	protected $module 				= false;
 	protected $memberId				= false;
-	protected $locator				= false;
+
+    public $eventListCreatorFlag 	= false;
 	
+
 	
 	public function initialize()
 	{
 		$this -> _setModule();
 		$this -> _getChild();
 		$this -> _parseQueryVals();
-		
-		
+
 		if (!$this -> session -> isStarted()) {
 			$this -> session -> start();
 		}
-		
-		if (!$this -> locator) {
-			$this -> plugLocator();
-		}
 
-		if (!$this -> session -> has('location')) {
-			$location = $this -> locator -> createOnChange();
+		$this -> plugSearch();
+		$this -> checkCache();
+
+        $member = $this -> session -> get('member');
+        $loc = $this -> session -> get('location');
+
+		if (!$loc
+			|| ($member === NULL)
+			|| ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id))
+			&& $loc instanceof \stdClass)
+		{
+			$location = false;
+			$locModel = new Location();
+            if ($member) {
+                $location = $locModel::findFirst('id = '.$member->location_id);
+            }
+  
+            if ($location === false) {
+                $location = $locModel -> createOnChange();
+            }
 			$this -> session -> set('location', $location);
+		}
+        $loc = $this -> session -> get('location');
+
+		if (!$loc -> latitude && !$loc -> longitude) {
+            $loc -> latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
+			$loc -> longitude = (float)(($loc->longitudeMin + $loc->longitudeMax) / 2);
+			$loc -> latitudeMin = (float)$loc -> latitudeMin;
+			$loc -> latitudeMax = (float)$loc -> latitudeMax;
+			$loc -> longitudeMin = (float)$loc -> longitudeMin;
+			$loc -> longitudeMax = (float)$loc -> longitudeMax;
+
+			$this -> session -> set('location', $loc);	
 		}
 
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
+
+        if ($this->session->has('location_conflict')) {
+			$this->view->setVar('location_conflict', $this->session->get('location_conflict'));
+            $this->session->remove('location_conflict');
+		}
+
+        if ($this->session->has('userSearch')) {
+            $this->view->setVar('userSearch', $this->session->get('userSearch'));
+        }
+
+        if ($this->session->has('userSearchTab')) {
+            $this->view->setVar('userSearchTab', $this->session->get('userSearchTab'));
+        }else {
+            $this->view->setVar('userSearchTab', 'global');
+        }
+
+        $CountEvent = new CountEvent;
+        $eventsInCategories = $CountEvent->countEvents();
+
+        if (!empty($eventsInCategories)) {
+            $this->view->setVar('eventsInCategories', $eventsInCategories);
+        }
 
 		if ($this -> session -> has('role') && $this -> session -> get('role') == Acl::ROLE_MEMBER) {
 			$this -> memberId = $this -> session -> get('memberId');
@@ -51,10 +109,44 @@ class Controller extends \Phalcon\Mvc\Controller
 					$this -> view -> setVar('acc_external', $this -> view -> member -> network);
 				}
 			}
+
+            if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
+                $this -> view -> setVar('acc_external', $member->network);
+            }
 		} else {
 			$this -> session -> set('role', Acl::ROLE_GUEST);
 		}
-		$this -> view -> setVar('location', $this -> session -> get('location'));	
+		$this -> view -> setVar('location', $this -> session -> get('location'));
+
+        if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
+            $this ->view->setVar('acc_synced', 1);
+        }
+//_U::dump($this -> session -> get('memberId'));
+		if ($this -> session -> has('role') && 
+				$this -> session -> get('role') == Acl::ROLE_MEMBER &&
+				!is_null($this -> session -> get('member'))) {
+			$eventsCreatedObject = new Event();
+			$eventsFriendsObject = new EventMemberFriend();
+
+			$this -> session -> set('userEventsCreated', $eventsCreatedObject -> getCreatedEventsCount($this -> session -> get('memberId')));
+	        $this -> session -> set('userFriendsEventsGoing', $eventsFriendsObject -> getEventMemberFriendEventsCount($this -> session -> get('memberId')) -> count());
+		}
+
+		$this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
+        $this -> view -> setVar('userFriendsGoing', $this -> session -> get('userFriendsEventsGoing'));
+        $this -> view -> setVar('userEventsCreated', $this -> session -> get('userEventsCreated'));
+        $this -> view -> setVar('userEventsLiked', $this -> session -> get('userEventsLiked'));
+        $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
+        $this -> view -> setVar('userFriendsGoing', $this -> session -> get('userFriendsEventsGoing'));
+
+        $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
+
+        $detect = new MobileDetect();
+        if ( $detect->isMobile() || $detect->isTablet() ) {
+            $this->view->setVar('isMobile', '1');
+        } else {
+            $this->view->setVar('isMobile', '0');
+        }
 	}
 	
 
@@ -124,10 +216,50 @@ class Controller extends \Phalcon\Mvc\Controller
 		return '\\' . $this -> config -> modules -> $module -> formNamespace . '\\';
 	}
 	
-	public function plugLocator()
+	public function plugSearch()
 	{
-		$locModel = 'Location';
-		$locPath = $this -> getModelPath() . $locModel;
-		$this -> locator = new $locPath;
+		$searchForm = new SearchForm();
+		$this -> view -> setVar('searchForm', $searchForm);
+	
+		$categories = \Frontend\Models\Category::find();
+		$categories = $categories -> toArray();
+		$this -> view -> setVar('formCategories', $categories);
 	}
+	
+    protected function setFlash($text = '', $type = 'info') {
+        $this->session->set('flashMsgText', $text);
+        $this->session->set('flashMsgType', $type);
+        return $this;
+    }
+
+    protected function sendAjax($data)
+    {
+        $this->response->setContentType('application/json', 'UTF-8');
+        $this->response->setJsonContent($data);
+        $this->response->send();
+    }
+
+    public function checkCache()
+    {
+    	/*if ($this -> config -> application -> debug) {
+			$keys = $this -> cacheData -> queryKeys();
+			
+			foreach ($keys as $key) {
+			    $this -> cacheData -> delete($key);
+			}
+		} */
+
+		if (is_null($this -> cacheData -> get('locations'))) {
+			Location::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_venues'))) {
+			Venue::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_events'))) {
+			Event::setCache();
+		}
+		if (is_null($this -> cacheData -> get('fb_members'))) {
+			MemberNetwork::setCache();
+		}
+    }
 }

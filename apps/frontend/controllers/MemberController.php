@@ -2,7 +2,16 @@
 
 namespace Frontend\Controllers;
 
-use Core\Utils as _U;
+use Core\Utils as _U,
+    Frontend\Models\Category,
+    Frontend\Models\MemberFilter,
+    Frontend\Models\Member,
+    Frontend\Models\Location,
+    Frontend\Models\Tag,
+    Frontend\Form\ChangePassForm,
+    Frontend\Form\MemberForm,
+    Frontend\Form\LoginForm,
+    Frontend\Models\MemberNetwork;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -15,6 +24,8 @@ class MemberController extends \Core\Controllers\CrudController
 	{
 		$member = $this -> obj;
 		$list = $member::findFirst($this -> session -> get('memberId'));
+        $memberForm = new MemberForm($list);
+
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
@@ -23,7 +34,27 @@ class MemberController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
 
-		$this -> view -> setVar('member', $list);
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($list->id);
+
+        $tagIds = '';
+        if ( isset($member_categories['tag']['value']) ) {
+            $tagIds = implode(',', $member_categories['tag']['value']);
+        }
+
+		$this->view->setVars(array(
+                'member', $list,
+                'categories' => Category::find()->toArray(),
+                'tags' => Tag::find()->toArray(),
+                'tagIds' => $tagIds,
+                'member_categories' => $member_categories
+            ));
+
+        if ($this->session->has('location_conflict_profile_flag')) {
+            $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
+        }
+
+        $this->view->memberForm = $memberForm;
 	}
 
 
@@ -33,7 +64,53 @@ class MemberController extends \Core\Controllers\CrudController
 	 */
 	public function editAction()
 	{
-		parent::editAction();
+        $cfg = $this -> di -> get('config');
+        $member = Member::findFirst('id = '.$this->session->get('memberId'));
+
+        $form = new MemberForm($member);
+
+        if ($this->request->isPost()) {
+            $formValues = $this->request->getPost();
+
+            if ($form->isValid($formValues)) {
+                $member->extra_email = $formValues['extra_email'];
+                $member->name = $formValues['name'];
+                $member->address = $formValues['address'];
+                $member->phone = $formValues['phone'];
+
+                if ($this->request->hasFiles() == true) {
+                    $file = array_shift($this->request->getUploadedFiles());
+
+                    $imgExts = array('image/jpeg', 'image/png');
+
+                    if (in_array($file->getType(), $imgExts)) {
+                        $parts = pathinfo($file->getName());
+
+                        $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
+                        $file->moveTo($cfg -> application -> uploadDir . 'img/logos/' . $filename);
+
+                        $oldFile = ROOT_APP . 'public' . $member->logo;
+                        if (file_exists($oldFile)) {
+                            unlink($oldFile);
+                        }
+                        $member->logo = '/upload/img/logos/' . $filename;
+                    }
+                }
+
+                if (!$member->save()) {
+                    $this->setFlash('Error while saving your profile data password! Call to your admin!', 'error');
+                } else {
+                    $this->setFlash('Your data was successfully changed!');
+
+                    $this->session->set('member', $member);
+                    $this->loadRedirect();
+                }
+            } else {
+                $form->setFormValues($formValues);
+            }
+        }
+
+        $this->view->form = $form;
 	}
 
 
@@ -48,7 +125,7 @@ class MemberController extends \Core\Controllers\CrudController
 	
 	public function loadRedirect()
 	{
-		$this -> response -> redirect('profile');
+		$this -> response -> redirect('/profile');
 	}
 
 	
@@ -100,4 +177,277 @@ class MemberController extends \Core\Controllers\CrudController
 			echo json_encode($res);
 		}	
 	}
+
+    /**
+     * @Route("/member/save-filters", methods={"POST"})
+     * @Acl(roles={'member'});
+     */
+    public function saveFiltersAction()
+    {
+        $Member = $this->session->get('member');
+        if (!$Member) {
+            return;
+        }
+
+        $postData = $this->request->getPost();
+
+        if (!empty($postData)) {
+            $elemExists = function($elem) use (&$postData) {
+                if (!is_array($postData[$elem])) {
+                    $postData[$elem] = trim(strip_tags($postData[$elem]));
+                }
+                return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
+            };
+
+            $MemberFilter = new MemberFilter();
+
+            if (!empty($postData['category']) && $elemExists('category')) {
+
+                $toSave = array(
+                    'member_id' => $Member->id,
+                    'key' => 'category',
+                    'value' => $postData['category']
+                );
+
+                if (!empty($postData['member_filter_category_id']) && $elemExists('member_filter_category_id')) {
+                    $toSave['id'] = $postData['member_filter_category_id'];
+                }
+
+                $MemberFilter->save($toSave);
+            } else {
+                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
+                if ($filters) {
+                    $filters->delete();
+                }
+            }
+
+            $MemberFilter = new MemberFilter();
+            if (!empty($postData['tagIds'])) {
+                $toSave = array(
+                    'member_id' => $Member->id,
+                    'key' => 'tag',
+                    'value' => json_encode(array_filter(explode(',', $postData['tagIds'])))
+                );
+
+                if (!empty($postData['recordTagId']) && isset($postData['recordTagId'])) {
+                    $toSave['id'] = $postData['recordTagId'];
+                }
+
+                $MemberFilter->save($toSave);
+            } else {
+                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "tag"');
+                if ($filters) {
+                    $filters->delete();
+                }
+            }
+        }
+
+        $this->loadRedirect();
+    }
+
+    /**
+     * @Route("/member/update-location", methods={"post"})
+     * @Acl(roles={'member'});
+     */
+    public function updateLocationAction()
+    {
+        $process = true;
+
+        $member = null;
+
+        $postData = $this -> request-> getPost();
+
+        $newLoc = new Location();
+        $Location = $newLoc -> createOnChange(array('latitude' => $postData['lat'], 'longitude' => $postData['lng']));
+        $id = $Location->id;
+
+        if ($process) {
+            $sMember = $this->session->get('member');
+            $member = Member::findFirst('id = '.$sMember->id);
+
+            if (!$member) {
+                $process = false;
+            }
+        }
+
+        if ($process) {
+            $member->location_id = $id;
+
+            if (!$member->save()) {
+                $process = false;
+            }
+        }
+
+        if ($process) {
+
+            $this->session->remove('location_conflict_profile_flag');
+
+            $sMember->location_id = $id;
+            $this->session->set('member', $sMember);
+
+            $this->session->set('location', $Location);
+
+            $this->cookies->get('lastLat')->delete();
+            $this->cookies->get('lastLng')->delete();
+            $this->cookies->get('lastCity')->delete();
+
+            $result = array('status' => true);
+        }else {
+            $result = array('status' => false);
+        }
+
+        exit(json_encode($result));
+
+    }
+
+    /**
+     * @Route("/profile/change-password", methods={"get","post"})
+     * @Acl(roles={'member'});
+     */
+    public function changePasswordAction() {
+        $form = new ChangePassForm();
+
+        if ($this->request->ispost()) {
+            if ($form->isValid($this->request->getPost())) {
+
+                $postData = $this->request->getPost();
+
+                $member = Member::findFirst('id = '.$this->session->get('memberId'));
+
+                if (!$this->security->checkHash($postData['old_password'], $member->pass)) {
+                    $this->setFlash('Wrong old password!', 'error');
+                }else {
+                    $member->pass = $this->security->hash($postData['password']);
+
+                    if (!$member->save()) {
+                        $this->setFlash('Error while saving your new password! Call to your admin!', 'error');
+                    }else {
+                        $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
+
+                        $this->setFlash('Your password was successfully changed!');
+
+                        $this->loadRedirect();
+                    }
+                }
+            }
+        }
+
+        $this->view->form = $form;
+    }
+
+    /**
+     * @Route("/member/get-private-preset", methods={'get'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function getPrivatePresetAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        if ($this->session->has('memberId')) {
+            $MemberFilter = new MemberFilter();
+            $filters = $MemberFilter->getbyId($this->session->get('memberId'));
+            if (isset($filters['category']['value'])) {
+                $response['member_categories'] = $filters['category']['value'];
+            }
+        } else {
+            $response['errors'] = true;
+            $response['error_msg'] = 'Personalize search only for logged users. Please <a href="#" onclick="return false;" class="fb-login-popup">login via Facebook</a>';
+        }
+
+        $this->sendAjax($response);
+    }
+
+    /**
+     * @Route("/member/login", methods={'get'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function loginAction()
+    {
+        $form = new LoginForm();
+
+        $this -> view -> form = $form;
+
+        $this->view->pick('member/login');
+    }
+
+    /**
+     * @Route("/member/link-fb", methods={'post'})
+     * @Acl(roles={'member'});
+     */
+    public function linkToFBAccountAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        $userData = $this->request->getPost();
+
+        if ($this->session->has('member')) {
+            $member = $this->session->get('member');
+
+            $memberNetwork = new MemberNetwork();
+
+            $memberNetwork -> assign(array(
+                'member_id' => $member->id,
+                'network_id' => 1,
+                'account_uid' => $userData['uid'],
+                'account_id' => $userData['username']
+            ));
+
+            if ($memberNetwork -> save()) {
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                    'member' => $member,
+                    'uid' => $userData['uid'],
+                    'token' => $userData['token']
+                ));
+
+                $this -> session -> set('user_fb_uid', $userData['uid']);
+                $this->session->set('user_token', $userData['token']);
+                $this->session->set('acc_synced', true);
+                $this -> view -> setVar('acc_external', $memberNetwork);
+            }
+        }
+
+        echo json_encode($response);
+    }
+
+    /**
+     * @Route("/member/sync-fb", methods={'post'})
+     * @Acl(roles={'member'});
+     */
+    public function syncToFBAccountAction()
+    {
+        $response = [
+            'errors' => false
+        ];
+
+        $userData = $this->request->getPost();
+
+        if ($this->session->has('member')) {
+            $member = $this->session->get('member');
+
+            $memberNetwork = MemberNetwork::findFirst('member_id = ' . $member->id . ' AND account_uid = ' . $userData['uid']);
+
+            if ($memberNetwork->id) {
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                    'member' => $member,
+                    'uid' => $userData['uid'],
+                    'token' => $userData['token']
+                ));
+
+                $this -> session -> set('user_fb_uid', $userData['uid']);
+                $this->session->set('user_token', $userData['token']);
+                $this->session->set('acc_synced', true);
+                $this->view->setVar('acc_external', $memberNetwork);
+            } else {
+                $response = [ 'errors' => true ];
+            }
+        }
+
+        echo json_encode($response);
+    }
 }

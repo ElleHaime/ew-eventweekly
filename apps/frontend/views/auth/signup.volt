@@ -1,61 +1,49 @@
 {% extends "layouts/base.volt" %}
 
 {% block content %}
-<div class="container content">
-		<div class="row-fluid top-about">
-	        <div class="span4">
-	           {{ image('img/demo/img1.jpg', 'alt': 'Guard') }}
-	                <div class="top-about-text">
-	                    <h4>Never miss an Event</h4>
-	                </div>
-	        </div>
-	        <div class="span4">
-	            {{ image('img/demo/img2.jpg', 'alt': 'Grab') }}
-	            <div class="top-about-text">
-	                <h4>Get personalised listing</h4>
-	            </div>
-	
-	        </div>
-	        <div class="span4">
-	            {{ image('img/demo/img3.jpg', 'alt': 'Know') }}
-	                <div class="top-about-text">
-	                  <h4>See which of your friends are going</h4>
-	                </div>
-	        </div>
-	    </div>
-	    <div class="row-fluid link-about">
-	        <div class="span12">
-	            <a href="#">about us</a>
-	        </div>
-	    </div>
-        <div class="row-fluid agreement-box">
-             <div class="span6 offset2">
-             	<h4 style="color: white; padding-top: 10px; padding-left: 110px;">Registration</h3>
-                 <form class="form-horizontal" method="post">
-                     <div class="control-group">
-                         <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
-                         <div class="controls">
-                             {{ form.render('email') }}
-                             {{ form.messages('email') }}
-                         </div>
-                     </div>
-                     <div class="control-group">
-                         <label class="control-label" for="inputPassword">{{ form.label('password') }}</label>
-                         <div class="controls">
-                             {{ form.render('password') }}
-                             {{ form.messages('password') }}
-                         </div>
-                     </div>
+    <div class="container-fluid" id="container-box">
+        <div class="agreement-box ">
+            <div class="row-fluid ">
+                <div class="span12">
+                    <h4>Registration</h4>
 
-                    <div class="control-group">
-                     	<div class="controls">
-                     		<button type="submit" class="btn">Sign in</button>
-                     	</div>
-                     </div>
-                </form>
-	        </div>
-	    </div>      
-</div> 	
+                    <form class="form-horizontal" method="post" id="form_signup">
+                        <div class="control-group">
+                            <label class="control-label" for="inputEmail">{{ form.label('email') }}</label>
+
+                            <div class="controls">
+                                {{ form.render('email') }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="inputPassword">{{ form.label('password') }}</label>
+
+                            <div class="controls">
+                                {{ form.render('password') }}
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="confirmPassword">
+                                <label for="confirmPassword">{{ form.label('confirm_password') }}</label>
+                            </label>
+
+                            <div class="controls">
+                                {{ form.render('confirm_password') }}
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="button" class="btn btn-block" id="submit_signup">Sign Up</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
+
 

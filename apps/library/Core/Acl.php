@@ -9,7 +9,8 @@ use Phalcon\Mvc\User\Plugin,
 	Phalcon\Acl\Role as AclRole,
 	Phalcon\Acl\Resource as AclResource,
 	Phalcon\Acl\Adapter\Memory as AclMemory,
-	Core\Acl\Roles as EwRoles;
+	Core\Acl\Roles as EwRoles,
+	Core\Utils as _U;
 
 
 class Acl extends Plugin
@@ -38,6 +39,7 @@ class Acl extends Plugin
 
 			// search acl data in cache
 			$cacheData = $this -> di -> get('cacheData');
+			//$cacheData -> delete(self::ACL_CACHE);
 			$aclCache = $cacheData -> get(self::ACL_CACHE);
 
 			if ($aclCache === null) {
@@ -83,7 +85,7 @@ class Acl extends Plugin
 					}
 				}
 
-				$cacheData -> save(self::ACL_CACHE, $acl, 2592000);
+				$cacheData -> save(self::ACL_CACHE, serialize($acl), 2592000);
 				$this -> _acl = $acl;
 
 			} else {
@@ -107,14 +109,14 @@ class Acl extends Plugin
 		$module = ucfirst(strtolower($dispatcher -> getModulename()));
 		$controller = ucfirst(strtolower($dispatcher -> getControllerName()));
 		$resource = $module . $controller;
-
+		
 		$allowed = $this -> _acl -> isAllowed($role, $resource, $dispatcher -> getActionName());
-
+		
 		if ($allowed != PhAcl::ALLOW) {
 			$dispatcher -> forward(array(
 				'module' => $dispatcher -> getModuleName(),
-				'controller' => 'index',
-				'action' => 'denied'
+				'controller' => 'auth',
+				'action' => 'login'
 			)); 
 
 			return false;

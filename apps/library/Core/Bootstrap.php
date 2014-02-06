@@ -10,7 +10,9 @@ use \Phalcon\Mvc\ModuleDefinitionInterface,
 	\Core\Auth,
 	\Core\Mail,
 	\Core\Geo,
-	\Core\Acl;
+	\Core\Acl,
+    Frontend\Events\ViewListener;
+use \Core\Utils\DateTime as DTime;
 
 abstract class Bootstrap implements ModuleDefinitionInterface
 {
@@ -22,8 +24,10 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	public function __construct()
 	{  
-		$this -> _di = DI::getDefault(); 
+		$this -> _di = DI::getDefault();
 		$this -> _config = $this -> _di -> getConfig();
+
+        DTime::setConfig($this -> _config);
 	}
 		
 	public function registerAutoloaders()
@@ -39,7 +43,9 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initMail($di);
 		$this -> _initSession($di);
 		$this -> _initModels($di);
-        $this->initCoreTag($di);
+        $this -> initCoreTag($di);
+        $this -> _initHttp($di);
+ 
 	}
 
 	protected function _initView($di)
@@ -67,6 +73,27 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                             $that->initViewFilters($volt);
 
+                            $eventsManager = $di->getShared('eventsManager');
+
+                            /*$eventsManager->attach('view:beforeRender', function($event, $view) use ($di) {
+                                    $session = $di->getShared('session');
+
+                                    if ($session->has('flashMsgText')) {
+                                        $view->setVar('flashMsgText', $session->get('flashMsgText'));
+                                        $session->remove('flashMsgText');
+                                    }
+
+                                    if ($session->has('flashMsgType')) {
+                                        $view->setVar('flashMsgType', $session->get('flashMsgType'));
+                                        $session->remove('flashMsgType');
+                                    }
+
+                                });*/
+
+                            $eventsManager->attach('view:beforeRender', new ViewListener($di));
+
+                            $view->setEventsManager($eventsManager);
+
 							return $volt;
 						},
 					'.phtml' => 'Phalcon\Mvc\View\Engine\Volt'
@@ -79,7 +106,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	protected function _initDispatcher($di)
 	{
 		$config = $this -> _config;
-		 
+
 		$di -> set('dispatcher',
 			function() use ($config, $di) {
 				$eventsManager = $di -> getShared('eventsManager');
@@ -96,14 +123,14 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	
 	protected function _initModels($di)
 	{
-		$di -> setShared('modelsManager', function() {
+		$di -> set('modelsManager', function() {
 			return new \Phalcon\Mvc\Model\Manager();
 		});
 	}
 	
 	protected function _initAuth($di)
 	{
-		$di -> setShared('auth', function() use ($di) {
+		$di -> set('auth', function() use ($di) {
 			return new Auth($di);
 		});
 	}
@@ -111,7 +138,8 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 	protected function _initSession($di)
 	{
 		$di -> set('session', function() {
-			$session = new \Phalcon\Session\Adapter\Files();
+			//$session = new \Phalcon\Session\Adapter\Files();
+			$session = new \Core\Session();
 			$session -> start();
 			
 			return $session;
@@ -120,16 +148,30 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	protected function _initMail($di)
 	{
-		$di -> setShared('mail', function() {
-			return new Mail();
+        $mailerPath = $this->_config->application->mailer->path;
+        $config = $this->_config->application->mailer->config;
+        require $mailerPath;
+
+		$di->set('mailMessage', function() {
+            return new \Core\Mail\Message();
 		});
+
+        $di->set('mailEmailer', function() use ($config) {
+                return new \Core\Mail\Emailer($config);
+            });
+
+        /*$di -> set('mail', function() {
+			return new Mail();
+		});*/
 	}
 
 	protected function _initGeoApi($di)
 	{
-		$di -> setShared('geo', function() use ($di) {
-			return new Geo($di);
-		});
+		if (!$di -> has('geo')) {
+			$di -> set('geo', function() use ($di) {
+				return new Geo($di);
+			});
+		}
 	}
 	
 	public function getModule()
@@ -166,6 +208,15 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
                 return $res;
             });
+
+        $compiler->addFunction('toSlugUri', function($resolvedArgs, $exprArgs) {
+            return '\Core\Utils\SlugUri::slug('.$resolvedArgs.')';
+        });
+
+        $compiler->addFunction('dateToFormat', function($resolvedArgs) {
+            $args = explode(',', $resolvedArgs);
+            return '\Core\Utils\DateTime::format('.trim($args[0]).', '.trim($args[1]).')';
+        });
     }
 
     public function initCoreTag($di)
@@ -174,6 +225,13 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         $di->set('tag', function() use ($config) {
                 return new \Core\CoreTag($config);
             });
+    }
+
+    protected function _initHttp($di)
+    {
+        $di->set('http', function() use ($di) {
+            return new \Core\Http($di);
+        });
     }
 
 }

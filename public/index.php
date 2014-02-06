@@ -15,13 +15,19 @@ if (!defined('ROOT_LIB')) {
 if (!defined('CONFIG_SOURCE')) {
 	define('CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'config.php');
 }
+if (!defined('DATABASE_CONFIG_SOURCE')) {
+	define('DATABASE_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'database.php');
+}
+if (!defined('FACEBOOK_CONFIG_SOURCE')) {
+	define('FACEBOOK_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'facebook.php');
+}
 
 require_once ROOT_LIB . 'Application.php';
 
 try {
 	$application = new Application();
 	$application -> run();
-
+	
 	echo $application -> getOutput();
 	
 } catch (Exception $e) {

@@ -1,0 +1,764 @@
+@media screen and (max-width: 1430px) {
+    .active-events {
+        padding: 0 1%;
+    }
+    .event-list_i {
+        padding: 0 1%;
+    }
+    .add-event_i {
+        padding: 0 1%;
+    }
+
+}
+
+@media screen and (max-width: 1290px) {
+    .logo {
+        background: url(../img/demo/logo-sm.png) no-repeat center center;
+        width: 73px;
+        height: 34px;
+        margin: 23px auto 0;
+    }
+    .header-logo
+    {
+        width: 75px;
+    }
+    .header .span5 {
+        width: 40%;
+    }
+    .header .span7 {
+        width: 60%;
+    }
+    .event-one-text {
+        max-width: 550px;
+    }
+
+}
+@media screen and (max-width: 1200px) {
+    .header .span5 {
+        width: 33%;
+    }
+    .header .span7 {
+        width: 67%;
+    }
+
+    a.location-city {
+        max-width: 148px;
+    }
+    .text-btn {
+        display: none;
+    }
+    .btn-add span {
+        margin-right: 0;
+    }
+    .location {
+        margin: 21px 11px 0 0;
+    }
+    .show-list {
+          margin-top: 21px;
+    }
+    .row-fluid .show-list {
+        margin-right: 7px;
+    }
+
+    .event-one   .event-one-text  {
+        max-width: 51%;
+    }
+    .event-discription {
+        width: 70%;
+    }
+}
+
+@media screen and (max-width: 1050px) {
+    .location-place_ask > a > span {
+        display: none;
+    }
+    .location-place_ask > a {
+        width: 60px;
+    }
+    .header .span5 {
+        width: 40%;
+    }
+    .header .span7 {
+        width: 60%;
+    }
+
+    .location-place_country .location-search {
+        left: -213px;
+    }
+    .event-discription {
+        width: 100%;
+    }
+    .sidebar-box_event {
+        float: left;
+        margin-top: 20px;
+    }
+    .event-site {
+        margin-bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 980px) {
+
+    .event-one .event-one-text {
+        max-width: 45%;
+    }
+
+    .events-list_nbr .event-one-text {
+        max-width: 43%;
+    }
+
+    .events-list_nbr .event-list-btn {
+        float: right;
+        padding: 0;
+    }
+    .event-one-box {
+        padding: 0 3%;
+    }
+}
+
+@media screen and (max-width: 890px) {
+
+    .event-one-text {
+        margin-top: 10px;
+    }
+
+   .event-one-text .plans-box  {
+        position: absolute;
+        top:10px;
+        left:250px;
+    }
+
+    .event-one-text .event-list-btn {
+        position: absolute;
+        left:250px;
+        top:70px
+    }
+
+    .event-one-text .place-address {
+       max-width: 174px;
+    }
+   .event-one-text  .place-address span {
+        margin-right: 20px;
+        display: block;
+    }
+    .location-place_country .location-search {
+        left: -266px;
+    }
+    .event-one .event-one-text {
+        max-width: 95%;
+        clear: both;
+    }
+    .event-one-text {
+        padding: 0 20px;
+    }
+    .sidebar-box
+    {
+        width: 300px;
+        float: left;
+        clear: both;
+    }
+
+    .active-events {
+        padding: 0 3%;
+    }
+    .date-list {
+        padding: 5px 0;
+    }
+    .signleEventListElement .event-one
+    {
+        padding:0 0  12px 0;
+    }
+    .event-one .event-one-img {
+        margin-top: 20px;
+        margin-left: 20px;
+    }
+    #content-box {
+        margin-right: 0;
+    }
+
+    .form-center {
+        margin-right: 0;
+    }
+
+    .event-list-btn {
+        float: left;
+        clear: both;
+    }
+
+    .events-list_nbr .event-one-text {
+        max-width: 70%;
+    }
+    .header .span7 {
+        width: 55%;
+    }
+    .header .span5 {
+        width: 45%;
+    }
+    .location-place_ask .caret {
+        display: none;
+    }
+    .location-place_ask > a {
+        width: 45px;
+    }
+
+    a.location-city {
+        max-width: 110px;
+        padding-right: 24px;
+    }
+    .event-site a {
+       clear: both;
+    }
+    .event-one-box .event-list-btn {
+        padding-bottom: 10px;
+    }
+
+}
+
+@media screen and (max-width: 790px) {
+
+    .facebook-button .button {
+        width: 50%;
+    }
+    .big-top {
+        margin-bottom: 0;
+    }
+    .how-it-works {
+        padding-bottom: 20px;
+    }
+    footer .login-variants .link a {
+        padding: 15px 27px 14px;
+    }
+    footer .login-variants div.read-more {
+        float: none;
+        clear: both;
+    }
+    footer .login-variants div.read-more a {
+        display: inline;
+    }
+
+    .how-it-works {
+       padding-top: 20px;
+        clear: both;
+    }
+    .event-list-btn {
+        float: left;
+        clear: both;
+    }
+
+    .event-text-box {
+        margin-left: 0;
+    }
+    #cont {
+        margin-left: 0;
+    }
+    .profile-btn-rt  {
+        width: 100%;
+        float: left;
+    }
+    .profile-info-lf {
+        width: 100%;
+    }
+
+    .event-one .event-one-text {
+        max-width: 100%;
+    }
+    .user-box a > span {
+       display: none;
+    }
+    .user-box > a
+    {min-width: 50px;}
+
+    .user-box a  .caret {
+        display: none;
+    }
+
+
+    .header .span7 {
+        width: 68%;
+    }
+    .header .span5 {
+        width: 32%;
+    }
+
+    .location-place {
+        position: static;
+    }
+
+    .searchCityBlock, .advancedSearchBlock {
+        position: absolute;
+        top: 62px;
+        left: 0px !important;
+        width: 92% !important;
+        padding: 4% 4% 2% 4%;
+    }
+    .location-place_country .searchCityBlock
+    {
+        width: 94.4% !important;
+    }
+
+}
+
+@media screen and (max-width: 672px) {
+    .event-one-text  .event-list-btn {
+        position: absolute;
+        left:250px;
+        top:125px
+    }
+}
+@media screen and (max-width: 640px) {
+
+
+    .text-description {
+        clear: both;
+        margin-top: 10px;
+    }
+    .text-description  .name-link {
+        padding-top: 10px;
+    }
+
+    #end_dateSearch, #start_dateSearch {
+        width: 153px;
+    }
+
+    .event-one .event-list-btn{
+        padding-left: 0;
+    }
+    .header-count {
+        display: none;
+    }
+    .header .span7 {
+        width: 65%;
+    }
+    .header .span5 {
+        width: 35%;
+    }
+
+    .event-one .event-one-text {
+        max-width: 100%;
+        margin-top: 10px;
+    }
+
+/*---profile---*/
+    .span9.profile-info-lf {
+        width: 100%;
+    }
+    .span3.profile-btn-rt {
+        width: 100%;
+        clear: both;
+    }
+    .change-box form {
+        left:0!important;
+    }
+
+    .service-search p {
+        color: #3B3B3B;
+        font: 300 17px "Open Sans";
+        padding-top: 10px;
+
+    }
+    .service-search .demo p
+    {
+        padding: 0;
+    }
+
+    .event-list-btn {
+        padding-left: 0px;
+    }
+
+    .event-one-text {
+        max-width:100%;
+        clear: both;
+        margin-right: 0
+    }
+
+    .field-big {
+        min-height: 200px;
+    }
+
+    .btn-list_profile .btn {
+        clear: both;
+        float: left;
+    }
+    .add-event .input-div input {
+        width: 97%;
+    }
+
+
+}
+
+@media screen and (max-width: 580px) {
+
+
+    .wrapper {
+        min-width: 480px;
+    }
+    .event-list_i {
+        padding: 0 3%;
+    }
+    .add-event_i {
+        padding: 0 3%;
+    }
+
+    .event-one-box {
+        padding: 0 3%;
+    }
+
+
+    .event-one-box  #content_right
+    {
+        margin-top: 140px;
+    }
+    #content_right_inner {
+        margin-left: 0;
+    }
+    .user-box a .caret {
+        display: block;
+        border-top:6px solid #484846;
+        position: absolute;
+        top: 45px;
+        left:21px;
+    }
+    .add-settings-box .span11 {
+        width: 100%;
+    }
+    .add-settings-box .span1 {
+        width: 100%;
+    }
+    .location-place_ask .input-search {
+        width: 65%;
+    }
+    .header-logo
+    {
+        display: none;
+    }
+    .header .span7 {
+        width: 70%;
+    }
+    .header .span5 {
+        width: 30%;
+    }
+
+    .user-block {
+        padding: 0 10%;
+    }
+
+    .slider-legend li {
+        width: 18%;
+    }
+
+    .events-result {
+        padding-top: 0
+    }
+    .span9.profile-info-lf {
+        width: 100%;
+    }
+    .span3.profile-btn-rt {
+        width: 100%;
+        clear: both;
+    }
+    .change-box form {
+        left:0!important;
+    }
+
+    .list-event-img {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .list-event-text {
+        width: 100%;
+    }
+
+    .list-event-img a {
+        text-align: center;
+    }
+
+    .list-event-img {
+        text-align: center;
+    }
+
+    .small-img {
+        width: 100%;
+    }
+
+    .list-event-img a {
+        display: inline-block;
+        margin: 0 auto;
+        text-align: center;
+    }
+    .event-one-text {
+        clear: both;
+        padding-top: 10px;
+    }
+
+    .add-event .form-center {
+        clear: both;
+        padding-left: 0;
+    }
+
+    .activity .event-site, .type-marker .event-site {
+        clear: both;
+        padding: 5px 0;
+        margin: 0;
+    }
+
+    .list-event-img {
+        float: none;
+        margin: 0 0px 10px 0;
+    }
+
+    .list-event_more_i {
+        padding: 0 20px;
+    }
+
+    .sidebar_i {
+        padding: 10px 20px 0 20px;
+    }
+
+    .event-one-text {
+        clear: both;
+        float: none;
+    }
+
+    .event-one-text .date-list {
+        border-top: 1px solid #cccccc;
+        border-bottom: 1px solid #cccccc;
+        margin: 4px 0;
+    }
+    body {
+        overflow-x: hidden;
+    }
+    .location-place_country .searchCityBlock {
+        width: 92.4% !important;
+    }
+
+}
+
+@media screen and (max-height: 580px) {
+    .location-place_ask .location-search
+    {
+        max-height: 280px;
+        overflow-y: scroll;
+    }
+}
+@media screen and (max-height: 460px) {
+    body {
+        overflow-x: auto;
+    }
+}
+@media screen and (max-height: 640px) {
+    .location-place_ask .location-search
+    {
+        max-height: 505px;
+        overflow-y: scroll;
+    }
+}
+@media screen and (max-height: 600px) {
+    .location-place_ask .location-search
+    {
+        max-height: 400px;
+        overflow-y: scroll;
+    }
+    #end_dateSearch, #start_dateSearch {
+        width: 210px;
+    }
+
+    .location-search .form-horizontal {
+        margin-bottom: 4px;
+    }
+
+}
+
+@media screen and (max-height: 500px) {
+    .location-place_ask .location-search
+    {
+        max-height: 380px;
+    }
+}
+
+@media screen and (max-height: 400px) {
+    .location-place_ask .location-search
+    {
+        max-height: 230px;
+    }
+}
+
+@media screen and (max-height: 300px) {
+    .location-place_ask .location-search
+    {
+        max-height: 200px;
+    }
+}
+
+
+@media screen and (max-width: 510px) {
+    .add-event_i #content_right_inner{
+        margin-left: 0;
+    }
+.add-event_i  #content_right {
+    width: auto;
+    margin: 466px 0 0 0;
+}
+.add-img-box {
+    position: absolute;
+    top:65px;
+}
+
+}
+@media screen and (max-width: 490px) {
+    .location-place_country .searchCityBlock {
+        width: 91.4% !important;
+    }
+    .row-fluid .show-list {
+        margin-right: 17px;
+    }
+    .how-it-works {
+        padding: 20px 0;
+        clear: both;
+    }
+    .line-box:first-child {
+        float: right;
+    }
+    .big-top {
+        margin-bottom: 0;
+    }
+    .container-box {
+        padding: 0 3% 0 4%;
+    }
+    footer .login-variants {
+        width: auto;
+    }
+    footer .login-variants .link {
+        margin: 0;
+    }
+    .facebook-button {
+        padding: 46px 0 20px;
+    }
+
+    footer .login-variants .link a {
+        padding: 15px 26px 14px;
+    }
+    footer .login-variants div.read-more a {
+        display: block;
+    }
+    footer .login-variants div.read-more {
+        float: left;
+        clear: both;
+        width: 99%;
+    }
+    .facebook-button .button {
+        width: 100%
+    }
+    .facebook-button .button a {
+        width: 50%;
+        float: right;
+        margin-right: 6px;
+    }
+    .how-it-works {
+        padding-top: 20px;
+    }
+}
+
+
+@media screen and (max-width: 460px) {
+    .header .span7 {
+        width: auto;
+    }
+
+    a.location-city {
+        max-width: 80px;
+        width: auto;
+    }
+    .span7.location-box {
+        float: left;
+    }
+
+    .location-count
+    {
+        display: none;
+    }
+    .event-one-text .plans-box ,
+    .event-one-text .event-list-btn
+    {
+        position: relative;
+        left:0;
+        top:0;
+        clear: both;
+    }
+    .profile-info  {
+        padding-top: 15px;
+    }
+    .agreement-box h4 {
+        padding-top: 15px;
+    }
+    .agreement-box .form-horizontal .controls {
+        margin-left: 0;
+        clear: both;
+    }
+    .agreement-box  .form-horizontal .control-label {
+        padding-bottom: 6px;
+    }
+    .agreement-box form {
+        float: none;
+    }
+    .title-page {
+        padding-right: 20px;
+    }
+    .text p {
+        padding-left: 71px;
+    }
+
+    .big-top .square span {
+        text-align: center;
+        margin: 0 auto;
+        float: none;
+        line-height: 28px;
+    }
+    .big-top .square.white span {
+        color:#000;
+    }
+
+}
+
+@media screen and (max-width: 370px) {
+
+    .campaign-box .form-center {
+        clear: both;
+        padding-left: 0px;
+    }
+    .add-event_i #content_right {
+        margin: 687px 0 0;
+        width: auto;
+    }
+    .location-place a.location-city span
+    {
+        display: none;
+    }
+    a.location-city {
+        padding-left: 20px;
+    }
+    .header .span5 {
+        width: 29%;
+    }
+
+    .location-place_country .searchCityBlock {
+        width: 88% !important;
+    }
+
+    .date-picker .input-div {
+        width: 47.3%;
+    }
+    .location-place a.location-city  .caret {
+        right:17px;
+    }
+    .switch-box > h5 {
+        margin-bottom: 10px;
+    }
+
+    .table-box-row {
+        width: 100%;
+        clear: both;
+    }
+
+}

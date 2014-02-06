@@ -10,6 +10,7 @@ class Member extends Model
 {
 	public $id;
 	public $email;
+    public $extra_email;
 	public $pass;
 	public $phone;
 	public $name;
@@ -26,8 +27,10 @@ class Member extends Model
 		$this -> hasMany('id', '\Objects\Event', 'member_id', array('alias' => 'event'));
 		$this -> hasOne('id', '\Objects\MemberNetwork', 'member_id', array('alias' => 'network'));
 		$this -> hasOne('id', '\Objects\EventMember', 'member_id', array('alias' => 'eventpart'));
+		$this -> hasOne('id', '\Objects\EventMemberFriend', 'member_id', array('alias' => 'eventfriendpart'));
+        $this -> hasMany('id', '\Objects\MemberFilter', 'member_id', array('alias' => 'member_filter'));
+        $this -> hasMany('id', '\Objects\EventLike', 'member_id', array('alias' => 'event_like'));
 	}
-	
 	
 	public function getDependency()
 	{
@@ -55,8 +58,12 @@ class Member extends Model
 				'field' => 'email',
 				'message' => 'Email must be unique'
 		)));
-		
-		return !$this -> validationHasFailed();		
+
+		if ($this -> validationHasFailed() == true) {
+			return false;
+		} else {
+			return true;
+		}	
 	}
 	
 	public function beforeValidationOnCreate()

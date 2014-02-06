@@ -9,8 +9,8 @@ class LoginForm extends Form
 {
 	public function init()
 	{
-		$this -> addElement('text', 'email', 'Email');
-		$this -> addElement('password', 'password', 'Password');
+		$this -> addElement('text', 'email', 'Email', array('placeholder' => 'Email'));
+		$this -> addElement('password', 'password', 'Password', array('placeholder' => 'Password'));
 		
 		$this -> add(new Submit('Login'));
 	}
