@@ -53,6 +53,7 @@ require.config({
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
+        'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
 
         'SingleEvent': 'frontend/list/singleEvent',
         'listListener': 'frontend/list/listListener',
