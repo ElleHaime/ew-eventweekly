@@ -52,7 +52,7 @@ define('profileChangePasswordControl',
                 }
 
                 if (isValid && ($(self.settings.inpNewPassword).val() != $(self.settings.inpConfPassword).val())) {
-                    text = 'Password doesn\'t match confirmation';
+                    text = 'Password doesn\'t match confirmation    ';
                     isValid = false;
                 }
 

@@ -54,6 +54,7 @@ require.config({
         'frontSearchPanel': 'frontend/general/searchPanel',
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
         'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
+        'profileRestorePasswordControl': 'frontend/profile/controls/profileRestorePasswordControl',
 
         'SingleEvent': 'frontend/list/singleEvent',
         'listListener': 'frontend/list/listListener',

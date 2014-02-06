@@ -1,6 +1,7 @@
 require([
     'jquery',
     'frontTopPanel',
+    'profileRestorePasswordControl',
     'fb',
     'noti',
     'utils',
@@ -8,13 +9,15 @@ require([
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, noti) {
+    function($, frontTopPanel, fb, noti, profileRestorePasswordControl) {
 
         frontTopPanel.init({
             searchCityBlock: '.searchCityBlock'
         });
         fb.init();
         noti.init();
+
+        profileRestorePasswordControl.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');

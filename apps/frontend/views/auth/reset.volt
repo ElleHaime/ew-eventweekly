@@ -10,7 +10,7 @@
 
                     <h4>Reset your password</h4>
                     {% if form is defined %}
-                    <form class="form-horizontal" method="post">
+                    <form class="form-horizontal" method="post" id="reset-password-form">
                         <div class="control-group">
                             <label class="control-label" for="inputEmail">{{ form.label('password') }}</label>
                             <div class="controls">
