@@ -188,11 +188,13 @@ define('newGmapEvents',
                     url = url + '/' + city;
                 }
 
-                return $.ajax({
+                tmp = $.ajax({
                     url: url,
                     type: 'GET',
                     dataType: 'json'
                 });
+
+                return tmp;
             };
 
             /**
@@ -207,10 +209,26 @@ define('newGmapEvents',
                 __newLng = lng;
                 __newCity = city;
 
-                var makeRequest = function() {
-                    console.log('make request');
-                    $.when(request(lat, lng, city)).then(function(response) {
+               var makeRequest = function() {
+/*                    $.when(request(lat, lng, city)).then(function(response, responseStatus, jqXHR) {
                         responseHandler(response);
+                    }); */
+                    var url = settings.eventsUrl;
+                    if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
+                        url = url + '/' + lat + '/' + lng;
+                    }
+                    if (!_.isUndefined(city)) {
+                        url = url + '/' + city;
+                    }
+
+                    $.when($.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json'
+                    })).done(function(response) {
+                        responseHandler(response);
+                    }).always(function() {
+                        console.log('empty result');
                     });
                 };
 
@@ -218,7 +236,6 @@ define('newGmapEvents',
 
                 if (settings.requestInterval > 0) {
                    interval = setInterval(function(){
-                        console.log('new request');
                         makeRequest();
                     }, settings.requestInterval);
                 }

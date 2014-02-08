@@ -580,7 +580,6 @@ class Event extends EventObject
                         $images -> save();
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
                         $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
-
                     }
                 } elseif ($returnExists !== false && self::$cacheData -> exists('fbe_' . $ev['eid']) && isset($ev['venue'])) {
                     $newEvents[self::$cacheData -> get('fbe_' . $ev['eid'])] = $ev['eid'];

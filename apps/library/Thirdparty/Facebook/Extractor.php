@@ -147,18 +147,16 @@ public function getQueriesScope()
                     FROM event
                     WHERE eid IN ($eventsUid)
                     AND creator != $userUid
-                    AND NOT (creator IN ($friendsUid))
                       AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',
         'type' => 'final',
         'start' => 0,
-        'limit' => 200,
+        'limit' => 100,
         'patterns' => array('/\$start/', 
                             '/\$lim/', 
                             '/\$userUid/', 
-                            '/\$eventsUid/',
-                            '/\$friendsUid/')
+                            '/\$eventsUid/')
       ),
       array(
         'order' => 6,
