@@ -4,7 +4,7 @@ namespace Core;
 
 use Phalcon\Mvc\User\Plugin,
 	Phalcon\Mvc\Dispatcher,
-	Thirdparty\Geo\SxGeo as SGeo,
+//	Thirdparty\Geo\SxGeo as SGeo,
 	Core\Utils as _U;
 use \GeoIp2\WebService\Client;
 
@@ -13,7 +13,6 @@ class Geo extends Plugin
 {
 	const DEFAULT_RADIUS_DIFF = 10;
 
-	protected $_sxgeo		= false;
 	protected $_locLonCur	= false;
 	protected $_locLatCur	= false;
 	protected $_locLonMin	= false;
@@ -34,7 +33,6 @@ class Geo extends Plugin
 			include(CONFIG_SOURCE);
 			$this -> _config = json_decode(json_encode($cfg_settings), false);
 		} 
-		$this -> _sxgeo = new SGeo($this -> _config -> application -> geo -> path . 'SxGeoCity.dat'); 
 		
 		$this -> setUserIp();
 		$this -> setUserLocation();
@@ -43,7 +41,8 @@ class Geo extends Plugin
 	public function setUserIp()
 	{
 		if ($this -> _fb_config -> debug) {
-			$this -> _userIp = '31.172.138.197'; // Odessa
+			$this -> _userIp = '31.172.138.197'; 		// Odessa
+			//$this -> _userIp = '50.175.13.4'; 		// ass of the universe
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}
@@ -53,7 +52,8 @@ class Geo extends Plugin
 	public function setUserLocation()
 	{
 		if ($this -> _userIp) {
-            $client = new Client($this->_config->application->GeoIp2->userId, $this->_config->application->GeoIp2->licenseKey);
+            $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
+            					 $this -> _config -> application -> GeoIp2 -> licenseKey);
 
             $record = $client->city($this->_userIp);
 
@@ -61,10 +61,6 @@ class Geo extends Plugin
             $this -> _locLonCur = $record->location->longitude;
             $this -> _countryCode = $record->country->isoCode;
 
-			/*$city = $this -> _sxgeo -> getCityFull($this -> _userIp);
-			$this -> _locLatCur = $city['lat'];
-			$this -> _locLonCur = $city['lon'];
-			$this -> _countryCode = $city['country'];*/
 		} else {
 			$this -> _userIp = $this -> getUserIp();
 		}

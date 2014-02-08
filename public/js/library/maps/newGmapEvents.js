@@ -11,9 +11,7 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                //requestInterval: 0, // TODO: set some interval
-                requestInterval: 2000, // TODO: set some interval
-                //eventsUrl: '/eventmap',
+                requestInterval: 4000, // TODO: set some interval
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
@@ -208,10 +206,29 @@ define('newGmapEvents',
                 __newCity = city;
 
                 var makeRequest = function() {
+                    var url = settings.eventsUrl;
+                    if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
+                        url = url + '/' + lat + '/' + lng;
+                    }
+                    if (!_.isUndefined(city)) {
+                        url = url + '/' + city;
+                    }
+
                     console.log('make request');
+
+                    $.when($.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json'})).done(function(response) {
+                                                responseHandler(response);
+                                        }).always(function() {
+                                                console.log('empty result');
+                                        });
+
+                    /*console.log('make request');
                     $.when(request(lat, lng, city)).then(function(response) {
                         responseHandler(response);
-                    });
+                    }); */
                 };
 
                 makeRequest();

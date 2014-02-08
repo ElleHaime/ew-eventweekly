@@ -1248,7 +1248,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
         	return $events;
         } 
 
-//$this -> logIt(date('H:i:s') . ': READY');
+$this -> logIt(date('H:i:s') . ': READY');
 
 
 		//ob_start();
@@ -1361,17 +1361,18 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 				$this -> logIt('friend_going_event');
 				$start = $query['start'];
 				$limit = $query['limit'];
-				$eids = implode(',', $this -> friendsGoingUid);
-				$friends = implode(',', $this -> friendsUid);
+				$eChunked = array_chunk($this -> friendsGoingUid, 50);
+				$currentChunk = 0;
 
 				do {
+					$eids = implode(',', $eChunked[$currentChunk]);
+
 					$replacements = array($start, 
 										  $limit, 
 										  $this -> session -> get('user_fb_uid'), 
-										  $eids, 
-										  $friends);
+										  $eids);
 					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-					
+$this -> logIt($fql[$query['name']]);					
 					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
 					if ($result['STATUS'] !== false) { 
 						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
@@ -1389,12 +1390,24 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 							}
 
 							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-								$start = false;
+								if ((count($eChunked)-1) > $currentChunk) {
+									$currentChunk++;
+									$start = 0;
+								} else {
+									$start = false;
+									$currentChunk = 0;
+								}
 							} else {
 								$start = $start + $limit;
 							}
 						} else {
-							$start = false;
+							if ((count($eChunked)-1) > $currentChunk) {
+								$currentChunk++;
+								$start = 0;
+							} else {
+								$start = false;
+								$currentChunk = 0;
+							}
 						}
 					} else {
 						$start = false;

@@ -140,7 +140,7 @@ public function getQueriesScope()
         'limit' => false,
         'patterns' => array('/\$friendsUid/')
       ),
-      array(
+   /*   array(
         'order' => 5,
         'name' => 'friend_going_event',
         'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
@@ -159,7 +159,27 @@ public function getQueriesScope()
                             '/\$userUid/', 
                             '/\$eventsUid/',
                             '/\$friendsUid/')
+      ), */
+
+      array(
+        'order' => 5,
+        'name' => 'friend_going_event',
+        'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
+                    FROM event
+                    WHERE eid IN ($eventsUid)
+                    AND creator != $userUid
+                      AND start_time > ' . $timelimit . ' 
+                    ORDER BY eid                  
+                    LIMIT $start, $lim',
+        'type' => 'final',
+        'start' => 0,
+        'limit' => 200,
+        'patterns' => array('/\$start/', 
+                            '/\$lim/', 
+                            '/\$userUid/', 
+                            '/\$eventsUid/')
       ),
+
       array(
         'order' => 6,
         'name' => 'user_going_eid',
