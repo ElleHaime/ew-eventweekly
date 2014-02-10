@@ -170,6 +170,10 @@ class SxGeo {
 			$raw = fread($this->fh, $this->max_city);
 		}
 		$this->city = unpack('Nregid/Ccc/a2fips/Nlat/Nlon', $raw);
+        if (PHP_INT_SIZE == 8) {
+            if ($this->city['lat'] > 90000000) $this->city['lat'] -= 4294967296; // lat -90°...90°
+            if ($this->city['lon'] > 180000000) $this->city['lon'] -= 4294967296; // lon -180°...180°
+        }
 		$this->city['country']  = $this->cc2iso[$this->city['cc']];
 		$this->city['lat'] /= 1000000;
 		$this->city['lon'] /= 1000000;

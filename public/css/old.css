@@ -14,10 +14,10 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    min-width: 460px;
     color:#333333;
     background: #f3f3f3;
     padding: 0;
+    min-width: 310px;
     margin: 0;
 }
 
@@ -282,7 +282,7 @@ hr {
     margin-top: 0;
     min-width: 180px;
     position: relative;
-    z-index: 200;
+    z-index: 130;
 }
 .form-horizontal .control-group
 {
@@ -511,7 +511,7 @@ hr {
     *display: inline;
     width: 285px;
     position: relative;
-    z-index: 120;
+    z-index: 140;
     cursor: pointer;
     font-size: 11px;
     text-align: center;
@@ -615,7 +615,7 @@ a.location-city  {
     top:42px;
     width: auto;
     padding: 22px 22px 10px 22px;
-    z-index: 100;
+    z-index: 135;
 }
 .active-box > a {
     padding-bottom:6px;
@@ -703,8 +703,12 @@ input[type="color"]:focus, .uneditable-input:focus
     color:#8aaad2;
 }
 .controls input[type="text"],.controls input[type="password"] {
-    height: 37px;
+    height: 42px;
     padding: 0 10px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box; /*Firefox 1-3*/
+    -webkit-box-sizing: border-box; /* Safari */
+    width: 100%;
 }
 .location-search  .input-append {
     float: right;
@@ -774,10 +778,6 @@ div.grippie {
 .btn-add_group .btn:first-child {
     margin-left: 0;
 }
-
-/*.controls .btn {*/
-    /*margin-top: 10px;*/
-/*}*/
 
 .location-search {
     display: none;
@@ -2196,15 +2196,6 @@ input[type="checkbox"]  {
 {
     text-align: center;
 }
-
-.event-one-img {
-    float: left;
-    margin: 0 20px 10px 0;
-    position: relative;
-    width: 159px;
-    height: auto;
-    /*border: 1px solid #ccc;;*/
-}
 .event-one-img {
     float: left;
     margin: 0 20px 0 0;
@@ -2292,7 +2283,6 @@ input[type="checkbox"]  {
 
 .events-list {
     margin-bottom: 10px;
-    /*padding-bottom:10px;*/
     clear: both;
 }
 .events-list hr {
@@ -2641,10 +2631,6 @@ ul.days-events  {
     padding: 22px 20px 13px;
 }
 
-/*.location-search input {*/
-    /*width: 68%;*/
-/*}*/
-
 /*----------------------------------------------------user down-------------------------------------------------------*/
 #user-down  .edit-btn {
     position: relative;
@@ -2690,7 +2676,6 @@ ul.days-events  {
     width: 100%;
     height: 100%;
 }
-
 
 .search-img {
     background: url(../img/demo/icons.png) no-repeat 0 0 ;
@@ -2849,6 +2834,11 @@ ul.days-events  {
     word-break:normal;
     padding: 9px 40px 5px 47px;
     background: url(../img/bgs/place-icon-white.png) no-repeat 20px 80% ;
+}
+
+.event-one-text .place-address span {
+    padding: 9px 40px 5px 37px;
+    background: url(../img/bgs/place-icon-white.png) no-repeat 14px 80% ;
 }
 
 .event-list-btn  .place-address span {
@@ -3344,10 +3334,6 @@ ul.days-events  {
 .category-list .theater-border .number-events {
     color:#93278F;
 }
-
-
-
-
 .category-list .business-border .location-name {
     border-left:3px solid #0071BC;
 }
@@ -3545,10 +3531,6 @@ a.table-box-row:focus {
     margin:0 auto;
 }
 
-/*.location-place_ask  .input-search {*/
-    /*width: 78%;*/
-/*}*/
-
 .show-list {
     width:60px;
     float: right;
@@ -3700,8 +3682,6 @@ a.table-box-row:focus {
     background: #ffffff;
 }
 
-
-
 .table-condensed .separator {
     width: 0;
     padding: 0;
@@ -3727,8 +3707,8 @@ a.table-box-row:focus {
     padding-left: 5px;
     width: 100%;
     box-sizing: border-box;
-    -moz-box-sizing: border-box; /*Firefox 1-3*/
-    -webkit-box-sizing: border-box; /* Safari */
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     height: 42px;
 }
 .location-place_ask .form-horizontal .input-search:active, .location-place_ask .form-horizontal .input-search:focus  {
@@ -3769,7 +3749,6 @@ input.error-mes, input.error-mes:focus, input.error-mes:active  {
     color:#B94A48;
     background-color: #F2DEDE;
 }
-
 
 .place-address
 {
@@ -4116,10 +4095,6 @@ i.icon-map {
     float: right;
     margin-left: -300px;
 }
-/*#content_right_inner*/
-/*{*/
-    /*margin-left: 180px;*/
-/*}*/
 #content_center
 {
     width: 100%;
@@ -4277,8 +4252,7 @@ i.icon-map {
 .events-description {
     max-width: 800px;
 }
-
-
+/*----------------------------------------------style for spinner ------------------------------------------------------*/
 .overlay {
     position: absolute;
     width: 100%;
@@ -4287,6 +4261,7 @@ i.icon-map {
     z-index: 1000;
     background: url(../img/spinner.gif) no-repeat 50% 50% rgba( 0, 0, 0, 0.7);
 }
+/*-----------------------------------------end style for spinner ------------------------------------------------------*/
 
 .event-one {
     position: relative;
@@ -4303,7 +4278,6 @@ i.icon-map {
     display: inline-block;
 }
 
-
 .event-photo  {
     margin-bottom: 10px;
     width: 100%;
@@ -4317,7 +4291,6 @@ i.icon-map {
 .btn-all-img:hover {
     color:#fff;
 }
-
 
 .event-discription .add-img .event-one-img {
     height: 157px;
@@ -4420,7 +4393,6 @@ i.icon-map {
 }
 
 .events-map {
-    /*width: 300px;*/
     overflow: hidden;
 }
 
@@ -4555,7 +4527,6 @@ a.view-btn  {
 .modal {
     display: none;
     overflow: auto;
-    /*overflow-y: scroll;*/
     position: fixed;
     top: 0;
     right: 0;
@@ -4659,17 +4630,14 @@ a.view-btn  {
     }
 }
 
-
 .modal-content  {
     border-radius: 0;
     height: 100%;
 }
 
-
 #previewEvent .modal-dialog {
    width: auto;
     height: 90%;
-
 }
 
 .share-box-icon {
@@ -4681,3 +4649,13 @@ a.view-btn  {
     overflow: hidden;
     float: left;
 }
+
+.event-one-text .place-address span {
+    word-break: break-all;
+    white-space: nowrap;
+    width: 69%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-overflow: "…";
+}
+

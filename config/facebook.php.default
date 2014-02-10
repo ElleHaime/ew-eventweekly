@@ -1,7 +1,7 @@
 <?php
 
 $cfg_facebook = array(
-  'facebook' => (
+  'facebook' => array(
       'appId' => 'fb app ID',
       'appSecret' => 'fb app secret'
   ),

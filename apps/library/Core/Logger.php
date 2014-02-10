@@ -130,6 +130,7 @@ class Logger {
                 $result = $stringObj;
             }else {
                 $result = ob_get_flush();
+                ob_clean();
             }
             $arguments[0] = $result;
         }

@@ -6,7 +6,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <h4>Change password</h4>
-                    <form  class="form-horizontal" action="/profile/change-password" method="post">
+                    <form  class="form-horizontal" id="change-password-form" action="/profile/change-password" method="post">
                     <div class="control-group">
                         <label class="control-label" >Old password</label>
                         <div class="controls">

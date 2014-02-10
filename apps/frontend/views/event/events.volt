@@ -21,6 +21,8 @@
                     {% if events is defined %}
                         {% for event in events %}
 
+                            {#{{ dateToFormat(event['start_date'], '%m-%d-%y') }}#}
+
                             {% set disabled = '' %}
                             {% if likedEventsIds is defined %}
                                 {% for likedEventsId in likedEventsIds %}
@@ -52,15 +54,23 @@
                                                 <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
 
                                                 <div class="date-list">
-                                                    {% if event['start_date_nice'] != '0000-00-00' %}
+                                                    {% if event['start_date'] != '0000-00-00' %}
+                                                        <i class="icon-time"></i>
+                                                        <span class="date-start">{{ dateToFormat(event['start_date'], '%d %b %Y') }}</span>
+                                                        {% if dateToFormat(event['start_date'], '%R') != '00:00' %}
+                                                            starts at
+                                                            <span class="date-time">{{ dateToFormat(event['start_date'], '%R') }}</span>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                    {#{% if event['start_date_nice'] != '0000-00-00' %}
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ event['start_date_nice'] }}</span>
                                                         {% if event['start_time'] != '00:00' %}
-                                                            start at
+                                                            starts at
                                                             <span class="date-time">{{ event['start_time'] }}</span>
                                                         {% endif %}
 
-                                                    {% endif %}
+                                                    {% endif %}#}
                                                 </div>
                                                 <p>
                                                     {{ event['description']|striptags|escape|truncate(350) }}
@@ -68,11 +78,25 @@
 
                                                 <div class="plans-box clearfix">
                                                     <button class="btn eventLikeBtn" data-status="1" data-id="{{ event['id'] }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
-                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don`t like</button>
+                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event['id'] }}">Don't like</button>
                                                 </div>
 
+                                                {% set eVenue = 'Undefined place' %}
+                                                {% if event['venue']['address'] is empty %}
+                                                    {% if event['location']['city'] is empty %}
+                                                        {% set eVenue = 'Undefined place' %}
+                                                    {% else %}
+                                                        {% set eVenue = event['location']['city'] %}
+                                                    {% endif %}
+                                                {% else %}
+                                                    {% if event['location']['city'] %}
+                                                        {% set eVenue = event['location']['city']~', '~event['venue']['name']~', '~event['venue']['address'] %}
+                                                    {% else %}
+                                                        {% set eVenue = event['venue']['name']~' '~event['venue']['address'] %}
+                                                    {% endif %}
+                                                {% endif %}
                                                 <div class="event-list-btn clearfix">
-                                                    <div class=" place-address tooltip-text"  data-original-title="   {{ event['location']['alias'] }}" title="" rel="tooltip">
+                                                    <div class=" place-address tooltip-text"  data-original-title="{{ eVenue }}" title="" rel="tooltip">
                                                         <span>
                                                             {% if event['venue']['address'] is empty %}
                                                                 {% if event['location']['alias'] is empty %}

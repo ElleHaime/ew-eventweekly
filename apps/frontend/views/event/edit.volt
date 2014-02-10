@@ -46,25 +46,12 @@
                                                                                 <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
                                                                             </span>
                                                             </div>
-                                                            <div id="time-picker-start" class="input-div_small">
-                                                                {{ form.render('start_time') }}<i class="icon-time"></i>
-                                                            <span class="add-on">
-                                                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-                                                                            </span>
-                                                            </div>
-
                                                         </div>
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-end" class="input-div_small">
                                                                 {{ form.render('end_date') }}<i class="icon-calendar"></i>
                                                             <span class="add-on">
                                                                                 <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
-                                                                            </span>
-                                                            </div>
-                                                            <div id="time-picker-end" class="input-div_small">
-                                                                {{ form.render('end_time') }}<i class="icon-time"></i>
-                                                            <span class="add-on">
-                                                                                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
                                                                             </span>
                                                             </div>
                                                         </div>
@@ -344,7 +331,7 @@
                         <h3 id="myModalLabel">Event Preview</h3>
                     </div>
                     <div class="modal-body">
-                        <iframe name="eventPreview_iframe" src="http://events.apppicker.com" style="width: 100%; height: 100%;"></iframe>
+                        <iframe name="eventPreview_iframe" src="http://dev.eventweekly.com" style="width: 100%; height: 100%;"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

@@ -13,6 +13,7 @@ $cfg_settings = array(
 	'application' => array(
 		'debug' => true,
 		'baseUri' => '',
+        'timezone' => 'UTC',
 		'defaultModule' => 'frontend',
 		'defaultNamespace' => 'Frontend\Controllers',
 		'defaultController' => 'index',
@@ -64,6 +65,10 @@ $cfg_settings = array(
                 )
             )
 		),
+        'GeoIp2' => [
+            'userId' => 86277,
+            'licenseKey' => 'gAsqWYLrLpdh'
+        ],
 		'geo' => array(
 			'path' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 		),

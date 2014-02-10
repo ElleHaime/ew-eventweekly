@@ -173,14 +173,22 @@
                                         <h4 class="name-link">{{ event.name }}</h4>
 
                                         <div class="date-list">
-                                            {% if event.start_date_nice is defined  %}
+                                            {% if event.start_date != '0000-00-00' %}
+                                                <i class="icon-time"></i>
+                                                <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
+                                                {% if dateToFormat(event.start_date, '%R') != '00:00' %}
+                                                    starts at
+                                                    <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
+                                                {% endif %}
+                                            {% endif %}
+                                            {#{% if event.start_date_nice is defined  %}
                                                 <i class="icon-time"></i>
                                                 <span class="date-start">{{ event.start_date_nice }}</span>
                                                 {% if event.start_time is defined %}
-                                                    start at
+                                                    starts at
                                                     <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
                                                 {% endif %}
-                                            {% endif %}
+                                            {% endif %}#}
                                         </div>
                                         <div class="description-text">
                                             <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>
@@ -192,20 +200,20 @@
                                         <div class="btn-hide clearfix">
 
                                             {% if not (event.memberpart|length) %}
-                                                <span>So, whats your plan?</span>
+                                                <span>So, what's your plan?</span>
                                             {% endif %}
                                             <div class="event-site clearfix">
                                                 {% if not (event.memberpart|length) %}
-                                                    <button class="btn" id="event-join">I`m going!</button>
-                                                    <button class="btn" id="event-maybe">I`m interested!</button>
-                                                    <button class="btn" id="event-decline">Don`t like</button>
+                                                    <button class="btn" id="event-join">I'm going!</button>
+                                                    <button class="btn" id="event-maybe">I'm interested!</button>
+                                                    <button class="btn" id="event-decline">Don't like</button>
                                                 {% else %}
                                                     {% if event.memberpart == 1 %}
-                                                        <button class="btn" id="event-join" disabled = true>I`m going!</button>
+                                                        <button class="btn" id="event-join" disabled = true>I'm going!</button>
                                                     {% endif %}
 
                                                     {% if event.memberpart == 2 %}
-                                                        <button class="btn" id="event-maybe" disabled = true>I`m interested!</button>
+                                                        <button class="btn" id="event-maybe" disabled = true>I'm interested!</button>
                                                     {% endif %}
                                                 {% endif %}
                                             </div>
@@ -439,6 +447,7 @@
 
                             {% include 'layouts/sharebar.volt' %}
 
+                        <div class="padd_30"></div>
                         <div class="row-fluid">
                             <div class="span12">
                                 <div class="comment-box">
@@ -447,7 +456,8 @@
                                         <img src="/img/comment_tmp.png" alt=""/>
                                         <div style="height: 20px"></div>
                                     {% else %}
-                                        <fb:comments href="http://events.apppicker.com/event/show/{{ event.id }}"></fb:comments>
+                                        <fb:comments href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
+                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" data-numposts="2" data-colorscheme="light"></div>#}
                                     {% endif %}
                                 </div>
                             </div>
@@ -456,7 +466,7 @@
         </div>
     </div>
 </div>
-    <fb:ref href="http://events.apppicker.com/event/show/{{ event.id }}" />
+    <fb:ref href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
 {% endblock %}
 
 

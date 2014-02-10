@@ -44,10 +44,10 @@ class Controller extends \Phalcon\Mvc\Controller
         $member = $this -> session -> get('member');
         $loc = $this -> session -> get('location');
 
-		if (!$loc 
+		if (!$loc
 			|| ($member === NULL)
-			|| ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id)) 
-			&& $loc instanceof \stdClass) 
+			|| ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id))
+			&& $loc instanceof \stdClass)
 		{
 			$location = false;
 			$locModel = new Location();

@@ -11,7 +11,7 @@ class ResetForm extends Form
     {
         $conf_passwordValidators = array(
             'PresenceOf' => array('message' => 'Password is required'),
-            'StringLength' => array('min' => 2),
+            'StringLength' => array('min' => 6),
             'Confirmation' => array(
                 'message' => 'Password doesn\'t match confirmation',
                 'with' => 'conf_password'
@@ -20,7 +20,7 @@ class ResetForm extends Form
 
         $passwordValidators = array(
             'PresenceOf' => array('message' => 'Password is required'),
-            'StringLength' => array('min' => 2)
+            'StringLength' => array('min' => 6)
         );
 
         $this -> addElement('password', 'password', 'Password', array('validators' => $conf_passwordValidators));

@@ -57,7 +57,7 @@ define('fb',
                     status: self.settings.status
                 });
 
-                console.log(FB);
+                FB.XFBML.parse();
 
 			    self.bindEvents();
 			}

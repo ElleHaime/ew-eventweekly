@@ -27,6 +27,7 @@ require.config({
 		'bootstrap': 'library/vendors/bootstrap.min',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
+		'normalDatePicker': 'library/vendors/normalBootstrapDateTimepicker',
 		'niceDate': 'library/vendors/date',
 
 		// maps
@@ -52,6 +53,8 @@ require.config({
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
+        'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
+        'profileRestorePasswordControl': 'frontend/profile/controls/profileRestorePasswordControl',
 
         'SingleEvent': 'frontend/list/singleEvent',
         'listListener': 'frontend/list/listListener',
@@ -79,6 +82,10 @@ require.config({
         'bootstrapDatepicker': {
         	deps: ['jquery'],
         	exports: 'bootstrapDatepicker'
+        },
+        'normalDatePicker': {
+        	deps: ['jquery'],
+        	exports: 'normalDatePicker'
         },
         'bootstrap' : {
             deps: ['jquery']
