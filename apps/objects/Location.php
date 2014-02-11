@@ -61,7 +61,7 @@ class Location extends Model
 			}
 		}
 		$query = array();
-	
+
 		if (isset($argument['longitude'])) {
 			$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
 		}

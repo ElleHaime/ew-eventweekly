@@ -1251,10 +1251,7 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
 $this -> logIt(date('H:i:s') . ': READY');
 
 
-		//ob_start();
 		$this -> sendAjax($res);
-		//ob_flush();
-		//ob_end_flush();
 
        	if ($this -> session -> has('user_token') 
        		&& $this -> session -> has('user_fb_uid')
