@@ -28,7 +28,9 @@ try {
 	$application = new Application();
 	$application -> run();
 	
-	echo $application -> getOutput();
+	require_once(ROOT_APP . 'service/Extractor.php');
+
+	//echo $application -> getOutput();
 	
 } catch (Exception $e) {
 	throw $e;
