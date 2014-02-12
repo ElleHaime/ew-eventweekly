@@ -54,6 +54,8 @@ define('frontSearchPanel',
          */
         __clickedSwitchBtn: null,
 
+        __locationChosen: false,
+
         /**
          * Initialize clicks. Constructor
          */
@@ -65,6 +67,8 @@ define('frontSearchPanel',
 
             // Get search type
             $this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
+
+            $this.__locationChosen = $($this.settings.searchLocation).attr('data-location-chosen');
 
             // Bind click on form
             _.once($this.__bindClicks());
@@ -108,6 +112,8 @@ define('frontSearchPanel',
                 $($this.settings.searchLocationLatMax).val(latMax);
                 $($this.settings.searchLocationLngMax).val(lngMax);
 
+                $($this.settings.searchLocation).attr('data-location-chosen', true);
+
                 $this.__switchSearchBtnVisible(true);
             });
 
@@ -132,6 +138,13 @@ define('frontSearchPanel',
             }).on('changeDate', function() {
                     endDate.hide();
             }).data('datepicker');
+
+            $($this.settings.searchLocation).blur(function(){
+                console.log('blur');
+                var thisField = $(this);
+                if (!_.isEmpty(thisField.val())) {}
+                //google.maps.event.trigger(list, 'place_changed');
+            });
         },
 
         /**
@@ -157,6 +170,13 @@ define('frontSearchPanel',
             var $this = this;
             return function(event) {
                 event.preventDefault();
+
+                if (!_.isEmpty($($this.settings.searchLocation).val()) && !$this.__locationChosen == false) {
+                    console.log('location not chosen');
+                    noti.createNotification('You must chose location from list!', 'error');
+                    return false;
+                }
+
 
                 /**
                  * @type {jQuery}

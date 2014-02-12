@@ -14,7 +14,7 @@
         {% else %}
             {% set searchLocation = '' %}
         {% endif %}
-        <input type="text" id="searchLocationField" name="searchLocationField" class="input-search input-large" placeholder="Location. Current value is your location" value="{{ searchLocation }}"/>
+        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="input-search input-large" placeholder="Location. Current value is your location" value="{{ searchLocation }}"/>
         {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
             {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}
         {% else %}
