@@ -34,7 +34,10 @@ class SearchController extends \Core\Controller
         $result = array();
         $countResults = 0;
         $Event = new Event();
-        $postData = $this->request->getPost();
+        $postData = $this->request->getQuery();
+        if (empty($postData)) {
+            $postData = $this->request->getPost();
+        }
 
         if (empty($postData)) {
             $postData = $this->session->get('userSearch');

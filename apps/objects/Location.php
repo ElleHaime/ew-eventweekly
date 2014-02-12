@@ -50,6 +50,10 @@ class Location extends Model
 
 	public function createOnChange($argument = array(), $network = 'facebook')
 	{
+		/*$argument = array('latitude' => 36.114646, 'longitude' => -115.17281600000001);
+		$geo = $this -> getGeo();
+		$newLoc = $geo -> getLocation($argument); */
+
 		$geo = $this -> getGeo();
 		$isGeoObject = false;
 		$newLoc = array();
@@ -61,7 +65,7 @@ class Location extends Model
 			}
 		}
 		$query = array();
-	
+
 		if (isset($argument['longitude'])) {
 			$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
 		}

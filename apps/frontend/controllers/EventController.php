@@ -17,8 +17,8 @@ use Core\Utils as _U,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
-	Core\Utils\SlugUri as SUri,
-	Frontend\Models\EventImage as EventImageModel;
+    Core\Utils\SlugUri as SUri,
+    Frontend\Models\EventImage as EventImageModel;
 
 
 /**
@@ -29,87 +29,86 @@ class EventController extends \Core\Controllers\CrudController
 
     use \Core\Traits\TCMember;
 
-    protected $friendsUid 		= array();
-    protected $friendsGoingUid	= array();
-    protected $userGoingUid		= array();
-    protected $pagesUid 		= array();
+    protected $friendsUid = array();
+    protected $friendsGoingUid = array();
+    protected $userGoingUid = array();
+    protected $pagesUid = array();
 
 
-	public function initialize()
-	{
-		parent::initialize();
+    public function initialize()
+    {
+        parent::initialize();
 
-		if (!$this -> session -> has('isGrabbed')) {
-			$this -> session -> set('isGrabbed', false);
-			$this -> session -> set('grabOnce', false);
-			$this -> session -> set('lastFetchedEvent', 0);
-		}
-	}	
+        if (!$this->session->has('isGrabbed')) {
+            $this->session->set('isGrabbed', false);
+            $this->session->set('grabOnce', false);
+            $this->session->set('lastFetchedEvent', 0);
+        }
+    }
 
-	/**
-	 * @Route("/map", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   	 	 
-	 */
-	public function mapAction()
-	{
-		$this -> session -> set('lastFetchedEvent', 0);
-		$this -> view -> setVar('view_action', $this -> request -> getQuery('_url'));
-		$this -> view -> setVar('link_to_list', true);
-	}	
-    
+    /**
+     * @Route("/map", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function mapAction()
+    {
+        $this->session->set('lastFetchedEvent', 0);
+        $this->view->setVar('view_action', $this->request->getQuery('_url'));
+        $this->view->setVar('link_to_list', true);
+    }
 
-	/**
-	 * @Route("/eventmap", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
-	 * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   	 	 	 
-	 */
-	public function eventmapAction($lat = null, $lng = null, $city = null)
-	{
-		$events = $this -> searchAction($lat, $lng, $city);
+    /**
+     * @Route("/eventmap", methods={"GET", "POST"})
+     * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
+     * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function eventmapAction($lat = null, $lng = null, $city = null)
+    {
+        $events = $this->searchAction($lat, $lng, $city);
 
-		if (count($events) > 0) {
-			$res['status'] = 'OK';
-			$res['message'] = $events;
+        if (count($events) > 0) {
+            $res['status'] = 'OK';
+            $res['message'] = $events;
             $this->sendAjax($res);
-		} else {
-			$res['status'] = 'ERROR';
-			$res['message'] = 'no events';
+        } else {
+            $res['status'] = 'ERROR';
+            $res['message'] = 'no events';
 
             $this->sendAjax($res);
-		}
-	}
+        }
+    }
 
 
-	/**
-	 * @Route("/list", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   	 	 	 
-	 */
-	public function eventlistAction()
-	{
-		$this -> session -> set('lastFetchedEvent', 0);
-		$events = $this -> testGetAction(null, null, null, false);
+    /**
+     * @Route("/list", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function eventlistAction()
+    {
+        $this->session->set('lastFetchedEvent', 0);
+        $events = $this->testGetAction(null, null, null, false);
 
-		if (isset($events[0]) || isset($events[1])) {
-			$this -> view -> setVar('events', $events);
-			$this -> view -> setVar('eventsTotal', count($events));
-			$this -> session -> set('eventsTotal', count($events));
-		} else {
-            $this -> view -> setVar('eventsTotal', 0);
-            $this -> session -> set('eventsTotal', 0);
+        if (isset($events[0]) || isset($events[1])) {
+            $this->view->setVar('events', $events);
+            $this->view->setVar('eventsTotal', count($events));
+            $this->session->set('eventsTotal', count($events));
+        } else {
+            $this->view->setVar('eventsTotal', 0);
+            $this->session->set('eventsTotal', 0);
         }
 
-        if ($this -> session -> has('memberId')) {
-            $this -> fetchMemberLikes();
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
         }
 
-		//$events = $this -> searchAction();
+        //$events = $this -> searchAction();
 
-		/*if (isset($events[0]) || isset($events[1])) {
-			$this -> view -> setVar('events', array_merge($events[0], $events[1]));
-			$this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
-			$this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
-		}else {
+        /*if (isset($events[0]) || isset($events[1])) {
+            $this -> view -> setVar('events', array_merge($events[0], $events[1]));
+            $this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
+            $this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
+        }else {
             $this -> view -> setVar('eventsTotal', 0);
             $this -> session -> set('eventsTotal', 0);
         }
@@ -117,151 +116,150 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
-		*/
-		$this -> view -> pick('event/events');
-	}
+        */
+        $this->view->pick('event/events');
+    }
 
 
+    /**
+     * @Route("/search", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function searchAction($lat = null, $lng = null, $city = null)
+    {
+        $loc = $this->session->get('location');
 
-	/**
-	 * @Route("/search", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   	 	 	 
-	 */
-	public function searchAction($lat = null, $lng = null, $city = null)
-	{
-        $loc = $this -> session -> get('location');
-        
-        if(!empty($lat) && !empty($lng)) {
+        if (!empty($lat) && !empty($lng)) {
             $newLocation = new Location();
             $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
             $this->session->set('location', $newLocation);
 
             $loc = $newLocation;
         }
-		if(!empty($city)) {
+        if (!empty($city)) {
             $newLocation->city = $city;
             $newLocation->alias = $city;
             $this->session->set('location', $newLocation);
-		}
+        }
 
-		$eventModel = new Event();
+        $eventModel = new Event();
 
-		if ($this -> session -> has('user_token') && $this -> session -> get('user_token') != null) {
-			// user registered via facebook and has facebook account
-			$events = $eventModel -> grabEventsByFbToken($this -> session -> get('user_token'), $this -> session -> get('location'));
+        if ($this->session->has('user_token') && $this->session->get('user_token') != null) {
+            // user registered via facebook and has facebook account
+            $events = $eventModel->grabEventsByFbToken($this->session->get('user_token'), $this->session->get('location'));
 
-			if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE)) {
-				echo $events['MESSAGE'];
-				die;
-			}
+            if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE)) {
+                echo $events['MESSAGE'];
+                die;
+            }
 
-			if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
-				$totalEvents = count($events[0]) + count($events[1]);
-				$this -> view -> setVar('eventsTotal', $totalEvents);
-				$this -> session -> set('eventsTotal', $totalEvents);
-				$events = $eventModel -> parseEvent($events);
-				
-				return $events;
+            if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
+                $totalEvents = count($events[0]) + count($events[1]);
+                $this->view->setVar('eventsTotal', $totalEvents);
+                $this->session->set('eventsTotal', $totalEvents);
+                $events = $eventModel->parseEvent($events);
 
-			} else {
-                $this -> session -> set('eventsTotal', 0);
-				$res['status'] = 'ERROR';
-				$res['message'] = 'no events';
+                return $events;
+
+            } else {
+                $this->session->set('eventsTotal', 0);
+                $res['status'] = 'ERROR';
+                $res['message'] = 'no events';
                 if ($this->request->isAjax()) {
                     echo json_encode($res);
                     die();
                 } else {
                     return array($events[0], $events[1]);
                 }
-			} 
+            }
 
-		} else { 
-			// user registered via email
-			$events = array();
-			$eventsList = $eventModel -> grabEventsByCoordinatesScale($loc -> latitude , $loc -> longitude, $this->session->get('memberId'));
+        } else {
+            // user registered via email
+            $events = array();
+            $eventsList = $eventModel->grabEventsByCoordinatesScale($loc->latitude, $loc->longitude, $this->session->get('memberId'));
 
-			if ($eventsList -> count() > 0) {
-				$events[0] = array();
-				$events[1] = array();
+            if ($eventsList->count() > 0) {
+                $events[0] = array();
+                $events[1] = array();
 
-				foreach ($eventsList as $ev) {
-					if ($ev -> event -> member_id == $this -> session -> get('memberId')) {
-						$elem = 0;
-					} else {
-						$elem = 1;
-					}
+                foreach ($eventsList as $ev) {
+                    if ($ev->event->member_id == $this->session->get('memberId')) {
+                        $elem = 0;
+                    } else {
+                        $elem = 1;
+                    }
 
-					$newEv = array(
-						'id' => $ev -> event -> id,
-						'eid' => $ev -> event -> fb_uid,
-						'pic_big' => '',
-						'address' => $ev -> event -> address,
-						'name' => $ev -> event -> name,
-						'venue' => array('latitude' => $ev -> venue_latitude,
-										 'longitude' => $ev -> venue_longitude),
-						'location_id' => $ev -> event -> location_id,
-                        'location' => $ev -> location,
-						'description' => $ev -> event -> description,
-						'logo' => $ev -> logo,
-						'start_date_' => $ev -> event -> start_date,
-						'end_date' => $ev -> event -> end_date,
-						'deleted' => $ev -> event -> deleted,
+                    $newEv = array(
+                        'id' => $ev->event->id,
+                        'eid' => $ev->event->fb_uid,
+                        'pic_big' => '',
+                        'address' => $ev->event->address,
+                        'name' => $ev->event->name,
+                        'venue' => array('latitude' => $ev->venue_latitude,
+                            'longitude' => $ev->venue_longitude),
+                        'location_id' => $ev->event->location_id,
+                        'location' => $ev->location,
+                        'description' => $ev->event->description,
+                        'logo' => $ev->logo,
+                        'start_date_' => $ev->event->start_date,
+                        'end_date' => $ev->event->end_date,
+                        'deleted' => $ev->event->deleted,
                         'slugUri' => $ev->event->slugUri
-					);
+                    );
 
                     if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {
-                        $newEv['venue']['latitude'] = $ev -> location_latitude;
-                        $newEv['venue']['longitude'] = $ev -> location_longitude;
+                        $newEv['venue']['latitude'] = $ev->location_latitude;
+                        $newEv['venue']['longitude'] = $ev->location_longitude;
                     }
 
                     $events[$elem][] = $newEv;
-				}
-			} else {
-				$checkLoc = new Location();
-				$checkLoc -> createOnChange(array('latitude' => $loc -> latitude, 
-												  'longitude' => $loc -> longitude));
-			}
-			return $events;
-		} 
-	}
+                }
+            } else {
+                $checkLoc = new Location();
+                $checkLoc->createOnChange(array('latitude' => $loc->latitude,
+                    'longitude' => $loc->longitude));
+            }
+            return $events;
+        }
+    }
 
-	
-	/**
-	 * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
-	 * @Acl(roles={'guest', 'member'});   	 	 	 
-	 */
-	public function showAction($eventId)
-	{
-		$event = Event::findFirst($eventId);
+
+    /**
+     * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function showAction($eventId)
+    {
+        $event = Event::findFirst($eventId);
         $memberpart = null;
-		if ($this -> session -> has('member') && $event -> memberpart -> count() > 0) {
-			foreach ($event -> memberpart as $mpart) {
-				if ($mpart -> member_id == $this -> memberId) {
-                    $memberpart = $mpart -> member_status;
-					break;
-				}
-			}
-		}
-        $event -> memberpart = $memberpart;
+        if ($this->session->has('member') && $event->memberpart->count() > 0) {
+            foreach ($event->memberpart as $mpart) {
+                if ($mpart->member_id == $this->memberId) {
+                    $memberpart = $mpart->member_status;
+                    break;
+                }
+            }
+        }
+        $event->memberpart = $memberpart;
 
         // TODO: refactor this. Get uploads dir and default logo url from config
-        $cfg = $this -> di -> get('config');
+        $cfg = $this->di->get('config');
 
         $logoFile = '';
-        if ($event -> logo != '') {
-           $logoFile = $cfg -> application -> uploadDir . 'img/event/'. $event->id . '/' . $event -> logo;
+        if ($event->logo != '') {
+            $logoFile = $cfg->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
         }
 
-        $logo = 'http://'.$_SERVER['HTTP_HOST'].'/upload/img/event/'. $event -> id . '/' . $event -> logo;
+        $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/upload/img/event/' . $event->id . '/' . $event->logo;
         if (!file_exists($logoFile)) {
-            $logo = 'http://'.$_SERVER['HTTP_HOST'].'/img/logo200.png';
+            $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
         }
-        $this -> view -> setVar('logo', $logo);
-		$this -> view -> setVar('event', $event);
+        $this->view->setVar('logo', $logo);
+        $this->view->setVar('event', $event);
         $categories = Category::find();
-        $this -> view -> setVar('categories', $categories->toArray());
+        $this->view->setVar('categories', $categories->toArray());
 
-        $this -> view -> setVar('link_back_to_list', true);
+        $this->view->setVar('link_back_to_list', true);
 
         $posters = $flyers = $gallery = [];
         if (isset($event->id)) {
@@ -278,15 +276,15 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
 
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null );
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null );
+        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
+        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('gallery', $gallery);
 
         return array(
-            'currentWindowLocation' => urlencode('http://'.$_SERVER['HTTP_HOST'].'/event/'.$event->id.'-'.SUri::slug($event->name)),
+            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/event/' . $event->id . '-' . SUri::slug($event->name)),
             'eventMetaData' => $event
         );
-	}
+    }
 
     /**
      * @Route("/suggest-event-category/{eventId:[0-9]+}/{categoryId:[0-9]+}", methods={"GET", "POST"})
@@ -296,11 +294,11 @@ class EventController extends \Core\Controllers\CrudController
     {
         $status['status'] = false;
 
-        $existence = EventCategory::findFirst('event_id = '.$eventId);
+        $existence = EventCategory::findFirst('event_id = ' . $eventId);
 
         if ($existence && ($existence->eventpart2->key == 'other')) {
 
-            $result = $this->modelsManager->executeQuery('UPDATE \Objects\EventCategory SET category_id = '.$categoryId.' WHERE event_id = '.$eventId);
+            $result = $this->modelsManager->executeQuery('UPDATE \Objects\EventCategory SET category_id = ' . $categoryId . ' WHERE event_id = ' . $eventId);
             if ($result) {
                 $status['status'] = true;
             }
@@ -309,9 +307,10 @@ class EventController extends \Core\Controllers\CrudController
             $CategoryEvent = new EventCategory();
 
             if ($CategoryEvent->save(array(
-                    'event_id' => $eventId,
-                    'category_id' => $categoryId
-                ))) {
+                'event_id' => $eventId,
+                'category_id' => $categoryId
+            ))
+            ) {
                 $status['status'] = true;
             }
         }
@@ -324,60 +323,65 @@ class EventController extends \Core\Controllers\CrudController
     }
 
 
-	/**
-	 * @Route("/event/answer", methods={"GET", "POST"})
-	 * @Acl(roles={'member','guest'}); 
-	 */
-	public function answerAction()
-	{
-		$ret['status']='ERROR';
-		
-		if ($this -> session -> has('member')) {
-			$data = $this -> request -> getPost();
-			$member = $this -> session -> get('member');
+    /**
+     * @Route("/event/answer", methods={"GET", "POST"})
+     * @Acl(roles={'member','guest'});
+     */
+    public function answerAction()
+    {
+        $ret['status'] = 'ERROR';
 
-			switch ($data['answer'])
-			{
-				case 'JOIN': $status = EventMember::JOIN; break;
-				case 'MAYBE': $status = EventMember::MAYBE; break;
-				case 'DECLINE': $status = EventMember::DECLINE; break;
-			}
+        if ($this->session->has('member')) {
+            $data = $this->request->getPost();
+            $member = $this->session->get('member');
 
-			$eventMember = new EventMember();
-			$eventMember -> assign(array(
-					'member_id' => $member -> id,
-					'event_id' => $data['event_id'],
-					'member_status' => $status
-			));
-			if ($eventMember -> save()) {
-				$ret = array('status' => 'OK',
-							 'event_member_status' => $data['answer']);
+            switch ($data['answer']) {
+                case 'JOIN':
+                    $status = EventMember::JOIN;
+                    break;
+                case 'MAYBE':
+                    $status = EventMember::MAYBE;
+                    break;
+                case 'DECLINE':
+                    $status = EventMember::DECLINE;
+                    break;
+            }
+
+            $eventMember = new EventMember();
+            $eventMember->assign(array(
+                'member_id' => $member->id,
+                'event_id' => $data['event_id'],
+                'member_status' => $status
+            ));
+            if ($eventMember->save()) {
+                $ret = array('status' => 'OK',
+                    'event_member_status' => $data['answer']);
 
                 if ($status == EventMember::JOIN) {
-                    $userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
-                    $this -> session -> set('userEventsGoing', $userEventsGoing);
+                    $userEventsGoing = $this->session->get('userEventsGoing') + 1;
+                    $this->session->set('userEventsGoing', $userEventsGoing);
                 }
-			} 
-		} else {
-			$ret['error'] = 'not_logged';	
-		}
-		
-		echo json_encode($ret);
-		//die;
-	}
+            }
+        } else {
+            $ret['error'] = 'not_logged';
+        }
+
+        echo json_encode($ret);
+        //die;
+    }
 
 
-	/**
-	 * @Route("/event/friends", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function listFriendAction()
-	{
+    /**
+     * @Route("/event/friends", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listFriendAction()
+    {
         $event = new Event();
 
-		$this -> view -> setvar('listName', 'Friend\'s events');
+        $this->view->setvar('listName', 'Friend\'s events');
 
-        $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this -> session -> get('memberId'));
+        $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
         $event->addCondition('Frontend\Models\Event.start_date > now()');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
@@ -386,23 +390,23 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Friend\'s events');
         $this->view->pick('event/eventList');
-	}
+    }
 
 
-	/**
-	 * @Route("/event/liked", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function listLikedAction()
-	{
+    /**
+     * @Route("/event/liked", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listLikedAction()
+    {
         $event = new Event();
 
-		$this -> view -> setvar('listName', 'Liked Events');
+        $this->view->setvar('listName', 'Liked Events');
 
-		//$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
-		//$events = $event -> listEvent();
+        //$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
+        //$events = $event -> listEvent();
 
-        $event->addCondition('Frontend\Models\EventLike.member_id = '.$this->session->get('memberId'));
+        $event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
         $event->addCondition('Frontend\Models\EventLike.status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
@@ -415,54 +419,54 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Liked');
         $this->view->pick('event/eventList');
-	}
+    }
 
-	/**
-	 * @Route("/event/joined", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function listJoinedAction()
-	{
-		$event = new Event();
-		$this -> view -> setvar('listName', 'Where I am going');
+    /**
+     * @Route("/event/joined", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listJoinedAction()
+    {
+        $event = new Event();
+        $this->view->setvar('listName', 'Where I am going');
 
-		$event->addCondition('Objects\EventMember.member_id = '.$this->session->get('memberId'));
-		$event->addCondition('Objects\EventMember.member_status = 1');
+        $event->addCondition('Objects\EventMember.member_id = ' . $this->session->get('memberId'));
+        $event->addCondition('Objects\EventMember.member_status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
-		$events = $event->fetchEvents();
+        $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
 
-		$this -> view -> setvar('list_type', 'join');
-		//$this -> view -> setvar('events', $events);
-		//$this -> view -> pick('event/userlist');
+        $this->view->setvar('list_type', 'join');
+        //$this -> view -> setvar('events', $events);
+        //$this -> view -> pick('event/userlist');
 
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Where I am going');
         $this->view->pick('event/eventList');
-	}
+    }
 
 
-	/**
-	 * @Route("/event/list", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});
-	 */
-	public function listAction()
-	{
-		//parent::listAction();
+    /**
+     * @Route("/event/list", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listAction()
+    {
+        //parent::listAction();
         $event = new Event();
 
-        $event->addCondition('Frontend\Models\Event.member_id = '.$this->session->get('memberId'));
+        $event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
         $events = $event->fetchEvents();
 
-        if ($events -> count()) {
-            $this -> view -> setVar('object', $events);
-            $this -> view -> setVar('list', $events);
+        if ($events->count()) {
+            $this->view->setVar('object', $events);
+            $this->view->setVar('list', $events);
         }
 
         $this->view->setVar('listTitle', 'Created');
@@ -471,20 +475,20 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->pick('event/eventList');
 
         return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
-	}
-	
-	
-	/**
-	 * @Route("/event/edit", methods={"GET", "POST"})
-	 * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 
-	 */
-	public function editAction()
-	{
-        $category = new Category();
-        $this -> view -> setVar('categories', $category -> getDefaultIdsAsString());
+    }
 
-		parent::editAction();
+
+    /**
+     * @Route("/event/edit", methods={"GET", "POST"})
+     * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function editAction()
+    {
+        $category = new Category();
+        $this->view->setVar('categories', $category->getDefaultIdsAsString());
+
+        parent::editAction();
 
         $posters = $flyers = $gallery = [];
         if (isset($this->obj->id)) {
@@ -501,42 +505,42 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
 
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null );
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null );
+        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
+        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('gallery', $gallery);
-	}
+    }
 
-	public function setEditExtraRelations()
-	{
-		$this -> editExtraRelations = array(
-			'venue' => array('latitude', 'longitude')
-		);
-	}
+    public function setEditExtraRelations()
+    {
+        $this->editExtraRelations = array(
+            'venue' => array('latitude', 'longitude')
+        );
+    }
 
 
-	/**
-	 * @Route("/event/delete", methods={"GET", "POST"})
-	 * @Route("/event/delete/{id:[0-9]+}", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 
-	 */
-	public function deleteAction()
-	{
-		$data =  $this -> request -> getPost();
-		$result['status'] = 'ERROR';
+    /**
+     * @Route("/event/delete", methods={"GET", "POST"})
+     * @Route("/event/delete/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function deleteAction()
+    {
+        $data = $this->request->getPost();
+        $result['status'] = 'ERROR';
 
-		if (isset($data['id']) && !empty($data['id'])) {
-			$event = Event::findFirst((int)$data['id']);
-			if ($event) {
+        if (isset($data['id']) && !empty($data['id'])) {
+            $event = Event::findFirst((int)$data['id']);
+            if ($event) {
                 //$event -> delete();
                 $event->event_status = 0;
                 $event->deleted = 1;
                 $event->save();
 
-				$result['status'] = 'OK';
+                $result['status'] = 'OK';
                 $result['id'] = $data['id'];
 
                 $tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
                 $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
@@ -545,7 +549,7 @@ class EventController extends \Core\Controllers\CrudController
                 $this->session->set('userEventsLiked', $result['userEventsLiked']);
 
                 $tmpEvent = new Event();
-                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this->session->get('memberId'));
                 $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
@@ -554,13 +558,13 @@ class EventController extends \Core\Controllers\CrudController
 //                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
 //                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
 
-                $userEventsCreated = $this -> session -> get('userEventsCreated') - 1;
-                $this -> session -> set('userEventsCreated', $userEventsCreated);
-			} 
-		}
+                $userEventsCreated = $this->session->get('userEventsCreated') - 1;
+                $this->session->set('userEventsCreated', $userEventsCreated);
+            }
+        }
 
-		echo json_encode($result);
-	}
+        echo json_encode($result);
+    }
 
 
     /**
@@ -572,26 +576,26 @@ class EventController extends \Core\Controllers\CrudController
         $response = array(
             'status' => false
         );
-        
-        if ($this -> session -> has('member')) {
-        	$memberId = $this -> session -> get('memberId');
-        	$eventLike = EventLike::findFirst('event_id = '.$eventId.' AND member_id = '.$memberId);
-        	if (!$eventLike) {
-        		$eventLike = new EventLike();
-        	}
-        	$eventLike -> assign(array(
-        		'event_id' => $eventId,
-        		'member_id' => $memberId,
-        		'status' => $status
-        	));
-        		 
-        	if ($eventLike -> save()) {
-       			$response['status'] = true;
-       			$response['member_like'] = $status;
-       			$response['event_id'] = $eventId;
+
+        if ($this->session->has('member')) {
+            $memberId = $this->session->get('memberId');
+            $eventLike = EventLike::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            if (!$eventLike) {
+                $eventLike = new EventLike();
+            }
+            $eventLike->assign(array(
+                'event_id' => $eventId,
+                'member_id' => $memberId,
+                'status' => $status
+            ));
+
+            if ($eventLike->save()) {
+                $response['status'] = true;
+                $response['member_like'] = $status;
+                $response['event_id'] = $eventId;
 
                 $tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
                 $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
                 $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
@@ -607,70 +611,70 @@ class EventController extends \Core\Controllers\CrudController
                 /*$response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
                 $this -> session -> set('userEventsLiked', $response['likeCounter']);*/
 
-       			$this -> eventsManager -> fire('App.Event:afterLike', $this);
-        	}
+                $this->eventsManager->fire('App.Event:afterLike', $this);
+            }
         } else {
-        	$response['error'] = 'not_logged';
+            $response['error'] = 'not_logged';
         }
-        
-        $this -> sendAjax($response);
-	}
-        
-	/**
-	 * @Route("/event/publish", methods={"GET", "POST"})
-	 * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 
-	 */
-	public function publishAction()
-	{
-		$data =  $this -> request -> getPost();
-		$result['status'] = 'ERROR';
 
-		if (isset($data['id']) && !empty($data['id'])) {
-			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
-				$result = array_merge($res, array('status' => 'OK'));
-			}
-		}
+        $this->sendAjax($response);
+    }
 
-		echo json_encode($result);
-	}
-	
-	/**
-	 * @Route("/event/unpublish", methods={"GET", "POST"})
-	 * @Route("/event/unpublish/{id:[0-9]+}", methods={"GET", "POST"})
-	 * @Acl(roles={'member'});   	 
-	 */
-	public function unpublishAction()
-	{
-		$data =  $this -> request -> getPost();
-		$result['status'] = 'ERROR';
+    /**
+     * @Route("/event/publish", methods={"GET", "POST"})
+     * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function publishAction()
+    {
+        $data = $this->request->getPost();
+        $result['status'] = 'ERROR';
 
-		if (isset($data['id']) && !empty($data['id'])) {
-			if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
-				/* delete sites, event members, send mails etc */
-				$result = array_merge($res, array('status' => 'OK'));
-			}
-		}
+        if (isset($data['id']) && !empty($data['id'])) {
+            if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
+                $result = array_merge($res, array('status' => 'OK'));
+            }
+        }
 
-		echo json_encode($result);
-	}
+        echo json_encode($result);
+    }
+
+    /**
+     * @Route("/event/unpublish", methods={"GET", "POST"})
+     * @Route("/event/unpublish/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function unpublishAction()
+    {
+        $data = $this->request->getPost();
+        $result['status'] = 'ERROR';
+
+        if (isset($data['id']) && !empty($data['id'])) {
+            if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
+                /* delete sites, event members, send mails etc */
+                $result = array_merge($res, array('status' => 'OK'));
+            }
+        }
+
+        echo json_encode($result);
+    }
 
 
-	private function updateStatus($id, $status)
-	{
-		$event = Event::findFirst((int)$id);
-		$result = false;
+    private function updateStatus($id, $status)
+    {
+        $event = Event::findFirst((int)$id);
+        $result = false;
 
-		if ($event) {
-			$event -> assign(array('event_status' => $status));
-			if ($event -> save()) {
-				$result = array('id' => $event -> id,
-								'event_status' => $event -> event_status);
-			} 
-		} 
+        if ($event) {
+            $event->assign(array('event_status' => $status));
+            if ($event->save()) {
+                $result = array('id' => $event->id,
+                    'event_status' => $event->event_status);
+            }
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
     public function saveEventAtFacebook($url, $fbParams)
     {
@@ -717,100 +721,102 @@ class EventController extends \Core\Controllers\CrudController
         $result = $response->body;
     }
 
-	public function processForm($form) 
-	{
-		_U::dump($form -> getFormValues(), true);
-		_U::dump($this -> request -> getUploadedFiles(), true);
+    public function processForm($form)
+    {
+        _U::dump($form->getFormValues(), true);
+        _U::dump($this->request->getUploadedFiles(), true);
 //die();
-		$event = $form -> getFormValues();
-		$loc = new Location();
-		$venue = new Venue();
-		$coords = array();
-		$venueId = false;
-		$newEvent = array();
+        $event = $form->getFormValues();
+        $loc = new Location();
+        $venue = new Venue();
+        $coords = array();
+        $venueId = false;
+        $newEvent = array();
 
-		// process name and descirption
-		$newEvent['name'] = $event['name'];
-		$newEvent['description'] = $event['description'];
+        // process name and descirption
+        $newEvent['name'] = $event['name'];
+        $newEvent['description'] = $event['description'];
         $newEvent['tickets_url'] = $event['tickets_url'];
-		$newEvent['member_id'] = $this -> session -> get('memberId');
-		$newEvent['is_description_full'] = 1;
-		$newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
+        $newEvent['member_id'] = $this->session->get('memberId');
+        $newEvent['is_description_full'] = 1;
+        $newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
-		$newEvent['recurring'] = $event['recurring'];
+        $newEvent['recurring'] = $event['recurring'];
         $newEvent['deleted'] = 0;
-		//$newEvent['logo'] = $event['logo'];
-		$newEvent['campaign_id'] = $event['campaign_id'];
-		if (isset($this -> session -> get('member') -> network)) {
-			$newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
-		}
-		
-		// process location
-		if (!empty($event['location_id'])) {
-			$newEvent['location_id'] = $event['location_id']; 
-		} elseif (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
-			// check location by coordinates
-			$location = $loc -> createOnChange(array('latitude' => $event['location_latitude'], 
-													 'longitude' => $event['location_longitude']));
-			$newEvent['location_id'] = $location -> id;
-			$newEvent['latitude'] = $event['location_latitude'];
-			$newEvent['longitude'] = $event['location_longitude'];
-		} 
-		// location coordinates wasn't set. Try to get location from venue coordinates 
-		if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
-			if (!isset($newEvent['location_id'])) {
-				$location = $loc -> createOnChange(array('latitude' => $event['venue_latitude'],
-														 'longitude' => $event['venue_longitude']));
-				$newEvent['location_id'] = $location -> id;
-			}
-			$newEvent['latitude'] = $event['venue_latitude'];
-			$newEvent['longitude'] = $event['venue_longitude'];
-		}
-
-		// location coordinates wasn't set. Try to get location from address coordinates 
-		if (!empty($event['address_latitude']) && !empty($event['address_longitude'])) {
-			if (!isset($newEvent['location_id'])) {
-				$location = $loc -> createOnChange(array('latitude' => $event['address_latitude'],
-														 'longitude' => $event['address_longitude']));
-				$newEvent['location_id'] = $location -> id;
-			}
-			$newEvent['latitude'] = $event['address_latitude'];
-			$newEvent['longitude'] = $event['address_longitude'];
-		}
-
-		// process venue
-		if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
-			$venueInfo = array('latitude' => $event['venue_latitude'],
-						       'longitude' => $event['venue_longitude']);
-		}
-		if (!empty($newEvent['location_id']) && $newEvent['location_id']) {
-			$venueInfo['location_id'] = $newEvent['location_id'];
-		}
-
-		$venueInfo['name'] = $event['venue'];
-		$venueInfo['address'] = $event['address'];
-
-		$vn = $venue -> createOnChange($venueInfo);
-
-        if ($vn) {
-		    $newEvent['venue_id'] = $vn -> id;
+        //$newEvent['logo'] = $event['logo'];
+        $newEvent['campaign_id'] = $event['campaign_id'];
+        if (isset($this->session->get('member')->network)) {
+            $newEvent['fb_creator_uid'] = $this->session->get('member')->network->account_uid;
         }
 
-		// process address
-		$newEvent['address'] = $event['address'];
+        // process location
+        if (!empty($event['location_id'])) {
+            $newEvent['location_id'] = $event['location_id'];
+        } elseif (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
+            // check location by coordinates
+            $location = $loc->createOnChange(array('latitude' => $event['location_latitude'],
+                'longitude' => $event['location_longitude']));
+            $newEvent['location_id'] = $location->id;
+            $newEvent['latitude'] = $event['location_latitude'];
+            $newEvent['longitude'] = $event['location_longitude'];
+        }
+        // location coordinates wasn't set. Try to get location from venue coordinates
+        if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+            if (!isset($newEvent['location_id'])) {
+                $location = $loc->createOnChange(array('latitude' => $event['venue_latitude'],
+                    'longitude' => $event['venue_longitude']));
+                $newEvent['location_id'] = $location->id;
+            }
+            $newEvent['latitude'] = $event['venue_latitude'];
+            $newEvent['longitude'] = $event['venue_longitude'];
+        }
 
-		// process date and time
-		if (!empty($event['start_date'])) {
+        // location coordinates wasn't set. Try to get location from address coordinates
+        if (!empty($event['address_latitude']) && !empty($event['address_longitude'])) {
+            if (!isset($newEvent['location_id'])) {
+                $location = $loc->createOnChange(array('latitude' => $event['address_latitude'],
+                    'longitude' => $event['address_longitude']));
+                $newEvent['location_id'] = $location->id;
+            }
+            $newEvent['latitude'] = $event['address_latitude'];
+            $newEvent['longitude'] = $event['address_longitude'];
+        }
+
+        // process venue
+        if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
+            $venueInfo = array('latitude' => $event['venue_latitude'],
+                'longitude' => $event['venue_longitude']);
+        }
+        if (!empty($newEvent['location_id']) && $newEvent['location_id']) {
+            $venueInfo['location_id'] = $newEvent['location_id'];
+        }
+
+        $venueInfo['name'] = $event['venue'];
+        $venueInfo['address'] = $event['address'];
+
+        $vn = $venue->createOnChange($venueInfo);
+
+        if ($vn) {
+            $newEvent['venue_id'] = $vn->id;
+        }
+
+        // process address
+        $newEvent['address'] = $event['address'];
+
+        // process date and time
+        if (!empty($event['start_date'])) {
             $newEvent['start_date'] = $event['start_date'];
-		}
+        }
 
-		if (!empty($event['end_date'])) {
+        if (!empty($event['end_date'])) {
             $newEvent['end_date'] = $event['end_date'];
-		}
+        }
 
-		//process images
-        $logo = null; $poster = null; $flyer = null;
-		foreach ($this -> request -> getUploadedFiles() as $file) {
+        //process images
+        $logo = null;
+        $poster = null;
+        $flyer = null;
+        foreach ($this->request->getUploadedFiles() as $file) {
             if ($file->getKey() == 'add-img-logo-upload') {
                 $logo = $file;
             } else if ($file->getKey() == 'add-img-poster-upload') {
@@ -818,16 +824,16 @@ class EventController extends \Core\Controllers\CrudController
             } else if ($file->getKey() == 'add-img-flyer-upload') {
                 $flyer = $file;
             }
-		}
-//_U::dump($newEvent);	
+        }
+//_U::dump($newEvent);  
 
-		if (!empty($event['id'])) {
-			$ev = Event::findFirst($event['id']);
-		} else {
-			$ev = new Event();
-		}
-		$ev -> assign($newEvent);
-		if ($ev -> save()) {
+        if (!empty($event['id'])) {
+            $ev = Event::findFirst($event['id']);
+        } else {
+            $ev = new Event();
+        }
+        $ev->assign($newEvent);
+        if ($ev->save()) {
             // create event dir if not exists
             if (!is_dir($this->config->application->uploadDir . 'img/event/' . $ev->id)) {
                 mkdir($this->config->application->uploadDir . 'img/event/' . $ev->id);
@@ -858,15 +864,15 @@ class EventController extends \Core\Controllers\CrudController
                 $fbParams['location'] = $event['location'];
             }
 
-			// save image
+            // save image
             $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
-			if (isset($logo)) {
+            if (isset($logo)) {
                 $filename = $this->uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
-                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->id . '/' . $filename;
+                $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
                 $ev->logo = $filename;
                 $ev->save();
-			} else if ($ev->logo != '') {
-                $file = $this -> config -> application -> uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
+            } else if ($ev->logo != '') {
+                $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
 
             } else {
                 $ev->logo = '';
@@ -895,46 +901,46 @@ class EventController extends \Core\Controllers\CrudController
                 }
             }
 
-			// process site
-			$eSites = EventSite::find('event_id = '. $ev -> id);
-			if ($eSites) {
-				foreach ($eSites as $es) {
-					$es -> delete();
-				}
-			}
-			if (!empty($event['event_site'])) {
-				$aSites = explode(',', $event['event_site']);
-				foreach($aSites as $key => $value) {
-					if (!empty($value)) {
-						$eSites = new EventSite();						
-						$eSites -> assign(array('event_id' => $ev -> id,
-										 		'url' => $value));
-						$eSites -> save();
-					}
-				}
-			}
+            // process site
+            $eSites = EventSite::find('event_id = ' . $ev->id);
+            if ($eSites) {
+                foreach ($eSites as $es) {
+                    $es->delete();
+                }
+            }
+            if (!empty($event['event_site'])) {
+                $aSites = explode(',', $event['event_site']);
+                foreach ($aSites as $key => $value) {
+                    if (!empty($value)) {
+                        $eSites = new EventSite();
+                        $eSites->assign(array('event_id' => $ev->id,
+                            'url' => $value));
+                        $eSites->save();
+                    }
+                }
+            }
 
-			// process categories
-			$eCats = EventCategory::find('event_id = '. $ev -> id);
-			if ($eCats) {
-				foreach ($eCats as $ec) {
-					$ec -> delete();
-				}
-			}
-			if (!empty($event['category'])) {
-				$aCats = explode(',', $event['category']);
-				foreach($aCats as $key => $value) {
-					if (!empty($value)) {
-						$eCats = new EventCategory();
-						$eCats -> assign(array('event_id' => $ev -> id,
-											   'category_id' => $value));
-						$eCats -> save();
-					}
-				}
-			}
+            // process categories
+            $eCats = EventCategory::find('event_id = ' . $ev->id);
+            if ($eCats) {
+                foreach ($eCats as $ec) {
+                    $ec->delete();
+                }
+            }
+            if (!empty($event['category'])) {
+                $aCats = explode(',', $event['category']);
+                foreach ($aCats as $key => $value) {
+                    if (!empty($value)) {
+                        $eCats = new EventCategory();
+                        $eCats->assign(array('event_id' => $ev->id,
+                            'category_id' => $value));
+                        $eCats->save();
+                    }
+                }
+            }
 
             // process poster and flyer
-            $addEventImage = function($image, $imageType) use ($ev) {
+            $addEventImage = function ($image, $imageType) use ($ev) {
                 $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
 
                 $filename = $this->uploadImageFile(
@@ -964,13 +970,13 @@ class EventController extends \Core\Controllers\CrudController
             }
 
             if (empty($event['id'])) {
-                $userEventsCreated = $this -> session -> get('userEventsCreated') + 1;
-                $this -> session -> set('userEventsCreated', $userEventsCreated);
+                $userEventsCreated = $this->session->get('userEventsCreated') + 1;
+                $this->session->set('userEventsCreated', $userEventsCreated);
             }
-		}
+        }
 
-        $this -> loadRedirect();
-	}
+        $this->loadRedirect();
+    }
 
     /**
      * @param $oldFilename string
@@ -1049,11 +1055,11 @@ class EventController extends \Core\Controllers\CrudController
     }*/
 
 
-    /** 
+    /**
      * @Route("/event/preview", methods={"POST"})
      * @Acl(roles={'member'});
      */
-	public function eventPreviewAction()
+    public function eventPreviewAction()
     {
         $post = $this->request->getPost();
 
@@ -1061,9 +1067,9 @@ class EventController extends \Core\Controllers\CrudController
 
         if (!empty($uploadedFiles)) {
 
-            foreach ($this -> request -> getUploadedFiles() as $file) {
+            foreach ($this->request->getUploadedFiles() as $file) {
                 if ($file->getKey() == 'add-img-logo-upload') {
-                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
+                    $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
 
                     $logoPieces = explode('/', $filePath);
 
@@ -1071,14 +1077,14 @@ class EventController extends \Core\Controllers\CrudController
                     $file->moveTo($filePath);
 
                 } else if ($file->getKey() == 'add-img-poster-upload') {
-                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
+                    $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
 
                     $logoPieces = explode('/', $filePath);
 
                     $post['poster'] = end($logoPieces);
                     $file->moveTo($filePath);
                 } else if ($file->getKey() == 'add-img-flyer-upload') {
-                    $filePath = $this->config->application->uploadDir.'img/event/tmp/'.time().rand(1000, 9999).$file->getName();
+                    $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
 
                     $logoPieces = explode('/', $filePath);
 
@@ -1105,7 +1111,7 @@ class EventController extends \Core\Controllers\CrudController
 
         if (isset($post['id'])) {
             $Event->id = $post['id'];
-        }else {
+        } else {
             $Event->id = 0;
         }
         $Event->name = $post['name'];
@@ -1131,11 +1137,11 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
         $Event->site = $site;
-        $Event->category = Category::find('id = '.(int)$post['category']);
+        $Event->category = Category::find('id = ' . (int)$post['category']);
         $Event->memberpart = null;
 
-        $this->view->setVar('currentWindowLocation', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
-        $this->view->setVar('eventPreview', 'http://'.$_SERVER['HTTP_HOST'].'/event/'.$Event->id.'-'.SUri::slug($Event->name));
+        $this->view->setVar('currentWindowLocation', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
+        $this->view->setVar('eventPreview', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
         $this->view->setVar('poster', $post['poster']);
@@ -1147,39 +1153,39 @@ class EventController extends \Core\Controllers\CrudController
 
     public function resetLocation($lat = null, $lng = null, $city = null)
     {
-    	$loc = $this -> session -> get('location');
-    	$newLocation = new Location();
-        $newLocation = $newLocation -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-	
-		if ($newLocation -> id != $loc -> id) {
-			if(!empty($city)) {
-	            $newLocation -> city = $city;
-	            $newLocation -> alias = $city;
-			}
+        $loc = $this->session->get('location');
+        $newLocation = new Location();
+        $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
 
-            $this -> session -> set('location', $newLocation);
+        if ($newLocation->id != $loc->id) {
+            if (!empty($city)) {
+                $newLocation->city = $city;
+                $newLocation->alias = $city;
+            }
+
+            $this->session->set('location', $newLocation);
 
             // check cache and reset if needed
-            $locationsScope = $this -> cacheData -> get('locations');
+            $locationsScope = $this->cacheData->get('locations');
 
-            if (!isset($locationsScope[$newLocation -> id])) {
-            	$locationsScope[$newLocation -> id] = array(
-                                    'latMin' => $newLocation -> latitudeMin,
-                                    'lonMin' => $newLocation -> longitudeMin,
-                                    'latMax' => $newLocation -> latitudeMax,
-                                    'lonMax' => $newLocation -> longitudeMax,
-                                    'city' => $newLocation -> city,
-                                    'country' => $newLocation -> country);
-	            $this -> cacheData -> delete('locations');
-	            $this -> cacheData -> save('locations', $locationsScope);
+            if (!isset($locationsScope[$newLocation->id])) {
+                $locationsScope[$newLocation->id] = array(
+                    'latMin' => $newLocation->latitudeMin,
+                    'lonMin' => $newLocation->longitudeMin,
+                    'latMax' => $newLocation->latitudeMax,
+                    'lonMax' => $newLocation->longitudeMax,
+                    'city' => $newLocation->city,
+                    'country' => $newLocation->country);
+                $this->cacheData->delete('locations');
+                $this->cacheData->save('locations', $locationsScope);
             }
-            $this -> logIt("location changed");
+            $this->logIt("location changed");
 
-            $this -> session -> set('isGrabbed', false);
-            $this -> session -> set('grabOnce', false);
-            $this -> session -> set('lastFetchedEvent', 0);
+            $this->session->set('isGrabbed', false);
+            $this->session->set('grabOnce', false);
+            $this->session->set('lastFetchedEvent', 0);
 
-            $loc = $this -> session -> get('location');
+            $loc = $this->session->get('location');
         }
 
         return $loc;
@@ -1193,47 +1199,47 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
     {
-$this -> logIt(date('H:i:s') . ': COME IN');
+        $this->logIt(date('H:i:s') . ': COME IN');
         $Event = new Event();
         $EventFriend = new EventMemberFriend();
-		$loc = $this -> session -> get('location');
+        $loc = $this->session->get('location');
 
-        if(!empty($lat) && !empty($lng)) {
-        	$loc = $this -> resetLocation($lat, $lng, $city);
+        if (!empty($lat) && !empty($lng)) {
+            $loc = $this->resetLocation($lat, $lng, $city);
         } else {
-        	$loc = $this -> session -> get('location');
+            $loc = $this->session->get('location');
         }
 
-        $this -> logIt('lastFetched is ' . $this -> session -> get('lastFetchedEvent'));
-        $Event -> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc -> latitudeMin . ' AND ' . $loc -> latitudeMax.' 
-        						AND Frontend\Models\Event.longitude BETWEEN '.$loc -> longitudeMin.' AND '.$loc -> longitudeMax .'
-        						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s') . '"');
-		$Event -> addCondition('Frontend\Models\Event.id > ' . $this -> session -> get('lastFetchedEvent'));
-		$Event -> addCondition('Frontend\Models\Event.event_status = 1');
-        $events = $Event -> fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
-		
-$this -> logIt(date('H:i:s') . ': QUERY FETCHED with ' .  count($events) . ' EVENTS');
+        $this->logIt('lastFetched is ' . $this->session->get('lastFetchedEvent'));
+        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
+                                AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
+                                AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s') . '"');
+        $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
+        $Event->addCondition('Frontend\Models\Event.event_status = 1');
+        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
 
-		if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid') && $this -> session -> has('memberId')) {
-			$res['eventsCreated'] = $Event -> getCreatedEventsCount($this -> session -> get('memberId'));
-			$res['eventsFriendsGoing'] = $EventFriend -> getEventMemberFriendEventsCount($this -> session -> get('memberId'))->count();
-			$res['userEventsGoing'] = $this -> session -> get('userEventsGoing');
+        $this->logIt(date('H:i:s') . ': QUERY FETCHED with ' . count($events) . ' EVENTS');
 
-			$this -> session -> set('userEventsCreated', $res['eventsCreated']);
-	        $this -> session -> set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
+            $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
+            $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
+            $res['userEventsGoing'] = $this->session->get('userEventsGoing');
 
-			$this -> view -> setVar('userEventsCreated', $res['eventsCreated']);
-	        $this -> view -> setVar('userFriendsGoing', $res['eventsFriendsGoing']);
-	        $this -> view -> setVar('userEventsGoing', $this -> session -> get('userEventsGoing'));
+            $this->session->set('userEventsCreated', $res['eventsCreated']);
+            $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
 
-	        if (count($events) > 0) {
-            	$this -> session -> set('lastFetchedEvent', $events[count($events)-1]['id']);
+            $this->view->setVar('userEventsCreated', $res['eventsCreated']);
+            $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
+            $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
+
+            if (count($events) > 0) {
+                $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
             }
-		} else {
-			$this -> session -> set('lastFetchedEvent', 0);
-			$this -> session -> set('isGrabbed', true);
-		}
-$this -> logIt(date('H:i:s') . ': SESSION STUFF');
+        } else {
+            $this->session->set('lastFetchedEvent', 0);
+            $this->session->set('isGrabbed', true);
+        }
+        $this->logIt(date('H:i:s') . ': SESSION STUFF');
         if (count($events) > 0) {
             $res['status'] = true;
             $res['events'] = $events;
@@ -1242,253 +1248,248 @@ $this -> logIt(date('H:i:s') . ': SESSION STUFF');
             $res['message'] = 'no events';
         }
 
-        $res['stop'] = $this -> session -> get('isGrabbed');
+        $res['stop'] = $this->session->get('isGrabbed');
 
         if ($needGrab === false) {
-        	return $events;
-        } 
+            return $events;
+        }
 
-$this -> logIt(date('H:i:s') . ': READY');
+        $this->logIt(date('H:i:s') . ': READY');
 
-		$this -> sendAjax($res);
-       	if ($this -> session -> has('user_token') 
-       		&& $this -> session -> has('user_fb_uid')
-    		&& $this -> session -> get('isGrabbed') === false
-    		&& $this -> session -> get('grabOnce') === false
-    		&& $needGrab === true) 
-        {
-        	$this -> session -> set('grabOnce', true);
-			$this -> logIt("in pointer");
-        	$this -> grabNewEvents();	
-        } 
+
+        //ob_start();
+        $this->sendAjax($res);
+        //ob_flush();
+        //ob_end_flush();
+
+        if ($this->session->has('user_token')
+            && $this->session->has('user_fb_uid')
+            && $this->session->get('isGrabbed') === false
+            && $this->session->get('grabOnce') === false
+            && $needGrab === true
+        ) {
+            $this->session->set('grabOnce', true);
+            $this->logIt("in pointer");
+            $this->grabNewEvents();
+        }
+        //$this -> grabNewEvents();  
     }
 
 
- 	/**
+    /**
      * @Route("/event/grab", methods={'GET'})
      * @Acl(roles={'guest', 'member'});
      */
     public function grabNewEvents()
     {
-    	$loc = $this -> session -> get('location');
-    	$fb = new Extractor();
-    	$queries = $fb -> getQueriesScope();
-    	$e = new Event();
+        $loc = $this->session->get('location');
+        $fb = new Extractor();
+        $queries = $fb->getQueriesScope();
+        $e = new Event();
 
-		foreach ($queries as $key => $query) {
+        foreach ($queries as $key => $query) {
 
-			if ($query['name'] == 'user_event') {
-				$this -> logIt("user_event");
-				$replacements = array($this -> session -> get('user_fb_uid'));
+            if ($query['name'] == 'user_event') {
+                $this->logIt("user_event");
+                $replacements = array($this->session->get('user_fb_uid'));
 
-				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-		
-				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true, 'user_event');
-				} 
-				continue;
-			}
+                $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                $result = $fb->getFQL($fql, $this->session->get('user_token'));
 
-			if ($query['name'] == 'friend_uid') {
-				$this -> logIt("friend_uid");
-				$replacements = array($this -> session -> get('user_fb_uid'));
-				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+                if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                    $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true, 'user_event');
+                }
+                continue;
+            }
 
-				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
-						$this -> friendsUid[] = $v['uid2'];
-					}
-				}
-				continue;
-			} 
+            if ($query['name'] == 'friend_uid') {
+                $this->logIt("friend_uid");
+                $replacements = array($this->session->get('user_fb_uid'));
+                $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                $result = $fb->getFQL($fql, $this->session->get('user_token'));
 
-			if ($query['name'] == 'friend_event' && !empty($this -> friendsUid)) {
-				$this -> logIt("friend_event");
-				$start = $query['start'];
-				$limit = $query['limit'];
-				$fUids = implode(',', $this -> friendsUid);
+                if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                    foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+                        $this->friendsUid[] = $v['uid2'];
+                    }
+                }
+                continue;
+            }
 
-				do {
-					$replacements = array($start, 
-										  $limit, 
-										  $this -> session -> get('user_fb_uid'), 
-										  $fUids);
-					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-	
-					if ($result['STATUS'] !== false) {
-						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
-											
-							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-								$start = false;
-							} else {
-								$start = $start + $limit;
-							}
-						} else {
-							$start = false;
-						}
-					} else {
-						$start = false;
-					}
-				} while($start !== false);
+            if ($query['name'] == 'friend_event' && !empty($this->friendsUid)) {
+                $this->logIt("friend_event");
+                $start = $query['start'];
+                $limit = $query['limit'];
+                $fUids = implode(',', $this->friendsUid);
 
-				continue;
-			}  
+                do {
+                    $replacements = array($start,
+                        $limit,
+                        $this->session->get('user_fb_uid'),
+                        $fUids);
+                    $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    $result = $fb->getFQL($fql, $this->session->get('user_token'));
 
-			if ($query['name'] == 'friend_going_eid' && !empty($this -> friendsUid)) {
-				$this -> logIt("friend_going_eid");
-				$replacements = array(implode(',', $this -> friendsUid));
-				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    if ($result['STATUS'] !== false) {
+                        if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                            $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set']);
 
-				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-		
-				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
-						$this -> friendsGoingUid[] = $v['eid'];
-					}
-					$this -> logIt('friend_going_event');
-				}
-				continue;
-			}
+                            if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+                                $start = false;
+                            } else {
+                                $start = $start + $limit;
+                            }
+                        } else {
+                            $start = false;
+                        }
+                    } else {
+                        $start = false;
+                    }
+                } while ($start !== false);
 
-			if ($query['name'] == 'friend_going_event' && !empty($this -> friendsGoingUid)) {
-		
-				$this -> logIt('friend_going_event');
-				$start = $query['start'];
-				$limit = $query['limit'];
-				$eChunked = array_chunk($this -> friendsGoingUid, 50);
-				$currentChunk = 0;
+                continue;
+            }
 
-				/*$eids = implode(',', $this -> friendsGoingUid);
-				$friends = implode(',', $this -> friendsUid); */
+            if ($query['name'] == 'friend_going_eid' && !empty($this->friendsUid)) {
+                $this->logIt("friend_going_eid");
+                $replacements = array(implode(',', $this->friendsUid));
+                $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                $result = $fb->getFQL($fql, $this->session->get('user_token'));
+                if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                    foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+                        $this->friendsGoingUid[] = $v['eid'];
+                    }
+                }
+                continue;
+            }
 
-				do {
-					$eids = implode(',', $eChunked[$currentChunk]);
+            if ($query['name'] == 'friend_going_event' && !empty($this->friendsGoingUid)) {
+                $this->logIt('friend_going_event');
+                $start = $query['start'];
+                $limit = $query['limit'];
+                $eChunked = array_chunk($this->friendsGoingUid, 100);
+                $currentChunk = 0;
 
-					$replacements = array($start, 
-										  $limit, 
-										  $this -> session -> get('user_fb_uid'), 
-										  $eids);
+                do {
+                    $eids = implode(',', $eChunked[$currentChunk]);
 
-					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    $replacements = array($start,
+                        $limit,
+                        $this->session->get('user_fb_uid'),
+                        $eids);
+                    $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    $this->logIt($fql[$query['name']]);
+                    $result = $fb->getFQL($fql, $this->session->get('user_token'));
+                    if ($result['STATUS'] !== false) {
+                        if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                            $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
 
-$this -> logIt($fql[$query['name']]);					
+                            foreach ($events as $id => $ev) {
+                                if (!$this->cacheData->exists('member.friends.go.' . $this->session->get('memberId') . '.' . $id)) {
+                                    $friendsEvents = array('member_id' => $this->session->get('memberId'),
+                                        'event_id' => $id);
+                                    $emf = new EventMemberFriend();
+                                    $emf->assign($friendsEvents);
+                                    $emf->save();
+                                    $this->cacheData->save('member.friends.go.' . $this->session->get('memberId') . '.' . $id, $ev);
+                                }
+                            }
 
-					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-					if ($result['STATUS'] !== false) { 
-						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
+                            if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+                                if ((count($eChunked) - 1) > $currentChunk) {
+                                    $currentChunk++;
+                                    $start = 0;
+                                } else {
+                                    $start = false;
+                                    $currentChunk = 0;
+                                }
+                            } else {
+                                $start = $start + $limit;
+                            }
+                        } else {
+                            if ((count($eChunked) - 1) > $currentChunk) {
+                                $currentChunk++;
+                                $start = 0;
+                            } else {
+                                $start = false;
+                                $currentChunk = 0;
+                            }
+                        }
+                    } else {
+                        $start = false;
+                    }
+                } while ($start !== false);
 
-							foreach ($events as $id => $ev) {
-								if (!$this -> cacheData -> exists('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id)) {
-									$friendsEvents = array('member_id' => $this -> session -> get('memberId'),
-														   'event_id' => $id);
-									$emf = new EventMemberFriend();
-									$emf -> assign($friendsEvents);
-									$emf -> save();	
-									$this -> cacheData -> save('member.friends.go.' . $this -> session -> get('memberId') . '.' . $id, $ev);
-								}
-							}
-
-							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-								if ((count($eChunked)-1) > $currentChunk) {
-									$currentChunk++;
-									$start = 0;
-								} else {
-									$start = false;
-									$currentChunk = 0;
-								}
-							} else {
-								$start = $start + $limit;
-							}
-						} else {
-							if ((count($eChunked)-1) > $currentChunk) {
-								$currentChunk++;
-								$start = 0;
-							} else {
-								$start = false;
-								$currentChunk = 0;
-							}
-						}
-					} else {
-						$start = false;
-					}
-				} while($start !== false);
-
-				continue;
-			} 
+                continue;
+            }
 
 
-			if ($query['name'] == 'user_going_eid') {
-			
-				$this -> logIt("user_going_eid");
-				$replacements = array($this -> session -> get('user_fb_uid'));
-				$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-				$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
-				if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-					foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
-						$this -> userGoingUid[] = $v['eid'];
-					}
-				}
-				continue;
-			}
+            if ($query['name'] == 'user_going_eid') {
+                $this->logIt("user_going_eid");
+                $replacements = array($this->session->get('user_fb_uid'));
+                $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                $result = $fb->getFQL($fql, $this->session->get('user_token'));
+                if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                    foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+                        $this->userGoingUid[] = $v['eid'];
+                    }
+                }
+                continue;
+            }
 
-			if ($query['name'] == 'user_going_event') {
-				$this -> logIt('user_going_event');
-				$start = $query['start'];
-				$limit = $query['limit'];
-				$eids = implode(',', $this -> userGoingUid);
+            if ($query['name'] == 'user_going_event') {
+                $this->logIt('user_going_event');
+                $start = $query['start'];
+                $limit = $query['limit'];
+                $eids = implode(',', $this->userGoingUid);
 
-				do {
-					$replacements = array($start, 
-										  $limit, 
-										  $this -> session -> get('user_fb_uid'), 
-										  $eids);
-					$fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
-					$result = $fb -> getFQL($fql, $this -> session -> get('user_token'));
+                do {
+                    $replacements = array($start,
+                        $limit,
+                        $this->session->get('user_fb_uid'),
+                        $eids);
+                    $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    $result = $fb->getFQL($fql, $this->session->get('user_token'));
 
-					if ($result['STATUS'] !== false) { 
-						if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
-							$events = $e -> parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
-						
-							foreach ($events as $id => $ev) {
-								if (!$this -> cacheData -> exists('member.go.' . $this -> session -> get('memberId') . '.' . $id)) {
-									$userGEvents = array('member_id' => $this -> session -> get('memberId'),
-															 'event_id' => $id,
-															 'member_status' => 1);
-									$emf = new EventMember();
-									$emf -> assign($userGEvents);
-									$emf -> save();	
-									$userEventsGoing = $this -> session -> get('userEventsGoing') + 1;
-									$this -> session -> set('userEventsGoing', $userEventsGoing);
-									$this -> cacheData -> save('member.go.' . $this -> session -> get('memberId') . '.' . $id, $id);
-								}
-							}
+                    if ($result['STATUS'] !== false) {
+                        if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                            $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
 
-							if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
-								$start = false;
-							} else {
-								$start = $start + $limit;
-							}
-						} else {
-							$start = false;
-						}
-					} else {
-						$start = false;
-					}
-				} while($start !== false);
+                            foreach ($events as $id => $ev) {
+                                if (!$this->cacheData->exists('member.go.' . $this->session->get('memberId') . '.' . $id)) {
+                                    $userGEvents = array('member_id' => $this->session->get('memberId'),
+                                        'event_id' => $id,
+                                        'member_status' => 1);
+                                    $emf = new EventMember();
+                                    $emf->assign($userGEvents);
+                                    $emf->save();
+                                    $userEventsGoing = $this->session->get('userEventsGoing') + 1;
+                                    $this->session->set('userEventsGoing', $userEventsGoing);
+                                    $this->cacheData->save('member.go.' . $this->session->get('memberId') . '.' . $id, $id);
+                                }
+                            }
 
-				continue;
-			} 
-		}
+                            if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+                                $start = false;
+                            } else {
+                                $start = $start + $limit;
+                            }
+                        } else {
+                            $start = false;
+                        }
+                    } else {
+                        $start = false;
+                    }
+                } while ($start !== false);
 
-		$this -> session -> set('isGrabbed', true);
-		$this -> logIt("end of grab, isGrabbed = " . $this -> session -> get('isGrabbed'));
+                continue;
+            }
+        }
 
-		exit; 
+        $this->session->set('isGrabbed', true);
+        $this->logIt("end of grab, isGrabbed = " . $this->session->get('isGrabbed'));
+
+        exit;
     }
 
     /**
@@ -1536,9 +1537,8 @@ $this -> logIt($fql[$query['name']]);
 
     public function logIt($mess)
     {
-		$f = fopen('/var/tmp/pthread_log.txt', 'a+');
-		fwrite($f, date('Y-m-d H:i:s') . ": " . $mess . "\r\n");
-		fclose($f);
+        $f = fopen('/var/tmp/pthread_log.txt', 'a+');
+        fwrite($f, date('Y-m-d H:i:s') . ": " . $mess . "\r\n");
+        fclose($f);
     }
-}		
-
+}   
