@@ -36,7 +36,7 @@
                                     <div class="span12">
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
-                                                <a href="event/show/{{ event['id'] }}">
+                                                <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}">
                                                     {% if event['logo'] is defined %}
                                                         {% if event['logo'] is empty %}
                                                             {% set pic = defaultEventLogo %}

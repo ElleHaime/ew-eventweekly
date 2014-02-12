@@ -43,7 +43,13 @@ class Controller extends \Phalcon\Mvc\Controller
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
-        if (!$loc
+        if ($loc === null) {
+            $locModel = new Location();
+            $loc = $locModel->createOnChange();
+            $this->session->set('location', $loc);
+        }
+
+        /*if (!$loc
             || ($member === NULL)
             || ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id))
             && $loc instanceof \stdClass
@@ -59,7 +65,7 @@ class Controller extends \Phalcon\Mvc\Controller
             }
             $this->session->set('location', $location);
         }
-        $loc = $this->session->get('location');
+        $loc = $this->session->get('location'); */
 
         if (!$loc->latitude && !$loc->longitude) {
             $loc->latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
