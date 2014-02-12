@@ -83,6 +83,7 @@
                                                 </div>
                                                 <p>
                                                     {{ event.description|striptags|escape|truncate(350) }}
+                                                    <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">Read more</a>
                                                 </p>
 
                                                 {% if eventListCreatorFlag %}
@@ -121,7 +122,7 @@
                                                             {% set eVenue = event.location.city %}
                                                         {% endif %}
                                                     {% else %}
-                                                        {% if event.location.city %}
+                                                        {% if event.location.city is defined %}
                                                             {% set eVenue = event.location.city~', '~event.venue.name~', '~event.venue.address %}
                                                         {% else %}
                                                             {% set eVenue = event.venue.name~' '~event.venue.address %}
