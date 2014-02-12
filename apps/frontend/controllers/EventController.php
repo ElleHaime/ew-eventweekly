@@ -57,7 +57,6 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_to_list', true);
     }
 
-
     /**
      * @Route("/eventmap", methods={"GET", "POST"})
      * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})

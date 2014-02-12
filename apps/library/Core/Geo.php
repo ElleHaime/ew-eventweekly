@@ -4,15 +4,20 @@ namespace Core;
 
 use Phalcon\Mvc\User\Plugin,
 	Phalcon\Mvc\Dispatcher,
-	Thirdparty\Geo\SxGeo as SGeo,
+//	Thirdparty\Geo\SxGeo as SGeo,
 	Core\Utils as _U;
+use \GeoIp2\WebService\Client;
 
 
 class Geo extends Plugin
 {
 	const DEFAULT_RADIUS_DIFF = 10;
+	protected $_unitTypes = array('locality',
+								  'administrative_area_level_3',
+								  'administrative_area_level_2',
+								  'administrative_area_level_1',
+								  'country');
 
-	protected $_sxgeo		= false;
 	protected $_locLonCur	= false;
 	protected $_locLatCur	= false;
 	protected $_locLonMin	= false;
@@ -33,7 +38,6 @@ class Geo extends Plugin
 			include(CONFIG_SOURCE);
 			$this -> _config = json_decode(json_encode($cfg_settings), false);
 		} 
-		$this -> _sxgeo = new SGeo($this -> _config -> application -> geo -> path . 'SxGeoCity.dat'); 
 		
 		$this -> setUserIp();
 		$this -> setUserLocation();
@@ -42,8 +46,8 @@ class Geo extends Plugin
 	public function setUserIp()
 	{
 		if ($this -> _fb_config -> debug) {
-			//$this -> _userIp = '134.249.172.183';
-			$this -> _userIp = '81.99.246.79';
+			$this -> _userIp = '31.172.138.197'; 		// Odessa
+			//$this -> _userIp = '50.175.13.4'; 		// ass of the universe
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}
@@ -53,19 +57,23 @@ class Geo extends Plugin
 	public function setUserLocation()
 	{
 		if ($this -> _userIp) {
-			$city = $this -> _sxgeo -> getCityFull($this -> _userIp);
+            $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
+            					 $this -> _config -> application -> GeoIp2 -> licenseKey);
 
-			$this -> _locLatCur = $city['lat'];
-			$this -> _locLonCur = $city['lon'];
-			$this -> _countryCode = $city['country'];
+            $record = $client->city($this->_userIp);
+
+            $this -> _locLatCur = $record->location->latitude;
+            $this -> _locLonCur = $record->location->longitude;
+            $this -> _countryCode = $record->country->isoCode;
+
 		} else {
 			$this -> _userIp = $this -> getUserIp();
 		}
 
         \Core\Logger::logFile('ips');
         \Core\Logger::log($this -> _userIp);
-        if (isset($city)) {
-            \Core\Logger::log($city);
+        if (isset($record)) {
+            \Core\Logger::log($record);
         }
 	}
 
@@ -91,34 +99,37 @@ class Geo extends Plugin
 		if ($queryParams != '') {	
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
 			$result = json_decode(file_get_contents($url));
-
+//_U::dump($result, true);
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
 				
-				foreach($result -> results as $object => $details) {
-					if ($details -> types[0] == 'locality') {
-						$scope = $details;
-					}
+				$units = array();
+				foreach ($result -> results as $object => $details) {
+					$units[$details -> types[0]] = $object;
 				}
-                if (!isset($scope)) {
-                    foreach($result -> results as $object => $details) {
-                        if ($details -> types[0] == 'administrative_area_level_1') {
-                            $scope = $details;
-                        }
-                    }
-                }
+
+				if (isset($units['locality'])) {
+					$scope = $result -> results[$units['locality']];
+					$baseType = 'locality';
+				} elseif (isset($units['administrative_area_level_3'])) {
+					$scope = $result -> results[$units['administrative_area_level_3']];
+					$baseType = 'administrative_area_level_3';
+				} elseif (isset($units['administrative_area_level_2'])) {
+					$scope = $result -> results[$units['administrative_area_level_2']];
+					$baseType = 'administrative_area_level_2';
+				} 
+
+               
 				if (isset($scope)) {			
 					foreach ($scope -> address_components as $obj => $lvl) {
-						if ($lvl -> types[0] == 'locality') {
-							// city								
+	
+						if ($lvl -> types[0] == $baseType) {
 							$location['alias'] = $lvl -> long_name;
 							$location['city'] = $lvl -> long_name;
 						}
 						if ($lvl -> types[0] == 'administrative_area_level_1') {
-							// state
 							$location['state'] = $lvl -> long_name;
 						}
 						if ($lvl -> types[0] == 'country') {
-							// country
 							$location['country'] = $lvl -> long_name;
 						}
 					}
@@ -136,7 +147,7 @@ class Geo extends Plugin
 						$location['latitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lat;
 						$location['longitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lng;
 					}						
-					
+
 					return $location;
 				} else {
 					return false;

@@ -101,8 +101,17 @@ die();*/
 				} 			
 			}
 			$this -> _initNamespaces($namespaces);
+
+            // Loader fo GeoIp MaxMind
+            $this->_loader->registerClasses([
+                'ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce' => ROOT_APP . 'apps/library/Thirdparty/GeoIP2-php/vendor/composer/autoload_real.php'
+            ]);
 	
 			$this -> _loader -> register();
+
+            // Loader fo GeoIp MaxMind
+            ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce::getLoader();
+
 			$di -> set('loader', $this -> _loader);
 		}
 	}
