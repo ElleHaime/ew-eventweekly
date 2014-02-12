@@ -2490,6 +2490,10 @@ i.icon-chevron-down {
 .date-picker_one input {
     margin-bottom: 10px;
 }
+.date-picker input {
+    background: url("../img/calendar.png") no-repeat 95% 50% #ffffff;
+    cursor: pointer;
+}
 .form-center .input-div_date {
     clear: none;
     float: left;
