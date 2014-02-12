@@ -107,7 +107,8 @@ class Geo extends Plugin
 					$units[$details -> types[0]] = $object;
 				}
 
-				if (empty(array_intersect(array_keys($units), $this -> _unitTypes))) {
+				$compare = array_intersect(array_keys($units), $this -> _unitTypes);
+				if (empty($compare)) {
 					$newArgs = $result -> results[0];
 			
 					foreach ($newArgs -> address_components as $objNew => $lvlNew) {
