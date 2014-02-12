@@ -938,6 +938,9 @@ input[type="color"]:focus, .uneditable-input:focus
     background: #ffffff;
 }
 
+.share-box-icon > div {
+    float: left;
+}
 .share-box-title {
     color: #989898;
     float: left;
