@@ -15,7 +15,7 @@ define('googleMap',
                     lat: null,
                     lng: null
                 },
-                mapZoom: 14,
+                mapZoom: 20,
                 mapTypeId: 'ROADMAP', // https://developers.google.com/maps/documentation/javascript/reference?hl=en#MapTypeId
                 // marker clusterer settings
                 mcGridSize: 50,
