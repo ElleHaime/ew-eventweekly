@@ -135,22 +135,22 @@
         </div>
 
         {% if pagination is defined %}
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="pagination pull-right">
-                    <ul>
-                        {% if pagination.current > 1 %}
-                        <li><a href="?page={{ pagination.first }}">First</a></li>
-                        <li><a href="?page={{ pagination.current-1 }}">Prev</a></li>
-                        {% endif %}
-                        {% if pagination.current < pagination.total_pages %}
-                        <li><a href="?page={{ pagination.current+1 }}">Next</a></li>
-                        <li><a href="?page={{ pagination.total_pages }}">Last</a></li>
-                        {% endif %}
-                    </ul>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="pagination pull-right">
+                        <ul>
+                            {% if pagination.current > 1 %}
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.first }}">First</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.current-1 }}">Prev</a></li>
+                            {% endif %}
+                            {% if pagination.current < pagination.total_pages %}
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.current+1 }}">Next</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.total_pages }}">Last</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
         {% endif %}
     </div>
 
