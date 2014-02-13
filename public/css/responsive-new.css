@@ -1,3 +1,6 @@
+@viewport {
+   user-zoom: fixed;
+}
 @media screen and (max-width: 1430px) {
     .active-events {
         padding: 0 1%;
@@ -388,7 +391,6 @@
 }
 
 @media screen and (max-width: 580px) {
-
 
     .wrapper {
         min-width: 480px;
