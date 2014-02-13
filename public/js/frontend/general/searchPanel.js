@@ -12,6 +12,7 @@ define('frontSearchPanel',
          * Settings
          */
         settings: {
+            searchFormId: 'topSearchForm',
             searchForm: '#topSearchForm',
             switchStateBtnBlock: '.switch-btn',
             searchCategoriesTypeBlock: '.searchCategoriesTypeBlock',
@@ -182,7 +183,7 @@ define('frontSearchPanel',
                  * @type {jQuery}
                  */
                 var form = $($this.settings.searchForm);
-                var nativeForm = form[0];
+                var nativeForm = document.getElementById($this.settings.searchFormId);
 
                 // Check if at least one category chosen
                 if (form.find('input[type="checkbox"]:checked').length > 0) {
