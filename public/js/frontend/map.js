@@ -22,7 +22,8 @@ require([
             mapCenter: {
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')
-            }
+            },
+            mapZoom: $('#isMobile').val() === '1' ? 20 : 15
         });
 
         var Mc = new googleMc({
