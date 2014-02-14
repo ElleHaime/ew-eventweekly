@@ -1,8 +1,8 @@
 define('frontMemberEditControl',
-    ['jquery', 'utils', 'noti', 'domReady'],
-    function($, utils, noti) {
+    ['jquery', 'utils', 'noty', 'domReady'],
+    function($, utils, noty) {
 
-        function frontMemberEditControl($, utils, noti)
+        function frontMemberEditControl($, utils, noty)
         {
             var self = this;
 
@@ -127,14 +127,14 @@ define('frontMemberEditControl',
                     var isValid = true;
 
                     if (!self.checkFill(self.settings.inpMemberName)) {
-                        noti.createNotification('Please enter your name!', 'error');
+                        noty({text: 'Please enter your name!', type: 'error'});
 
                         $(self.settings.inpMemberName).addClass('error-mes');
                         isValid = false;
                     }
 
                     if (!self.checkEmail(self.settings.inpMemberExtraEmail)) {
-                        noti.createNotification('Invalid email address!', 'error');
+                        noty({text: 'Invalid email address!', type: 'error'});
 
                         $(self.settings.inpMemberExtraEmail).addClass('error-mes');
                         isValid = false;
@@ -237,7 +237,7 @@ define('frontMemberEditControl',
                     data = $.parseJSON(response);
                     console.log(data);
                     if (data.errors !== 'false') {
-                        noti.createNotification(successMsg, 'warning');
+                        noty({text: successMsg, type: 'warning'});
 
                         if (action == 'link') {
                             $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
@@ -245,7 +245,7 @@ define('frontMemberEditControl',
                         }
 
                     } else {
-                        noti.createNotification(errorMsg, 'error');
+                        noty({text: errorMsg, type: 'error'});
                     }
                 });
             }
@@ -331,7 +331,7 @@ define('frontMemberEditControl',
             }
         }
 
-        return new frontMemberEditControl($, utils, noti);
+        return new frontMemberEditControl($, utils, noty);
     }
 );
 

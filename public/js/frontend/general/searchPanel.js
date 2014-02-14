@@ -3,8 +3,8 @@
  */
 
 define('frontSearchPanel', 
-        ['jquery', 'noti', 'utils', 'bootstrapDatepicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'], 
-        function($, noti, utils, bootstrapDatepicker) {
+        ['jquery', 'noty', 'utils', 'bootstrapDatepicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+        function($, noty, utils, bootstrapDatepicker) {
 
     return {
 
@@ -168,7 +168,7 @@ define('frontSearchPanel',
 
 
                 if (!_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
-                    noti.createNotification('You must chose location from list!', 'error');
+                    noty({text: 'You must chose location from list!', type: 'error'});
                     return false;
                 }
 
@@ -195,7 +195,7 @@ define('frontSearchPanel',
 
                 // If no option was chosen show notification or submit form
                 if ($this.__formFilled === false) {
-                    noti.createNotification('Please choose at least one option!', 'error');
+                    noty({text: 'Please choose at least one option!', type: 'error'});
                 }else {
                     if ($(this).val() == 'in_map') {
                         nativeForm.searchType.value = "in_map";
@@ -280,7 +280,7 @@ define('frontSearchPanel',
                     }else {
                         err_msg = response.error_msg;
                     }
-                    noti.createNotification(err_msg, 'warning');
+                    noty({text: err_msg, type: 'warning'});
                     $this.__switchSearchTypeBtnState();
                 }else {
 

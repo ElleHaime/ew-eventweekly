@@ -2,14 +2,13 @@ require([
 	'jquery',
 	'frontTopPanel',
 	'fb',
-    'noti',
+    'noty',
     'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, noti) {
-        noti.init();
+	function($, frontTopPanel, fb, noty) {
 
 		frontTopPanel.init({
 					searchCityBlock: '.searchCityBlock'	
@@ -17,7 +16,7 @@ require([
 		fb.init(); 
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');
-			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
 		}
 	}
 );

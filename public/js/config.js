@@ -40,7 +40,8 @@ require.config({
 
 		//frontend
 		'noti': 'frontend/general/noti',
-		'frontEventLike': 'frontend/general/eventLike',		
+		'noty': 'library/vendors/noty/js/noty/packaged/jquery.noty.packaged',
+		'frontEventLike': 'frontend/general/eventLike',
 		'signupControl': 'frontend/signup/signupControl',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
@@ -89,6 +90,10 @@ require.config({
         },
         'bootstrap' : {
             deps: ['jquery']
+        },
+        'noty' : {
+            deps: ['jquery'],
+            exports: 'noty'
         }
 	},
 
@@ -96,6 +101,36 @@ require.config({
 
 	callback: function(require) {
         'use strict';
+
+        require(['jquery', 'noty'], function(){
+            $.noty.defaults = {
+                layout: 'ew',
+                theme: 'ew',
+                type: 'alert',
+                text: '', // can be html or string
+                dismissQueue: true, // If you want to use queue feature set this true
+                template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+                animation: {
+                    open: {height: 'toggle'},
+                    close: {height: 'toggle'},
+                    easing: 'swing',
+                    speed: 200 // opening & closing animation speed
+                },
+                timeout: false, // delay for closing event. Set false for sticky notifications
+                force: false, // adds notification to the beginning of queue when set to true
+                modal: false,
+                maxVisible: 1, // you can set max visible notification for dismissQueue true option,
+                killer: false, // for close all notifications before show
+                closeWith: ['button'], // ['click', 'button', 'hover']
+                callback: {
+                    onShow: function() {},
+                    afterShow: function() {},
+                    onClose: function() {},
+                    afterClose: function() {}
+                },
+                buttons: false // an array of buttons
+            };
+        });
 
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;

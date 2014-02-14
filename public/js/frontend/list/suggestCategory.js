@@ -1,7 +1,7 @@
 define('frontListSuggestCategory',
-	['jquery', 'noti', 'underscore'],
-	function($, noti) {
-		function frontListSuggestCategory($, noti) 
+	['jquery', 'noty', 'underscore'],
+	function($, noty) {
+		function frontListSuggestCategory($, noty)
 		{
 			var self = this;
 			
@@ -65,8 +65,7 @@ define('frontListSuggestCategory',
 		            $(self.settings.categoriesBlock).remove();
 		        } else {
 		        	if (response[0].error == 'not_logged') {
-		        		//window.location.href = '/#fb-login';
-                        noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to do this', 'warning');
+                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to do this', type: 'warning'});
 		        	} else {
 		        		alert('Oops! Some error occurred. Call to administrator');
 		        	}
@@ -75,5 +74,5 @@ define('frontListSuggestCategory',
 
 		};
 		
-	return new frontListSuggestCategory($, noti);
+	return new frontListSuggestCategory($, noty);
 });

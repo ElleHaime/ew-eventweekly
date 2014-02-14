@@ -3,25 +3,24 @@ require([
     'frontTopPanel',
     'profileRestorePasswordControl',
     'fb',
-    'noti',
+    'noty',
     'utils',
     'domReady',
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, noti, profileRestorePasswordControl) {
+    function($, frontTopPanel, fb, noty, profileRestorePasswordControl) {
 
         frontTopPanel.init({
             searchCityBlock: '.searchCityBlock'
         });
         fb.init();
-        noti.init();
 
         profileRestorePasswordControl.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
-            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
         }
     }
 );

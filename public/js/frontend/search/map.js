@@ -6,7 +6,7 @@ require([
     'frontTopPanel',
     'fb',
     'frontEventLike',
-    'noti',
+    'noty',
     'gmap',
     'eventsPointer',
     'utils',
@@ -14,13 +14,12 @@ require([
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, frontEventLike, noti, gmap, eventsPointer) {
+    function($, frontTopPanel, fb, frontEventLike, noty, gmap, eventsPointer) {
 
         frontTopPanel.init({
             searchCityBlock: '.searchCityBlock'
         });
         fb.init();
-        noti.init();
 
         frontEventLike.init();
 
@@ -36,7 +35,7 @@ require([
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
-            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
         }
     }
 );
