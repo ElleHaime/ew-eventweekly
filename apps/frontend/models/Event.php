@@ -156,14 +156,6 @@ class Event extends EventObject
         }
     }
 
-    public function grabEventsByFbToken($token, $location)
-    {
-        $this -> facebook = new Extractor();
-        $events = $this -> facebook -> getEventsSimpleByLocation($token, $location);
-
-        return $events;
-    }
-
     public function grabEventsByCoordinatesScale($lat, $lng, $uId)
 	{
         $MemberFilter = new MemberFilter();

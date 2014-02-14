@@ -121,110 +121,7 @@ class EventController extends \Core\Controllers\CrudController
     }
 
 
-    /**
-     * @Route("/search", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
-     */
-    public function searchAction($lat = null, $lng = null, $city = null)
-    {
-        $loc = $this->session->get('location');
-
-        if (!empty($lat) && !empty($lng)) {
-            $newLocation = new Location();
-            $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-            $this->session->set('location', $newLocation);
-
-            $loc = $newLocation;
-        }
-        if (!empty($city)) {
-            $newLocation->city = $city;
-            $newLocation->alias = $city;
-            $this->session->set('location', $newLocation);
-        }
-
-        $eventModel = new Event();
-
-        if ($this->session->has('user_token') && $this->session->get('user_token') != null) {
-            // user registered via facebook and has facebook account
-            $events = $eventModel->grabEventsByFbToken($this->session->get('user_token'), $this->session->get('location'));
-
-            if (!empty($events['STATUS']) && ($events['STATUS'] == FALSE)) {
-                echo $events['MESSAGE'];
-                die;
-            }
-
-            if ((count($events[0]) > 0) || (count($events[1]) > 0)) {
-                $totalEvents = count($events[0]) + count($events[1]);
-                $this->view->setVar('eventsTotal', $totalEvents);
-                $this->session->set('eventsTotal', $totalEvents);
-                $events = $eventModel->parseEvent($events);
-
-                return $events;
-
-            } else {
-                $this->session->set('eventsTotal', 0);
-                $res['status'] = 'ERROR';
-                $res['message'] = 'no events';
-                if ($this->request->isAjax()) {
-                    echo json_encode($res);
-                    die();
-                } else {
-                    return array($events[0], $events[1]);
-                }
-            }
-
-        } else {
-            // user registered via email
-            $events = array();
-            $eventsList = $eventModel->grabEventsByCoordinatesScale($loc->latitude, $loc->longitude, $this->session->get('memberId'));
-
-            if ($eventsList->count() > 0) {
-                $events[0] = array();
-                $events[1] = array();
-
-                foreach ($eventsList as $ev) {
-                    if ($ev->event->member_id == $this->session->get('memberId')) {
-                        $elem = 0;
-                    } else {
-                        $elem = 1;
-                    }
-
-                    $newEv = array(
-                        'id' => $ev->event->id,
-                        'eid' => $ev->event->fb_uid,
-                        'pic_big' => '',
-                        'address' => $ev->event->address,
-                        'name' => $ev->event->name,
-                        'venue' => array('latitude' => $ev->venue_latitude,
-                            'longitude' => $ev->venue_longitude),
-                        'location_id' => $ev->event->location_id,
-                        'location' => $ev->location,
-                        'description' => $ev->event->description,
-                        'logo' => $ev->logo,
-                        'start_date_' => $ev->event->start_date,
-                        'end_date' => $ev->event->end_date,
-                        'deleted' => $ev->event->deleted,
-                        'slugUri' => $ev->event->slugUri
-                    );
-
-                    if (empty($newEv['venue']['latitude']) || empty($newEv['venue']['longitude'])) {
-                        $newEv['venue']['latitude'] = $ev->location_latitude;
-                        $newEv['venue']['longitude'] = $ev->location_longitude;
-                    }
-
-                    $events[$elem][] = $newEv;
-                }
-            } else {
-                $checkLoc = new Location();
-                $checkLoc->createOnChange(array('latitude' => $loc->latitude,
-                    'longitude' => $loc->longitude));
-            }
-            return $events;
-        }
-    }
-
-
-    /**
+     /**
      * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
@@ -1256,13 +1153,33 @@ class EventController extends \Core\Controllers\CrudController
 
         $this->logIt(date('H:i:s') . ': READY');
 
-
-        //ob_start();
         $this->sendAjax($res);
-        //ob_flush();
-        //ob_end_flush();
 
         if ($this->session->has('user_token')
+            && $this->session->has('user_fb_uid')
+            && $this->session->get('isGrabbed') === false) 
+        {
+            $hash = md5($this -> session -> get('user_fb_uid') . $this -> session -> getId());
+            $taskSetted = \Objects\Cron::findFirst('hash = "' . $hash. '"');
+
+            if (!$taskSetted) {
+
+                $cron = new \Objects\Cron();
+                $params = ['user_token' => $this -> session -> get('user_token'),
+                           'user_fb_uid' => $this -> session -> get('user_fb_uid')];
+                $task = ['name' => 'extract_facebook_events',
+                         'parameters' => serialize($params),
+                         'state' => 0,
+                         'hash' => $hash];
+                $cron -> assign($task);
+                $cron -> save();
+            }
+
+            $this -> session -> set('isGrabbed', true);
+        }
+
+
+        /*if ($this->session->has('user_token')
             && $this->session->has('user_fb_uid')
             && $this->session->get('isGrabbed') === false
             && $this->session->get('grabOnce') === false
@@ -1271,7 +1188,7 @@ class EventController extends \Core\Controllers\CrudController
             $this->session->set('grabOnce', true);
             $this->logIt("in pointer");
             $this->grabNewEvents();
-        }
+        }*/
         //$this -> grabNewEvents();  
     }
 

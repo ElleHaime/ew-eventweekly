@@ -27,10 +27,7 @@ require_once ROOT_LIB . 'Application.php';
 try {
 	$application = new Application();
 	$application -> run();
-	
-	require_once(ROOT_APP . 'service/Extractor.php');
-
-	//echo $application -> getOutput();
+	echo $application -> getOutput();
 	
 } catch (Exception $e) {
 	throw $e;
