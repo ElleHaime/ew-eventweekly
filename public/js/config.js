@@ -116,7 +116,7 @@ require.config({
                     easing: 'swing',
                     speed: 200 // opening & closing animation speed
                 },
-                timeout: false, // delay for closing event. Set false for sticky notifications
+                timeout: 10000, // delay for closing event. Set false for sticky notifications
                 force: false, // adds notification to the beginning of queue when set to true
                 modal: false,
                 maxVisible: 1, // you can set max visible notification for dismissQueue true option,
