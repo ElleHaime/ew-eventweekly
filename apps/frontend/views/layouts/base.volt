@@ -7,7 +7,7 @@
     <meta name="description" content=""/>
     <meta name="viewport" content="width = device-width, height = device-height, maximum-scale=1.0, minimum-scale=1.0" />  
 
-    <script type="text/javascript"> 
+    {#<script type="text/javascript">
         var meta = document.createElement('meta'), content = '';
         meta.setAttribute('name', 'viewport');
         if (window.innerWidth <= 480) {
@@ -18,7 +18,7 @@
         meta.setAttribute('content', content);
         var title = document.getElementsByTagName('title')[0];
         title.parentNode.insertBefore(meta, title);
-    </script>
+    </script>#}
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
     {% if eventMetaData is defined %}
