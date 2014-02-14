@@ -14,8 +14,8 @@ class Extractor
         //require_once 'facebook.php';
 
         $config = array(
-            'appId' => '542401642534003',
-            'secret' => '847264f1a4ac77560c3e1101436aa940',
+            'appId' => '166657830211705',
+            'secret' => 'e917842e47a57adb93a1e9761af4117a',
         );
         $this->facebook = new \Thirdparty\Facebook\Facebook($config);
     }
@@ -222,8 +222,7 @@ class Extractor
                 'name' => 'page_event',
                 'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
-                    WHERE eid IN ($pageUid)
-                    AND creator != $userUid
+                    WHERE creator IN ($pageUid)
                       AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',

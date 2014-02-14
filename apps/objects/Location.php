@@ -50,8 +50,8 @@ class Location extends Model
 
 	public function createOnChange($argument = array(), $network = 'facebook')
 	{
-		/*$argument = array('latitude' => 53.2705588, 'longitude' => -9.056667699999934);
-		$geo = $this -> getGeo();
+		//$argument = array('latitude' => 37.881168, 'longitude' => 41.13508999999999);
+		/*$geo = $this -> getGeo();
 		$newLoc = $geo -> getLocation($argument); */
 
 		$geo = $this -> getGeo();
@@ -80,7 +80,6 @@ class Location extends Model
         }else {
             $isLocationExists = false;
         }
-
 
 		if (!$isLocationExists) {
 			if (!$isGeoObject) {

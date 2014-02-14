@@ -77,7 +77,15 @@ class MemberListener {
             $this->subject->session->set('userEventsCreated', $model->getCreatedEventsCount($userId));
 
             $model = new EventLike();
-            $this->subject->session->set('userEventsLiked', $model->getLikedEventsCount($userId));
+            $elSummary = $model->getLikedEventsCount($userId);
+            // set counter 
+            $this->subject->session->set('userEventsLiked', $elSummary -> count());
+            // set cache
+            foreach ($elSummary as $item) {
+                if (!$this -> subject -> cacheData -> exists('member.like.' . $userId . '.' . $item -> id)) {
+                    $this -> subject -> cacheData -> save('member.like.' . $userId . '.' . $item -> id, $item -> fb_uid);
+                }
+            }
 
             $model = new EventMember();
             $emSummary = $model->getEventMemberEventsCount($userId);
@@ -110,7 +118,6 @@ class MemberListener {
         $data = $subject->getData();
 
         $params = $data['member'];
-
         $fbUId = $data['uid'];
         $token = $data['token'];
 
