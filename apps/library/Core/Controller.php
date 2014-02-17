@@ -126,7 +126,7 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);
         }
-//_U::dump($this -> session -> get('memberId'));
+
         if ($this->session->has('role') &&
             $this->session->get('role') == Acl::ROLE_MEMBER &&
             !is_null($this->session->get('member'))

@@ -474,6 +474,8 @@ class Event extends EventObject
                                 $result['location_id'] = $loc -> id;
                                 $result['latitude'] = ($loc -> latitudeMin + $loc -> latitudeMax) / 2;
                                 $result['longitude'] = ($loc -> longitudeMin + $loc -> longitudeMax) / 2;
+
+                                unset($locator);
                             }                                
                         } 
 
@@ -498,6 +500,7 @@ class Event extends EventObject
                                                               'latitude' => $venueObj->latitude,
                                                               'longitude' => $venueObj->longitude));
                             }
+                            unset($venueObj);
                         }
                     } elseif (isset($ev['venue']['id']) && self::$cacheData -> exists('venue_' . $ev['venue']['id'])) {
                         $venue = self::$cacheData -> get('venue_' . $ev['venue']['id']);

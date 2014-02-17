@@ -590,6 +590,16 @@ class EventController extends \Core\Controllers\CrudController
             ));
 
             if ($eventLike->save()) {
+                if ($status == 1) {
+                    if (!$this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
+                        $this->cacheData->save('member.like.' . $memberId . '.' . $id, $fb_uid);
+                    }
+                } else {
+                    if ($this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
+                        $this->cacheData->delete('member.like.' . $memberId . '.' . $id, $fb_uid);
+                    } 
+                }
+
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
@@ -1224,6 +1234,7 @@ class EventController extends \Core\Controllers\CrudController
             $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
             $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
             $res['userEventsGoing'] = $this->session->get('userEventsGoing');
+            $res['userEventsLiked'] = $this->session->get('userEventsLiked');
 
             $this->session->set('userEventsCreated', $res['eventsCreated']);
             $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
@@ -1231,6 +1242,7 @@ class EventController extends \Core\Controllers\CrudController
             $this->view->setVar('userEventsCreated', $res['eventsCreated']);
             $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
             $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
+            $this->view->setVar('userEventsLiked', $this->session->get('userEventsLiked'));
 
             if (count($events) > 0) {
                 $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
@@ -1256,13 +1268,9 @@ class EventController extends \Core\Controllers\CrudController
 
         $this->logIt(date('H:i:s') . ': READY');
 
-
-        //ob_start();
         $this->sendAjax($res);
-        //ob_flush();
-        //ob_end_flush();
 
-        if ($this->session->has('user_token')
+       if ($this->session->has('user_token')
             && $this->session->has('user_fb_uid')
             && $this->session->get('isGrabbed') === false
             && $this->session->get('grabOnce') === false
@@ -1271,7 +1279,7 @@ class EventController extends \Core\Controllers\CrudController
             $this->session->set('grabOnce', true);
             $this->logIt("in pointer");
             $this->grabNewEvents();
-        }
+        } 
         //$this -> grabNewEvents();	 
     }
 
@@ -1295,7 +1303,7 @@ class EventController extends \Core\Controllers\CrudController
 
                 $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                 $result = $fb->getFQL($fql, $this->session->get('user_token'));
-
+//_U::dump($result, true);
                 if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                     $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true, 'user_event');
                 }
@@ -1307,7 +1315,7 @@ class EventController extends \Core\Controllers\CrudController
                 $replacements = array($this->session->get('user_fb_uid'));
                 $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                 $result = $fb->getFQL($fql, $this->session->get('user_token'));
-
+//_U::dump($result, true);
                 if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                     foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
                         $this->friendsUid[] = $v['uid2'];
@@ -1355,6 +1363,7 @@ class EventController extends \Core\Controllers\CrudController
                 $replacements = array(implode(',', $this->friendsUid));
                 $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                 $result = $fb->getFQL($fql, $this->session->get('user_token'));
+//_U::dump($result, true);                
                 if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                     foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
                         $this->friendsGoingUid[] = $v['eid'];
@@ -1380,6 +1389,7 @@ class EventController extends \Core\Controllers\CrudController
                     $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                     $this->logIt($fql[$query['name']]);
                     $result = $fb->getFQL($fql, $this->session->get('user_token'));
+//_U::dump($result, true);                    
                     if ($result['STATUS'] !== false) {
                         if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                             $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
@@ -1429,6 +1439,7 @@ class EventController extends \Core\Controllers\CrudController
                 $replacements = array($this->session->get('user_fb_uid'));
                 $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                 $result = $fb->getFQL($fql, $this->session->get('user_token'));
+//_U::dump($result, true);                
                 if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                     foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
                         $this->userGoingUid[] = $v['eid'];
@@ -1450,7 +1461,7 @@ class EventController extends \Core\Controllers\CrudController
                         $eids);
                     $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
                     $result = $fb->getFQL($fql, $this->session->get('user_token'));
-
+//_U::dump($result, true);
                     if ($result['STATUS'] !== false) {
                         if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
                             $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
@@ -1484,8 +1495,71 @@ class EventController extends \Core\Controllers\CrudController
 
                 continue;
             }
-        }
 
+            if ($query['name'] == 'page_uid') {
+                $this->logIt("page_uid");
+                $replacements = array($this->session->get('user_fb_uid'));
+                $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                $result = $fb->getFQL($fql, $this->session->get('user_token'));
+//_U::dump($result, true);                
+                if ($result['STATUS'] !== false && count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                    foreach ($result['MESSAGE'][0]['fql_result_set'] as $f => $v) {
+                        $this->pagesUid[] = $v['page_id'];
+                    }
+                }
+                continue;
+            }
+
+
+            if ($query['name'] == 'page_event' && !empty($this->pagesUid)) {
+                $this->logIt("page_event");
+                $start = $query['start'];
+                $limit = $query['limit'];
+                $pUids = implode(',', $this->pagesUid);
+
+                do {
+                    $replacements = array($start,
+                        $limit,
+                        $this->session->get('user_fb_uid'),
+                        $pUids);
+                    $fql = array($query['name'] => preg_replace($query['patterns'], $replacements, $query['query']));
+                    $result = $fb->getFQL($fql, $this->session->get('user_token'));
+//_U::dump($result, true);
+                    if ($result['STATUS'] !== false) {
+                        if (count($result['MESSAGE'][0]['fql_result_set']) > 0) {
+                            $events = $e->parseNewEvents($result['MESSAGE'][0]['fql_result_set'], true);
+
+                            foreach ($events as $id => $ev) {
+                                if (!$this->cacheData->exists('member.like.' . $this->session->get('memberId') . '.' . $id)) {
+                                    $userLEvents = array('member_id' => $this->session->get('memberId'),
+                                                         'event_id' => $id,
+                                                         'status' => 1);
+                                    $eml = new EventLike();
+                                    $eml->assign($userLEvents);
+                                    $eml->save();
+                                    $userEventsLiked = $this->session->get('userEventsLiked') + 1;
+                                    $this->session->set('userEventsLiked', $userEventsLiked);
+                                    $this->cacheData->save('member.like.' . $this->session->get('memberId') . '.' . $id, $id);
+                                }
+                            }
+
+                            if (count($result['MESSAGE'][0]['fql_result_set']) < (int)$limit) {
+                                $start = false;
+                            } else {
+                                $start = $start + $limit;
+                            }
+                        } else {
+                            $start = false;
+                        }
+                    } else {
+                        $start = false;
+                    }
+                } while ($start !== false);
+
+                continue;
+            }
+        }
+//echo 'done';
         $this->session->set('isGrabbed', true);
         $this->logIt("end of grab, isGrabbed = " . $this->session->get('isGrabbed'));
 
