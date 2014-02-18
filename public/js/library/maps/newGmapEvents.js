@@ -229,6 +229,7 @@ define('newGmapEvents',
                 };
 
                 makeRequest();
+                //$('.overlay').show();
 
                 if (settings.requestInterval > 0) {
                    interval = setInterval(function(){

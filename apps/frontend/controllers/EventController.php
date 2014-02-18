@@ -102,21 +102,6 @@ class EventController extends \Core\Controllers\CrudController
             $this->fetchMemberLikes();
         }
 
-        //$events = $this -> searchAction();
-
-        /*if (isset($events[0]) || isset($events[1])) {
-            $this -> view -> setVar('events', array_merge($events[0], $events[1]));
-            $this -> view -> setVar('eventsTotal', count($events[0]) + count($events[1]));
-            $this -> session -> set('eventsTotal', count($events[0]) + count($events[1]));
-        }else {
-            $this -> view -> setVar('eventsTotal', 0);
-            $this -> session -> set('eventsTotal', 0);
-        }
-
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
-        }
-        */
         $this->view->pick('event/events');
     }
 
@@ -908,51 +893,6 @@ class EventController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/event/import-categories", methods={"GET", "POST"})
-     * @Acl(roles={'member','guest'});
-     */
-    /*public function importCategoriesAction()
-    {
-        $Parser = new \Categoryzator\Core\Parser();
-        $categories = $Parser->getCategories();
-
-        if (!empty($categories)) {
-            foreach ($categories as $categoryKey => $children) {
-                $Category = new Category();
-
-                $Category->key = $categoryKey;
-                $Category->name = ucfirst($categoryKey);
-                $Category->parent_id = 0;
-
-                if ($categoryKey === 'other') {
-                    $Category->is_default = 1;
-                }
-
-                $Category->save();
-            }
-
-            foreach ($categories as $categoryKey => $children) {
-                $parent = Category::findFirst('key = "'.$categoryKey.'"');
-                if (!empty($children)) {
-                    unset($children[0]);
-                    foreach ($children as $key => $cat) {
-                        $Tag = new Tag();
-
-                        $Tag->key = $cat;
-                        $Tag->name = ucfirst($cat);
-                        $Tag->category_id = $parent->id;
-
-                        $Tag->save();
-                    }
-                }
-            }
-        }
-
-        exit('DONE');
-    }*/
-
-
-    /**
      * @Route("/event/preview", methods={"POST"})
      * @Acl(roles={'member'});
      */
@@ -1166,7 +1106,8 @@ class EventController extends \Core\Controllers\CrudController
 
                 $cron = new \Objects\Cron();
                 $params = ['user_token' => $this -> session -> get('user_token'),
-                           'user_fb_uid' => $this -> session -> get('user_fb_uid')];
+                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
+                           'member_id' => ''];
                 $task = ['name' => 'extract_facebook_events',
                          'parameters' => serialize($params),
                          'state' => 0,
@@ -1178,19 +1119,6 @@ class EventController extends \Core\Controllers\CrudController
             $this->session->set('grabOnce', true);
             //$this -> session -> set('isGrabbed', true);
         }
-
-
-        /*if ($this->session->has('user_token')
-            && $this->session->has('user_fb_uid')
-            && $this->session->get('isGrabbed') === false
-            && $this->session->get('grabOnce') === false
-            && $needGrab === true
-        ) {
-            $this->session->set('grabOnce', true);
-            $this->logIt("in pointer");
-            $this->grabNewEvents();
-        }*/
-        //$this -> grabNewEvents();  
     }
 
 
