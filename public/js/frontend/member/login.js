@@ -1,16 +1,14 @@
 require([
     'jquery',
     'fb',
-    'noti',
+    'noty',
     'utils',
     'domReady',
     'underscore',
     'jCookie'
 ],
-    function($, fb, noti) {
+    function($, fb, noty) {
         fb.init();
-
-        noti.init();
 
         if (window.opener) {
             $("#createAcc").click(function(){
@@ -36,7 +34,7 @@ require([
                     data = JSON.parse(data);
 
                     if (data.error != undefined) {
-                        noti.createNotification(data.error, 'error');
+                        noty({text: data.error, type: 'error'});
                     } else if (data.success != undefined) {
                         if (window.opener) {
                             window.opener.$('#popupRedirect').val('reload');
@@ -50,7 +48,7 @@ require([
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
-            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
         }
     }
 );

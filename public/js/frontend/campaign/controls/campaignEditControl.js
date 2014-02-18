@@ -1,8 +1,8 @@
 define('frontCampaignEditControl',
-	['jquery', 'utils', 'datetimepicker', 'noti', 'domReady'],
-	function($, utils, datetimepicker, noti) {
+	['jquery', 'utils', 'datetimepicker', 'noty', 'domReady'],
+	function($, utils, datetimepicker, noty) {
 
-		function frontCampaignEditControl($, utils, datetimepicker, noti)
+		function frontCampaignEditControl($, utils, datetimepicker, noty)
 		{
 			var self = this;
 
@@ -153,13 +153,13 @@ define('frontCampaignEditControl',
 
                 if (!isValid) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
             }
 		};
 
-		return new frontCampaignEditControl($, utils, datetimepicker, noti);
+		return new frontCampaignEditControl($, utils, datetimepicker, noty);
 	}
 );

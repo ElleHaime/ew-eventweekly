@@ -1,7 +1,7 @@
 /**
  * Created by slav on 1/27/14.
  */
-define('listListener' ,['jquery','noti','SingleEvent','utils','domReady','underscore'],function($, noti, SingleEvent) {
+define('listListener' ,['jquery','noty','SingleEvent','utils','domReady','underscore'],function($, noty, SingleEvent) {
 
     return function(options) {
 

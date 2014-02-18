@@ -4682,3 +4682,7 @@ a.view-btn  {
     text-overflow: "…";
 }
 
+.noty_bar {
+    max-width: 1420px;
+    margin: 0 auto;
+}

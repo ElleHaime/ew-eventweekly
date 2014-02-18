@@ -1,8 +1,8 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'normalDatePicker', 'noti', 'domReady'],
-	function($, utils, normalDatePicker, noti) {
+	['jquery', 'utils', 'normalDatePicker', 'noty', 'domReady'],
+	function($, utils, normalDatePicker, noty) {
 
-		function frontEventEditControl($, utils, normalDatePicker, noti)
+		function frontEventEditControl($, utils, normalDatePicker, noty)
 		{
 			var self = this;
 
@@ -323,7 +323,7 @@ define('frontEventEditControl',
 
                         img.onload = function() {
                             if (this.width < 180 || this.height < 60) {
-                                noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
+                                noty({text: 'Image size should be min 180x60 pixels!', type: 'warning'});
                             }
 
                             $(inpImage).parent().find(self.settings.boxImg).attr('src', this.src);
@@ -437,7 +437,7 @@ define('frontEventEditControl',
 				var url = self.settings.inpSite.val();
 
                 if (url != '' && !self.settings.urlPattern.test(url)) {
-                    noti.createNotification('Please enter a valid url', 'error');
+                    noty({text: 'Please enter a valid url', type: 'error'});
                     return false;
                 }
 
@@ -597,7 +597,7 @@ self.__checkDatesContradictions = function(showNoti)
 
                 if (startDate > endDate && showNoti) {
                     isValid = false;
-                    noti.createNotification('Start date cannot be greater than end date', 'error');
+                    noty({text: 'Start date cannot be greater than end date', type: 'error'});
                 }
 
                 return isValid;
@@ -647,7 +647,7 @@ self.__checkDatesContradictions = function(showNoti)
 
                 if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
@@ -696,6 +696,6 @@ self.__checkDatesContradictions = function(showNoti)
             }
 		};
 
-		return new frontEventEditControl($, utils, normalDatePicker, noti);
+		return new frontEventEditControl($, utils, normalDatePicker, noty);
 	}
 );

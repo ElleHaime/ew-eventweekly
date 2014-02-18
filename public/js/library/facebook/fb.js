@@ -1,8 +1,8 @@
 define('fb',
-	['jquery', 'utils', 'noti', 'http://connect.facebook.net/en_US/all.js'],
-	function($, utils, noti) {
+	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/all.js'],
+	function($, utils, noty) {
 
-		function fb($, utils) 
+		function fb($, utils, noty)
 		{
 			var self = this;
 
@@ -74,7 +74,7 @@ define('fb',
 
 				$(self.settings.btnEventGoing).click(function(e) {
                     if ($(self.settings.isLogged).val() != 1) {
-                        noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
+                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
                         return false;
                     }
 
@@ -176,7 +176,7 @@ define('fb',
 			self.__changeUserEventState = function(status)
 			{
                 if ($(self.settings.isLogged).val() != 1) {
-                    noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
+                    noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
                     return false;
                 }
 
@@ -201,8 +201,7 @@ define('fb',
 						return true;
 					} else {
 						if (data.error == 'not_logged') {
-							//window.location.href = '/#fb-login';
-                            noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', 'warning');
+							noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
 							return false;
 						}
 					}
@@ -235,7 +234,7 @@ define('fb',
 			}
 		}
 
-		return new fb($, utils, noti);
+		return new fb($, utils, noty);
 	}
 );
 

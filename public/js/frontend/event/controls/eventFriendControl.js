@@ -1,8 +1,8 @@
 define('eventFriendControl',
-    ['jquery', 'utils', 'noti', 'domReady'],
-    function($, utils, noti) {
+    ['jquery', 'utils', 'noty', 'domReady'],
+    function($, utils, noty) {
 
-        function eventFriendControl($, utils, noti)
+        function eventFriendControl($, utils, noty)
         {
             var self = this;
 
@@ -19,14 +19,11 @@ define('eventFriendControl',
             self.bindEvents = function()
             {
                 if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
-                    noti.createNotification(
-                        'Login or <a href="/profile">syncronise</a> your account with facebook to see events attended by your friends.</a>',
-                        'warning'
-                    );
+                    noty({text: 'Login or <a href="/profile">syncronise</a> your account with facebook to see events attended by your friends.</a>', type: 'warning'});
                 }
             }
         };
 
-        return new eventFriendControl($, utils, noti);
+        return new eventFriendControl($, utils, noty);
     }
 );
