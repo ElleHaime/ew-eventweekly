@@ -24,8 +24,10 @@ define('frontCampaignListControl',
 				});
 
 				$(self.settings.btnDelete).click(function(e) {
-					e.preventDefault($(this));
-                    self.__delete($(this));
+                    if (confirm('Are you sure you want to remove this campaign?')) {
+                        e.preventDefault($(this));
+                        self.__delete($(this));
+                    }
 				});
 			},
 
