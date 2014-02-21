@@ -114,13 +114,13 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('searchStartDate')) {
-                $Event->addCondition('Frontend\Models\Event.start_date > "'.$postData['searchStartDate'].'"');
+                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'"');
             }
 
             if ($elemExists('searchEndDate')) {
-                $Event->addCondition('Frontend\Models\Event.end_date < "'.$postData['searchEndDate'].'"');
+                $Event->addCondition('Frontend\Models\Event.end_date <= "'.$postData['searchEndDate'].'"');
             }else {
-                $Event->addCondition('Frontend\Models\Event.end_date > "'.date('Y-m-d H:m:i', time()).'"');
+                $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
 
             if ($elemExists('searchType')) {
