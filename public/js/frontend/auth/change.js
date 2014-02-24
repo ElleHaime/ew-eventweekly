@@ -1,6 +1,5 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'frontMemberEditControl',
     'noty',
@@ -11,11 +10,7 @@ require([
     'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places',
     'http://connect.facebook.net/en_US/all.js'
 ],
-    function($, frontTopPanel, fb) {
-
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb) {
         fb.init({
             appId: window.fbAppId,
             status: true

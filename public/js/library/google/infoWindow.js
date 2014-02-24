@@ -25,7 +25,7 @@ define('googleInfoWindow',
                 
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
 
                 return '<div class="info-win '+category+'-category " id="content"> ' +
@@ -55,7 +55,7 @@ define('googleInfoWindow',
 
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
 
                 return '<div class="events-map">' +

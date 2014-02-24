@@ -1,6 +1,5 @@
 require([
 	'jquery',
-	'frontTopPanel',
 	'fb',
 	'frontEventEditControl',
 	'normalDatePicker',
@@ -10,10 +9,7 @@ require([
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontEventEditControl, normalDatePicker, utils, noty) {
-		frontTopPanel.init({
-					searchCityBlock: '.searchCityBlock'	
-				});
+	function($, fb, frontEventEditControl, normalDatePicker, utils, noty) {
 		fb.init(); 
 		frontEventEditControl.init();
 

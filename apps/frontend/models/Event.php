@@ -57,7 +57,7 @@ class Event extends EventObject
 	private $selector = ' AND';
 
     public $virtualFields = [
-        'slugUri' => 'self->id.\'-\'.\Core\Utils\SlugUri::slug(self -> name)',
+        'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
 //        'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
 //        'end_date_nice' => 'date(\'d/m/Y\', strtotime(self -> end_date))',
 //        'start_time' => 'date(\'H:i\', strtotime(self -> start_date))',

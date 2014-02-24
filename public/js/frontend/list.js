@@ -1,6 +1,5 @@
 require([
 	'jquery',
-	'frontTopPanel',
 	'fb',
 	'frontEventLike',
     'noty',
@@ -10,11 +9,7 @@ require([
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontEventLike, noty, listListener) {
-
-		frontTopPanel.init({
-					searchCityBlock: '.searchCityBlock'	
-				});
+	function($, fb, frontEventLike, noty, listListener) {
 		fb.init();
 		
 		frontEventLike.init();

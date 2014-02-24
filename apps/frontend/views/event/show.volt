@@ -456,8 +456,8 @@
                                         <img src="/img/comment_tmp.png" alt=""/>
                                         <div style="height: 20px"></div>
                                     {% else %}
-                                        <fb:comments href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}"></fb:comments>
-                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" data-numposts="2" data-colorscheme="light"></div>#}
+                                        <fb:comments href="http://dev.eventweekly.com/{{ toSlugUri(event.name) }}-{{ event.id }}"></fb:comments>
+                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/{{ toSlugUri(event.name) }}-{{ event.id }}" data-numposts="2" data-colorscheme="light"></div>#}
                                     {% endif %}
                                 </div>
                             </div>
@@ -466,7 +466,7 @@
         </div>
     </div>
 </div>
-    <fb:ref href="http://dev.eventweekly.com/event/{{ event.id }}-{{ toSlugUri(event.name) }}" />
+    <fb:ref href="http://dev.eventweekly.com/{{ toSlugUri(event.name) }}-{{ event.id }}" />
 {% endblock %}
 
 

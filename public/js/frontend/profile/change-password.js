@@ -1,6 +1,5 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'noty',
     'profileChangePasswordControl',
@@ -9,11 +8,7 @@ require([
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, noty, profileChangePasswordControl) {
-
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb, noty, profileChangePasswordControl) {
         fb.init();
 
         profileChangePasswordControl.init();

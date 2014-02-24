@@ -160,9 +160,13 @@ require.config({
 
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'bootstrap'], function($, frontSearchPanel, bootstrap){
+        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, bootstrap){
             $('.tooltip-text').tooltip();
             frontSearchPanel.init();
+
+            frontTopPanel.init({
+                searchCityBlock: '.searchCityBlock'
+            });
         });
     }	
 });

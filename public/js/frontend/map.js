@@ -1,6 +1,5 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'googleMap',
     'newGmapEvents',
@@ -11,7 +10,7 @@ require([
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, googleMap, newGmapEvents, googleMc, utils, noty) {
+    function($, fb, googleMap, newGmapEvents, googleMc, utils, noty) {
         var locationElem = $('#current_location');
 
         console.log('type');
@@ -32,9 +31,6 @@ require([
 
         var newGmapEvents = new newGmapEvents(map, Mc);
 
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
         fb.init();
 
         if ($('#conflict_location').length > 0) {
