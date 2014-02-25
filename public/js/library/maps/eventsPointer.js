@@ -133,7 +133,7 @@ define('eventsPointer',
             __createInfoPopupContentSingle: function(event) {
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
                 return '<div class="info-win" id="content">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +

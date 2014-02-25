@@ -1,6 +1,5 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'frontMemberEditControl',
     'frontMemberChangeLocation',
@@ -11,10 +10,7 @@ require([
     'jCookie'
     ],
 
-    function($, frontTopPanel, fb, frontMemberEditControl, frontMemberChangeLocation, noty) {
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb, frontMemberEditControl, frontMemberChangeLocation, noty) {
         fb.init();
 
         frontMemberEditControl.init();

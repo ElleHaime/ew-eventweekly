@@ -123,6 +123,8 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
 
+            $Event->addOrder('Frontend\Models\Event.start_date ASC');
+
             if ($elemExists('searchType')) {
                 if ($postData['searchType'] == 'in_map') {
                     $result = $Event->fetchEvents(Event::FETCH_ARRAY);

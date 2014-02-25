@@ -225,10 +225,10 @@ class EventController extends \Core\Controllers\CrudController
 
 
     /**
-     * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
+     * @Route("/{slugUri}-{eventId:[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function showAction($eventId)
+    public function showAction($slug, $eventId)
     {
         $event = Event::findFirst($eventId);
         $memberpart = null;

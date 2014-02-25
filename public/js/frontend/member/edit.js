@@ -1,6 +1,5 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'frontMemberEditControl',
     'noty',
@@ -9,11 +8,7 @@ require([
     'underscore',
     'jCookie'
     ],
-    function($, frontTopPanel, fb, frontMemberEditControl) {
-
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb, frontMemberEditControl) {
         fb.init();
 
         frontMemberEditControl.init();

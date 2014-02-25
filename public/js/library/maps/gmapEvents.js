@@ -275,7 +275,7 @@ console.log(data);
 
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
 		        return '<div class="info-win music-category " id="content"> ' +
                             '<div class="events-img-box">' +
@@ -293,7 +293,7 @@ console.log(data);
                 var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
                 return '<div class="events-map">' +
                     ' <div class="music-category">' +
