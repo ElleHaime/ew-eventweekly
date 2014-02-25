@@ -56,6 +56,8 @@ class Event extends EventObject
     ];
 	private $selector = ' AND';
 
+    private $order;
+
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
 //        'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
@@ -312,6 +314,21 @@ class Event extends EventObject
     }
 
     /**
+     * Add order condition
+     *
+     * @param $orderBy
+     * @return $this
+     */
+    public function addOrder($orderBy)
+    {
+        if (!empty($orderBy)) {
+            $this->order = $orderBy;
+        }
+
+        return $this;
+    }
+
+    /**
      * Get event by conditions which set through Frontend\Models\Event::addCondition()
      *
      * @param int $fetchType
@@ -352,10 +369,14 @@ class Event extends EventObject
             }
         }
 
-        if ($order === self::ORDER_DESC) {
-            $builder->orderBy('Frontend\Models\Event.id DESC');
-        }elseif ($order === self::ORDER_ASC) {
-            $builder->orderBy('Frontend\Models\Event.id ASC');
+        if (empty($this->order)) {
+            if ($order === self::ORDER_DESC) {
+                $builder->orderBy('Frontend\Models\Event.start_date DESC');
+            }elseif ($order === self::ORDER_ASC) {
+                $builder->orderBy('Frontend\Models\Event.start_date ASC');
+            }
+        }else {
+            $builder->orderBy($this->order);
         }
 
         $builder->groupBy('Frontend\Models\Event.id');
