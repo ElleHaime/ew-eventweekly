@@ -897,7 +897,7 @@ class EventController extends \Core\Controllers\CrudController
             }
             // finish prepare params for FB event
 
-            if ($newEvent['event_fb_status'] == 1) {
+            if ($newEvent['event_fb_status'] == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
                 // add/edit event to facebook
                 if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
                     $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
