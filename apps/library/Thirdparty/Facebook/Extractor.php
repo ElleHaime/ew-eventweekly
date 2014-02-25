@@ -187,6 +187,33 @@ class Extractor
             ),
             array(
                 'order' => 8,
+                'name' => 'user_page_uid',
+                'query' => 'SELECT page_id
+                      FROM page_admin
+                      WHERE uid = $userUid',
+                'type' => 'prepare',
+                'start' => false,
+                'limit' => false,
+                'patterns' => array('/\$userUid/')
+            ),
+             array(
+                'order' => 9,
+                'name' => 'user_page_event',
+                'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
+                    FROM event
+                    WHERE creator IN ($pageUid)
+                    AND start_time > ' . $timelimit . ' 
+                    ORDER BY eid                  
+                    LIMIT $start, $lim',
+                'type' => 'final',
+                'start' => 0,
+                'limit' => 200,
+                'patterns' => array('/\$start/',
+                    '/\$lim/',
+                    '/\$userPageUid/')
+            ),
+            array(
+                'order' => 10,
                 'name' => 'page_uid',
                 'query' => 'SELECT page_id
               FROM page_fan
@@ -197,7 +224,7 @@ class Extractor
                 'patterns' => array('/\$userUid/')
             ),
             array(
-                'order' => 9,
+                'order' => 11,
                 'name' => 'page_event',
                 'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
@@ -248,5 +275,20 @@ class Extractor
                 return $ret;
             }
         }
+    }
+
+
+    public function getCurlFQL($query, $accessToken)
+    {
+        $url = 'https://api.facebook.com/method/fql.query?query=' . rawurlencode($query) . 
+               '&access_token=' . $accessToken;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return new \SimpleXMLElement($response);
     }
 }

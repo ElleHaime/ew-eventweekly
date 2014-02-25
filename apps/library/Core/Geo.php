@@ -47,7 +47,6 @@ class Geo extends Plugin
 	{
 		if ($this -> _fb_config -> debug) {
 			$this -> _userIp = '31.172.138.197'; 		// Odessa
-			//$this -> _userIp = '50.175.13.4'; 		// ass of the universe
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}

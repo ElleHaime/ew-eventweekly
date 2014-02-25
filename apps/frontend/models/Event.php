@@ -60,11 +60,6 @@ class Event extends EventObject
 
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
-//        'start_date_nice' => 'date(\'d/m/Y\', strtotime(self -> start_date))',
-//        'end_date_nice' => 'date(\'d/m/Y\', strtotime(self -> end_date))',
-//        'start_time' => 'date(\'H:i\', strtotime(self -> start_date))',
-//        'end_time' => 'date(\'H:i\', strtotime(self -> end_date))'
-
     ];
 
     public function afterDelete()
@@ -336,7 +331,7 @@ class Event extends EventObject
      * @param array $pagination
      * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
      */
-    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_DESC, $pagination = [])
+    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [])
     {
         $builder = $this->getModelsManager()->createBuilder();
 
@@ -390,7 +385,7 @@ class Event extends EventObject
 
             $result = $paginator->getPaginate();
 
-            $totalRows = $builder->getQuery()->execute()->count(); // WTF?
+            $totalRows = $builder->getQuery()->execute()->count(); 
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
 
@@ -447,8 +442,15 @@ class Event extends EventObject
                         $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
                     }
 
-                    if (self::$cacheData -> exists('member_' . $ev['creator'])) {
-                        $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
+                    if ($queryType == 'user_page_event') {
+                        $session = $this -> getDi() -> getShared('session');
+                        $uid = $session -> get('memberId');
+
+                        $result['member_id'] = $uid;
+                    } else {
+                        if (self::$cacheData -> exists('member_' . $ev['creator'])) {
+                            $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
+                        }
                     }
 
                     $result['location_id'] = '';
@@ -510,7 +512,8 @@ class Event extends EventObject
                                     'latitude' => $ev['venue']['latitude'],
                                     'longitude' => $ev['venue']['longitude']
                             ));
-                            if ($venueObj -> save()) {
+                            $newVenue = $venueObj -> save();
+                            if ($newVenue) {
                                 $result['venue_id'] = $venueObj -> id;
                                 $result['address'] = $venueObj -> address;
 
@@ -582,7 +585,7 @@ class Event extends EventObject
 
                     if ($eventObj -> save()) {
                         if (isset($ev['pic_big']) && !empty($ev['pic_big'])) {
-                            $ch =  curl_init($ev['pic_big']);
+                            $ch = curl_init($ev['pic_big']);
                             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                             curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
                             $content = curl_exec($ch);
@@ -590,9 +593,11 @@ class Event extends EventObject
                                 if (!is_dir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id)) {
                                     mkdir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id);
                                 }
-                                $f = fopen($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/'.$logo, 'wb');
+                                $fPath = $cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/'.$logo;
+                                $f = fopen($fPath, 'wb');
                                 fwrite($f, $content);
                                 fclose($f);
+                                chmod($fPath, 0777);
                             }
                         }
 
