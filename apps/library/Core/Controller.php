@@ -249,16 +249,16 @@ class Controller extends \Phalcon\Mvc\Controller
                 }
         die('done');*/
 
-        if (is_null($this->cacheData->get('locations'))) {
+        if (!$this->cacheData->exists('locations')) {
             Location::setCache();
         }
-        if (is_null($this->cacheData->get('fb_venues'))) {
+        if (!$this->cacheData->exists('fb_venues')) {
             Venue::setCache();
         }
-        if (is_null($this->cacheData->get('fb_events'))) {
+        if (!$this->cacheData->exists('fb_events')) {
             Event::setCache();
         }
-        if (is_null($this->cacheData->get('fb_members'))) {
+        if (!$this->cacheData->exists('fb_members')) {
             MemberNetwork::setCache();
         }
     }

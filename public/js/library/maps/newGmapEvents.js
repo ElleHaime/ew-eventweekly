@@ -19,6 +19,7 @@ define('newGmapEvents',
                 userEventsCreated: '#userEventsCreated',
                 userFriendsGoing: '#userFriendsGoing',
                 userEventsGoing: '#userEventsGoing',
+                userEventsLiked: '#userEventsLiked',
                 alreadyGrabbed: false
             };
 
@@ -159,6 +160,10 @@ define('newGmapEvents',
 
                 if (data.userEventsGoing) {
                     $(settings.userEventsGoing).text(data.userEventsGoing);
+                }
+
+                if (data.userEventsLiked) {
+                    $(settings.userEventsLiked).text(data.userEventsLiked);
                 }
 
                 if (data.stop == true) {

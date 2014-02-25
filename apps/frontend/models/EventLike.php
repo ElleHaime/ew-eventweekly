@@ -15,7 +15,7 @@ class EventLike extends EventLikeObject
             $event->addCondition('Frontend\Models\Event.event_status = 1');
             $event->addCondition('Frontend\Models\Event.deleted = 0');
 
-            return $event->fetchEvents()->count();
+            return $event->fetchEvents();
         } else {
             return 0;
         }
