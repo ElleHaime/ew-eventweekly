@@ -440,7 +440,7 @@ class Event extends EventObject
                     if (empty($result['end_date']) && !empty($result['start_date'])) {
                         $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
                     }
-                    
+
                     if (self::$cacheData -> exists('member_' . $ev['creator'])) {
                         $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
                     }
@@ -584,24 +584,52 @@ class Event extends EventObject
                             $content = curl_exec($ch);
                             if ($content) {
                                 if (!is_dir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id)) {
-                                    mkdir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id);
+                                    mkdir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id, 0700, true);
                                 }
                                 $fPath = $cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/'.$logo;
                                 $f = fopen($fPath, 'wb');
                                 fwrite($f, $content);
                                 fclose($f);
-                                if (!chmod($fPath, 0777)) {
-                                    _U:dump($fPath, true);
-                                }
+                                chmod($fPath, 0777);
                             }
+
+                            $images = new EventImage();
+                            $images -> assign(array(
+                                    'event_id' => $eventObj -> id,
+                                    'image' => $ev['pic_big']
+                                ));
+                            $images -> save();
                         }
 
-                        $images = new EventImage();
-                        $images -> assign(array(
-                                'event_id' => $eventObj -> id,
-                                'image' => $ev['pic_big']
-                            ));
-                        $images -> save();
+/*                        if (isset($ev['pic_cover']) && !empty($ev['pic_cover'])) {
+                            $ext = explode('.', $ev['pic_cover']['source']);
+                            $cover = 'fb_' . $ev['eid'] . '.' . substr(end($ext), 0, strpos(end($ext), '?'));
+
+                            $ch = curl_init($ev['pic_cover']['source']);
+                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                            curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, false);
+                            $content = curl_exec($ch);
+
+                            if ($content) {
+                                if (!is_dir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/cover')) {
+                                    mkdir($cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/cover', 0700, true);
+                                }
+                                $fPath = $cfg -> application -> uploadDir . 'img/event/'.$eventObj->id.'/cover/'.$cover;
+                                $f = fopen($fPath, 'wb');
+                                fwrite($f, $content);
+                                fclose($f);
+                                chmod($fPath, 0777);
+                            }
+
+                            $images = new EventImage();
+                            $images -> assign(array(
+                                    'event_id' => $eventObj -> id,
+                                    'image' => $cover,
+                                    'type' => 'cover'
+                                ));
+                            $images -> save();
+                        } */
+
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
                         $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
 

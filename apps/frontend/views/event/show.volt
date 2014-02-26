@@ -32,7 +32,7 @@
                                 <div class="event-discription">
                                     {% if event.image.cover is defined %}
                                         <div class="event-photo">
-                                            <img src="../img/Tulips.jpg" alt="">
+                                            <img src="/upload/img/event/{{ event.id }}/cover/{{ event.image.cover }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="add-img">
