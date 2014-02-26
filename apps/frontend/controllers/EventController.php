@@ -1157,7 +1157,6 @@ class EventController extends \Core\Controllers\CrudController
             && $needGrab === true
         ) {
             $this->session->set('grabOnce', true);
-            $this->logIt("in pointer");
             $this->grabNewEvents();
         }   
         //$this -> grabNewEvents();	 
@@ -1474,7 +1473,6 @@ class EventController extends \Core\Controllers\CrudController
 
 
             if ($query['name'] == 'page_event' && !empty($this -> pagesUid)) {
-                $this->logIt("page_event");
                 $start = $query['start'];
                 $limit = $query['limit'];
                 $pUids = implode(',', $this->pagesUid);
@@ -1526,7 +1524,6 @@ class EventController extends \Core\Controllers\CrudController
         //echo 'done';
 
         $this->session->set('isGrabbed', true);
-        $this->logIt("end of grab, isGrabbed = " . $this->session->get('isGrabbed'));
 
         exit;
     }
@@ -1572,12 +1569,5 @@ class EventController extends \Core\Controllers\CrudController
                 $eventImage->delete();
             }
         }
-    }
-
-    public function logIt($mess)
-    {
-        $f = fopen('/var/tmp/pthread_log.txt', 'a+');
-        fwrite($f, date('Y-m-d H:i:s') . ": " . $mess . "\r\n");
-        fclose($f);
     }
 }	

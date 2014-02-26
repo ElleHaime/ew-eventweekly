@@ -10,6 +10,7 @@ class EventImage extends Model
 	public $id;
 	public $event_id;
 	public $image;
+	public $type;
 
 	public function initialize()
 	{
