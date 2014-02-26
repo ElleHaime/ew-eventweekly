@@ -413,9 +413,8 @@ class Event extends EventObject
 
         if (!empty($data)) {
             foreach($data as $item => $ev) {
-
                 if (!self::$cacheData -> exists('fbe_' . $ev['eid']) && 
-                    (isset($ev['venue']) && !empty($ev['venue']) || $queryType == 'user_event')) 
+                    (isset($ev['venue']) && !empty($ev['venue']) || $queryType == 'user_event' || $queryType == 'user_page_event')) 
                 {
                     $result = array();
                     $result['fb_uid'] = $ev['eid'];
@@ -441,17 +440,11 @@ class Event extends EventObject
                     if (empty($result['end_date']) && !empty($result['start_date'])) {
                         $result['end_date'] = date('Y-m-d H:m:i', strtotime($result['start_date'].' + 1 week'));
                     }
-
-                    if ($queryType == 'user_page_event') {
-                        $session = $this -> getDi() -> getShared('session');
-                        $uid = $session -> get('memberId');
-
-                        $result['member_id'] = $uid;
-                    } else {
-                        if (self::$cacheData -> exists('member_' . $ev['creator'])) {
-                            $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
-                        }
+                    
+                    if (self::$cacheData -> exists('member_' . $ev['creator'])) {
+                        $result['member_id'] = self::$cacheData -> get('member_' . $ev['creator']);
                     }
+
 
                     $result['location_id'] = '';
                     if (isset($ev['venue']['id']) && !(self::$cacheData -> exists('venue_' . $ev['venue']['id']))) {
@@ -597,7 +590,9 @@ class Event extends EventObject
                                 $f = fopen($fPath, 'wb');
                                 fwrite($f, $content);
                                 fclose($f);
-                                chmod($fPath, 0777);
+                                if (!chmod($fPath, 0777)) {
+                                    _U:dump($fPath, true);
+                                }
                             }
                         }
 

@@ -1148,7 +1148,7 @@ class EventController extends \Core\Controllers\CrudController
             return $events;
         }
 
-      /*  $this->sendAjax($res);
+        $this->sendAjax($res);
 
         if ($this->session->has('user_token')
             && $this->session->has('user_fb_uid')
@@ -1159,8 +1159,8 @@ class EventController extends \Core\Controllers\CrudController
             $this->session->set('grabOnce', true);
             $this->logIt("in pointer");
             $this->grabNewEvents();
-        }  */
-        $this -> grabNewEvents();	 
+        }   
+        //$this -> grabNewEvents();	 
     }
 
 
@@ -1183,7 +1183,7 @@ class EventController extends \Core\Controllers\CrudController
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+//_U::dump($res, true);
                 if (isset($res['event'])) {
                     if (isset($res['event']['eid'])) {
                         $events = $e->parseNewEvents(array($res['event']), true, 'user_event');
@@ -1200,7 +1200,7 @@ _U::dump($res, true);
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+//_U::dump($res, true);
                 if (isset($res['friend_info'])) {
                     if (isset($res['friend_info']['uid2'])) {
                         $this->friendsUid[] = $res['friend_info']['uid2'];
@@ -1227,12 +1227,12 @@ _U::dump($res, true);
                     $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                     $result = $fb->getCurlFQL($fql, $this->session->get('user_token'));
                     $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+//_U::dump($res, true);
                     if (isset($res['event'])) {
                         if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']));
+                            $events = $e->parseNewEvents(array($res['event']), true, 'friend_event');
                         } else {
-                            $events = $e->parseNewEvents($res['event']);
+                            $events = $e->parseNewEvents($res['event'], true, 'friend_event');
                         }
 
                         if (count($res['event']) < (int)$limit) {
@@ -1254,7 +1254,7 @@ _U::dump($res, true);
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
-_U::dump($res, true);                
+//_U::dump($res, true);                
                 if (isset($res['event_member'])) {
                     if (isset($res['event_member']['eid'])) {
                         $this->friendsGoingUid[] = $res['event_member']['eid'];
@@ -1283,12 +1283,12 @@ _U::dump($res, true);
                     $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                     $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                     $res = json_decode(json_encode($result), true);
-_U::dump($res, true);                 
+//_U::dump($res, true);                 
                     if (isset($res['event'])) {
                         if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true);
+                            $events = $e->parseNewEvents(array($res['event']), true, 'friend_going_event');
                         } else {
-                            $events = $e->parseNewEvents($res['event'], true);
+                            $events = $e->parseNewEvents($res['event'], true, 'friend_going_event');
                         }
 
                         foreach ($events as $id => $ev) {
@@ -1334,7 +1334,7 @@ _U::dump($res, true);
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+//_U::dump($res, true);
                 if (isset($res['event_member'])) {
                     if (isset($res['event_member']['eid'])) {
                         $this->userGoingUid[] = $res['event_member']['eid'];
@@ -1360,12 +1360,12 @@ _U::dump($res, true);
                     $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                     $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                     $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+//_U::dump($res, true);
                     if (isset($res['event'])) {
                         if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true);
+                            $events = $e->parseNewEvents(array($res['event']), true, 'user_going_event');
                         } else {
-                            $events = $e->parseNewEvents($res['event'], true);
+                            $events = $e->parseNewEvents($res['event'], true, 'user_going_event');
                         }
 
 
@@ -1394,7 +1394,7 @@ _U::dump($res, true);
                 } while ($start !== false);
 
                 continue;
-            }
+            } 
 
             if ($query['name'] == 'user_page_uid') {
                 $replacements = array($this->session->get('user_fb_uid'));
@@ -1402,7 +1402,7 @@ _U::dump($res, true);
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+
                 if (isset($res['page_admin'])) {
                     if (isset($res['page_admin']['page_id'])) {
                         $this -> userPagesUid[] = $res['page_admin']['page_id'];
@@ -1421,16 +1421,23 @@ _U::dump($res, true);
                 $upUids = implode(',', $this -> userPagesUid);
 
                 do {
-                    $replacements = array($start, $limit, $this->session->get('user_fb_uid'), $upUids);
+                    $replacements = array($start, $limit, $upUids);
                     $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                    $result = $fb -> getCurlFQL($fql, $args[0]);
+                   
+                    $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                     $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+
                     if (isset($res['event'])) {
                         if (isset($res['event']['eid'])) {
                             $events = $e -> parseNewEvents(array($res['event']), true, 'user_page_event');
                         } else {
                             $events = $e -> parseNewEvents($res['event'], true, 'user_page_event');
+                        }
+
+                        foreach ($events as $id => $ev) {
+                            $emu = Event::findFirst('id = ' . $id);
+                            $emu->member_id = $this -> session -> get('memberId');
+                            $emu->update();
                         }
 
                         if (count($res['event']) < (int)$limit) {
@@ -1452,7 +1459,7 @@ _U::dump($res, true);
                 $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                 $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                 $res = json_decode(json_encode($result), true);
- _U::dump($res, true);                
+ //_U::dump($res, true);                
                 if (isset($res['page_fan'])) {
                     if (isset($res['page_fan']['page_id'])) {
                         $this -> pagesUid[] = $res['page_fan']['page_id'];
@@ -1480,12 +1487,12 @@ _U::dump($res, true);
                     $fql = preg_replace($query['patterns'], $replacements, $query['query']);
                     $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
                     $res = json_decode(json_encode($result), true);
-_U::dump($res, true);
+
                     if (isset($res['event'])) {
-                        if (isset($res['event'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true);
+                        if (isset($res['event']['eid'])) {
+                            $events = $e->parseNewEvents(array($res['event']), true, 'page_event');
                         } else {
-                            $events = $e->parseNewEvents($res['event'], true);
+                            $events = $e->parseNewEvents($res['event'], true, 'page_event');
                         }
 
                         foreach ($events as $id => $ev) {
@@ -1515,6 +1522,8 @@ _U::dump($res, true);
                 continue;
             }
         }
+
+        //echo 'done';
 
         $this->session->set('isGrabbed', true);
         $this->logIt("end of grab, isGrabbed = " . $this->session->get('isGrabbed'));

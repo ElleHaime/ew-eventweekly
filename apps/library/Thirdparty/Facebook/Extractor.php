@@ -201,7 +201,7 @@ class Extractor
                 'name' => 'user_page_event',
                 'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
-                    WHERE creator IN ($pageUid)
+                    WHERE creator IN ($userPageUid)
                     AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',
