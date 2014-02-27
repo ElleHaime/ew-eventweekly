@@ -163,7 +163,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('gallery', $gallery);
 
         return array(
-            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/event/' . $event->id . '-' . SUri::slug($event->name)),
+            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
             'eventMetaData' => $event
         );
     }
@@ -1036,7 +1036,7 @@ class EventController extends \Core\Controllers\CrudController
         $Event->category = Category::find('id = ' . (int)$post['category']);
         $Event->memberpart = null;
 
-        $this->view->setVar('currentWindowLocation', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
+        $this->view->setVar('currentWindowLocation', urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($Event->name) . '-' . $Event->id));
         $this->view->setVar('eventPreview', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
