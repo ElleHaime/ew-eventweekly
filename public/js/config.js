@@ -136,7 +136,8 @@ require.config({
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         var moduleName, fileName = '',
         	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
-            re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
+            //re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
+            re1 = /\/([a-zA-Z0-9\-_]+)*\-(\d+){1}$/;
         if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (re.test(location.pathname) != 'undefined') {
