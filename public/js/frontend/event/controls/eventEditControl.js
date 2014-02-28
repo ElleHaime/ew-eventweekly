@@ -543,9 +543,10 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpLocation) {
                         var locs = utils.addressAutocomplete($(input)[0]);
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.ob;
-			                var lng = locs.getPlace().geometry.location.pb;
+			                var lat = locs.getPlace().geometry.location.lat();
+			                var lng = locs.getPlace().geometry.location.lng();
 
+                            console.log(locs.getPlace());
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });
@@ -554,8 +555,8 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpAddress) {
                         var addr = utils.addressAutocomplete($(input)[0], 'geocode');
 			           	google.maps.event.addListener(addr, 'place_changed', function() {
-			                var lat = addr.getPlace().geometry.location.ob;
-			                var lng = addr.getPlace().geometry.location.pb;
+			                var lat = addr.getPlace().geometry.location.lat();
+			                var lng = addr.getPlace().geometry.location.lng();
 
 			                $(self.settings.coordsAddress).val(lat + ';' + lng);
 			            });
@@ -564,8 +565,8 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpVenue) {
                         var ven = utils.addressAutocomplete($(input)[0], 'establishment');
 			           	google.maps.event.addListener(ven, 'place_changed', function() {
-			                var lat = ven.getPlace().geometry.location.ob;
-			                var lng = ven.getPlace().geometry.location.pb;
+			                var lat = ven.getPlace().geometry.location.lat();
+			                var lng = ven.getPlace().geometry.location.lng();
 
 			                $(self.settings.coordsVenueLat).val(lat);
 			                $(self.settings.coordsVenueLng).val(lng);

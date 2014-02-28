@@ -115,8 +115,8 @@ define('frontCampaignEditControl',
 		           	if (input == self.settings.inpLocation) {
                         var locs = utils.addressAutocomplete($(input)[0]);
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.ob;
-			                var lng = locs.getPlace().geometry.location.pb;
+			                var lat = locs.getPlace().geometry.location.lat();
+			                var lng = locs.getPlace().geometry.location.lng();
 			                
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
@@ -126,8 +126,8 @@ define('frontCampaignEditControl',
 		           	if (input == self.settings.inpAddress) {
                         var addr = utils.addressAutocomplete($(input)[0], 'geocode');
 			           	google.maps.event.addListener(addr, 'place_changed', function() {
-			                var lat = addr.getPlace().geometry.location.ob;
-			                var lng = addr.getPlace().geometry.location.pb;
+			                var lat = addr.getPlace().geometry.location.lat();
+			                var lng = addr.getPlace().geometry.location.lng();
 			                
 			                $(self.settings.coordsAddress).val(lat + ';' + lng);
 			            });
