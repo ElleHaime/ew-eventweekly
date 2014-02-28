@@ -476,7 +476,7 @@ class EventController extends \Core\Controllers\CrudController
             ));
 
             if ($eventLike->save()) {
-                if ($status == 1) {
+                /*if ($status == 1) {
                     if (!$this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
                         $this->cacheData->save('member.like.' . $memberId . '.' . $id, $fb_uid);
                     }
@@ -484,7 +484,7 @@ class EventController extends \Core\Controllers\CrudController
                     if ($this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
                         $this->cacheData->delete('member.like.' . $memberId . '.' . $id, $fb_uid);
                     } 
-                }
+                }*/
 
                 $response['status'] = true;
                 $response['member_like'] = $status;
