@@ -17,7 +17,6 @@ return array(
         'party',
         'drums',
         'rock',
-        'hip hop',
         'hiphop',
         'hip-hop',
         'concert',
@@ -31,6 +30,7 @@ return array(
         'pop',
         'punk',
         'r&b',
+        'rnb',
         'folk',
         'blues',
         'go-go',
@@ -39,7 +39,17 @@ return array(
         'rap',
         'dubstep',
         'reggae',
-        'award'
+        'award',
+        'contemporary',
+        'alternative',
+        'ambient',
+        'classical',
+        'eclectic',
+        'electronic',
+        'retro',
+        'traditional',
+        'festival',
+        'live'
     ),
     'sport' => array(
         'sport',
@@ -83,7 +93,10 @@ return array(
         'wrestling',
         'fifa',
         'soccer',
-        'boxing',
+        'boxing' => array(
+            'Vitali Klitschko',
+            'Muhammad Ali'
+        ),
         'karate',
         'kickboxing',
         'muay thai',
@@ -112,7 +125,9 @@ return array(
         'jump',
         'jumping',
         'throw',
-        'motoracing',
+        'motoracing' => array(
+            'Anderw Jordan'
+        ),
         'cricket',
         'wakeboarding',
         'kitesurfing',
@@ -139,7 +154,10 @@ return array(
         'rowing',
         'rugby',
         'triathlon',
-        'trampoline'
+        'trampoline',
+        'air',
+        'animal',
+        'recreational'
     ),
     'business' => array(
         'business',
@@ -206,23 +224,27 @@ return array(
         'fundraiser',
         'auction',
         'donation',
-        'donate'
+        'donate',
+        'family',
+        'demonstration',
+        'exhibition'
     ),
     'special' => array(
         'special',
         'vip',
-        'bal',
+        'bal'
     ),
     'art' => array(
         'art',
         'gallery',
-        'exhibition'
+        'exhibition',
+        'museum'
     ),
     'family' => array(
         'family',
         'parade',
         'celebration',
-        'show',
+        'show'
     ),
     'outdoor' => array(
         'outdoor',
