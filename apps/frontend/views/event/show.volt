@@ -30,9 +30,9 @@
 
                                 <div class="padd_30"> </div>
                                 <div class="event-discription">
-                                    {% if event.image.cover is defined %}
+                                    {% if cover is defined %}
                                         <div class="event-photo">
-                                            <img src="../img/Tulips.jpg" alt="">
+                                            <img src="/upload/img/event/{{ event.id }}/cover/{{ cover.image }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="add-img">

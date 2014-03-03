@@ -113,6 +113,7 @@ class EventController extends \Core\Controllers\CrudController
     public function showAction($eventId)
     {
         $event = Event::findFirst($eventId);
+
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
             foreach ($event->memberpart as $mpart) {
@@ -144,22 +145,23 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_back_to_list', true);
 
         $posters = $flyers = $gallery = [];
-        if (isset($event->id)) {
-            $eventImages = EventImageModel::find('event_id = ' . $event->id);
-
-            foreach ($eventImages as $eventImage) {
-                if ($eventImage->type == 'poster') {
+        if (isset($event->image)) {
+            foreach ($event -> image as $eventImage) {
+                if ($eventImage -> type == 'poster') {
                     $posters[] = $eventImage;
-                } else if ($eventImage->type == 'flyer') {
+                } else if ($eventImage -> type == 'flyer') {
                     $flyers[] = $eventImage;
-                } else if ($eventImage->type == 'gallery') {
+                } else if ($eventImage -> type == 'gallery') {
                     $gallery[] = $eventImage;
+                } else if ($eventImage -> type == 'cover') {
+                    $cover = $eventImage;
                 }
             }
         }
 
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
+        $this->view->setVar('cover', isset($cover) ? $cover : null);
         $this->view->setVar('gallery', $gallery);
 
         return array(
