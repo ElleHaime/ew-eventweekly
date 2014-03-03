@@ -558,21 +558,23 @@ class Event extends EventObject
                         $cats[$key]->category_id = $cat->id;
                     }
 
-                   /* foreach ($newText->tag as $c) {
+                    foreach ($newText->tag as $c) {
                         foreach ($c as $key => $tag) {
                             $Tag = TagObject::findFirst("key = '".$tag."'");
                             if ($Tag) {
-                                $tags[$key] = new EventTagObject();
-                                $tags[$key]->tag_id = $Tag->id;
+                                if (isset($Tag->id) && !empty($Tag->id)) {
+                                    $tags[$key] = new EventTagObject();
+                                    $tags[$key]->tag_id = $Tag->id;
+                                }
                             }
                         }
-                    }*/
+                    }
 
                     $result['event_category'] = $cats;
-                    //$result['event_tag'] = $tags;
+                    $result['event_tag'] = $tags;
 
                     $this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
-                    //$this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
+                    $this -> hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
                     $eventObj = new self;
                     $eventObj -> assign($result);
 
@@ -601,7 +603,7 @@ class Event extends EventObject
                             $images -> save();
                         }
 
-/*                        if (isset($ev['pic_cover']) && !empty($ev['pic_cover'])) {
+                        /*if (isset($ev['pic_cover']) && !empty($ev['pic_cover'])) {
                             $ext = explode('.', $ev['pic_cover']['source']);
                             $cover = 'fb_' . $ev['eid'] . '.' . substr(end($ext), 0, strpos(end($ext), '?'));
 
@@ -628,7 +630,7 @@ class Event extends EventObject
                                     'type' => 'cover'
                                 ));
                             $images -> save();
-                        } */
+                        }*/
 
                         self::$cacheData -> save('fbe_' . $ev['eid'], $eventObj -> id);
                         $newEvents[$eventObj -> id] = $eventObj -> fb_uid;
