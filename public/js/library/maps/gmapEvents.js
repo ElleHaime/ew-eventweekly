@@ -1,8 +1,8 @@
 define('gmapEvents',
-	['jquery', 'gmap', 'noti', 'niceDate', 'jTruncate', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	function($, gmap, noti, niceDate, jTruncate) {
+	['jquery', 'gmap', 'noty', 'niceDate', 'jTruncate', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	function($, gmap, noty, niceDate, jTruncate) {
 
-		function gmapEvents($, gmap, noti, niceDate, jTruncate)
+		function gmapEvents($, gmap, noty, niceDate, jTruncate)
 		{
 		    var self = this;
 
@@ -145,7 +145,7 @@ define('gmapEvents',
 		        }else {
                     gmap.Map.setCenter(new google.maps.LatLng(self.__newLat, self.__newLng));
                     $(self.settings.eventsCounter).html(0);
-                    noti.createNotification('No event in this area!', 'warning');
+                    noty({text: 'No event in this area!', type: 'warning'});
                 }
 		    },
 
@@ -275,7 +275,7 @@ console.log(data);
 
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
 		        return '<div class="info-win music-category " id="content"> ' +
                             '<div class="events-img-box">' +
@@ -293,7 +293,7 @@ console.log(data);
                 var date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
                 return '<div class="events-map">' +
                     ' <div class="music-category">' +
@@ -306,6 +306,6 @@ console.log(data);
             }
 		};
 
-		return new gmapEvents($, gmap, noti);
+		return new gmapEvents($, gmap, noty);
 	}
 )

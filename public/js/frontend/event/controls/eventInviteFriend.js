@@ -2,8 +2,8 @@
  * Created by Slava Basko on 12/19/13 <basko.slava@gmail.com>.
  */
 
-define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
-    function($, noti) {
+define('frontEventInviteFriend', ['jquery', 'noty', 'domReady'],
+    function($, noty) {
 
         var EventInviteFriend = {
 
@@ -66,9 +66,7 @@ define('frontEventInviteFriend', ['jquery', 'noti', 'domReady'],
                 var $this = this;
                 return function(event){
                     if ($($this.settings.isLogged).val() === '0' || $($this.settings.externalLogged).length == 0) {
-                        noti.createNotification(
-                            'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', 'warning'
-                        )
+                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', type: 'warning'});
                     } else {
                         event.preventDefault();
 

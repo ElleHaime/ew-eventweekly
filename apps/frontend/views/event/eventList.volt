@@ -46,7 +46,7 @@
                                     <div class="span12">
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
-                                                <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">
+                                                <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
                                                     {% if event.logo is defined %}
                                                         {% if event.logo is empty %}
                                                             {% set pic = defaultEventLogo %}
@@ -61,7 +61,7 @@
                                             </div>
 
                                             <div class="event-one-text">
-                                                <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
+                                                <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a>
 
                                                 <div class="date-list">
                                                     {% if event.start_date != '0000-00-00' %}
@@ -83,7 +83,7 @@
                                                 </div>
                                                 <p>
                                                     {{ event.description|striptags|escape|truncate(350) }}
-                                                    <a href="/event/{{ event.id }}-{{ toSlugUri(event.name) }}">Read more</a>
+                                                    <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">Read more</a>
                                                 </p>
 
                                                 {% if eventListCreatorFlag %}
@@ -161,12 +161,12 @@
                     <div class="pagination pull-right">
                         <ul>
                             {% if pagination.current > 1 %}
-                                <li><a href="?page={{ pagination.first }}">First</a></li>
-                                <li><a href="?page={{ pagination.current-1 }}">Prev</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.first }}">First</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.current-1 }}">Prev</a></li>
                             {% endif %}
                             {% if pagination.current < pagination.total_pages %}
-                                <li><a href="?page={{ pagination.current+1 }}">Next</a></li>
-                                <li><a href="?page={{ pagination.total_pages }}">Last</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.current+1 }}">Next</a></li>
+                                <li><a href="/search/list?{{ urlParams }}&page={{ pagination.total_pages }}">Last</a></li>
                             {% endif %}
                         </ul>
                     </div>

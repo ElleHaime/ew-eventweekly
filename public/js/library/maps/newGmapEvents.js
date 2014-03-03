@@ -2,8 +2,8 @@
  * Created by slav on 1/22/14.
  */
 define('newGmapEvents',
-    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noti', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-    function($, googleMap, googleMc, googleMarker, googleInfoWindow, noti, _) {
+    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noty', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+    function($, googleMap, googleMc, googleMarker, googleInfoWindow, noty, _) {
 
         function newGmapEvents(Map, Mc, options) {
 
@@ -146,7 +146,7 @@ define('newGmapEvents',
                     if (data.stop == true && settings.alreadyGrabbed == false) {
                         Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
                         $(settings.eventsCounter).html(0);
-                        noti.createNotification('No event in this area!', 'warning');
+                        noty({text: 'No event in this area!', type: 'warning'});
                     }
                 }
 

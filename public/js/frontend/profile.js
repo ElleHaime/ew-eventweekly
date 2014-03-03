@@ -1,21 +1,16 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
     'frontMemberEditControl',
     'frontMemberChangeLocation',
-    'noti',
+    'noty',
     'utils',
     'domReady',
     'underscore',
     'jCookie'
     ],
 
-    function($, frontTopPanel, fb, frontMemberEditControl, frontMemberChangeLocation, noti) {
-        noti.init();
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb, frontMemberEditControl, frontMemberChangeLocation, noty) {
         fb.init();
 
         frontMemberEditControl.init();
@@ -24,7 +19,7 @@ require([
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
-            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
         }
     }
 );

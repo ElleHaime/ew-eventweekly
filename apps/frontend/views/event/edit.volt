@@ -41,17 +41,17 @@
                                                     <div class="input-div_date clearfix">
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-start" class="input-div_small">
-                                                                {{ form.render('start_date') }}<i class="icon-calendar"></i>
+                                                                {{ form.render('start_date') }}
                                                             <span class="add-on">
-                                                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                                                                {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
                                                                             </span>
                                                             </div>
                                                         </div>
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-end" class="input-div_small">
-                                                                {{ form.render('end_date') }}<i class="icon-calendar"></i>
+                                                                {{ form.render('end_date') }}
                                                             <span class="add-on">
-                                                                                <i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>
+                                                                                {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
                                                                             </span>
                                                             </div>
                                                         </div>
@@ -87,8 +87,12 @@
 
                                         <div class="sidebar-box">
                                             <div class="input-append">
-                                                {{ form.render('location') }}
-                                                <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                <label for="location">
+                                                    {{ form.render('location') }}
+                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                </label>
+
+
                                                 {{ form.render('location_latitude') }}
                                                 {{ form.render('location_longitude') }}
                                                 {{ form.render('location_id') }}
@@ -99,8 +103,11 @@
                                             </div>
 
                                             <div class="input-append">
-                                                {{ form.render('address') }}
-                                                <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                <label for="address">
+                                                    {{ form.render('address') }}
+                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                </label>
+
                                                 {{ form.render('address-coords') }}
                                                 <div class="search-queries hidden">
                                                     <ul id="addresses-list">
@@ -109,8 +116,11 @@
                                             </div>
 
                                             <div class="input-append">
-                                                {{ form.render('venue') }}
-                                                <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                <label for="venue">
+                                                    {{ form.render('venue') }}
+                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                </label>
+
                                                 {{ form.render('venue_latitude') }}
                                                 {{ form.render('venue_longitude') }}
                                                 <div class="search-queries hidden">
@@ -120,8 +130,11 @@
                                             </div>
 
                                             <div class="input-append">
-                                                <input type="text" id="sites" placeholder="Event web site"/>
-                                                <button class="btn btn-primary" id="add-web-site" type="button">Ok</button>
+
+                                                    <input type="text" id="sites" placeholder="Event web site"/>
+                                                    <button class="btn btn-primary" id="add-web-site" type="button">Add</button>
+
+
                                                 <div class="warning-box"
                                                      style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
                                                 </div>

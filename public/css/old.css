@@ -938,6 +938,9 @@ input[type="color"]:focus, .uneditable-input:focus
     background: #ffffff;
 }
 
+.share-box-icon > div {
+    float: left;
+}
 .share-box-title {
     color: #989898;
     float: left;
@@ -2486,13 +2489,30 @@ i.icon-chevron-down {
     width: 100%;
     margin-bottom: 10px;
 }
-
+.input-append .add-on:last-child, .input-append .btn:last-child, .input-append .btn-group:last-child > .dropdown-toggle
+{
+    border-radius: 0;
+}
+.sidebar-box .input-append input {
+    cursor: pointer;
+}
+.sidebar-box .input-append label .btn:hover {
+   background: #5097E5;
+}
 .date-picker_one input {
     margin-bottom: 10px;
 }
-.date-picker input {
+.date-picker input, .date-picker_one input {
     background: url("../img/calendar.png") no-repeat 95% 50% #ffffff;
     cursor: pointer;
+}
+
+.date-picker input:focus , .date-picker_one input:focus {
+    background: url("../img/calendar.png") no-repeat 95% 50%  #DEEDFF;
+}
+
+.dropdown-menu {
+    border-radius: 0;
 }
 .form-center .input-div_date {
     clear: none;
@@ -4646,7 +4666,6 @@ a.view-btn  {
 
 .share-box-icon {
     margin-top: 3px;
-    height: 22px;
 }
 .frame-facebook {
     width: 100px;
@@ -4663,3 +4682,7 @@ a.view-btn  {
     text-overflow: "…";
 }
 
+.noty_bar {
+    max-width: 1420px;
+    margin: 0 auto;
+}

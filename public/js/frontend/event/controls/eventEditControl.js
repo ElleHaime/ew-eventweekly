@@ -1,8 +1,8 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'normalDatePicker', 'noti', 'domReady'],
-	function($, utils, normalDatePicker, noti) {
+	['jquery', 'utils', 'normalDatePicker', 'noty', 'domReady'],
+	function($, utils, normalDatePicker, noty) {
 
-		function frontEventEditControl($, utils, normalDatePicker, noti)
+		function frontEventEditControl($, utils, normalDatePicker, noty)
 		{
 			var self = this;
 
@@ -323,7 +323,7 @@ define('frontEventEditControl',
 
                         img.onload = function() {
                             if (this.width < 180 || this.height < 60) {
-                                noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
+                                noty({text: 'Image size should be min 180x60 pixels!', type: 'warning'});
                             }
 
                             $(inpImage).parent().find(self.settings.boxImg).attr('src', this.src);
@@ -437,7 +437,7 @@ define('frontEventEditControl',
 				var url = self.settings.inpSite.val();
 
                 if (url != '' && !self.settings.urlPattern.test(url)) {
-                    noti.createNotification('Please enter a valid url', 'error');
+                    noty({text: 'Please enter a valid url', type: 'error'});
                     return false;
                 }
 
@@ -543,9 +543,10 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpLocation) {
                         var locs = utils.addressAutocomplete($(input)[0]);
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.ob;
-			                var lng = locs.getPlace().geometry.location.pb;
+			                var lat = locs.getPlace().geometry.location.lat();
+			                var lng = locs.getPlace().geometry.location.lng();
 
+                            console.log(locs.getPlace());
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });
@@ -554,8 +555,8 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpAddress) {
                         var addr = utils.addressAutocomplete($(input)[0], 'geocode');
 			           	google.maps.event.addListener(addr, 'place_changed', function() {
-			                var lat = addr.getPlace().geometry.location.ob;
-			                var lng = addr.getPlace().geometry.location.pb;
+			                var lat = addr.getPlace().geometry.location.lat();
+			                var lng = addr.getPlace().geometry.location.lng();
 
 			                $(self.settings.coordsAddress).val(lat + ';' + lng);
 			            });
@@ -564,8 +565,8 @@ define('frontEventEditControl',
 		           	if (input == self.settings.inpVenue) {
                         var ven = utils.addressAutocomplete($(input)[0], 'establishment');
 			           	google.maps.event.addListener(ven, 'place_changed', function() {
-			                var lat = ven.getPlace().geometry.location.ob;
-			                var lng = ven.getPlace().geometry.location.pb;
+			                var lat = ven.getPlace().geometry.location.lat();
+			                var lng = ven.getPlace().geometry.location.lng();
 
 			                $(self.settings.coordsVenueLat).val(lat);
 			                $(self.settings.coordsVenueLng).val(lng);
@@ -597,7 +598,7 @@ self.__checkDatesContradictions = function(showNoti)
 
                 if (startDate > endDate && showNoti) {
                     isValid = false;
-                    noti.createNotification('Start date cannot be greater than end date', 'error');
+                    noty({text: 'Start date cannot be greater than end date', type: 'error'});
                 }
 
                 return isValid;
@@ -647,7 +648,7 @@ self.__checkDatesContradictions = function(showNoti)
 
                 if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
@@ -696,6 +697,6 @@ self.__checkDatesContradictions = function(showNoti)
             }
 		};
 
-		return new frontEventEditControl($, utils, normalDatePicker, noti);
+		return new frontEventEditControl($, utils, normalDatePicker, noty);
 	}
 );

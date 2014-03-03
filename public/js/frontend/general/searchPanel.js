@@ -3,8 +3,8 @@
  */
 
 define('frontSearchPanel', 
-        ['jquery', 'noti', 'utils', 'bootstrapDatepicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'], 
-        function($, noti, utils, bootstrapDatepicker) {
+        ['jquery', 'noty', 'utils', 'bootstrapDatepicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+        function($, noty, utils, bootstrapDatepicker) {
 
     return {
 
@@ -12,6 +12,7 @@ define('frontSearchPanel',
          * Settings
          */
         settings: {
+            searchFormId: 'topSearchForm',
             searchForm: '#topSearchForm',
             switchStateBtnBlock: '.switch-btn',
             searchCategoriesTypeBlock: '.searchCategoriesTypeBlock',
@@ -54,6 +55,8 @@ define('frontSearchPanel',
          */
         __clickedSwitchBtn: null,
 
+        __locationChosen: false,
+
         /**
          * Initialize clicks. Constructor
          */
@@ -65,6 +68,8 @@ define('frontSearchPanel',
 
             // Get search type
             $this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
+
+            $this.__locationChosen = $($this.settings.searchLocation).data('locationChosen');
 
             // Bind click on form
             _.once($this.__bindClicks());
@@ -107,6 +112,9 @@ define('frontSearchPanel',
 
                 $($this.settings.searchLocationLatMax).val(latMax);
                 $($this.settings.searchLocationLngMax).val(lngMax);
+
+                $($this.settings.searchLocation).attr('data-location-chosen', true);
+                $this.__locationChosen = true;
 
                 $this.__switchSearchBtnVisible(true);
             });
@@ -158,11 +166,18 @@ define('frontSearchPanel',
             return function(event) {
                 event.preventDefault();
 
+
+                if (!_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
+                    noty({text: 'You must chose location from list!', type: 'error'});
+                    return false;
+                }
+
+
                 /**
                  * @type {jQuery}
                  */
                 var form = $($this.settings.searchForm);
-                var nativeForm = form[0];
+                var nativeForm = document.getElementById($this.settings.searchFormId);
 
                 // Check if at least one category chosen
                 if (form.find('input[type="checkbox"]:checked').length > 0) {
@@ -180,7 +195,7 @@ define('frontSearchPanel',
 
                 // If no option was chosen show notification or submit form
                 if ($this.__formFilled === false) {
-                    noti.createNotification('Please choose at least one option!', 'error');
+                    noty({text: 'Please choose at least one option!', type: 'error'});
                 }else {
                     if ($(this).val() == 'in_map') {
                         nativeForm.searchType.value = "in_map";
@@ -265,7 +280,7 @@ define('frontSearchPanel',
                     }else {
                         err_msg = response.error_msg;
                     }
-                    noti.createNotification(err_msg, 'warning');
+                    noty({text: err_msg, type: 'warning'});
                     $this.__switchSearchTypeBtnState();
                 }else {
 

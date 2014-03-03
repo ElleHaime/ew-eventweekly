@@ -1,7 +1,7 @@
 define('signupControl',
-	['jquery', 'noti', 'utils', 'underscore'],
-	function($, noti, utils) {
-		function signupControl($, noti, utils) 
+	['jquery', 'noty', 'utils', 'underscore'],
+	function($, noty, utils) {
+		function signupControl($, noty, utils)
 		{
 			var self = this;
 
@@ -45,7 +45,7 @@ define('signupControl',
                 var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
                 if (email != '' && !filter.test(email)) {
-                    noti.createNotification('Invalid email address!', 'error');
+                    noty({text: 'Invalid email address!', type: 'error'});
                     return false;
                 } else {
                     return true;
@@ -56,14 +56,14 @@ define('signupControl',
 			{
                 if ($(self.settings.inpPassword).val() == '') {
                     var msg = 'Password cannot be empty';
-                    noti.createNotification(msg, 'error');
+                    noty({text: msg, type: 'error'});
                     self.__initError(msg);
                     return false;
                 }
 
                 if ($(self.settings.inpPassword).val() != $(self.settings.inpPasswordConfirm).val()) {
 					var msg = 'Passwords don\'t match';
-                    noti.createNotification(msg, 'error');
+                    noty({text: msg, type: 'error'});
 					self.__initError(msg);
 					return false;
 				} 
@@ -75,7 +75,7 @@ define('signupControl',
 				var sgEmail = $(self.settings.inpEmail).val();
 
 				if (sgEmail.length <= 0) {
-                    noti.createNotification('Email incorrect', 'error');
+                    noty({text: 'Email incorrect', type: 'error'});
 					self.__initError('Email incorrect');
 					return false;
 				}
@@ -85,7 +85,7 @@ define('signupControl',
 					data = $.parseJSON(data);
 					if (data.status != 'OK') {
 						self.errors = data.message;
-                        noti.createNotification(data.message, 'error');
+                        noty({text: data.message, type: 'error'});
 						self.__initError(data.message);
 					} else {
 						self.__submit();
@@ -105,6 +105,6 @@ define('signupControl',
 			}
 		};
 
-		return new signupControl($, noti, utils);
+		return new signupControl($, noty, utils);
 	}
 );

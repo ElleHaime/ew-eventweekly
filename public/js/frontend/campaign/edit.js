@@ -1,27 +1,22 @@
 require([
 	'jquery',
-	'frontTopPanel',
 	'fb',
 	'frontCampaignEditControl',
 	'datetimepicker',
 	'utils',	
 	//'resizer',
-	'noti',
+	'noty',
 	'domReady',		
 	'underscore',
 	'jCookie'
 	], 
-	function($, frontTopPanel, fb, frontCampaignEditControl, datetimepicker, utils, noti) {
-        noti.init();
-		frontTopPanel.init({
-					searchCityBlock: '.searchCityBlock'	
-				});
+	function($, fb, frontCampaignEditControl, datetimepicker, utils, noty) {
 		fb.init(); 
 		frontCampaignEditControl.init();
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');
-			noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
 		}
 	}
 );

@@ -1,8 +1,8 @@
 define('profileChangePasswordControl',
-    ['jquery', 'utils', 'noti', 'domReady'],
-    function($, utils, noti) {
+    ['jquery', 'utils', 'noty', 'domReady'],
+    function($, utils, noty) {
 
-        function profileChangePasswordControl($, utils, noti)
+        function profileChangePasswordControl($, utils, noty)
         {
             var self = this;
 
@@ -58,14 +58,14 @@ define('profileChangePasswordControl',
 
                 if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
             }
         }
 
-        return new profileChangePasswordControl($, utils, noti);
+        return new profileChangePasswordControl($, utils, noty);
     }
 );
 

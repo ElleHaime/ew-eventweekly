@@ -47,7 +47,6 @@ class Geo extends Plugin
 	{
 		if ($this -> _fb_config -> debug) {
 			$this -> _userIp = '31.172.138.197'; 		// Odessa
-			//$this -> _userIp = '50.175.13.4'; 		// ass of the universe
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}
@@ -101,26 +100,32 @@ class Geo extends Plugin
 
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
 			$result = json_decode(file_get_contents($url));
-
+//_U::dump($result);
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
 				foreach ($result -> results as $object => $details) {
 					$units[$details -> types[0]] = $object;
 				}
-
-				if (empty(array_intersect(array_keys($units), $this -> _unitTypes))) {
+//_U::dump($units);
+				if (!isset($units['locality'])) {
 					$newArgs = $result -> results[0];
 			
 					foreach ($newArgs -> address_components as $objNew => $lvlNew) {
-						if ($lvlNew -> types[0] == 'locality') {
-							$newComponents[] = 'locality:' . str_replace(' ', '+', $lvlNew -> short_name);
+						if ($lvlNew -> types[0] == 'locality' || $lvlNew -> types[0] == 'postal_town') {
+							$newRequestLoc = str_replace(' ', '+', $lvlNew -> short_name);
+							$newComponents[] = 'locality:' . $newRequestLoc;
 						}
 						if ($lvlNew -> types[0] == 'administrative_area_level_1') {
-							$newComponents[] = 'administrative_area:' . str_replace(' ', '+', $lvlNew -> short_name);
+							$newRequestArea = str_replace(' ', '+', $lvlNew -> short_name);
+							$newComponents[] = 'administrative_area:' . $newRequestArea;
 						}
 						if ($lvlNew -> types[0] == 'country') {
 							$newComponents[] = 'country:' . str_replace(' ', '+', $lvlNew -> short_name);
 						}
 					}
+					if (!isset($newRequestLoc) && isset($newRequestArea)) {
+						$newComponents[] = 'locality:' . $newRequestArea;
+					}
+					
 					$url = 'http://maps.googleapis.com/maps/api/geocode/json?components=' . implode('|', $newComponents) . '&sensor=false&language=en';
 					$result = json_decode(file_get_contents($url));
 		
@@ -167,10 +172,10 @@ class Geo extends Plugin
 						}
 
 						if (!empty($result -> results[0] -> geometry)) {
-							$location['latitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lat;
-							$location['longitudeMin'] = (float)$scope -> geometry -> bounds -> southwest -> lng;
-							$location['latitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lat;
-							$location['longitudeMax'] = (float)$scope -> geometry -> bounds -> northeast -> lng;
+							$location['latitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lat;
+							$location['longitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lng;
+							$location['latitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lat;
+							$location['longitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lng;
 						}						
 //_U::dump($location);	
 						return $location;

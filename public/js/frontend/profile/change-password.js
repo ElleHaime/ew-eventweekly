@@ -1,27 +1,21 @@
 require([
     'jquery',
-    'frontTopPanel',
     'fb',
-    'noti',
+    'noty',
     'profileChangePasswordControl',
     'utils',
     'domReady',
     'underscore',
     'jCookie'
 ],
-    function($, frontTopPanel, fb, noti, profileChangePasswordControl) {
-        noti.init();
-
-        frontTopPanel.init({
-            searchCityBlock: '.searchCityBlock'
-        });
+    function($, fb, noty, profileChangePasswordControl) {
         fb.init();
 
         profileChangePasswordControl.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
-            noti.createNotification(fMessage.attr('flashMsgText'), fMessage.attr('flashMsgType'));
+            noty({text: fMessage.attr('flashMsgText'), type: fMessage.attr('flashMsgType')});
         }
     }
 );

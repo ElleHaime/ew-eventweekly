@@ -32,6 +32,7 @@ class EventController extends \Core\Controllers\CrudController
     protected $friendsUid = array();
     protected $friendsGoingUid = array();
     protected $userGoingUid = array();
+    protected $userPagesUid = array();
     protected $pagesUid = array();
 
 
@@ -106,11 +107,11 @@ class EventController extends \Core\Controllers\CrudController
     }
 
 
-     /**
-     * @Route("/event/{eventId:[0-9]+}-{slugUri}", methods={"GET", "POST"})
+    /**
+     * @Route("/{slugUri}-{eventId:[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function showAction($eventId)
+    public function showAction($slug, $eventId)
     {
         $event = Event::findFirst($eventId);
 
@@ -165,7 +166,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('gallery', $gallery);
 
         return array(
-            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/event/' . $event->id . '-' . SUri::slug($event->name)),
+            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
             'eventMetaData' => $event
         );
     }
@@ -269,6 +270,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\Event.start_date > now()');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
+        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
         $events = $event->fetchEvents();
 
         $this->view->setvar('list', $events);
@@ -294,6 +296,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\EventLike.status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
+        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -318,6 +321,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\EventMember.member_status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
+        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
@@ -346,6 +350,7 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
+        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
         $events = $event->fetchEvents();
 
         if ($events->count()) {
@@ -474,6 +479,16 @@ class EventController extends \Core\Controllers\CrudController
             ));
 
             if ($eventLike->save()) {
+                /*if ($status == 1) {
+                    if (!$this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
+                        $this->cacheData->save('member.like.' . $memberId . '.' . $id, $fb_uid);
+                    }
+                } else {
+                    if ($this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
+                        $this->cacheData->delete('member.like.' . $memberId . '.' . $id, $fb_uid);
+                    } 
+                }*/
+
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
@@ -768,7 +783,7 @@ class EventController extends \Core\Controllers\CrudController
             }
             // finish prepare params for FB event
 
-            if ($newEvent['event_fb_status'] == 1) {
+            if ($newEvent['event_fb_status'] == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
                 // add/edit event to facebook
                 if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
                     $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
@@ -976,7 +991,7 @@ class EventController extends \Core\Controllers\CrudController
         $Event->category = Category::find('id = ' . (int)$post['category']);
         $Event->memberpart = null;
 
-        $this->view->setVar('currentWindowLocation', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
+        $this->view->setVar('currentWindowLocation', urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($Event->name) . '-' . $Event->id));
         $this->view->setVar('eventPreview', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
@@ -1015,7 +1030,6 @@ class EventController extends \Core\Controllers\CrudController
                 $this->cacheData->delete('locations');
                 $this->cacheData->save('locations', $locationsScope);
             }
-            $this->logIt("location changed");
 
             $this->session->set('isGrabbed', false);
             $this->session->set('grabOnce', false);
@@ -1049,8 +1063,8 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-                                AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
-                                AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
+        						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
@@ -1117,7 +1131,6 @@ class EventController extends \Core\Controllers\CrudController
             }
             
             $this->session->set('grabOnce', true);
-            //$this -> session -> set('isGrabbed', true);
         }
     }
 
@@ -1163,11 +1176,4 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
     }
-
-    public function logIt($mess)
-    {
-        $f = fopen('/var/tmp/pthread_log.txt', 'a+');
-        fwrite($f, date('Y-m-d H:i:s') . ": " . $mess . "\r\n");
-        fclose($f);
-    }
-}   
+}	

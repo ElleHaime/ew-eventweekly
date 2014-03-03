@@ -43,6 +43,11 @@ class SearchController extends \Core\Controller
             $postData = $this->session->get('userSearch');
         }
 
+        unset($postData['_url']);
+        if (isset($postData['page'])) {
+            unset($postData['page']);
+        }
+
         $elemExists = function($elem, $empty = true) use (&$postData) {
             if (array_key_exists($elem, $postData) && !is_array($postData[$elem])) {
                 $postData[$elem] = trim(strip_tags($postData[$elem]));
@@ -109,14 +114,16 @@ class SearchController extends \Core\Controller
             }
 
             if ($elemExists('searchStartDate')) {
-                $Event->addCondition('Frontend\Models\Event.start_date > "'.$postData['searchStartDate'].'"');
+                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'"');
             }
 
             if ($elemExists('searchEndDate')) {
-                $Event->addCondition('Frontend\Models\Event.end_date < "'.$postData['searchEndDate'].'"');
+                $Event->addCondition('Frontend\Models\Event.end_date <= "'.$postData['searchEndDate'].'"');
             }else {
-                $Event->addCondition('Frontend\Models\Event.end_date > "'.date('Y-m-d H:m:i', time()).'"');
+                $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
+
+            $Event->addOrder('Frontend\Models\Event.start_date ASC');
 
             if ($elemExists('searchType')) {
                 if ($postData['searchType'] == 'in_map') {
@@ -151,6 +158,7 @@ class SearchController extends \Core\Controller
         }
 
         $this->view->setVar('listTitle', $pageTitle);
+        $this->view->setVar('urlParams', http_build_query($postData));
 
         if ($postData['searchType'] == 'in_map') {
             $this->view->pick('event/mapEvent');

@@ -36,7 +36,7 @@
                                     <div class="span12">
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
-                                                <a href="event/show/{{ event['id'] }}">
+                                                <a href="/{{ toSlugUri(event['name']) }}-{{ event['id'] }}">
                                                     {% if event['logo'] is defined %}
                                                         {% if event['logo'] is empty %}
                                                             {% set pic = defaultEventLogo %}
@@ -51,7 +51,7 @@
                                             </div>
 
                                             <div class="event-one-text">
-                                                <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
+                                                <a href="/{{ toSlugUri(event['name']) }}-{{ event['id'] }}" class="name-link">{{ event['name']|striptags|escape|truncate(160) }}</a>
 
                                                 <div class="date-list">
                                                     {% if event['start_date'] != '0000-00-00' %}
@@ -74,7 +74,7 @@
                                                 </div>
                                                 <p>
                                                     {{ event['description']|striptags|escape|truncate(350) }}
-                                                    <a href="/event/{{ event['id'] }}-{{ toSlugUri(event['name']) }}">Read more</a>
+                                                    <a href="/{{ toSlugUri(event['name']) }}-{{ event['id'] }}">Read more</a>
                                                 </p>
 
                                                 <div class="plans-box clearfix">

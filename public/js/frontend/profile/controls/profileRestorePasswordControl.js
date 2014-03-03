@@ -1,8 +1,8 @@
 define('profileRestorePasswordControl',
-    ['jquery', 'utils', 'noti', 'domReady'],
-    function($, utils, noti) {
+    ['jquery', 'utils', 'noty', 'domReady'],
+    function($, utils, noty) {
 
-        function profileRestorePasswordControl($, utils, noti)
+        function profileRestorePasswordControl($, utils, noty)
         {
             var self = this;
 
@@ -58,7 +58,7 @@ define('profileRestorePasswordControl',
 
                 if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
@@ -93,14 +93,14 @@ define('profileRestorePasswordControl',
 
                 if (!isValid && showNoti) {
                     text = text.substring(0, text.length - 2);
-                    noti.createNotification(text, 'error');
+                    noty({text: text, type: 'error'});
                 }
 
                 return isValid;
             }
         }
 
-        return new profileRestorePasswordControl($, utils, noti);
+        return new profileRestorePasswordControl($, utils, noty);
     }
 );
 

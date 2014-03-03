@@ -40,7 +40,8 @@ require.config({
 
 		//frontend
 		'noti': 'frontend/general/noti',
-		'frontEventLike': 'frontend/general/eventLike',		
+		'noty': 'library/vendors/noty/js/noty/packaged/jquery.noty.packaged',
+		'frontEventLike': 'frontend/general/eventLike',
 		'signupControl': 'frontend/signup/signupControl',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
@@ -89,6 +90,10 @@ require.config({
         },
         'bootstrap' : {
             deps: ['jquery']
+        },
+        'noty' : {
+            deps: ['jquery'],
+            exports: 'noty'
         }
 	},
 
@@ -97,11 +102,42 @@ require.config({
 	callback: function(require) {
         'use strict';
 
+        require(['jquery', 'noty'], function(){
+            $.noty.defaults = {
+                layout: 'ew',
+                theme: 'ew',
+                type: 'alert',
+                text: '', // can be html or string
+                dismissQueue: true, // If you want to use queue feature set this true
+                template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+                animation: {
+                    open: {height: 'toggle'},
+                    close: {height: 'toggle'},
+                    easing: 'swing',
+                    speed: 200 // opening & closing animation speed
+                },
+                timeout: 10000, // delay for closing event. Set false for sticky notifications
+                force: false, // adds notification to the beginning of queue when set to true
+                modal: false,
+                maxVisible: 1, // you can set max visible notification for dismissQueue true option,
+                killer: false, // for close all notifications before show
+                closeWith: ['button'], // ['click', 'button', 'hover']
+                callback: {
+                    onShow: function() {},
+                    afterShow: function() {},
+                    onClose: function() {},
+                    afterClose: function() {}
+                },
+                buttons: false // an array of buttons
+            };
+        });
+
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         var moduleName, fileName = '',
         	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
-            re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
+            //re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
+            re1 = /\/([a-zA-Z0-9\-_]+)*\-(\d+){1}$/;
         if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (re.test(location.pathname) != 'undefined') {
@@ -125,9 +161,13 @@ require.config({
 
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'bootstrap'], function($, frontSearchPanel, bootstrap){
+        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, bootstrap){
             $('.tooltip-text').tooltip();
             frontSearchPanel.init();
+
+            frontTopPanel.init({
+                searchCityBlock: '.searchCityBlock'
+            });
         });
     }	
 });

@@ -14,8 +14,8 @@ class Extractor
         //require_once 'facebook.php';
 
         $config = array(
-            'appId' => '542401642534003',
-            'secret' => '847264f1a4ac77560c3e1101436aa940',
+            'appId' => '166657830211705',
+            'secret' => 'e917842e47a57adb93a1e9761af4117a',
         );
         $this->facebook = new \Thirdparty\Facebook\Facebook($config);
     }
@@ -80,27 +80,6 @@ class Extractor
                 'limit' => false,
                 'patterns' => array('/\$friendsUid/')
             ),
-            /*   array(
-                 'order' => 5,
-                 'name' => 'friend_going_event',
-                 'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
-                             FROM event
-                             WHERE eid IN ($eventsUid)
-                             AND creator != $userUid
-                             AND NOT (creator IN ($friendsUid))
-                               AND start_time > ' . $timelimit . '
-                             ORDER BY eid
-                             LIMIT $start, $lim',
-                 'type' => 'final',
-                 'start' => 0,
-                 'limit' => 200,
-                 'patterns' => array('/\$start/',
-                                     '/\$lim/',
-                                     '/\$userUid/',
-                                     '/\$eventsUid/',
-                                     '/\$friendsUid/')
-               ), */
-
             array(
                 'order' => 5,
                 'name' => 'friend_going_event',
@@ -152,6 +131,33 @@ class Extractor
             ),
             array(
                 'order' => 8,
+                'name' => 'user_page_uid',
+                'query' => 'SELECT page_id
+                      FROM page_admin
+                      WHERE uid = $userUid',
+                'type' => 'prepare',
+                'start' => false,
+                'limit' => false,
+                'patterns' => array('/\$userUid/')
+            ),
+             array(
+                'order' => 9,
+                'name' => 'user_page_event',
+                'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
+                    FROM event
+                    WHERE creator IN ($userPageUid)
+                    AND start_time > ' . $timelimit . ' 
+                    ORDER BY eid                  
+                    LIMIT $start, $lim',
+                'type' => 'final',
+                'start' => 0,
+                'limit' => 200,
+                'patterns' => array('/\$start/',
+                    '/\$lim/',
+                    '/\$userPageUid/')
+            ),
+            array(
+                'order' => 10,
                 'name' => 'page_uid',
                 'query' => 'SELECT page_id
               FROM page_fan
@@ -162,12 +168,11 @@ class Extractor
                 'patterns' => array('/\$userUid/')
             ),
             array(
-                'order' => 9,
+                'order' => 11,
                 'name' => 'page_event',
                 'query' => 'SELECT eid, name, description, location, venue, pic_big, pic_cover, creator, start_time, end_time
                     FROM event
-                    WHERE eid IN ($pageUid)
-                    AND creator != $userUid
+                    WHERE creator IN ($pageUid)
                       AND start_time > ' . $timelimit . ' 
                     ORDER BY eid                  
                     LIMIT $start, $lim',

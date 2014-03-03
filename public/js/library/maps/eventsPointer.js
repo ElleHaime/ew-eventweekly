@@ -1,6 +1,6 @@
 define('eventsPointer',
-	['jquery', 'gmap', 'noti', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	function($, gmap, noti, googleMarker, googleInfoWindow) {
+	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	function($, gmap, noty, googleMarker, googleInfoWindow) {
 
         return {
 
@@ -28,7 +28,7 @@ define('eventsPointer',
                 var $this = this;
 
                 if (_.isEmpty(events)) {
-                    noti.createNotification('No events for your request!', 'warning');
+                    noty({text: 'No events for your request!', type: 'warning'});
                 }else {
                     _.each(events, function(node) {
                         $this.__drawMarker(node);
@@ -133,7 +133,7 @@ define('eventsPointer',
             __createInfoPopupContentSingle: function(event) {
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/event/'+event.slugUri;
+                    eventlink = '/'+event.slugUri;
                 }
                 return '<div class="info-win" id="content">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +

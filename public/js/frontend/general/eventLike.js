@@ -1,7 +1,7 @@
 define('frontEventLike',
-	['jquery', 'noti', 'utils', 'underscore'],
-	function($, noti, utils) {
-		function frontEventLike($, noti) 
+	['jquery', 'noty', 'utils', 'underscore'],
+	function($,  noty, utils) {
+		function frontEventLike($, noty)
 		{
 			var self = this;
 			
@@ -92,9 +92,9 @@ define('frontEventLike',
 		        	}
 		        } else {
 		        	if (data.error  == 'not_logged') {
-                        noti.createNotification('Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to like events', 'warning');
+                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to like events',  type: 'warning'});
 		        	} else {
-			            noti.createNotification('Oops! Error occurred. Can\'t save you choice.', 'error');		        		
+                        noty({text: 'Oops! Error occurred. Can\'t save you choice.', type: 'error'});
 		        	}
 		        }
 		    }
@@ -114,5 +114,5 @@ define('frontEventLike',
 
 		};
 		
-		return new frontEventLike($, noti, utils);
+		return new frontEventLike($, noty, utils);
 });

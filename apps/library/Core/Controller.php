@@ -43,7 +43,13 @@ class Controller extends \Phalcon\Mvc\Controller
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
-        if (!$loc
+        if ($loc === null) {
+            $locModel = new Location();
+            $loc = $locModel->createOnChange();
+            $this->session->set('location', $loc);
+        }
+
+        /*if (!$loc
             || ($member === NULL)
             || ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id))
             && $loc instanceof \stdClass
@@ -59,7 +65,7 @@ class Controller extends \Phalcon\Mvc\Controller
             }
             $this->session->set('location', $location);
         }
-        $loc = $this->session->get('location');
+        $loc = $this->session->get('location'); */
 
         if (!$loc->latitude && !$loc->longitude) {
             $loc->latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
@@ -120,7 +126,7 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);
         }
-//_U::dump($this -> session -> get('memberId'));
+
         if ($this->session->has('role') &&
             $this->session->get('role') == Acl::ROLE_MEMBER &&
             !is_null($this->session->get('member'))
