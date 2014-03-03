@@ -1129,7 +1129,6 @@ class EventController extends \Core\Controllers\CrudController
                 $cron -> assign($task);
                 $cron -> save();
             }
-            
             $this->session->set('grabOnce', true);
         }
     }
