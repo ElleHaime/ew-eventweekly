@@ -154,7 +154,7 @@ class EventController extends \Core\Controllers\CrudController
                     $gallery[] = $eventImage;
                 } else if ($eventImage -> type == 'cover') {
                     $cover = $eventImage;
-                }
+                } 
             }
         }
 

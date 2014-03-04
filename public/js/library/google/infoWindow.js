@@ -13,18 +13,9 @@ define('googleInfoWindow',
                     date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 }
 
-                if (!_.isUndefined(event.image)) {
-                    imgC = event.image.length;
-                    imgSet = false;
-                    for (var im = 0; im < imgC; im++) {
-                        if (event.image[im].type == null) {
-                            img = '/upload/img/event/' + event.id + '/' + event.image[im].image;
-                            imgSet= true;
-                        } 
-                    }
-                }
-
-                if (!imgSet) {
+                if (!_.isUndefined(event.logo)) {
+                    img = '/upload/img/event/' + event.id + '/' + event.logo;
+                } else {
                     img = '/img/logo200.png';
                 }
 

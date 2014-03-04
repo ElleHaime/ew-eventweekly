@@ -37,7 +37,6 @@
                                     {% else %}
                                         <div class="add-img">
                                             <div id="current_event_id" class="event-one-img" event="{{ event.id }}">
-                                                {#<a href="/event/100038">#}
                                                 {% if eventPreview is defined %}
                                                     {% if eventPreviewLogo is defined %}
                                                         <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
@@ -47,8 +46,6 @@
                                                 {% else %}
                                                     <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
                                                 {% endif %}
-
-                                                {#</a>#}
                                             </div>
 
                                            {% if poster is defined or flyer is defined %}
