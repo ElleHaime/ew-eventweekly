@@ -11,7 +11,7 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 5000, // TODO: set some interval
+                requestInterval: 5000, 
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
@@ -20,7 +20,7 @@ define('newGmapEvents',
                 userFriendsGoing: '#userFriendsGoing',
                 userEventsGoing: '#userEventsGoing',
                 userEventsLiked: '#userEventsLiked',
-                alreadyGrabbed: false
+                alreadyGrabbed: true
             };
 
             var interval = null;

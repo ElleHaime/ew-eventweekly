@@ -40,9 +40,7 @@ class EventController extends \Core\Controllers\CrudController
     {
         parent::initialize();
 
-        if (!$this->session->has('isGrabbed')) {
-            $this->session->set('isGrabbed', false);
-            $this->session->set('grabOnce', false);
+        if (!$this->session->has('lastFetchedEvent')) {
             $this->session->set('lastFetchedEvent', 0);
         }
     }
@@ -1030,9 +1028,6 @@ class EventController extends \Core\Controllers\CrudController
                 $this->cacheData->delete('locations');
                 $this->cacheData->save('locations', $locationsScope);
             }
-
-            $this->session->set('isGrabbed', false);
-            $this->session->set('grabOnce', false);
             $this->session->set('lastFetchedEvent', 0);
 
             $loc = $this->session->get('location');
@@ -1088,9 +1083,10 @@ class EventController extends \Core\Controllers\CrudController
             if (count($events) > 0) {
                 $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
             }
+            $res['stop'] = false;
         } else {
+            $res['stop'] = true;
             $this->session->set('lastFetchedEvent', 0);
-            $this->session->set('isGrabbed', true);
         }
 
         if (count($events) > 0) {
@@ -1101,35 +1097,40 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-        $res['stop'] = $this->session->get('isGrabbed');
-
         if ($needGrab === false) {
             return $events;
         }
 
         $this->sendAjax($res);
 
-        if ($this->session->has('user_token')
-            && $this->session->has('user_fb_uid')
-            && $this->session->get('isGrabbed') === false) 
-        {
-            $hash = md5($this -> session -> get('user_fb_uid') . $this -> session -> getId());
-            $taskSetted = \Objects\Cron::findFirst('hash = "' . $hash. '"');
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
+            $newTask = null;
 
-            if (!$taskSetted) {
+            $taskSetted = \Objects\Cron::find('member_id = ' . $this -> session -> get('memberId'));
+            if ($taskSetted -> count() > 0) {
+                foreach ($taskSetted as $task) {
+                    $tsk = $task;
+                }
+                if (time()-($tsk -> hash) > 300) {
+                    $newTask = $tsk;
+                }
+            } else {
+                $newTask = new \Objects\Cron();
+            }
 
-                $cron = new \Objects\Cron();
+            if (!is_null($newTask)) {
                 $params = ['user_token' => $this -> session -> get('user_token'),
                            'user_fb_uid' => $this -> session -> get('user_fb_uid'),
                            'member_id' => $this -> session -> get('memberId')];
                 $task = ['name' => 'extract_facebook_events',
                          'parameters' => serialize($params),
                          'state' => 0,
-                         'hash' => $hash];
-                $cron -> assign($task);
-                $cron -> save();
+                         'member_id' => $this -> session -> get('memberId'),
+                         'hash' => time()];
+                
+                $newTask -> assign($task);
+                $newTask -> save();
             }
-            $this->session->set('grabOnce', true);
         }
     }
 

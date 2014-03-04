@@ -13,10 +13,19 @@ define('googleInfoWindow',
                     date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 }
 
-                if (!_.isUndefined(event.image) && !_.isUndefined(event.image[0])) {
-                    img = event.image[0].image;
-                }else if (!_.isUndefined(event.pic_big)) {
-                    img = event.pic_big;
+                if (!_.isUndefined(event.image)) {
+                    imgC = event.image.length;
+                    imgSet = false;
+                    for (var im = 0; im < imgC; im++) {
+                        if (event.image[im].type == null) {
+                            img = '/upload/img/event/' + event.id + '/' + event.image[im].image;
+                            imgSet= true;
+                        } 
+                    }
+                }
+
+                if (!imgSet) {
+                    img = '/img/logo200.png';
                 }
 
                 if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0].key)) {

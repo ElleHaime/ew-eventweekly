@@ -54,10 +54,6 @@ class MemberListener {
             $this->subject->session->set('role', $params->role);
             $this->subject->session->set('memberId', $params->id);
         }
-
-        $this -> subject -> session -> set('isGrabbed', false);
-        $this -> subject -> session -> set('grabOnce', false);
-        $this -> subject -> session -> set('lastFetchedEvent', 0);
     }
 
 
