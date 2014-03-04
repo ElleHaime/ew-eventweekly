@@ -71,6 +71,11 @@ define('frontCampaignEditControl',
 
                 $(self.settings.form).submit(function(){
                     if (!self.__checkRequiredFields()) return false;
+
+                    if ($(self.settings.inpLocation).val() == '') {
+                        $(self.settings.coordsLocationLat).val('');
+                        $(self.settings.coordsLocationLng).val('');
+                    }
                 });
 			}
 

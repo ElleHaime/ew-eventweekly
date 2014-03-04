@@ -110,8 +110,9 @@ class CampaignController extends \Core\Controllers\CrudController
 			$location = $loc -> createOnChange(array('latitude' => $campaign['location_latitude'], 
 													 'longitude' => $campaign['location_longitude']));
 			$newCamp['location_id'] = $location -> id;
-
-		} 
+		} else {
+            $newCamp['location_id'] = '';
+        }
 
 		//process image
 		foreach ($this -> request -> getUploadedFiles() as $file) {
