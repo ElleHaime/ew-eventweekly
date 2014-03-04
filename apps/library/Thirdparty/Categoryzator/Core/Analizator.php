@@ -44,11 +44,25 @@ class Analizator {
     private $entries = array();
 
     /**
+     * Possible names
+     *
+     * @var array
+     */
+    private $possibleNames = array();
+
+    /**
      * Default category key
      *
      * @var string
      */
     private $defaultCategory = 'other';
+
+    /**
+     * Regex for names
+     *
+     * @var string
+     */
+    private $nameRegex = '([A-Z][\w]*|\s)+';
 
     /**
      * Get categories and set analiz type
@@ -92,11 +106,18 @@ class Analizator {
      */
     private function countWords()
     {
-        foreach ($this->Text->content as $index => $content) {
+        foreach ($this->Text->content as $content) {
+            preg_match_all('/'.$this->nameRegex.'/', $content, $matches);
+            if (isset($matches[0]) && !empty($matches[0])) {
+                foreach ($matches[0] as $posName) {
+                    $this->possibleNames[] = trim($posName);
+                }
+            }
+
             $words = explode(' ', $content);
 
             foreach ($words as $word) {
-                $word = preg_replace("/[^\w$]/", '', $word);
+                $word = preg_replace('/[^\w$]/', '', $word);
 
                 $word = explode('_', Inflector::underscore($word));
 
@@ -126,42 +147,82 @@ class Analizator {
         $entries = array();
         foreach ($this->categories as $categoryKey => $category) {
 
-            foreach ($category as $keyWord) {
+            foreach ($category as $key => $keyWord) {
 
-                if (array_key_exists($keyWord, $this->countedWords) || array_key_exists(Inflector::pluralize($keyWord), $this->countedWords)) {
+                $insert = function($keyWord) use (&$entries, &$categoryKey) {
+                    if (array_key_exists($keyWord, $this->countedWords) || array_key_exists(Inflector::pluralize($keyWord), $this->countedWords)) {
 
-                    if (!array_key_exists($keyWord, $entries)) {
-                        $entries[$keyWord] = 0;
-                        if (!in_array($keyWord, $this->Text->tag)) {
-                            $this->Text->tag[$categoryKey][] = $keyWord;
+                        if (!array_key_exists($keyWord, $entries)) {
+                            $entries[$keyWord] = 0;
+                            if (!in_array($keyWord, $this->Text->tag)) {
+                                $this->Text->tag[$categoryKey][] = $keyWord;
+                            }
                         }
+
+                        if (array_key_exists($keyWord, $entries)) {
+                            $entries[$keyWord]++;
+                        }
+
                     }
 
+
+                    //
                     if (array_key_exists($keyWord, $entries)) {
-                        $entries[$keyWord]++;
-                    }
 
+                        if (!array_key_exists($categoryKey, $this->entries)) {
+                            //$this->entries[$categoryKey] = 0;
+                            $this->entries[$categoryKey] = array(
+                                'key' => $categoryKey,
+                                'entry' => 0
+                            );
+                        }
+
+                        if (array_key_exists($categoryKey, $this->entries)) {
+                            //$this->entries[$categoryKey]++;
+                            $this->entries[$categoryKey]['entry']++;
+                        }
+
+                    }
+                };
+
+                if (is_array($keyWord)) {
+                    //$keyWord = $key;
+
+                    foreach ($keyWord as $subCat) {
+
+                        if (in_array($subCat, $this->possibleNames)) {
+
+                            if (!array_key_exists($key, $entries)) {
+                                $entries[$key] = 0;
+                                if (!in_array($key, $this->Text->tag)) {
+                                    $this->Text->tag[$categoryKey][] = $key;
+                                }
+                            }
+
+                            if (array_key_exists($key, $entries)) {
+                                $entries[$key]++;
+                            }
+
+                            if (!array_key_exists($categoryKey, $this->entries)) {
+                                //$this->entries[$categoryKey] = 0;
+                                $this->entries[$categoryKey] = array(
+                                    'key' => $categoryKey,
+                                    'entry' => 0
+                                );
+                            }
+
+                            if (array_key_exists($categoryKey, $this->entries)) {
+                                //$this->entries[$categoryKey]++;
+                                $this->entries[$categoryKey]['entry']++;
+                            }
+
+                        }
+
+                    }
+                }else {
+                    $insert($keyWord);
                 }
 
-            }
-
-            foreach ($category as $keyWord) {
-                if (array_key_exists($keyWord, $entries)) {
-
-                    if (!array_key_exists($categoryKey, $this->entries)) {
-                        //$this->entries[$categoryKey] = 0;
-                        $this->entries[$categoryKey] = array(
-                            'key' => $categoryKey,
-                            'entry' => 0
-                        );
-                    }
-
-                    if (array_key_exists($categoryKey, $this->entries)) {
-                        //$this->entries[$categoryKey]++;
-                        $this->entries[$categoryKey]['entry']++;
-                    }
-
-                }
             }
 
         }
