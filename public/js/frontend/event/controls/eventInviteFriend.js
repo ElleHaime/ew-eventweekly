@@ -2,8 +2,8 @@
  * Created by Slava Basko on 12/19/13 <basko.slava@gmail.com>.
  */
 
-define('frontEventInviteFriend', ['jquery', 'noty', 'domReady'],
-    function($, noty) {
+define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
+    function($, noty, fb) {
 
         var EventInviteFriend = {
 
@@ -193,8 +193,9 @@ define('frontEventInviteFriend', ['jquery', 'noty', 'domReady'],
             __getFriends: function() {
                 var $this = this;
                 if ($this.__issetFB()) {
+//console.log(fb);                    
                     FB.api('/me/friends?fields=name,picture.width(40).height(40)', function(response) {
-                        console.log(response);
+console.log(response);
                         $this.__friends = response.data;
                         $this.__renderFriends();
                     });
