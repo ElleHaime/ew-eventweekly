@@ -30,7 +30,7 @@ define('googleInfoWindow',
 
                 return '<div class="info-win '+category+'-category " id="content"> ' +
                     '<div class="events-img-box">' +
-                    '<img  class="events-img" src="'+img+'" alt="">' +
+                    '<a href="'+eventlink+'"><img  class="events-img" src="'+img+'"></a>' +
                     '<div class="events-date-box"><i class="icon-time"></i>'+date+'</div> ' +
                     '</div>' +
                     '<div class="events-descriptions-box">' +

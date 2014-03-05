@@ -100,8 +100,8 @@ class MemberListener {
             $this->subject->session->set('userFriendsEventsGoing', $emfSummary -> count());
             // set cache
             foreach ($emfSummary as $item) {
-                if (!$this -> subject -> cacheData -> exists('member.friends.go.' . $userId . '.' . $item -> event_id)) {
-                    $this -> subject -> cacheData -> save('member.friends.go.' . $userId . '.' . $item -> event_id, $item -> event_id);
+                if (!$this -> subject -> cacheData -> exists('member.friends.go.' . $userId . '.' . $item -> id)) {
+                    $this -> subject -> cacheData -> save('member.friends.go.' . $userId . '.' . $item -> id, $item -> id);
                 }
             }
         }
