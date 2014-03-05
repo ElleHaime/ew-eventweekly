@@ -109,6 +109,8 @@ define('frontEventInviteFriend', ['jquery', 'noty', 'domReady'],
                                 });
                             }
                             $this.__removeFriendList();
+
+                            $($this.settings.inviteAllBtn).css('display', 'none');
                         }
                     }
                 }

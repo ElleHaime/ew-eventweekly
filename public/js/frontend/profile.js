@@ -7,7 +7,8 @@ require([
     'utils',
     'domReady',
     'underscore',
-    'jCookie'
+    'jCookie',
+    'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'
     ],
 
     function($, fb, frontMemberEditControl, frontMemberChangeLocation, noty) {
