@@ -683,6 +683,8 @@ class EventController extends \Core\Controllers\CrudController
         }
         if (!empty($newEvent['location_id']) && $newEvent['location_id']) {
             $venueInfo['location_id'] = $newEvent['location_id'];
+        } else {
+            $venueInfo['location_id'] = '';
         }
 
         $venueInfo['name'] = $event['venue'];
@@ -692,6 +694,8 @@ class EventController extends \Core\Controllers\CrudController
 
         if ($vn) {
             $newEvent['venue_id'] = $vn->id;
+        } else {
+            $newEvent['venue_id'] = '';
         }
 
         // process address

@@ -216,6 +216,11 @@ define('frontEventEditControl',
                     if (!self.__checkRequiredFields(true)) return false;
 //                    if (!self.__checkDatesContradictions(true)) return false;
 
+                    if ($(self.settings.inpVenue).val() == '') {
+                        $(self.settings.coordsVenueLat).val('');
+                        $(self.settings.coordsVenueLng).val('');
+                    }
+
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
                 });
