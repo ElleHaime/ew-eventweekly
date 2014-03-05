@@ -124,7 +124,8 @@ define('utils',
 					 var date = timestamp;
 				 } else {
 					 if (typeof timestamp == 'string' || typeof timestamp == 'object') {
-						 var date = new Date(timestamp);
+                         var time = new Date(timestamp);
+                         var date = new Date(time.getTime() + (0.00 * 60 + time.getTimezoneOffset()) * 60 * 1000);
 					 } else {
 						 var date = new Date();
 					 }
