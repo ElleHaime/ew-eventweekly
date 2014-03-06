@@ -1168,6 +1168,34 @@ class EventController extends \Core\Controllers\CrudController
 
 
     /**
+     * @Route("/event/test-get-counter", methods={'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function testGetCounterAction()
+    {
+        $Event = new Event();
+        $EventFriend = new EventMemberFriend();
+
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
+            $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
+            $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
+            $res['userEventsGoing'] = $this->session->get('userEventsGoing');
+            $res['userEventsLiked'] = $this->session->get('userEventsLiked');
+
+            $this->session->set('userEventsCreated', $res['eventsCreated']);
+            $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
+
+            $this->view->setVar('userEventsCreated', $res['eventsCreated']);
+            $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
+            $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
+            $this->view->setVar('userEventsLiked', $this->session->get('userEventsLiked'));
+        }
+
+        $this->sendAjax($res);
+    }
+
+
+    /**
      * @Route("/event/grab", methods={'GET'})
      * @Acl(roles={'guest', 'member'});
      */
