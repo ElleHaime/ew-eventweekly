@@ -49,24 +49,6 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->session->set('location', $loc);
         }
 
-        /*if (!$loc
-            || ($member === NULL)
-            || ($loc instanceof \stdClass || (is_object($member) && $loc->id != $member->location_id))
-            && $loc instanceof \stdClass
-        ) {
-            $location = false;
-            $locModel = new Location();
-            if ($member) {
-                $location = $locModel::findFirst('id = ' . $member->location_id);
-            }
-
-            if ($location === false) {
-                $location = $locModel->createOnChange();
-            }
-            $this->session->set('location', $location);
-        }
-        $loc = $this->session->get('location'); */
-
         if (!$loc->latitude && !$loc->longitude) {
             $loc->latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
             $loc->longitude = (float)(($loc->longitudeMin + $loc->longitudeMax) / 2);

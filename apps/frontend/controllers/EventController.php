@@ -1017,23 +1017,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
             $this->session->set('location', $newLocation);
-
-            // check cache and reset if needed
-            $locationsScope = $this->cacheData->get('locations');
-
-            if (!isset($locationsScope[$newLocation->id])) {
-                $locationsScope[$newLocation->id] = array(
-                    'latMin' => $newLocation->latitudeMin,
-                    'lonMin' => $newLocation->longitudeMin,
-                    'latMax' => $newLocation->latitudeMax,
-                    'lonMax' => $newLocation->longitudeMax,
-                    'city' => $newLocation->city,
-                    'country' => $newLocation->country);
-                $this->cacheData->delete('locations');
-                $this->cacheData->save('locations', $locationsScope);
-            }
             $this->session->set('lastFetchedEvent', 0);
-
             $loc = $this->session->get('location');
         }
 
@@ -1110,7 +1094,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
             $newTask = null;
 
-            $taskSetted = \Objects\Cron::find('member_id = ' . $this -> session -> get('memberId'));
+            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId')));
             if ($taskSetted -> count() > 0) {
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
