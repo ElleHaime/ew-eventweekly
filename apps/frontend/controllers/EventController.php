@@ -912,7 +912,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/import-categories", methods={"GET", "POST"})
-     * @Acl(roles={'member','guest'});
+     * @Acl(roles={'guest'});
      */
     /*public function importCategoriesAction()
     {
@@ -939,12 +939,17 @@ class EventController extends \Core\Controllers\CrudController
                 if (!empty($children)) {
                     unset($children[0]);
                     foreach ($children as $key => $cat) {
-                        $Tag = new Tag();
+                        $Tag = new \Frontend\Models\Tag();
 
-                        $Tag->key = $cat;
-                        $Tag->name = ucfirst($cat);
+                        if (is_string($cat)) {
+                            $Tag->key = $cat;
+                            $Tag->name = ucfirst($cat);
+                        } elseif (is_array($cat)) {
+                            $Tag->key = $key;
+                            $Tag->name = ucfirst($key);
+                        }
+
                         $Tag->category_id = $parent->id;
-
                         $Tag->save();
                     }
                 }

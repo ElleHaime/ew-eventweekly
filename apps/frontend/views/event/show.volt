@@ -258,21 +258,14 @@
                                                         <span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>
                                                     {% endfor %}
 
-                                                    {#--------- comment tags
-
                                                     <div class="sub_category clearfix">
-                                                       <div>
-                                                           <a href="#"><span>pop rock</span></a>
-                                                       </div>
-                                                       <div>
-                                                           <a href="#"><span>new album</span></a>
-                                                       </div>
-                                                       <div>
-                                                           <a href="#"><span>event of the year 2014</span></a>
-                                                       </div>
+                                                        {% for Ctag in event.tag %}
+                                                        <div>
+                                                            <a href="#"><span>{{ Ctag.name }}</span></a>
+                                                        </div>
+                                                        {% endfor %}
                                                     </div>
                                                     <a href="#" class="show-all">show all tags</a>
-                                                    #}
 
                                                     {% if event.category.getFirst().key == 'other' %}
                                                         <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
