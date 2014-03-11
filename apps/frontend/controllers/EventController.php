@@ -160,6 +160,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
+        $this->view->setVar('cover', isset($cover) ? $cover : null);
         $this->view->setVar('gallery', $gallery);
 
         $eventTags = [];
