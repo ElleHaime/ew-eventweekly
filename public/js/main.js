@@ -6,8 +6,6 @@
         }, 5000);
     });
 
-
-
     $('#user-down-caret').click(function () {
         $('#user-down').slideToggle('2000');
     });

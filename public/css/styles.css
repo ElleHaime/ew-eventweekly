@@ -571,6 +571,9 @@ footer .login-variants div.read-more {
 		display:none;
 	}
 
+	.padd_70 {
+		padding: 69px 0 0 0 !important;
+	}
  
 
 }
