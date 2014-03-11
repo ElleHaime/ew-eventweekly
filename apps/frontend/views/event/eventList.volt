@@ -117,7 +117,11 @@
                                                     {% set eVenue = 'Undefined place' %}
                                                     {% if event.venue.address is empty %}
                                                         {% if event.location.city is empty %}
-                                                            {% set eVenue = 'Undefined place' %}
+                                                            {% if event.address is empty %}
+                                                                {% set eVenue = 'Undefined place' %}
+                                                            {% else %}
+                                                                {% set eVenue = event.address %}
+                                                            {% endif %}
                                                         {% else %}
                                                             {% set eVenue = event.location.city %}
                                                         {% endif %}

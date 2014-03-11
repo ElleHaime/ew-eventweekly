@@ -13,10 +13,10 @@ define('googleInfoWindow',
                     date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 }
 
-                if (!_.isUndefined(event.image) && !_.isUndefined(event.image[0])) {
-                    img = event.image[0].image;
-                }else if (!_.isUndefined(event.pic_big)) {
-                    img = event.pic_big;
+                if (!_.isUndefined(event.logo)) {
+                    img = '/upload/img/event/' + event.id + '/' + event.logo;
+                } else {
+                    img = '/img/logo200.png';
                 }
 
                 if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0].key)) {
