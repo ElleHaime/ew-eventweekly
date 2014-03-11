@@ -1057,7 +1057,7 @@ class EventController extends \Core\Controllers\CrudController
         $newLocation = new Location();
         $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
 
-        if ($newLocation->id != $loc->id) {
+        if (is_object($newLocation) && $newLocation->id != $loc->id) {
             if (!empty($city)) {
                 $newLocation->city = $city;
                 $newLocation->alias = $city;
@@ -1102,14 +1102,30 @@ class EventController extends \Core\Controllers\CrudController
         $EventFriend = new EventMemberFriend();
         $loc = $this->session->get('location');
 
-        if (!empty($lat) && !empty($lng)) {
+        $resetLocation = $this->request->getQuery('resetLocation');
+
+        if (!empty($lat) && !empty($lng) && $resetLocation) {
             $loc = $this->resetLocation($lat, $lng, $city);
+            if (!$loc) {
+                $this->sendAjax([
+                        'status' => 'ERROR',
+                        'message' => 'no events'
+                    ]);
+                exit();
+            }
+            $latitudeMin = $loc->latitudeMin;
+            $latitudeMax = $loc->latitudeMax;
+            $longitudeMin = $loc->longitudeMin;
+            $longitudeMax = $loc->longitudeMax;
         } else {
-            $loc = $this->session->get('location');
+            $latitudeMin = $loc->latitudeMin;
+            $latitudeMax = $loc->latitudeMax;
+            $longitudeMin = $loc->longitudeMin;
+            $longitudeMax = $loc->longitudeMax;
         }
 
-        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
+        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $latitudeMin . ' AND ' . $latitudeMax . '
+        						AND Frontend\Models\Event.longitude BETWEEN ' . $longitudeMin . ' AND ' . $longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');

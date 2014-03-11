@@ -65,7 +65,8 @@ require.config({
         'googleMap': 'library/google/map',
         'googleMc': 'library/google/mc',
         'googleMarker': 'library/google/marker',
-        'googleInfoWindow': 'library/google/infoWindow'
+        'googleInfoWindow': 'library/google/infoWindow',
+        'llCalc': 'library/google/llCalc'
 	},
 
 	shim: {

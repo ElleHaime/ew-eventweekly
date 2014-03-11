@@ -44,6 +44,11 @@ define('googleMap',
 
             Map.markers = self.markers;
             Map.events = self.events;
+            Map.lastCenter = Map.getCenter();
+
+            Map.setUpEvent = function(eventName, callback) {
+                google.maps.event.addListener(Map, eventName, callback);
+            };
 
             return Map;
         }

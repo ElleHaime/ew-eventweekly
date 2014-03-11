@@ -48,76 +48,49 @@ class Location extends Model
 		self::$cacheData -> save('locations', $locationsCache);
 	}
 
-	public function createOnChange($argument = array(), $network = 'facebook')
+	public function createOnChange($arguments = array(), $network = 'facebook')
 	{
-		//$argument = array('latitude' => 37.881168, 'longitude' => 41.13508999999999);
-		/*$geo = $this -> getGeo();
-		$newLoc = $geo -> getLocation($argument); */
+        $query = array();
+        $location = null;
 
-		$geo = $this -> getGeo();
-		$isGeoObject = false;
-		$newLoc = array();
-		
-		if (empty($argument)) {
-			$argument = $geo -> getLocation();
-			if ($argument) {
-				$isGeoObject = true;
-			}
-		}
-		$query = array();
+        $getLocation = function($arguments = null) {
+            $geo = $this->getGeo();
+            if (!empty($arguments)) {
+                $res = $geo->getLocation($arguments);
+            }else {
+                $res = $geo->getLocation();
+            }
+            return $res;
+        };
 
-		if (isset($argument['longitude'])) {
-			$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
-		}
-		if (isset($argument['latitude'])) {
-			$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
+        // get location by IP
+		if (empty($arguments)) {
+            $arguments = $getLocation();
 		}
 
-		$query = implode(' and ', $query);
+        // if specify coords build query
+		if (isset($arguments['longitude']) && isset($arguments['latitude'])) {
+			$query[] = 'longitudeMin <= ' . (float)$arguments['longitude'] . ' AND ' . (float)$arguments['longitude'] . ' <= longitudeMax';
+            $query[] = 'latitudeMin <= ' . (float)$arguments['latitude'] . ' AND ' . (float)$arguments['latitude'] . ' <= latitudeMax';
+            $query = implode(' and ', $query);
+		}
 
+        // try find location in database
         if (!empty($query)) {
-            $isLocationExists = self::findFirst($query);
-        }else {
-            $isLocationExists = false;
+            $location = self::findFirst($query);
         }
 
-		if (!$isLocationExists) {
-			if (!$isGeoObject) {
-				if (isset($argument['longitude']) && isset($argument['latitude'])) {
-					$newLoc = $geo -> getLocation($argument);
-				}				
-			} else {
-				$newLoc = $argument;
-			}
-			
-			if ($newLoc) {
-				if (!isset($argument['id']) || empty($argument['id'])) {
-					$newLoc[$network . '_id'] = null;
-				} else {
-					$newLoc[$network . '_id'] = $argument['id'];
-				}
-			}
-			
-			if (!empty($newLoc)) {
-				$this -> assign($newLoc);
-				$this -> save();
-
-				$isLocationExists = $this;
-			}
-		}
-
-		if (!empty($newLoc)) {
-			$isLocationExists -> latitude = $newLoc['latitude'];
-			$isLocationExists -> longitude = $newLoc['longitude'];
-		} else {
-			$isLocationExists -> latitude = (float)$argument['latitude'];
-			$isLocationExists -> longitude = (float)$argument['longitude'];
-		}
-		$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
-		$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
-		$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
-		$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
+        // If no location  in database
+        if (empty($location)) {
+            $location = new self();
+            $newLoc = $getLocation($arguments);
+            if (!empty($newLoc)) {
+                $location->save($newLoc);
+            }else {
+                $location = $newLoc;
+            }
+        }
 	
-		return $isLocationExists;
+		return $location;
 	} 
 }

@@ -13,9 +13,6 @@ require([
     function($, fb, googleMap, newGmapEvents, googleMc, utils, noty) {
         var locationElem = $('#current_location');
 
-        console.log('type');
-        console.log(typeof googleMap);
-
         var map = new googleMap({
             mapCenter: {
                 lat: locationElem.attr('latitude'),
