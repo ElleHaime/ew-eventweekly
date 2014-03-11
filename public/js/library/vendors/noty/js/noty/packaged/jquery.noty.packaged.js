@@ -474,12 +474,13 @@ if (typeof Object.create !== 'function') {
         buttons:false
     };
 
+/*
     $(window).resize(function () {
         $.each($.noty.layouts, function (index, layout) {
             layout.container.style.apply($(layout.container.selector));
         });
     });
-
+*/
 })(jQuery);
 
 // Helpers
@@ -497,7 +498,7 @@ window.noty = function noty(options) {
 			selector: 'ul#noty_bottom_layout_container',
 			style: function() {
 				$(this).css({
-					bottom: 0,
+					bottom: 100,
 					left: '5%',
 					position: 'fixed',
 					width: '90%',
@@ -505,7 +506,7 @@ window.noty = function noty(options) {
 					margin: 0,
 					padding: 0,
 					listStyleType: 'none',
-					zIndex: 9999999
+					zIndex: 130
 				});
 			}
 		},
@@ -844,7 +845,7 @@ window.noty = function noty(options) {
 					margin: 0,
 					padding: 0,
 					listStyleType: 'none',
-					zIndex: 9999999
+					zIndex: 130
 				});
 			}
 		},
@@ -878,7 +879,7 @@ window.noty = function noty(options) {
 					margin: 0,
 					padding: 0,
 					listStyleType: 'none',
-					zIndex: 9999999
+					zIndex: 130
 				});
 			}
 		},
@@ -1189,7 +1190,7 @@ window.noty = function noty(options) {
             selector: 'ul#noty_top_layout_container',
             style: function() {
                 $(this).css({
-                    top: '77px',
+                    bottom: '0px',
                     left: 0,
                     position: 'fixed',
                     width: '100%',
@@ -1197,7 +1198,7 @@ window.noty = function noty(options) {
                     margin: 0,
                     padding: 0,
                     listStyleType: 'none',
-                    zIndex: 9999999
+                    zIndex: 130
                 });
             }
         },
@@ -1342,8 +1343,8 @@ window.noty = function noty(options) {
                 case 'alert': case 'notification':
                 this.$bar.css({backgroundColor: '#FFF', borderColor: '#CCC', color: '#444'}); break;
                 case 'warning':
-                    this.$bar.css({backgroundColor: '#FCF8E3', borderColor: '#FBEED5', color: '#C09853'});
-                    this.$buttons.css({borderTop: '1px solid #FBEED5'}); break;
+                    this.$bar.css({backgroundColor: '#DFB253', borderColor: '#DFB253', color: '#444'});
+                    this.$buttons.css({borderTop: '1px solid #DFB253'}); break;
                 case 'error':
                     this.$bar.css({backgroundColor: '#F2DEDE', borderColor: '#EED3D7', color: '#B94A48'});
                     this.$buttons.css({borderTop: '1px solid #EED3D7'}); break;

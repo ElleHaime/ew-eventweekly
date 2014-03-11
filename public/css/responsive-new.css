@@ -223,9 +223,7 @@
     .facebook-button .button {
         width: 50%;
     }
-    .big-top {
-        margin-bottom: 0;
-    }
+    
     .how-it-works {
         padding-bottom: 20px;
     }
@@ -240,10 +238,7 @@
         display: inline;
     }
 
-    .how-it-works {
-       padding-top: 20px;
-        clear: both;
-    }
+ 
     .event-list-btn {
         float: left;
         clear: both;
