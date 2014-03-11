@@ -927,19 +927,19 @@ class EventController extends \Core\Controllers\CrudController
         $categories = $Parser->getCategories();
 
         if (!empty($categories)) {
-            foreach ($categories as $categoryKey => $children) {
-                $Category = new Category();
-
-                $Category->key = $categoryKey;
-                $Category->name = ucfirst($categoryKey);
-                $Category->parent_id = 0;
-
-                if ($categoryKey === 'other') {
-                    $Category->is_default = 1;
-                }
-
-                $Category->save();
-            }
+//            foreach ($categories as $categoryKey => $children) {
+//                $Category = new Category();
+//
+//                $Category->key = $categoryKey;
+//                $Category->name = ucfirst($categoryKey);
+//                $Category->parent_id = 0;
+//
+//                if ($categoryKey === 'other') {
+//                    $Category->is_default = 1;
+//                }
+//
+//                $Category->save();
+//            }
 
             foreach ($categories as $categoryKey => $children) {
                 $parent = Category::findFirst('key = "'.$categoryKey.'"');
