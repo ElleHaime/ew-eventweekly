@@ -259,12 +259,13 @@
                                                     {% endfor %}
 
                                                     <div class="sub_category clearfix">
-                                                        {% for Ctag in event.tag %}
-                                                        <div>
-                                                            <a href="#"><span>{{ Ctag.name }}</span></a>
-                                                        </div>
+                                                        {% for name in eventTags %}
+                                                            <div>
+                                                                <a href="#"><span>{{ name }}</span></a>
+                                                            </div>
                                                         {% endfor %}
                                                     </div>
+
                                                     <a href="#" class="show-all">show all tags</a>
 
                                                     {% if event.category.getFirst().key == 'other' %}

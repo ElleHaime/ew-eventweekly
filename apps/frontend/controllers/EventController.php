@@ -162,9 +162,16 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('gallery', $gallery);
 
+        $eventTags = [];
+        foreach ($event->tag as $Tag) {
+            $eventTags[] = $Tag->name;
+        }
+
+
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
-            'eventMetaData' => $event
+            'eventMetaData' => $event,
+            'eventTags' => array_unique($eventTags)
         );
     }
 
