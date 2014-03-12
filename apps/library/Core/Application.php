@@ -229,12 +229,6 @@ class Application extends BaseApplication
 	protected function _initCache(\Phalcon\DI $di)
 	{
 		$frontCache = new Phalcon\Cache\Frontend\Data(['lifetime' => $this -> _config -> application -> cache -> lifetime]);
-		/*$cache = new Phalcon\Cache\Backend\Memcache($frontCache, array(
-			'host' => $this -> _config -> application -> cache -> host,
-			'port' => $this -> _config -> application -> cache -> port,
-			'persistent' => $this -> _config -> application -> cache -> persistent,
-			'prefix' => $this -> _config -> application -> cache -> prefix
-		 )); */
 		$cache = new \Core\Cache\Backend\Memcache($frontCache, [
 			'host' => $this -> _config -> application -> cache -> host,
 			'port' => $this -> _config -> application -> cache -> port,
