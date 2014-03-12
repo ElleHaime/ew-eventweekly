@@ -6,7 +6,6 @@ use Categoryzator\Categoryzator;
 use Categoryzator\Core\Text;
 use Objects\Event as EventObject,
     Core\Utils as _U,
-    Thirdparty\Facebook\Extractor,
     Frontend\Models\Location,
     Frontend\Models\Venue,
     Frontend\Models\MemberNetwork,

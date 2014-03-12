@@ -116,8 +116,9 @@ class MemberListener {
         $params = $data['member'];
         $fbUId = $data['uid'];
         $token = $data['token'];
+        $di = $params -> getDi();
 
-        $fbE = new Extractor();
+        $fbE = new Extractor($di);
         $res = $fbE->getFQL(array('me' => 'SELECT current_location FROM user WHERE uid = '.$fbUId), $token);
 
         if (isset($res['MESSAGE'][0]['fql_result_set'][0])) {
