@@ -13,15 +13,12 @@ require([
     function($, fb, googleMap, newGmapEvents, googleMc, utils, noty) {
         var locationElem = $('#current_location');
 
-        console.log('type');
-        console.log(typeof googleMap);
-
         var map = new googleMap({
             mapCenter: {
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')
             },
-            mapZoom: $('#isMobile').val() === '1' ? 20 : 15
+            mapZoom: $('#isMobile').val() === '1' ? 7 : 12
         });
 
         var Mc = new googleMc({

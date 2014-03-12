@@ -95,7 +95,7 @@ class Geo extends Plugin
 			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']); 
 		}
 
-		if ($queryParams != '') {	
+		if ($queryParams != '') {
 			$units = array();
 
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
