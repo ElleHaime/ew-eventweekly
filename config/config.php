@@ -35,7 +35,6 @@ $cfg_settings = array(
 			'cacheDir' => ROOT_APP . 'var/cache/data/',
 			'host' => 'localhost',
 			'port' => 11211,
-			'appPrefix' => 'dev',
 			'persistent' => false
 		),
 		'namespaces' => array(

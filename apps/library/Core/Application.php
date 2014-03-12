@@ -14,15 +14,15 @@ use \Phalcon\Logger\Adapter\File as FileAdapter;
 
 class Application extends BaseApplication
 {
-	private $_config 			= null;
-	private $_facebookConfig	= null;
-	private $_databaseConfig 	= null;
-	private $_router 			= null;
-	protected $_loader			= null;
-	protected $_annotations		= null;
-	public static $defModule	= 'frontend';
-	public static $defNamespace	= '';
-	public static $defBaseUri	= '/';
+	private $_config 				= null;
+	private $_facebookConfig		= null;
+	private $_databaseConfig 		= null;
+	private $_router 				= null;
+	protected $_loader				= null;
+	protected $_annotations			= null;
+	public static $defModule		= 'frontend';
+	public static $defNamespace		= '';
+	public static $defBaseUri		= '/';
 	
 	
 	public function __construct()
@@ -233,7 +233,7 @@ class Application extends BaseApplication
 			'host' => $this -> _config -> application -> cache -> host,
 			'port' => $this -> _config -> application -> cache -> port,
 			'persistent' => $this -> _config -> application -> cache -> persistent,
-			'prefix' => $this -> _config -> application -> cache -> appPrefix
+			'prefix' => $this -> _databaseConfig -> dbname
 		 ]);
 
 
