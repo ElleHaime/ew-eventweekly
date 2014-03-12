@@ -25,6 +25,7 @@ class Extractor
         $this -> facebook = new \Thirdparty\Facebook\Facebook($config);
     }
 
+
     public function getQueriesScope()
     {
         $timelimit = strtotime(date('Y-m-d H:i:s', strtotime('today -1 minute')));
