@@ -15,7 +15,7 @@ define('googleMap',
                     lat: null,
                     lng: null
                 },
-                mapZoom: 20,
+                mapZoom: 12,
                 mapTypeId: 'ROADMAP', // https://developers.google.com/maps/documentation/javascript/reference?hl=en#MapTypeId
                 // marker clusterer settings
                 mcGridSize: 50,
@@ -44,6 +44,11 @@ define('googleMap',
 
             Map.markers = self.markers;
             Map.events = self.events;
+            Map.lastCenter = Map.getCenter();
+
+            Map.setUpEvent = function(eventName, callback) {
+                google.maps.event.addListener(Map, eventName, callback);
+            };
 
             return Map;
         }

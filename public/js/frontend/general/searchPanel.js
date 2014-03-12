@@ -3,8 +3,8 @@
  */
 
 define('frontSearchPanel', 
-        ['jquery', 'noty', 'utils', 'bootstrapDatepicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
-        function($, noty, utils, bootstrapDatepicker) {
+        ['jquery', 'noty', 'utils', 'normalDatePicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+        function($, noty, utils, normalDatePicker) {
 
     return {
 
@@ -123,23 +123,19 @@ define('frontSearchPanel',
             var nowTemp = new Date();
             var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
 
-            var startDate = $($this.settings.startDatePicker).datepicker({
+            var startDate = $($this.settings.startDatePicker).datetimepicker({
                 format: 'yyyy-mm-dd',
-                onRender: function() {
-                    return now.valueOf();
-                }
-            }).on('changeDate', function() {
-                    startDate.hide();
-            }).data('datepicker');
+                pickDate: false,
+                autoclose: true,
+                minView: 2
+            });
 
-            var endDate = $($this.settings.endDatePicker).datepicker({
+            var endDate = $($this.settings.endDatePicker).datetimepicker({
                 format: 'yyyy-mm-dd',
-                onRender: function() {
-                    return now.valueOf();
-                }
-            }).on('changeDate', function() {
-                    endDate.hide();
-            }).data('datepicker');
+                pickDate: false,
+                autoclose: true,
+                minView: 2
+            });
         },
 
         /**

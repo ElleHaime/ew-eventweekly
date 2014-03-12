@@ -86,7 +86,7 @@ class EventController extends \Core\Controllers\CrudController
     public function eventlistAction()
     {
         $this->session->set('lastFetchedEvent', 0);
-        $events = $this->testGetAction(null, null, null, false);
+        $events = $this->testGetAction(null, null, null, false, true);
 
         if (isset($events[0]) || isset($events[1])) {
             $this->view->setVar('events', $events);
@@ -163,9 +163,16 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('cover', isset($cover) ? $cover : null);
         $this->view->setVar('gallery', $gallery);
 
+        $eventTags = [];
+        foreach ($event->tag as $Tag) {
+            $eventTags[] = $Tag->name;
+        }
+
+
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
-            'eventMetaData' => $event
+            'eventMetaData' => $event,
+            'eventTags' => array_unique($eventTags)
         );
     }
 
@@ -690,7 +697,10 @@ class EventController extends \Core\Controllers\CrudController
         $venueInfo['name'] = $event['venue'];
         $venueInfo['address'] = $event['address'];
 
-        $vn = $venue->createOnChange($venueInfo);
+        $vn = false;
+        if ($event['venue_latitude'] != '' || $event['venue_longitude'] != '') {
+            $vn = $venue->createOnChange($venueInfo);
+        }
 
         if ($vn) {
             $newEvent['venue_id'] = $vn->id;
@@ -723,7 +733,7 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-//_U::dump($newEvent);  
+//_U::dump($newEvent);	
 
         if (!empty($event['id'])) {
             $ev = Event::findFirst($event['id']);
@@ -909,6 +919,56 @@ class EventController extends \Core\Controllers\CrudController
     }
 
     /**
+     * @Route("/event/import-categories", methods={"GET", "POST"})
+     * @Acl(roles={'guest'});
+     */
+    /*public function importCategoriesAction()
+    {
+        $Parser = new \Categoryzator\Core\Parser();
+        $categories = $Parser->getCategories();
+
+        if (!empty($categories)) {
+//            foreach ($categories as $categoryKey => $children) {
+//                $Category = new Category();
+//
+//                $Category->key = $categoryKey;
+//                $Category->name = ucfirst($categoryKey);
+//                $Category->parent_id = 0;
+//
+//                if ($categoryKey === 'other') {
+//                    $Category->is_default = 1;
+//                }
+//
+//                $Category->save();
+//            }
+
+            foreach ($categories as $categoryKey => $children) {
+                $parent = Category::findFirst('key = "'.$categoryKey.'"');
+                if (!empty($children)) {
+                    unset($children[0]);
+                    foreach ($children as $key => $cat) {
+                        $Tag = new \Frontend\Models\Tag();
+
+                        if (is_string($cat)) {
+                            $Tag->key = $cat;
+                            $Tag->name = ucfirst($cat);
+                        } elseif (is_array($cat)) {
+                            $Tag->key = $key;
+                            $Tag->name = ucfirst($key);
+                        }
+
+                        $Tag->category_id = $parent->id;
+                        $Tag->save();
+                    }
+                }
+            }
+        }
+
+        exit('DONE');
+    }*/
+
+
+    /**
      * @Route("/event/preview", methods={"POST"})
      * @Acl(roles={'member'});
      */
@@ -1030,7 +1090,7 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
+    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false)
     {
         $Event = new Event();
         $EventMember = new EventMember();
@@ -1045,9 +1105,13 @@ class EventController extends \Core\Controllers\CrudController
             $loc = $this->session->get('location');
         }
 
-        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
+        if ($withLocation) {
+            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
         						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+        }else {
+            $Event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+        }
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
@@ -1121,6 +1185,7 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
     }
+
 
     /**
      * @Route("/event/delete-logo", methods={"POST"})
