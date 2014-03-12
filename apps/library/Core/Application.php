@@ -64,13 +64,6 @@ class Application extends BaseApplication
 		$this -> _initModules($di);
 
 		$di -> setShared('app', $this);
-		
-/*echo '<pre>';
-$router =  $di -> get('router');
-var_dump($router -> getActionName());
-echo '</pre>';
-die();*/
-		
 	}
 	
 	public function getOutput()
@@ -165,17 +158,6 @@ die();*/
 				$this -> _router -> add($link, $route);
 			}
 		}
-		
-		/*$this -> _router -> handle();
-		$defModule = $this -> _router -> getModuleName();
-		if ($defModule === null) {
-			$defModule = 'frontend';
-		}
-		//var_dump($defModule); die();		
-		$this -> _router -> setDefaultModule($defModule);
-		$this -> _router -> setDefaultNamespace($this -> _config -> modules -> $defModule -> defaultNameSpace);
-		$this -> _router -> setDefaultController($this -> _config -> application -> defaultController);
-		$this -> _router -> setDefaultAction($this -> _config -> application -> defaultAction); */
 		 
 		$di -> set('router', $this -> _router);
 	}
@@ -246,39 +228,21 @@ die();*/
 
 	protected function _initCache(\Phalcon\DI $di)
 	{
-		$frontCache = new Phalcon\Cache\Frontend\Data(array('lifetime' => $this -> _config -> application -> cache -> lifetime));
-		$cache = new Phalcon\Cache\Backend\Memcache($frontCache, array(
+		$frontCache = new Phalcon\Cache\Frontend\Data(['lifetime' => $this -> _config -> application -> cache -> lifetime]);
+		/*$cache = new Phalcon\Cache\Backend\Memcache($frontCache, array(
 			'host' => $this -> _config -> application -> cache -> host,
 			'port' => $this -> _config -> application -> cache -> port,
-			'persistent' => $this -> _config -> application -> cache -> persistent
-		 ));
+			'persistent' => $this -> _config -> application -> cache -> persistent,
+			'prefix' => $this -> _config -> application -> cache -> prefix
+		 )); */
+		$cache = new \Core\Cache\Backend\Memcache($frontCache, [
+			'host' => $this -> _config -> application -> cache -> host,
+			'port' => $this -> _config -> application -> cache -> port,
+			'persistent' => $this -> _config -> application -> cache -> persistent,
+			'prefix' => $this -> _config -> application -> cache -> appPrefix
+		 ]);
+
 
 		$di -> set('cacheData', $cache);
-
-		/*if (!$this -> _config -> application -> debug) {
-
-            // Get the parameters
-			$cacheAdapter = '\Phalcon\Cache\Backend\\' . $this -> _config -> application -> cache -> adapter;
-			$frontEndOptions = array('lifetime' => $this -> _config -> application -> cache -> lifetime);
-			$backEndOptions = $this -> _config -> application -> cache -> toArray();
-			$frontOutputCache = new \Phalcon\Cache\Frontend\Output($frontEndOptions);
-			$frontDataCache = new \Phalcon\Cache\Frontend\Data($frontEndOptions);
-
-			// Cache:View
-			$viewCache = new $cacheAdapter($frontOutputCache, $backEndOptions);
-			$di -> set('viewCache', $viewCache, false);
-
-			// Cache:Output
-			$scacheOutput = new $cacheAdapter($frontOutputCache, $backEndOptions);
-			//$di -> set('cacheOutput', $cacheOutput, true);
-
-			// Cache:Data
-			$cacheData = new $cacheAdapter($frontDataCache, $backEndOptions);
-			$di -> set('cacheData', $cacheData, true);
-
-			// Cache:Models
-			$cacheModels = new $cacheAdapter($frontDataCache, $backEndOptions);
-			$di -> set('modelsCache', $cacheModels, true);
-		} */
 	}
 }
