@@ -18,7 +18,7 @@ require([
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')
             },
-            mapZoom: $('#isMobile').val() === '1' ? 20 : 15
+            mapZoom: $('#isMobile').val() === '1' ? 7 : 12
         });
 
         var Mc = new googleMc({
