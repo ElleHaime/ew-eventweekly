@@ -272,7 +272,6 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setvar('listName', 'Friend\'s events');
 
         $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\Event.start_date > now()');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
