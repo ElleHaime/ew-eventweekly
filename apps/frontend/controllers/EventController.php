@@ -697,7 +697,10 @@ class EventController extends \Core\Controllers\CrudController
         $venueInfo['name'] = $event['venue'];
         $venueInfo['address'] = $event['address'];
 
-        $vn = $venue->createOnChange($venueInfo);
+        $vn = false;
+        if ($event['venue_latitude'] != '' || $event['venue_longitude'] != '') {
+            $vn = $venue->createOnChange($venueInfo);
+        }
 
         if ($vn) {
             $newEvent['venue_id'] = $vn->id;
