@@ -2,23 +2,30 @@
 
 namespace Thirdparty\Facebook;
 
-use Thirdparty\Facebook\FacebookApiException;
+use Thirdparty\Facebook\FacebookApiException,
+    Core\Utils as _U;
 
 class Extractor
 {
 
     private $facebook;
 
-    public function __construct()
+    public function __construct($dependencyInjector = null)
     {
-        //require_once 'facebook.php';
+        if ($dependencyInjector) {
+            $fb_config = $dependencyInjector -> get('facebook_config');
+        } else {
+            include(FACEBOOK_CONFIG_SOURCE);
+            $fb_config = json_decode(json_encode($cfg_facebook), false);
+        }            
 
         $config = array(
-            'appId' => '166657830211705',
-            'secret' => 'e917842e47a57adb93a1e9761af4117a',
+            'appId' => $fb_config -> facebook -> appId,
+            'secret' => $fb_config -> facebook -> appSecret,
         );
-        $this->facebook = new \Thirdparty\Facebook\Facebook($config);
+        $this -> facebook = new \Thirdparty\Facebook\Facebook($config);
     }
+
 
     public function getQueriesScope()
     {

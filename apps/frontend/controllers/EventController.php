@@ -3,7 +3,6 @@
 namespace Frontend\Controllers;
 
 use Core\Utils as _U,
-    Thirdparty\Facebook\Extractor,
     Frontend\Models\Location,
     Frontend\Models\Venue as Venue,
     Frontend\Models\MemberNetwork,
