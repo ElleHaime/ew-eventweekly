@@ -2,8 +2,8 @@
  * Created by slav on 1/22/14.
  */
 define('newGmapEvents',
-    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noty', 'underscore', 'llCalc', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-    function($, googleMap, googleMc, googleMarker, googleInfoWindow, noty, _, llCalc) {
+    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noty', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+    function($, googleMap, googleMc, googleMarker, googleInfoWindow, noty, _) {
 
         function newGmapEvents(Map, Mc, options) {
 
@@ -11,9 +11,8 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 4000, // TODO: set some interval
+                requestInterval: 2000, 
                 eventsUrl: '/event/test-get',
-                eventsUrlGetParams: {},
 
                 eventsCounter: '#events_count',
                 searchCityBtn: '.locationCity',
@@ -21,7 +20,7 @@ define('newGmapEvents',
                 userFriendsGoing: '#userFriendsGoing',
                 userEventsGoing: '#userEventsGoing',
                 userEventsLiked: '#userEventsLiked',
-                alreadyGrabbed: false
+                alreadyGrabbed: true
             };
 
             var interval = null;
@@ -31,10 +30,6 @@ define('newGmapEvents',
             var __newLat = null, __newLng = null, __newCity = null;
 
             var resetMap = true;
-
-            var process = false;
-
-            var setCookiesFlag = true;
 
             settings = _.extend(settings, options);
 
@@ -72,9 +67,7 @@ define('newGmapEvents',
                 if (!_.isEmpty(data.events)) {
                     lat = _.last(data.events).venue.latitude;
                     lng = _.last(data.events).venue.longitude;
-                    if (setCookiesFlag) {
-                        setCookies(lat, lng);
-                    }
+                    setCookies(lat, lng);
                 }
 
                 window.location.href = '/map';
@@ -138,12 +131,7 @@ define('newGmapEvents',
                     // change events counter
                     $(settings.eventsCounter).html(Map.markers.length);
 
-                    if (setCookiesFlag) {
-                        setCookies(__lastLat, __lastLng);
-                    }
-
-                    //Map.lastCenter = new google.maps.LatLng(__lastLat, __lastLng);
-
+                    setCookies(__lastLat, __lastLng);
 
                     if (resetMap) {
                         Map.setCenter(new google.maps.LatLng(__lastLat, __lastLng));
@@ -179,10 +167,9 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
+                    console.log('interval cleared');
                     clearInterval(interval);
                 }
-
-                process = false;
             };
 
             /**
@@ -204,11 +191,13 @@ define('newGmapEvents',
                     url = url + '/' + city;
                 }
 
-                return $.ajax({
+                tmp = $.ajax({
                     url: url,
                     type: 'GET',
                     dataType: 'json'
                 });
+
+                return tmp;
             };
 
             /**
@@ -219,12 +208,12 @@ define('newGmapEvents',
              * @param city
              */
             var getEvents = function(lat, lng, city) {
-                process = true;
                 __newLat = lat;
                 __newLng = lng;
                 __newCity = city;
 
-                var makeRequest = function() {
+
+               var makeRequest = function() {
                     var url = settings.eventsUrl;
                     if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
                         url = url + '/' + lat + '/' + lng;
@@ -233,55 +222,26 @@ define('newGmapEvents',
                         url = url + '/' + city;
                     }
 
-                    if (!_.isEmpty(settings.eventsUrlGetParams)) {
-                        var params = settings.eventsUrlGetParams;
-                        var paramsKeys = Object.keys(params);
-;
-                        url = url + '?' + _.first(paramsKeys) + '=' + params[_.first(paramsKeys)];
-                        paramsKeys.splice(0, 1);
-                        _.each(paramsKeys, function(key) {
-                            url = url + '&' + key + '=' + params[key];
-                        });
-                    }
-
                     $.when($.ajax({
                         url: url,
                         type: 'GET',
-                        dataType: 'json'})).done(function(response) {
-                                                responseHandler(response);
-                                        }).always(function() {
-                                                console.log('empty result');
-                                        });
-
-                    /*console.log('make request');
-                    $.when(request(lat, lng, city)).then(function(response) {
+                        dataType: 'json'
+                    })).done(function(response) {
                         responseHandler(response);
-                    }); */
+                    }).always(function() {
+                        console.log('empty result');
+                    });
                 };
 
                 makeRequest();
+                //$('.overlay').show();
 
                 if (settings.requestInterval > 0) {
                    interval = setInterval(function(){
-                        if (process == false) {
-                            makeRequest();
-                        }
+                        makeRequest();
                     }, settings.requestInterval);
                 }
             };
-
-            Map.setUpEvent('center_changed', function() {
-                var center = Map.getCenter();
-                var a = llCalc.distance(Map.lastCenter, center);
-                if (a > 100 && process == false) {
-                    var lat = center.lat();
-                    var lng = center.lng();
-
-                    resetMap = false;
-                    setCookiesFlag = false;
-                    getEvents(lat, lng);
-                }
-            });
 
             if (settings.autoGetEvents) {
                 var lat = $.cookie('lastLat');
@@ -289,10 +249,8 @@ define('newGmapEvents',
                 var city = $.cookie('lastCity');
 
                 if (!_.isUndefined(lat) && !_.isUndefined(lng) && !_.isUndefined(city)) {
-                    settings.eventsUrlGetParams.resetLocation = true;
                     getEvents(lat, lng, city);
                 } else if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
-                    settings.eventsUrlGetParams.resetLocation = true;
                     getEvents(lat, lng);
                 } else {
                     getEvents();

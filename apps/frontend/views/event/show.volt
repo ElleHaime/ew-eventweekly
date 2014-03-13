@@ -30,14 +30,13 @@
 
                                 <div class="padd_30"> </div>
                                 <div class="event-discription">
-                                    {% if event.image.cover is defined %}
+                                    {% if cover is defined %}
                                         <div class="event-photo">
-                                            <img src="/upload/img/event/{{ event.id }}/cover/{{ event.image.cover }}" alt="">
+                                            <img src="/upload/img/event/{{ event.id }}/cover/{{ cover.image }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="add-img">
                                             <div id="current_event_id" class="event-one-img" event="{{ event.id }}">
-                                                {#<a href="/event/100038">#}
                                                 {% if eventPreview is defined %}
                                                     {% if eventPreviewLogo is defined %}
                                                         <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
@@ -47,8 +46,6 @@
                                                 {% else %}
                                                     <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
                                                 {% endif %}
-
-                                                {#</a>#}
                                             </div>
 
                                            {% if poster is defined or flyer is defined %}
@@ -258,21 +255,15 @@
                                                         <span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>
                                                     {% endfor %}
 
-                                                    {#--------- comment tags
-
                                                     <div class="sub_category clearfix">
-                                                       <div>
-                                                           <a href="#"><span>pop rock</span></a>
-                                                       </div>
-                                                       <div>
-                                                           <a href="#"><span>new album</span></a>
-                                                       </div>
-                                                       <div>
-                                                           <a href="#"><span>event of the year 2014</span></a>
-                                                       </div>
+                                                        {% for name in eventTags %}
+                                                            <div>
+                                                                <a href="#"><span>{{ name }}</span></a>
+                                                            </div>
+                                                        {% endfor %}
                                                     </div>
+
                                                     <a href="#" class="show-all">show all tags</a>
-                                                    #}
 
                                                     {% if event.category.getFirst().key == 'other' %}
                                                         <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>

@@ -192,8 +192,7 @@ class AuthController extends \Core\Controller
                     $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
                     		'member' => $member,
                     		'uid' => $userData['uid'],
-                    		'token' => $userData['token'],
-                            'location' => $memberLocation
+                    		'token' => $userData['token']
                     ));
 
                     $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);

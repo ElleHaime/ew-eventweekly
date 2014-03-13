@@ -12,7 +12,7 @@ use Core\Utils as _U,
     Frontend\Models\Event as Event,
     Objects\EventImage,
     Objects\EventSite,
-    Objects\EventMember,
+    Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
@@ -40,9 +40,7 @@ class EventController extends \Core\Controllers\CrudController
     {
         parent::initialize();
 
-        if (!$this->session->has('isGrabbed')) {
-            $this->session->set('isGrabbed', false);
-            $this->session->set('grabOnce', false);
+        if (!$this->session->has('lastFetchedEvent')) {
             $this->session->set('lastFetchedEvent', 0);
         }
     }
@@ -102,6 +100,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
+
         $this->view->pick('event/events');
     }
 
@@ -113,6 +112,7 @@ class EventController extends \Core\Controllers\CrudController
     public function showAction($slug, $eventId)
     {
         $event = Event::findFirst($eventId);
+
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
             foreach ($event->memberpart as $mpart) {
@@ -144,27 +144,35 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_back_to_list', true);
 
         $posters = $flyers = $gallery = [];
-        if (isset($event->id)) {
-            $eventImages = EventImageModel::find('event_id = ' . $event->id);
-
-            foreach ($eventImages as $eventImage) {
-                if ($eventImage->type == 'poster') {
+        if (isset($event->image)) {
+            foreach ($event -> image as $eventImage) {
+                if ($eventImage -> type == 'poster') {
                     $posters[] = $eventImage;
-                } else if ($eventImage->type == 'flyer') {
+                } else if ($eventImage -> type == 'flyer') {
                     $flyers[] = $eventImage;
-                } else if ($eventImage->type == 'gallery') {
+                } else if ($eventImage -> type == 'gallery') {
                     $gallery[] = $eventImage;
-                }
+                } else if ($eventImage -> type == 'cover') {
+                    $cover = $eventImage;
+                } 
             }
         }
 
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
+        $this->view->setVar('cover', isset($cover) ? $cover : null);
         $this->view->setVar('gallery', $gallery);
+
+        $eventTags = [];
+        foreach ($event->tag as $Tag) {
+            $eventTags[] = $Tag->name;
+        }
+
 
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
-            'eventMetaData' => $event
+            'eventMetaData' => $event,
+            'eventTags' => array_unique($eventTags)
         );
     }
 
@@ -314,8 +322,8 @@ class EventController extends \Core\Controllers\CrudController
         $event = new Event();
         $this->view->setvar('listName', 'Where I am going');
 
-        $event->addCondition('Objects\EventMember.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Objects\EventMember.member_status = 1');
+        $event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
+        $event->addCondition('Frontend\Models\EventMember.member_status = 1');
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
@@ -435,8 +443,8 @@ class EventController extends \Core\Controllers\CrudController
                 $this->session->set('userEventsLiked', $result['userEventsLiked']);
 
                 $tmpEvent = new Event();
-                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this->session->get('memberId'));
-                $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventMember.member_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
                 $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();
@@ -499,8 +507,8 @@ class EventController extends \Core\Controllers\CrudController
                 $this->session->set('userEventsLiked', $response['likeCounter']);
 
                 /*$tmpEvent = new Event();
-                $tmpEvent->addCondition('Objects\EventMember.member_id = ' . $this -> session -> get('memberId'));
-                $tmpEvent->addCondition('Objects\EventMember.member_status = 1');
+                $tmpEvent->addCondition('Frontend\Models\EventMember.member_id = ' . $this -> session -> get('memberId'));
+                $tmpEvent->addCondition('Frontend\Models\EventMember.member_status = 1');
                 $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
                 $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();*/
 
@@ -619,9 +627,6 @@ class EventController extends \Core\Controllers\CrudController
 
     public function processForm($form)
     {
-        _U::dump($form->getFormValues(), true);
-        _U::dump($this->request->getUploadedFiles(), true);
-//die();
         $event = $form->getFormValues();
         $loc = new Location();
         $venue = new Venue();
@@ -912,7 +917,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/import-categories", methods={"GET", "POST"})
-     * @Acl(roles={'member','guest'});
+     * @Acl(roles={'guest'});
      */
     /*public function importCategoriesAction()
     {
@@ -920,31 +925,36 @@ class EventController extends \Core\Controllers\CrudController
         $categories = $Parser->getCategories();
 
         if (!empty($categories)) {
-            foreach ($categories as $categoryKey => $children) {
-                $Category = new Category();
-
-                $Category->key = $categoryKey;
-                $Category->name = ucfirst($categoryKey);
-                $Category->parent_id = 0;
-
-                if ($categoryKey === 'other') {
-                    $Category->is_default = 1;
-                }
-
-                $Category->save();
-            }
+//            foreach ($categories as $categoryKey => $children) {
+//                $Category = new Category();
+//
+//                $Category->key = $categoryKey;
+//                $Category->name = ucfirst($categoryKey);
+//                $Category->parent_id = 0;
+//
+//                if ($categoryKey === 'other') {
+//                    $Category->is_default = 1;
+//                }
+//
+//                $Category->save();
+//            }
 
             foreach ($categories as $categoryKey => $children) {
                 $parent = Category::findFirst('key = "'.$categoryKey.'"');
                 if (!empty($children)) {
                     unset($children[0]);
                     foreach ($children as $key => $cat) {
-                        $Tag = new Tag();
+                        $Tag = new \Frontend\Models\Tag();
 
-                        $Tag->key = $cat;
-                        $Tag->name = ucfirst($cat);
+                        if (is_string($cat)) {
+                            $Tag->key = $cat;
+                            $Tag->name = ucfirst($cat);
+                        } elseif (is_array($cat)) {
+                            $Tag->key = $key;
+                            $Tag->name = ucfirst($key);
+                        }
+
                         $Tag->category_id = $parent->id;
-
                         $Tag->save();
                     }
                 }
@@ -1057,33 +1067,14 @@ class EventController extends \Core\Controllers\CrudController
         $newLocation = new Location();
         $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
 
-        if (is_object($newLocation) && $newLocation->id != $loc->id) {
+        if ($newLocation->id != $loc->id) {
             if (!empty($city)) {
                 $newLocation->city = $city;
                 $newLocation->alias = $city;
             }
 
             $this->session->set('location', $newLocation);
-
-            // check cache and reset if needed
-            $locationsScope = $this->cacheData->get('locations');
-
-            if (!isset($locationsScope[$newLocation->id])) {
-                $locationsScope[$newLocation->id] = array(
-                    'latMin' => $newLocation->latitudeMin,
-                    'lonMin' => $newLocation->longitudeMin,
-                    'latMax' => $newLocation->latitudeMax,
-                    'lonMax' => $newLocation->longitudeMax,
-                    'city' => $newLocation->city,
-                    'country' => $newLocation->country);
-                $this->cacheData->delete('locations');
-                $this->cacheData->save('locations', $locationsScope);
-            }
-
-            $this->session->set('isGrabbed', false);
-            $this->session->set('grabOnce', false);
             $this->session->set('lastFetchedEvent', 0);
-
             $loc = $this->session->get('location');
         }
 
@@ -1099,59 +1090,48 @@ class EventController extends \Core\Controllers\CrudController
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true)
     {
         $Event = new Event();
+        $EventMember = new EventMember();
         $EventFriend = new EventMemberFriend();
+        $EventLike = new EventLike();
+
         $loc = $this->session->get('location');
 
-        $resetLocation = $this->request->getQuery('resetLocation');
-
-        if (!empty($lat) && !empty($lng) && $resetLocation) {
+        if (!empty($lat) && !empty($lng)) {
             $loc = $this->resetLocation($lat, $lng, $city);
-            if (!$loc) {
-                $this->sendAjax([
-                        'status' => 'ERROR',
-                        'message' => 'no events'
-                    ]);
-                exit();
-            }
-            $latitudeMin = $loc->latitudeMin;
-            $latitudeMax = $loc->latitudeMax;
-            $longitudeMin = $loc->longitudeMin;
-            $longitudeMax = $loc->longitudeMax;
         } else {
-            $latitudeMin = $loc->latitudeMin;
-            $latitudeMax = $loc->latitudeMax;
-            $longitudeMin = $loc->longitudeMin;
-            $longitudeMax = $loc->longitudeMax;
+            $loc = $this->session->get('location');
         }
 
-        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $latitudeMin . ' AND ' . $latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $longitudeMin . ' AND ' . $longitudeMax . '
+        $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
+        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
         $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
 
-
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
             $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
             $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
-            $res['userEventsGoing'] = $this->session->get('userEventsGoing');
-            $res['userEventsLiked'] = $this->session->get('userEventsLiked');
+            $res['userEventsGoing'] = $EventMember->getEventMemberEventsCount($this->session->get('memberId'))->count();
+            $res['userEventsLiked'] = $EventLike->getLikedEventsCount($this->session->get('memberId'))->count();
 
             $this->session->set('userEventsCreated', $res['eventsCreated']);
             $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
+            $this->session->set('userEventsGoing', $res['userEventsGoing']);
+            $this->session->set('userEventsLiked', $res['userEventsLiked']);
 
             $this->view->setVar('userEventsCreated', $res['eventsCreated']);
             $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
-            $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
-            $this->view->setVar('userEventsLiked', $this->session->get('userEventsLiked'));
+            $this->view->setVar('userEventsGoing', $res['userEventsGoing']);
+            $this->view->setVar('userEventsLiked', $res['userEventsLiked']);
 
             if (count($events) > 0) {
                 $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
             }
+            $res['stop'] = false;
         } else {
+            $res['stop'] = true;
             $this->session->set('lastFetchedEvent', 0);
-            $this->session->set('isGrabbed', true);
         }
 
         if (count($events) > 0) {
@@ -1162,391 +1142,43 @@ class EventController extends \Core\Controllers\CrudController
             $res['message'] = 'no events';
         }
 
-        $res['stop'] = $this->session->get('isGrabbed');
-
         if ($needGrab === false) {
             return $events;
         }
 
         $this->sendAjax($res);
 
-        if ($this->session->has('user_token')
-            && $this->session->has('user_fb_uid')
-            && $this->session->get('isGrabbed') === false
-            && $this->session->get('grabOnce') === false
-            && $needGrab === true
-        ) {
-            $this->session->set('grabOnce', true);
-            $this->grabNewEvents();
-        }   
-        //$this -> grabNewEvents();	 
-    }
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
+            $newTask = null;
 
-
-    /**
-     * @Route("/event/grab", methods={'GET'})
-     * @Acl(roles={'guest', 'member'});
-     */
-    public function grabNewEvents()
-    {
-        $loc = $this->session->get('location');
-        $fb = new Extractor();
-        $queries = $fb->getQueriesScope();
-        $e = new Event();
-
-        foreach ($queries as $key => $query) {
-
-            if ($query['name'] == 'user_event') {
-                $replacements = array($this->session->get('user_fb_uid'));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);
-                if (isset($res['event'])) {
-                    if (isset($res['event']['eid'])) {
-                        $events = $e->parseNewEvents(array($res['event']), true, 'user_event');
-                    } else {
-                        $events = $e->parseNewEvents($res['event'], true, 'user_event');
-                    }
+            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId')));
+            if ($taskSetted -> count() > 0) {
+                foreach ($taskSetted as $task) {
+                    $tsk = $task;
                 }
-                continue;
-            }
-
-            if ($query['name'] == 'friend_uid') {
-                $replacements = array($this->session->get('user_fb_uid'));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);
-                if (isset($res['friend_info'])) {
-                    if (isset($res['friend_info']['uid2'])) {
-                        $this->friendsUid[] = $res['friend_info']['uid2'];
-                    } else {
-                        foreach ($res['friend_info'] as $f => $v) {
-                            $this->friendsUid[] = $v['uid2'];
-                        }
-                    }
+                if (time()-($tsk -> hash) > 300) {
+                    $newTask = $tsk;
                 }
-              
-                continue;
+            } else {
+                $newTask = new \Objects\Cron();
             }
 
-            if ($query['name'] == 'friend_event' && !empty($this->friendsUid)) {
-                $start = $query['start'];
-                $limit = $query['limit'];
-                $fUids = implode(',', $this->friendsUid);
-
-                do {
-                    $replacements = array($start,
-                                         $limit,
-                                         $this->session->get('user_fb_uid'),
-                                         $fUids);
-                    $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                    $result = $fb->getCurlFQL($fql, $this->session->get('user_token'));
-                    $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);
-                    if (isset($res['event'])) {
-                        if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true, 'friend_event');
-                        } else {
-                            $events = $e->parseNewEvents($res['event'], true, 'friend_event');
-                        }
-
-                        if (count($res['event']) < (int)$limit) {
-                            $start = false;
-                        } else {
-                            $start = $start + $limit;
-                        }
-                    } else {
-                        $start = false;
-                    }
-                } while ($start !== false);
-
-                continue;
-            }
-
-            if ($query['name'] == 'friend_going_eid' && !empty($this->friendsUid)) {
-                $replacements = array(implode(',', $this->friendsUid));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);                
-                if (isset($res['event_member'])) {
-                    if (isset($res['event_member']['eid'])) {
-                        $this->friendsGoingUid[] = $res['event_member']['eid'];
-                    } else {
-                        foreach ($res['event_member'] as $f => $v) {
-                            $this->friendsGoingUid[] = $v['eid'];
-                        }
-                    }
-                }
-                continue;
-            }
-
-            if ($query['name'] == 'friend_going_event' && !empty($this->friendsGoingUid)) {
-                $start = $query['start'];
-                $limit = $query['limit'];
-                $eChunked = array_chunk($this->friendsGoingUid, 100);
-                $currentChunk = 0;
-
-                do {
-                    $eids = implode(',', $eChunked[$currentChunk]);
-
-                    $replacements = array($start,
-                                          $limit,
-                                          $this->session->get('user_fb_uid'),
-                                          $eids);
-                    $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                    $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                    $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);                 
-                    if (isset($res['event'])) {
-                        if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true, 'friend_going_event');
-                        } else {
-                            $events = $e->parseNewEvents($res['event'], true, 'friend_going_event');
-                        }
-
-                        foreach ($events as $id => $ev) {
-                            if (!$this->cacheData->exists('member.friends.go.' . $this->session->get('memberId') . '.' . $id)) {
-                                $friendsEvents = array('member_id' => $this->session->get('memberId'),
-                                                       'event_id' => $id);
-                                $emf = new EventMemberFriend();
-                                $emf->assign($friendsEvents);
-                                $emf->save();
-                                $this->cacheData->save('member.friends.go.' . $this->session->get('memberId') . '.' . $id, $ev);
-                            }
-                        }
-
-                        if (count($res['event']) < (int)$limit) {
-                            if ((count($eChunked) - 1) > $currentChunk) {
-                                $currentChunk++;
-                                $start = 0;
-                            } else {
-                                $start = false;
-                                $currentChunk = 0;
-                            }
-                        } else {
-                            $start = $start + $limit;
-                        }
-                    } else {
-                        if ((count($eChunked) - 1) > $currentChunk) {
-                            $currentChunk++;
-                            $start = 0;
-                        } else {
-                            $start = false;
-                            $currentChunk = 0;
-                        }
-                    }
-                } while ($start !== false);
-
-                continue;
-            }
-
-
-            if ($query['name'] == 'user_going_eid') {
-                $replacements = array($this->session->get('user_fb_uid'));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);
-                if (isset($res['event_member'])) {
-                    if (isset($res['event_member']['eid'])) {
-                        $this->userGoingUid[] = $res['event_member']['eid'];
-                    } else {
-                        foreach ($res['event_member'] as $f => $v) {
-                            $this->userGoingUid[] = $v['eid'];
-                        }
-                    }
-                }
-                continue;
-            }
-
-            if ($query['name'] == 'user_going_event' && !empty($this->userGoingUid)) {
-                $start = $query['start'];
-                $limit = $query['limit'];
-                $eids = implode(',', $this->userGoingUid);
-
-                do {
-                    $replacements = array($start,
-                        $limit,
-                        $this->session->get('user_fb_uid'),
-                        $eids);
-                    $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                    $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                    $res = json_decode(json_encode($result), true);
-//_U::dump($res, true);
-                    if (isset($res['event'])) {
-                        if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true, 'user_going_event');
-                        } else {
-                            $events = $e->parseNewEvents($res['event'], true, 'user_going_event');
-                        }
-
-
-                        foreach ($events as $id => $ev) {
-                            if (!$this->cacheData->exists('member.go.' . $this->session->get('memberId') . '.' . $id)) {
-                                $userGEvents = array('member_id' => $this->session->get('memberId'),
-                                    'event_id' => $id,
-                                    'member_status' => 1);
-                                $emf = new EventMember();
-                                $emf->assign($userGEvents);
-                                $emf->save();
-                                $userEventsGoing = $this->session->get('userEventsGoing') + 1;
-                                $this->session->set('userEventsGoing', $userEventsGoing);
-                                $this->cacheData->save('member.go.' . $this->session->get('memberId') . '.' . $id, $id);
-                            }
-                        }
-
-                        if (count($res['event']) < (int)$limit) {
-                            $start = false;
-                        } else {
-                            $start = $start + $limit;
-                        }
-                    } else {
-                        $start = false;
-                    }
-                } while ($start !== false);
-
-                continue;
-            } 
-
-            if ($query['name'] == 'user_page_uid') {
-                $replacements = array($this->session->get('user_fb_uid'));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
-
-                if (isset($res['page_admin'])) {
-                    if (isset($res['page_admin']['page_id'])) {
-                        $this -> userPagesUid[] = $res['page_admin']['page_id'];
-                    } else {
-                        foreach ($res['page_admin'] as $pageItem => $pageVal) {
-                            $this -> userPagesUid[] = $pageVal['page_id'];
-                        }
-                    }
-                }
-                continue;
-            }
-
-            if ($query['name'] == 'user_page_event' && !empty($this -> userPagesUid)) {
-                $start = $query['start'];
-                $limit = $query['limit'];
-                $upUids = implode(',', $this -> userPagesUid);
-
-                do {
-                    $replacements = array($start, $limit, $upUids);
-                    $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                   
-                    $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                    $res = json_decode(json_encode($result), true);
-
-                    if (isset($res['event'])) {
-                        if (isset($res['event']['eid'])) {
-                            $events = $e -> parseNewEvents(array($res['event']), true, 'user_page_event');
-                        } else {
-                            $events = $e -> parseNewEvents($res['event'], true, 'user_page_event');
-                        }
-
-                        foreach ($events as $id => $ev) {
-                            $emu = Event::findFirst('id = ' . $id);
-                            $emu->member_id = $this -> session -> get('memberId');
-                            $emu->update();
-                        }
-
-                        if (count($res['event']) < (int)$limit) {
-                            $start = false;
-                        } else {
-                            $start = $start + $limit;
-                        }
-                    } else {
-                        $start = false;
-                    }
-                } while ($start !== false);
-
-                continue;
-            }
-
-            if ($query['name'] == 'page_uid') {
-                $replacements = array($this->session->get('user_fb_uid'));
-
-                $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                $res = json_decode(json_encode($result), true);
- //_U::dump($res, true);                
-                if (isset($res['page_fan'])) {
-                    if (isset($res['page_fan']['page_id'])) {
-                        $this -> pagesUid[] = $res['page_fan']['page_id'];
-                    } else {
-                        foreach ($res['page_fan'] as $f => $v) {
-                            $this -> pagesUid[] = $v['page_id'];
-                        }
-                    }
-                }
-                continue;
-            }
-
-
-            if ($query['name'] == 'page_event' && !empty($this -> pagesUid)) {
-                $start = $query['start'];
-                $limit = $query['limit'];
-                $pUids = implode(',', $this->pagesUid);
-
-                do {
-                    $replacements = array($start,
-                                          $limit,
-                                          $this->session->get('user_fb_uid'),
-                                          $pUids);
-                    $fql = preg_replace($query['patterns'], $replacements, $query['query']);
-                    $result = $fb -> getCurlFQL($fql, $this->session->get('user_token'));
-                    $res = json_decode(json_encode($result), true);
-
-                    if (isset($res['event'])) {
-                        if (isset($res['event']['eid'])) {
-                            $events = $e->parseNewEvents(array($res['event']), true, 'page_event');
-                        } else {
-                            $events = $e->parseNewEvents($res['event'], true, 'page_event');
-                        }
-
-                        foreach ($events as $id => $ev) {
-                            if (!$this->cacheData->exists('member.like.' . $this->session->get('memberId') . '.' . $id)) {
-                                $userLEvents = array('member_id' => $this->session->get('memberId'),
-                                                     'event_id' => $id,
-                                                     'status' => 1);
-                                $eml = new EventLike();
-                                $eml->assign($userLEvents);
-                                $eml->save();
-                                $userEventsLiked = $this->session->get('userEventsLiked') + 1;
-                                $this->session->set('userEventsLiked', $userEventsLiked);
-                                $this->cacheData->save('member.like.' . $this->session->get('memberId') . '.' . $id, $id);
-                            }
-                        }
-
-                        if (count($res['event']) < (int)$limit) {
-                            $start = false;
-                        } else {
-                            $start = $start + $limit;
-                        }
-                    } else {
-                        $start = false;
-                    }
-                } while ($start !== false);
-
-                continue;
+            if (!is_null($newTask)) {
+                $params = ['user_token' => $this -> session -> get('user_token'),
+                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
+                           'member_id' => $this -> session -> get('memberId')];
+                $task = ['name' => 'extract_facebook_events',
+                         'parameters' => serialize($params),
+                         'state' => 0,
+                         'member_id' => $this -> session -> get('memberId'),
+                         'hash' => time()];
+                
+                $newTask -> assign($task);
+                $newTask -> save();
             }
         }
-
-        //echo 'done';
-
-        $this->session->set('isGrabbed', true);
-
-        exit;
     }
+
 
     /**
      * @Route("/event/delete-logo", methods={"POST"})

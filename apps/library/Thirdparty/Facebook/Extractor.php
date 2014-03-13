@@ -20,62 +20,6 @@ class Extractor
         $this->facebook = new \Thirdparty\Facebook\Facebook($config);
     }
 
-    public function getEventsSimpleByLocation($accessToken, $loc)
-    {
-        $limit = 50;
-        $latMin = $loc->latitudeMin;
-        $longMin = $loc->longitudeMin;
-        $latMax = $loc->latitudeMax;
-        $longMax = $loc->longitudeMax;
-
-        $fql = array(
-            'my_id' =>
-                'SELECT uid
-                    FROM user
-                      WHERE uid=me()',
-            'friends_uid_info' =>
-                'SELECT uid
-                    FROM user
-                      WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 IN (SELECT uid FROM #my_id)) LIMIT ' . $limit,
-            'my_events_info' =>
-                'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
-                    FROM event
-                      WHERE eid IN (SELECT eid FROM event_member WHERE uid=me())
-                          AND creator=me()
-                      AND start_time>=now()
-                      AND venue.longitude <\'' . $longMax . '\'  AND venue.longitude >\'' . $longMin . '\' AND venue.latitude <\'' . $latMax . '\' AND venue.latitude > \'' . $latMin . '\'' .
-                ' LIMIT ' . $limit,
-            'friends_events_info' =>
-                'SELECT eid, name, description, location, venue, pic_big, creator, start_time, end_time
-                    FROM event
-                      WHERE eid IN (SELECT eid FROM event_member WHERE uid IN (SELECT uid FROM #friends_uid_info))
-                      AND creator!=me()
-                      AND start_time>=now()
-                      AND venue.longitude <\'' . $longMax . '\'  AND venue.longitude >\'' . $longMin . '\' AND venue.latitude <\'' . $latMax . '\' AND venue.latitude > \'' . $latMin . '\'' .
-                ' LIMIT ' . $limit
-        );
-
-        $data = $this->getFQL($fql, $accessToken);
-
-        if ($data['STATUS'] == FALSE) {
-            return $data;
-        }
-
-        $data = $data['MESSAGE'];
-
-        foreach ($data as $key => $result) {
-            if ($result['name'] == 'my_events_info') {
-                $events[] = $data[$key]['fql_result_set'];
-            }
-            if ($result['name'] == 'friends_events_info') {
-                $events[] = $data[$key]['fql_result_set'];
-            }
-        }
-
-        return $events;
-    }
-
-
     public function getQueriesScope()
     {
         $timelimit = strtotime(date('Y-m-d H:i:s', strtotime('today -1 minute')));
@@ -275,21 +219,5 @@ class Extractor
                 return $ret;
             }
         }
-    }
-
-
-    public function getCurlFQL($query, $accessToken)
-    {
-        $url = 'https://api.facebook.com/method/fql.query?query=' . rawurlencode($query) . 
-               '&access_token=' . $accessToken;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        return new \SimpleXMLElement($response);
     }
 }
