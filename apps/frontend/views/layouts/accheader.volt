@@ -93,6 +93,7 @@
 
             <div class="span7 location-box">
                 <div class="show-list">
+
                     {% if link_back_to_list is defined %}
                         <button class="btn btn-show tooltip-text"
                                 onclick="location.href='/list'" title="" rel="tooltip" data-placement="bottom"
@@ -110,6 +111,7 @@
                 </div>
 
                 <div class="location clearfix">
+                <div class="header-count">All events <span>2 349</span></div>  
                     {% if eventsTotal is defined %}
                         <span class="location-count"
                               data-placement="bottom" 
