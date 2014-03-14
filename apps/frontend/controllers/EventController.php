@@ -920,7 +920,7 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/import-categories", methods={"GET", "POST"})
      * @Acl(roles={'guest'});
      */
-    public function importCategoriesAction()
+    /*public function importCategoriesAction()
     {
         $Parser = new \Categoryzator\Core\Parser();
         $categories = $Parser->getCategories();
@@ -965,7 +965,7 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         exit('DONE');
-    }
+    }*/
 
 
     /**
