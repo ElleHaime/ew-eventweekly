@@ -255,6 +255,18 @@ die();*/
 
 		$di -> set('cacheData', $cache);
 
+        $di->set('modelsMetadata', function() {
+
+                // Create a meta-data manager with APC
+                $metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
+                    'lifetime' => 86400,
+                    'prefix'   => 'ew_',
+                    'metaDataDir' => $this->_config->application->cache->cacheDir
+                ));
+
+                return $metaData;
+            });
+
 		/*if (!$this -> _config -> application -> debug) {
 
             // Get the parameters
