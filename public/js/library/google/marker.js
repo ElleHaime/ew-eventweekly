@@ -23,6 +23,10 @@ define('googleMarker',
                         icon: '/img/google/business.png',
                         clickedIcon: '/img/google/business-hover.png'
                     },
+                    culture: {
+                        icon: '/img/google/culture.png',
+                        clickedIcon: '/img/google/culture-hover.png'
+                    },
                     entertainment: {
                         icon: '/img/google/entertainment.png',
                         clickedIcon: '/img/google/entertainment-hover.png'
