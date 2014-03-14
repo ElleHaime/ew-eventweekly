@@ -4482,11 +4482,14 @@ a.view-btn  {
     width: 80%;
 }
 #previewEvent   .modal-body {
-    height:100%;
+    float: left;
+    height: 100%;
     max-height: 80%;
+    overflow: hidden;
+    width: 100%;
 }
 .modal .close {
-    font-size: 63px;
+    font-size: 50px;
     line-height: 38px;
 }
 
@@ -4617,7 +4620,7 @@ a.view-btn  {
 }
 .modal-body {
     position: relative;
-    padding: 20px;
+
 }
 .modal-footer {
     margin-top: 15px;
