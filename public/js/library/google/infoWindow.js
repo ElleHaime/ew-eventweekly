@@ -19,7 +19,7 @@ define('googleInfoWindow',
                     img = '/img/logo200.png';
                 }
 
-                if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0].key)) {
+                if (!_.isUndefined(event.category) && !_.isUndefined(event.category[0]) && !_.isUndefined(event.category[0].key)) {
                     category = event.category[0].key;
                 }
                 

@@ -18,7 +18,7 @@ use Core\Utils as _U,
     Objects\Tag AS TagObject,
     Core\Utils\SlugUri as SUri,
     Frontend\Models\EventImage as EventImageModel;
-
+use Categoryzator\Core\Inflector;
 
 /**
  * @RouteRule(useCrud = true)
@@ -920,25 +920,25 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/import-categories", methods={"GET", "POST"})
      * @Acl(roles={'guest'});
      */
-    /*public function importCategoriesAction()
+    public function importCategoriesAction()
     {
         $Parser = new \Categoryzator\Core\Parser();
         $categories = $Parser->getCategories();
 
         if (!empty($categories)) {
-//            foreach ($categories as $categoryKey => $children) {
-//                $Category = new Category();
-//
-//                $Category->key = $categoryKey;
-//                $Category->name = ucfirst($categoryKey);
-//                $Category->parent_id = 0;
-//
-//                if ($categoryKey === 'other') {
-//                    $Category->is_default = 1;
-//                }
-//
-//                $Category->save();
-//            }
+            foreach ($categories as $categoryKey => $children) {
+                $Category = new Category();
+
+                $Category->key = strtolower($categoryKey);
+                $Category->name = ucfirst($categoryKey);
+                $Category->parent_id = 0;
+
+                if ($categoryKey === 'other') {
+                    $Category->is_default = 1;
+                }
+
+                $Category->save();
+            }
 
             foreach ($categories as $categoryKey => $children) {
                 $parent = Category::findFirst('key = "'.$categoryKey.'"');
@@ -948,10 +948,12 @@ class EventController extends \Core\Controllers\CrudController
                         $Tag = new \Frontend\Models\Tag();
 
                         if (is_string($cat)) {
-                            $Tag->key = $cat;
+                            $catk = strtolower(str_replace(' ', '_', $cat));
+                            $Tag->key = $catk;
                             $Tag->name = ucfirst($cat);
                         } elseif (is_array($cat)) {
-                            $Tag->key = $key;
+                            $keyk = strtolower(str_replace(' ', '_', $key));
+                            $Tag->key = $keyk;
                             $Tag->name = ucfirst($key);
                         }
 
@@ -963,7 +965,7 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         exit('DONE');
-    }*/
+    }
 
 
     /**

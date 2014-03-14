@@ -12,12 +12,20 @@ class EventCategory extends EventCategoryObject
     {
         $data = array();
 
-        $categories = Categories::find();
-
-        foreach ($categories as $node) {
-            $data[$node->id] = $this->count('category_id = '.$node->id);
+        $session = $this->getDI()->getShared('session');
+        if ($session->has('countEventsInCats')) {
+            $data = $session->get('countEventsInCats');
         }
 
+        if (empty($data)) {
+            $categories = Categories::find();
+
+            foreach ($categories as $node) {
+                $data[$node->id] = $this->count('category_id = '.$node->id);
+            }
+
+            $session->set('countEventsInCats', $data);
+        }
         return $data;
 
     }
