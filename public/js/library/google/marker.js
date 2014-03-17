@@ -74,7 +74,8 @@ define('googleMarker',
                         position: newLatLng,
                         map: Map,
                         title: Event.name,
-                        icon: Icon.icon
+                        icon: Icon.icon,
+                        animation: google.maps.Animation.DROP
                     });
 
                     // get array of markers currently in cluster
