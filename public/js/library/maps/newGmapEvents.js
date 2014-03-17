@@ -11,7 +11,7 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 6000,
+                requestInterval: 0,
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
