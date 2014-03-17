@@ -11,7 +11,7 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 60000,
+                requestInterval: 0,
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
@@ -81,7 +81,7 @@ define('newGmapEvents',
              */
             var responseHandler = function(data) {
                 if (debug) {
-                    //console.log(data);
+                    console.log(data);
                 }
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
@@ -93,85 +93,56 @@ define('newGmapEvents',
                     }
                     settings.alreadyGrabbed = true;
 
-                    function processLargeArray(array) {
-                        // set this to whatever number of items you can process at once
-                        var chunk = 100;
-                        var i = 0;
-                        var len = array.length;
-                        function doChunk() {
-                            var cnt = chunk;
-                            while (cnt-- && i < len) {
-                                // process array[index] here
-                                var event = array[i];
+                    $.each(data.events, function(index, event) {
+                       
+                        var InfoWindow = new googleInfoWindow(event);
 
-                                var InfoWindow = new googleInfoWindow(event);
+                        if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
+                            __lastLat = event.latitude;
+                            __lastLng = event.longitude;
+                        }else if (!_.isUndefined(event.venue) && !_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
+                            __lastLat = event.venue.latitude;
+                            __lastLng = event.venue.longitude;
+                        }
 
-                                if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
-                                    __lastLat = event.latitude;
-                                    __lastLng = event.longitude;
-                                }else if (!_.isUndefined(event.venue) && !_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
-                                    __lastLat = event.venue.latitude;
-                                    __lastLng = event.venue.longitude;
-                                }
+                        if (!_.isUndefined(event.venue)) {
+                            var marker = new googleMarker({
+                                Map: Map,
+                                Event: event,
+                                InfoWindow: InfoWindow
+                            });
 
-                                if (!_.isUndefined(event.venue)) {
-                                    var marker = new googleMarker({
-                                        Map: Map,
-                                        Event: event,
-                                        InfoWindow: InfoWindow
-                                    });
+                            if (!_.isEmpty(marker)) {
+                                // push new marker to storage
+                                Map.markers.push(marker);
 
-                                    if (!_.isEmpty(marker)) {
-                                        // push new marker to storage
-                                        Map.markers.push(marker);
+                                // initialize click to marker on map for open information window
+                                google.maps.event.addListener(marker, 'click', function() {
+                                    marker.setIcon(marker.clickedIcon);
+                                    InfoWindow.open(Map, marker);
+                                });
 
-                                        // initialize click to marker on map for open information window
-                                        (function(marker, InfoWindow){
-                                            google.maps.event.addListener(marker, 'click', function() {
-                                                console.log('click');
-                                                marker.setIcon(marker.clickedIcon);
-                                                InfoWindow.open(Map, marker);
-                                            });
-                                        }(marker, InfoWindow));
-
-
-                                        // info window click handle
-                                        (function(marker){
-                                            google.maps.event.addListener(InfoWindow,'closeclick',function(){
-                                                marker.setIcon(marker.defaultIcon);
-                                            });
-                                        }(marker));
-                                    }
-                                }
-                            }
-
-                            $(settings.eventsCounter).html(Map.markers.length);
-
-                            ++i;
-
-                            if (i < array.length) {
-                                setTimeout(doChunk, 0);
-                            }else {
-                                // change events counter
-
-
-                                //setCookies(__lastLat, __lastLng);
-
-                                /*if (resetMap) {
-                                 Map.setCenter(new google.maps.LatLng(__lastLat, __lastLng));
-                                 resetMap = false;
-                                 }*/
-                                // add markers to clusterer
-                                Mc.addMarkers(Map.markers);
-                                // redraw clusterer
-                                Mc.redraw();
-                                //
+                                // info window click handle
+                                google.maps.event.addListener(InfoWindow,'closeclick',function(){
+                                    marker.setIcon(marker.defaultIcon);
+                                });
                             }
                         }
-                        doChunk();
-                    }
+                    });
 
-                    processLargeArray(data.events);
+                    // change events counter
+                    $(settings.eventsCounter).html(Map.markers.length);
+
+                    //setCookies(__lastLat, __lastLng);
+
+                    if (resetMap) {
+                        Map.setCenter(new google.maps.LatLng(__lastLat, __lastLng));
+                        resetMap = false;
+                    }
+                    // add markers to clusterer
+                    Mc.addMarkers(Map.markers);
+                    // redraw clusterer
+                    Mc.redraw();
 
                 } else {
                     if (data.stop == true && settings.alreadyGrabbed == false) {
