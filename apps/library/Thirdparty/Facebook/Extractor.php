@@ -7,7 +7,6 @@ use Thirdparty\Facebook\FacebookApiException,
 
 class Extractor
 {
-
     private $facebook;
 
     public function __construct($dependencyInjector = null)

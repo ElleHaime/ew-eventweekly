@@ -31,7 +31,6 @@ $cfg_settings = array(
 		),
 		'cache' => array(
 			'lifetime' => '86400',
-			'prefix' => 'pe_',
 			'adapter' => 'Memcache',
 			'cacheDir' => ROOT_APP . 'var/cache/data/',
 			'host' => 'localhost',

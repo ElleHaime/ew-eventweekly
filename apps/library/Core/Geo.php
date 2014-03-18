@@ -5,8 +5,8 @@ namespace Core;
 use Phalcon\Mvc\User\Plugin,
 	Phalcon\Mvc\Dispatcher,
 	Core\Utils as _U,
-	Objects\LocationIp;
-use \GeoIp2\WebService\Client;
+	Objects\LocationIp,
+	\GeoIp2\WebService\Client;
 
 
 class Geo extends Plugin

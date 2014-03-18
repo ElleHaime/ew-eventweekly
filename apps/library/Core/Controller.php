@@ -230,12 +230,8 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function checkCache()
     {
-        /*		$keys = $this -> cacheData -> queryKeys();
-        _U::dump($keys, true);
-                foreach ($keys as $key) {
-                    $this -> cacheData -> delete($key);
-                }
-        die('done');*/
+        //$keys = $this -> cacheData -> queryKeys();
+        //_U::dump($keys);
 
         if (!$this->cacheData->exists('locations')) {
             Location::setCache();
@@ -249,5 +245,8 @@ class Controller extends \Phalcon\Mvc\Controller
         if (!$this->cacheData->exists('fb_members')) {
             MemberNetwork::setCache();
         }
+
+        //$keys = $this -> cacheData -> get('locations');
+        //_U::dump($keys);
     }
 }
