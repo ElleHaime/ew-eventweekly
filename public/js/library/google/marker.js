@@ -23,33 +23,13 @@ define('googleMarker',
                         icon: '/img/google/business.png',
                         clickedIcon: '/img/google/business-hover.png'
                     },
-                    entertainment: {
-                        icon: '/img/google/entertainment.png',
-                        clickedIcon: '/img/google/entertainment-hover.png'
-                    },
-                    theater: {
-                        icon: '/img/google/theater.png',
-                        clickedIcon: '/img/google/theater-hover.png'
+                    culture: {
+                        icon: '/img/google/culture.png',
+                        clickedIcon: '/img/google/culture-hover.png'
                     },
                     social: {
                         icon: '/img/google/social.png',
                         clickedIcon: '/img/google/social-hover.png'
-                    },
-                    special: {
-                        icon: '/img/google/special.png',
-                        clickedIcon: '/img/google/special-hover.png'
-                    },
-                    art: {
-                        icon: '/img/google/art.png',
-                        clickedIcon: '/img/google/art-hover.png'
-                    },
-                    family: {
-                        icon: '/img/google/family.png',
-                        clickedIcon: '/img/google/family-hover.png'
-                    },
-                    outdoor: {
-                        icon: '/img/google/outdoor.png',
-                        clickedIcon: '/img/google/outdoor-hover.png'
                     },
                     other: {
                         icon: '/img/google/other.png',
@@ -94,7 +74,8 @@ define('googleMarker',
                         position: newLatLng,
                         map: Map,
                         title: Event.name,
-                        icon: Icon.icon
+                        icon: Icon.icon,
+                        animation: google.maps.Animation.DROP
                     });
 
                     // get array of markers currently in cluster

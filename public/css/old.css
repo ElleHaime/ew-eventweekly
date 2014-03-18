@@ -1427,19 +1427,19 @@ input[type="checkbox"]  {
     margin-bottom: 10px;
 }
 
-.entertainment-color, .ent-color{
+.culture-color, .ent-color{
     background: #9556be;
 }
 
-.arrow-entertainment, .ent-color {
+.arrow-culture, .ent-color {
     border-color: rgba(0, 0, 0, 0) #9556be rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
-.disabled-marker .entertainment-color  {
+.disabled-marker .culture-color  {
     background: #ffffff;
     color:#333333;
 }
-.disabled-marker .arrow-entertainment {
+.disabled-marker .arrow-culture {
     border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
 }
 
@@ -1837,21 +1837,21 @@ input[type="checkbox"]  {
 {
     border-right:1px solid #97A5A5;
 }
-
-/*------entertainment-----*/
-.events-list.entertainment-category, .entertainment-category  .events-img-box img  {
+ 
+/*------culture-----*/
+.events-list.culture-category, .culture-category  .events-img-box img  {
     border-left:14px solid  #9556be;
 }
-.entertainment-category .date-events-map {
+.culture-category .date-events-map {
     border-right:3px solid #9556be;
 }
-.events-map .entertainment-category:hover {
+.events-map .culture-category:hover {
     background: #8942B6 ;
 }
-.events-map .entertainment-category:hover span {
+.events-map .culture-category:hover span {
     color:#ffffff;
 }
-.events-map .entertainment-category:hover  .date-events-map
+.events-map .culture-category:hover  .date-events-map
 {
     border-right:1px solid #9556be;
 }
@@ -2031,7 +2031,7 @@ input[type="checkbox"]  {
 .events-list.ent-category    .sub_category div:hover {
     background: #9556be;
 }
-.events-list.ent-category  .category-title, .event-list-category .entertainment-title {
+.events-list.ent-category  .category-title, .event-list-category .culture-title {
     color:#9556be;
 }
 
@@ -3432,15 +3432,15 @@ ul.days-events  {
     color:#dc7f00;
 }
 
-.category-list .entertainment-border .location-name {
+.category-list .culture-border .location-name {
     border-left:3px solid #9556be;
 }
 
-.category-list .active-line.entertainment-border .location-name  {
+.category-list .active-line.culture-border .location-name  {
     border-left-width: 1px;
 }
 
-.category-list .entertainment-border .number-events {
+.category-list .culture-border .number-events {
     color:#9556be;
 }
 
@@ -3448,11 +3448,11 @@ ul.days-events  {
     padding-left: 8px;
 }
 
-.category-list .entertainment-border:hover {
+.category-list .culture-border:hover {
     background: #edf0f1;
     text-decoration: none;
 }
-.category-list .active-line.entertainment-border {
+.category-list .active-line.culture-border {
     background: #8942b6;
     text-decoration: none;
 }
@@ -3467,7 +3467,7 @@ ul.days-events  {
     border-left:1px solid #ebc500;
 }
 
-.category-list .active-line.entertainment-border .location-name  {
+.category-list .active-line.culture-border .location-name  {
     border-left-width: 1px;
 }
 
