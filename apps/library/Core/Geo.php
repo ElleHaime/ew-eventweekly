@@ -4,8 +4,8 @@ namespace Core;
 
 use Phalcon\Mvc\User\Plugin,
 	Phalcon\Mvc\Dispatcher,
-//	Thirdparty\Geo\SxGeo as SGeo,
-	Core\Utils as _U;
+	Core\Utils as _U,
+	Objects\LocationIp;
 use \GeoIp2\WebService\Client;
 
 
@@ -24,7 +24,7 @@ class Geo extends Plugin
 	protected $_locLatMin	= false;
 	protected $_locLonMax 	= false;
 	protected $_locLatMax	= false;
-	protected $_countryCode = false;
+	protected $_countryCode = false;	
 	protected $_userIp 		= false;
 	protected $_config 		= false;
 	protected $_errors		= array();
@@ -53,21 +53,35 @@ class Geo extends Plugin
 		return;
 	}
 
+	
+	public function getUserIp()
+	{
+		return $this -> _userIp;
+	}
+
+	public function getFromCache()
+	{
+		$locExists = LocationIp::findFirst('ip = "' . $this -> _userIp. '"');
+
+		if ($locExists) {
+			$location['location_id'] = $locExists -> location_id;			
+
+			return $location;
+		}
+
+		return false;
+	}
+
 	public function setUserLocation()
 	{
-		if ($this -> _userIp) {
-            $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
-            					 $this -> _config -> application -> GeoIp2 -> licenseKey);
+        $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
+        					 $this -> _config -> application -> GeoIp2 -> licenseKey);
 
-            $record = $client->city($this->_userIp);
+        $record = $client->city($this->_userIp);
 
-            $this -> _locLatCur = $record->location->latitude;
-            $this -> _locLonCur = $record->location->longitude;
-            $this -> _countryCode = $record->country->isoCode;
-
-		} else {
-			$this -> _userIp = $this -> getUserIp();
-		}
+        $this -> _locLatCur = $record->location->latitude;
+        $this -> _locLonCur = $record->location->longitude;
+        $this -> _countryCode = $record->country->isoCode;
 
         \Core\Logger::logFile('ips');
         \Core\Logger::log($this -> _userIp);
@@ -81,14 +95,15 @@ class Geo extends Plugin
 		return array('latitude' => $this -> _locLatCur,
 					 'longitude' => $this -> _locLonCur);
 	}
-	
-	public function getUserIp()
-	{
-		return $this -> _userIp;
-	}
 
 	public function getLocation($coordinates = array())
 	{
+		if (empty($coordinates)) {
+			if ($location = $this -> getFromCache()) {
+				return $location;
+			}
+		}
+
 		if (empty($coordinates)) {
 			$queryParams = $this -> _buildQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode); 
 		} else {
@@ -167,6 +182,7 @@ class Geo extends Plugin
 							$location['latitude'] = (float)$coordinates['latitude'];
 							$location['longitude'] = (float)$coordinates['longitude'];
 						} else {
+							$location['ip'] = $this -> _userIp;
 							$location['latitude'] = (float)$this -> _locLatCur ;
 							$location['longitude'] = (float)$this -> _locLonCur;
 						}
