@@ -527,10 +527,3 @@ return array(
     ),
     'other' => array()
 );
-	
-	
-	
-
-	
-
-	
