@@ -925,6 +925,7 @@ class EventController extends \Core\Controllers\CrudController
         $Parser = new \Categoryzator\Core\Parser();
         $categories = $Parser->getCategories();
 
+        // categories
         if (!empty($categories)) {
             foreach ($categories as $categoryKey => $children) {
                 $Category = new Category();
@@ -940,12 +941,14 @@ class EventController extends \Core\Controllers\CrudController
                 $Category->save();
             }
 
+            // tags (subcategories)
             foreach ($categories as $categoryKey => $children) {
                 $parent = Category::findFirst('key = "'.$categoryKey.'"');
                 if (!empty($children)) {
                     unset($children[0]);
                     foreach ($children as $key => $cat) {
                         $Tag = new \Frontend\Models\Tag();
+                        $Tag->category_id = $parent->id;
 
                         if (is_string($cat)) {
                             $catk = strtolower(str_replace(' ', '_', $cat));
@@ -955,9 +958,18 @@ class EventController extends \Core\Controllers\CrudController
                             $keyk = strtolower(str_replace(' ', '_', $key));
                             $Tag->key = $keyk;
                             $Tag->name = ucfirst($key);
+
+                            // keywords
+                            $keywords = [];
+                            foreach ($cat as $index => $keyword) {
+                                $keywords[$index] = new \Frontend\Models\Keyword();
+                                $keywords[$index]->key = $keyword;
+                            }
+
+                            $Tag->tag_keyword = $keywords;
+
                         }
 
-                        $Tag->category_id = $parent->id;
                         $Tag->save();
                     }
                 }

@@ -17,5 +17,6 @@ class Tag extends Model
     public function initialize()
     {
         $this->hasMany('id', '\Objects\EventTag', 'event_id', array('alias' => 'event_tag'));
+        $this->hasMany('id', '\Objects\Keyword', 'tag_id', array('alias' => 'tag_keyword'));
     }
 }
