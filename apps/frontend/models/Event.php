@@ -281,6 +281,7 @@ class Event extends EventObject
      * @param int $fetchType
      * @param int $order
      * @param array $pagination
+     * @param bool $applyPersonalization
      * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
      */
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false)
