@@ -85,7 +85,12 @@ class EventController extends \Core\Controllers\CrudController
     public function eventlistAction()
     {
         $this->session->set('lastFetchedEvent', 0);
-        $events = $this->testGetAction(null, null, null, false, true, true);
+
+        if ($this->session->get('memberId')) {
+            $applyPersonalization = true;
+        }
+
+        $events = $this->testGetAction(null, null, null, false, true, $applyPersonalization);
 
         if (isset($events[0]) || isset($events[1])) {
             $this->view->setVar('events', $events);
