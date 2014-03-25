@@ -88,6 +88,8 @@ class EventController extends \Core\Controllers\CrudController
 
         if ($this->session->get('memberId')) {
             $applyPersonalization = true;
+        }else {
+            $applyPersonalization = false;
         }
 
         $events = $this->testGetAction(null, null, null, false, true, $applyPersonalization);
