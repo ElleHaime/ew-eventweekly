@@ -31,7 +31,7 @@ class Location extends Model
 		$this -> hasMany('id', '\Objects\Venue', 'location_id', array('alias' => 'venue'));
 	}
 
-	public static function setCache()
+	public function setCache()
 	{
 		$locations = self::find();
 		$locationsCache = array();
@@ -46,7 +46,7 @@ class Location extends Model
 								                      'country' => $loc -> country);
 			}
 		}
-		self::$cacheData -> save('locations', $locationsCache);
+		$this -> getCache() -> save('locations', $locationsCache);
 	}
 
 	public function checkInCache($argument = [], $scope = [])
@@ -70,10 +70,10 @@ class Location extends Model
 
 	public function addToCache($newLocation)
 	{
-		if(is_null(self::$cacheData -> exists('locations'))) {
-			self::setCache();
+		if(is_null($this -> getCache() -> exists('locations'))) {
+			$this -> setCache();
 		}
-		$locationsScope = self::$cacheData -> get('locations');
+		$locationsScope = $this -> getCache() -> get('locations');
 
         if (!isset($locationsScope[$newLocation->id])) {
             $locationsScope[$newLocation->id] = ['latMin' => $newLocation->latitudeMin,
@@ -82,8 +82,8 @@ class Location extends Model
 								                 'lonMax' => $newLocation->longitudeMax,
 								                 'city' => $newLocation->city,
 								                 'country' => $newLocation->country];
-            self::$cacheData->delete('locations');
-            self::$cacheData->save('locations', $locationsScope);
+            $this -> getCache() -> delete('locations');
+            $this -> getCache() -> save('locations', $locationsScope);
         }
 	}
 
@@ -91,8 +91,9 @@ class Location extends Model
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
 		$isLocationExists = false;
-		!is_null(self::$cacheData -> exists('locations')) ? $locationsScope = self::$cacheData -> get('locations')
-														  : $locationsScope = [];
+		!is_null($this -> getCache() -> exists('locations')) 
+						? $locationsScope = $this -> getCache() -> get('locations')
+						: $locationsScope = [];
 
 		if (!empty($argument) && !empty($locationsScope)) {
 			$isLocationExists = $this -> checkInCache($argument, $locationsScope);

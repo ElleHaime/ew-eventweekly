@@ -24,14 +24,14 @@ class Venue extends Model
 		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
 	}
 	
-	public static function setCache()
+	public function setCache()
 	{
 		$venues = self::find();
 		
 		if ($venues) {
 			foreach($venues as $venue) {
-				if (!self::$cacheData -> exists('venue_' . $venue -> fb_uid)) {
-            		self::$cacheData -> save('venue_' . $venue -> fb_uid, 
+				if (!$this -> getCache() -> exists('venue_' . $venue -> fb_uid)) {
+            		$this -> getCache() -> save('venue_' . $venue -> fb_uid, 
             						array('venue_id' => $venue -> id,
                                           'address' => $venue -> address,
                                           'location_id' => $venue -> location_id,
@@ -39,7 +39,7 @@ class Venue extends Model
                                           'longitude' => $venue -> longitude));
         		}
 			}
-			self::$cacheData -> save('fb_venues', 'cached');
+			$this -> getCache() -> save('fb_venues', 'cached');
 		}
 	}
 	

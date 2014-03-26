@@ -1131,21 +1131,6 @@ class EventController extends \Core\Controllers\CrudController
         $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
-            $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
-            $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
-            $res['userEventsGoing'] = $EventMember->getEventMemberEventsCount($this->session->get('memberId'))->count();
-            $res['userEventsLiked'] = $EventLike->getLikedEventsCount($this->session->get('memberId'))->count();
-
-            $this->session->set('userEventsCreated', $res['eventsCreated']);
-            $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
-            $this->session->set('userEventsGoing', $res['userEventsGoing']);
-            $this->session->set('userEventsLiked', $res['userEventsLiked']);
-
-            $this->view->setVar('userEventsCreated', $res['eventsCreated']);
-            $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
-            $this->view->setVar('userEventsGoing', $res['userEventsGoing']);
-            $this->view->setVar('userEventsLiked', $res['userEventsLiked']);
-
             if (count($events) > 0) {
                 $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
             }
@@ -1200,6 +1185,37 @@ class EventController extends \Core\Controllers\CrudController
         }
     }
 
+
+    /**
+     * @Route("/event/get-counter", methods={'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function getCounterAction()
+    {
+        $Event = new Event();
+        $EventFriend = new EventMemberFriend();
+
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
+            $res['eventsCreated'] = $this -> cacheData -> get('member.create.summary.' . $this->session->get('memberId'));
+            $res['userEventsGoing'] = $this -> cacheData -> get('member.go.summary.' . $this->session->get('memberId'));
+            $res['userEventsLiked'] = $this -> cacheData -> get('member.like.summary.' . $this->session->get('memberId'));
+            $res['eventsFriendsGoing'] = $this -> cacheData -> get('member.friends.go.summary.' . $this->session->get('memberId'));
+
+            $this->session->set('userEventsCreated', $res['eventsCreated']);
+            $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
+
+            $this->view->setVar('userEventsCreated', $res['eventsCreated']);
+            $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
+            $this->view->setVar('userEventsGoing', $res['userEventsGoing']);
+            $this->view->setVar('userEventsLiked', $res['userEventsLiked']);
+        }
+        $this -> cacheData -> exists('events_total') ? 
+                                            $res['eventsTotal'] = $this -> cacheData -> get('events_total') :
+                                            $res['eventsTotal'] = 0;
+        $this -> view -> setVar('eventsTotal', $res['eventsTotal']); 
+
+        $this->sendAjax($res);
+    }
 
     /**
      * @Route("/event/delete-logo", methods={"POST"})

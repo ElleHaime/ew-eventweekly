@@ -8,14 +8,10 @@ class Model extends \Phalcon\Mvc\Model
 {
 	public $extraOptions;
 	public $needCache = false;
-	public static $cacheData;
 
 
 	public function onConstruct()
 	{
-		$di = $this -> getDi();
-		self::$cacheData = $di -> get('cacheData');
-		$m = get_class($this);
 	}
 
 	public function getDependencyProperty()
@@ -120,21 +116,24 @@ class Model extends \Phalcon\Mvc\Model
 	{
 		return false;
 	}
-	
 
-	public static function setCache()
+
+	public function setCache()
 	{
 	}
 
 	protected function getConfig()
 	{
-		$config = $this -> getDi() -> get('config');
-		return  $config;
+		return $this -> getDi() -> get('config');
+	}
+
+	protected function getCache()
+	{
+		return $this -> getDi() -> get('cacheData');
 	}
 	
 	protected function getGeo()
 	{
-		$geo = $this -> getDi() -> get('geo');
-		return  $geo;
+		return $this -> getDi() -> get('geo');
 	}
 }

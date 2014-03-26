@@ -60,8 +60,10 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->session->set('location', $loc);
         }
 
-        if ($this->session->has('eventsTotal')) {
-            $this->view->setVar('eventsTotal', $this->session->get('eventsTotal'));
+        if ($this->cacheData->exists('events_total')) {
+            $this->view->setVar('eventsTotal', $this->cacheData->get('events_total'));
+        } else {
+            $this->view->setVar('eventsTotal', 0);
         }
 
         if ($this->session->has('location_conflict')) {
@@ -116,7 +118,7 @@ class Controller extends \Phalcon\Mvc\Controller
             $eventsCreatedObject = new Event();
             $eventsFriendsObject = new EventMemberFriend();
 
-            $this->session->set('userEventsCreated', $eventsCreatedObject->getCreatedEventsCount($this->session->get('memberId')));
+            $this->session->set('userEventsCreated', $eventsCreatedObject->getCreatedEventsCount($this->session->get('memberId'))->count());
             $this->session->set('userFriendsEventsGoing', $eventsFriendsObject->getEventMemberFriendEventsCount($this->session->get('memberId'))->count());
         }
 
@@ -234,19 +236,23 @@ class Controller extends \Phalcon\Mvc\Controller
         //_U::dump($keys);
 
         if (!$this->cacheData->exists('locations')) {
-            Location::setCache();
+            $location = new Location();
+            $location -> setCache();
         }
         if (!$this->cacheData->exists('fb_venues')) {
-            Venue::setCache();
+            $venue = new Venue();
+            $venue -> setCache();
         }
-        if (!$this->cacheData->exists('fb_events')) {
-            Event::setCache();
+        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('events_total')) {
+            $event = new Event();
+            $event -> setCache();
         }
         if (!$this->cacheData->exists('fb_members')) {
-            MemberNetwork::setCache();
+            $memberNetwork = new MemberNetwork();
+            $memberNetwork -> setCache();
         }
 
-        //$keys = $this -> cacheData -> get('locations');
+        //$keys = $this -> cacheData -> get('events_total');
         //_U::dump($keys);
     }
 }
