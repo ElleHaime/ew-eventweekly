@@ -1219,7 +1219,7 @@ class EventController extends \Core\Controllers\CrudController
         $this -> cacheData -> exists('events_total') ? 
                                             $res['eventsTotal'] = $this -> cacheData -> get('events_total') :
                                             $res['eventsTotal'] = 0;
-        $this -> view -> setVar('eventsTotal', $res['eventsTotal']); 
+        $this -> view -> setVar('eventsGeneralTotal', $res['eventsTotal']); 
 
         $this->sendAjax($res);
     }

@@ -61,9 +61,9 @@ class Controller extends \Phalcon\Mvc\Controller
         }
 
         if ($this->cacheData->exists('events_total')) {
-            $this->view->setVar('eventsTotal', $this->cacheData->get('events_total'));
+            $this->view->setVar('eventsGeneralTotal', $this->cacheData->get('events_total'));
         } else {
-            $this->view->setVar('eventsTotal', 0);
+            $this->view->setVar('eventsGeneralTotal', 0);
         }
 
         if ($this->session->has('location_conflict')) {
