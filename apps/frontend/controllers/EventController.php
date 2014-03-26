@@ -85,7 +85,14 @@ class EventController extends \Core\Controllers\CrudController
     public function eventlistAction()
     {
         $this->session->set('lastFetchedEvent', 0);
-        $events = $this->testGetAction(null, null, null, false, true);
+
+        if ($this->session->get('memberId')) {
+            $applyPersonalization = true;
+        }else {
+            $applyPersonalization = false;
+        }
+
+        $events = $this->testGetAction(null, null, null, false, true, $applyPersonalization);
 
         if (isset($events[0]) || isset($events[1])) {
             $this->view->setVar('events', $events);
@@ -1102,7 +1109,7 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false)
+    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false, $applyPersonalization = false)
     {
         $Event = new Event();
         $EventMember = new EventMember();
@@ -1128,7 +1135,7 @@ class EventController extends \Core\Controllers\CrudController
         }
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
-        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC);
+        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, array(), $applyPersonalization);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
             if (count($events) > 0) {
