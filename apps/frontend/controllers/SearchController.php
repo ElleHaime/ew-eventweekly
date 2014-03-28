@@ -119,16 +119,22 @@ class SearchController extends \Core\Controller
 
                 $this->cookies->get('lastLat')->delete();
                 $this->cookies->get('lastLng')->delete();
+
+                $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
             }
 
             // add search condition by start date
             if ($elemExists('searchStartDate')) {
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'"');
+
+                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
             }
 
             // add search condition by end date if specify
             if ($elemExists('searchEndDate')) {
                 $Event->addCondition('Frontend\Models\Event.end_date <= "'.$postData['searchEndDate'].'"');
+
+                $pageTitle .= 'by end date - "'.$postData['searchEndDate'].'" | ';
             }else {
                 $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
