@@ -263,7 +263,7 @@
                                                         {% endfor %}
                                                     </div>
 
-                                                    <a href="#" class="show-all">show all tags</a>
+                                                    {#<a href="#" class="show-all">show all tags</a>#}
 
                                                     {% if event.category.getFirst().key == 'other' %}
                                                         <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
