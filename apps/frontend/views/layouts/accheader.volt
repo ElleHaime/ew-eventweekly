@@ -111,7 +111,7 @@
                 </div>
 
                 <div class="location clearfix">
-                <div class="header-count">All events <span id="events_total">{{ eventsGeneralTotal }}</span></div> 
+                <div class="header-count">All events <span id="events_total">{{ eventsGTotal }}</span></div> 
                     {% if eventsTotal is defined %}
                         <span class="location-count"
                               data-placement="bottom" 

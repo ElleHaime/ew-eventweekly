@@ -29,17 +29,18 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
-        $this->_setModule();
-        $this->_getChild();
-        $this->_parseQueryVals();
+        $this -> _setModule();
+        $this -> _getChild();
+        $this -> _parseQueryVals();
 
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
 
-        $this->plugSearch();
-        $this->checkCache();
-
+        $this -> plugSearch();
+        $this -> checkCache();
+        $this -> counters -> setUserCounters();
+//_U::dump($this -> counters -> get('userFriendsGoing'));
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
@@ -58,12 +59,6 @@ class Controller extends \Phalcon\Mvc\Controller
             $loc->longitudeMax = (float)$loc->longitudeMax;
 
             $this->session->set('location', $loc);
-        }
-
-        if ($this->cacheData->exists('events_total')) {
-            $this->view->setVar('eventsGeneralTotal', $this->cacheData->get('events_total'));
-        } else {
-            $this->view->setVar('eventsGeneralTotal', 0);
         }
 
         if ($this->session->has('location_conflict')) {
@@ -110,24 +105,6 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);
         }
-
-        if ($this->session->has('role') &&
-            $this->session->get('role') == Acl::ROLE_MEMBER &&
-            !is_null($this->session->get('member'))
-        ) {
-            $eventsCreatedObject = new Event();
-            $eventsFriendsObject = new EventMemberFriend();
-
-            $this->session->set('userEventsCreated', $eventsCreatedObject->getCreatedEventsCount($this->session->get('memberId'))->count());
-            $this->session->set('userFriendsEventsGoing', $eventsFriendsObject->getEventMemberFriendEventsCount($this->session->get('memberId'))->count());
-        }
-
-        $this->view->setVar('userEventsCreated', $this->session->get('userEventsCreated'));
-        $this->view->setVar('userFriendsGoing', $this->session->get('userFriendsEventsGoing'));
-        $this->view->setVar('userEventsCreated', $this->session->get('userEventsCreated'));
-        $this->view->setVar('userEventsLiked', $this->session->get('userEventsLiked'));
-        $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
-        $this->view->setVar('userFriendsGoing', $this->session->get('userFriendsEventsGoing'));
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
 
@@ -230,6 +207,22 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->send();
     }
 
+    protected function increaseUserCounter($counter, $val = 1)
+    {
+        $this -> cacheData -> exists($counter) ?
+            $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)+(int)$val) :
+            $this -> cacheData -> save($counter, (int)$val);
+    }
+
+    protected function decreaseUserCounter($counter, $val = 1)
+    {
+        if ($this -> cacheData -> exists($counter)) {
+            if ($this -> cacheData -> get($counter) > 0) {
+                $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)-(int)$val);
+            }
+        }
+    }
+
     public function checkCache()
     {
         //$keys = $this -> cacheData -> queryKeys();
@@ -243,7 +236,7 @@ class Controller extends \Phalcon\Mvc\Controller
             $venue = new Venue();
             $venue -> setCache();
         }
-        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('events_total')) {
+        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('eventsGTotal')) {
             $event = new Event();
             $event -> setCache();
         }
@@ -252,7 +245,7 @@ class Controller extends \Phalcon\Mvc\Controller
             $memberNetwork -> setCache();
         }
 
-        //$keys = $this -> cacheData -> get('events_total');
+        //$keys = $this -> cacheData -> get('eventsGTotal');
         //_U::dump($keys);
     }
 }

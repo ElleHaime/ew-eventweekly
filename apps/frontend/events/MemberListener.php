@@ -71,19 +71,19 @@ class MemberListener {
 
             $model = new Event();
             $ecSummary = $model->getCreatedEventsCount($userId);
-            $this -> processCounters($ecSummary, 'userEventsCreated', 'member.create.' . $userId . '.', 'member.create.summary.' . $userId);
+            $this -> processCounters($ecSummary, 'member.create.' . $userId . '.', 'userEventsCreated.' . $userId);
 
             $model = new EventLike();
             $elSummary = $model->getLikedEventsCount($userId);
-            $this -> processCounters($elSummary, 'userEventsLiked', 'member.like.' . $userId . '.', 'member.like.summary.' . $userId);
+            $this -> processCounters($elSummary, 'member.like.' . $userId . '.', 'userEventsLiked.' . $userId);
 
             $model = new EventMember();
             $emSummary = $model->getEventMemberEventsCount($userId);
-            $this -> processCounters($emSummary, 'userEventsGoing', 'member.go.' . $userId . '.', 'member.go.summary.' . $userId);
+            $this -> processCounters($emSummary, 'member.go.' . $userId . '.', 'userEventsGoing.' . $userId);
 
             $model = new EventMemberFriend();
             $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
-            $this -> processCounters($emfSummary, 'userFriendsEventsGoing', 'member.friends.go.' . $userId . '.', 'member.friends.go.summary.' . $userId);
+            $this -> processCounters($emfSummary, 'member.friends.go.' . $userId . '.', 'userFriendsGoing.' . $userId);
         }
     }
 
@@ -113,13 +113,12 @@ class MemberListener {
     }
 
 
-    protected function processCounters($data, $sessionName, $cacheNameItem, $cacheNameSum)
+    protected function processCounters($data, $cacheNameItem, $cacheNameSum)
     {
         if (!$this -> subject -> cacheData -> exists($cacheNameSum)) {
             $this -> subject -> cacheData -> save($cacheNameSum, 0);
         }
-        // set counter
-        $this->subject->session->set($sessionName, $data -> count());
+
         // set cache
         foreach ($data as $item) {
             if (!$this -> subject -> cacheData -> exists($cacheNameItem . $item -> id)) {

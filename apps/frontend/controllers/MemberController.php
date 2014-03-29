@@ -79,7 +79,8 @@ class MemberController extends \Core\Controllers\CrudController
                 $member->phone = $formValues['phone'];
 
                 if ($this->request->hasFiles() == true) {
-                    $file = array_shift($this->request->getUploadedFiles());
+                    $uploadedFile = $this->request->getUploadedFiles();
+                    $file = array_shift($uploadedFile);
 
                     $imgExts = array('image/jpeg', 'image/png');
 
@@ -87,7 +88,11 @@ class MemberController extends \Core\Controllers\CrudController
                         $parts = pathinfo($file->getName());
 
                         $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
-                        $file->moveTo($cfg -> application -> uploadDir . 'img/logos/' . $filename);
+                        $filepath = $cfg -> application -> uploadDir . 'img/logos';
+                        if (!is_dir($filepath)) {
+                            mkdir($filepath, 0777, true);
+                        }
+                        $file->moveTo($filepath . '/' . $filename);
 
                         $oldFile = ROOT_APP . 'public' . $member->logo;
                         if (file_exists($oldFile)) {

@@ -82,12 +82,12 @@ define('frontEventLike',
                         like.text('Liked');
 		        		dislike.prop('disabled', false);
 
-                        $(self.settings.userEventsLiked).text(data.likeCounter)
+                        $(self.settings.userEventsLiked).text(data.userEventsLiked)
 		        	} else {
 		        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
 
                         if (data.likeCounter != null) {
-                            $(self.settings.userEventsLiked).text(data.likeCounter);
+                            $(self.settings.userEventsLiked).text(data.userEventsLiked);
                         }
 		        	}
 		        } else {

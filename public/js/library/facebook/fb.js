@@ -188,7 +188,7 @@ define('fb',
 						answer: status, 
 						event_id : $('#current_event_id').attr('event') 
 				};
-				
+console.log(params);
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
                     console.log(data);
@@ -205,7 +205,7 @@ define('fb',
 							return false;
 						}
 					}
-				});
+				}); 
 			}
 
             self.__plusUserEventsGoing = function()

@@ -66,6 +66,6 @@ class Event extends Model
 			}
 			$this -> getCache() -> save('fb_events', 'cached');
 		}
-		$this -> getCache() -> save('events_total', $events -> count());
+		$this -> getCache() -> save('eventsGTotal', $events -> count());
 	}
 }
