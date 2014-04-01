@@ -24,6 +24,37 @@ class SearchController extends \Core\Controller
      */
     public function searchAction()
     {
+        if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
+            $newTask = null;
+
+            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId')));
+            if ($taskSetted -> count() > 0) {
+                foreach ($taskSetted as $task) {
+                    $tsk = $task;
+                }
+                if (time()-($tsk -> hash) > 300) {
+                    $newTask = $tsk;
+                }
+            } else {
+                $newTask = new \Objects\Cron();
+            }
+
+            if (!is_null($newTask)) {
+                $params = ['user_token' => $this -> session -> get('user_token'),
+                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
+                           'member_id' => $this -> session -> get('memberId')];
+                $task = ['name' => 'extract_facebook_events',
+                         'parameters' => serialize($params),
+                         'state' => 0,
+                         'member_id' => $this -> session -> get('memberId'),
+                         'hash' => time()];
+                
+                $newTask -> assign($task);
+                $newTask -> save();
+            }
+        }
+
+
         $categories = Category::find();
         $categories = $categories->toArray();
         $this->view->setVar('categories', $categories);

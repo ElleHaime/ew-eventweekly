@@ -49,6 +49,7 @@ define('fb',
 			self.reDemo = /.*\/motologin$/;
 			self.demoLat = '53.34460075';
 			self.demoLng = '-6.26577123';
+			self.demoCity = 'Dublin';
 			self.demoCookiePath = '/';
 
 
@@ -158,6 +159,7 @@ define('fb',
                             
                             $.cookie('lastLat', self.demoLat, {expires: 1, path: self.demoCookiePath});
                             $.cookie('lastLng', self.demoLng, {expires: 1, path: self.demoCookiePath});
+                            $.cookie('lastCity', self.demoCity, {expires: 1, path: self.demoCookiePath});
                             
                 			window.location.href = self.demoPage;
                 		} else {
