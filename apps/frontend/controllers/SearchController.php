@@ -112,15 +112,17 @@ class SearchController extends \Core\Controller
                 $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                 $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
-                $loc = new Location();
-                $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-
-                $this->session->set('location', $newLocation);
-
-                $this->cookies->get('lastLat')->delete();
-                $this->cookies->get('lastLng')->delete();
-
-                $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
+                if ($elemExists('searchLocationType', false)) {
+	                $loc = new Location();
+	                $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+	
+	                $this->session->set('location', $newLocation);
+	
+	                $this->cookies->get('lastLat')->delete();
+	                $this->cookies->get('lastLng')->delete();
+	
+	                $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
+                }
             }
 
             // add search condition by start date
@@ -146,6 +148,10 @@ class SearchController extends \Core\Controller
             if ($elemExists('searchType')) {
                 if ($postData['searchType'] == 'in_map') {
 
+                	if ($elemExists('searchTag')) {
+                		$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34)');
+                	}
+                	                	
                     if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
                         $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
 
@@ -162,12 +168,14 @@ class SearchController extends \Core\Controller
                         }
 
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY);
+//_U::dump($result);                        
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true);
                     } else {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     }
-
+                       	
+                    
                     $countResults = count($result);
                     $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 }else {
@@ -189,6 +197,10 @@ class SearchController extends \Core\Controller
 
                         if (count($postData['searchCategory']) == 1) {
                             $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
+                        }
+                        
+                        if ($elemExists('searchTag')) {
+                        	$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33)');
                         }
 
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);

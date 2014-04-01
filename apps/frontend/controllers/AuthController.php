@@ -22,6 +22,20 @@ class AuthController extends \Core\Controller
     {
         $this -> eventsManager -> attach('App.Auth.Member', new MemberListener());
     }
+    
+
+    /**
+     * @Route("/motologin", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function motologinAction()
+    {
+    	$form = new LoginForm();
+    	$this -> view -> form = $form;
+    }
+    
+    
+    
 
     /**
      * @Route("/login", methods={"GET", "POST"})
@@ -63,7 +77,6 @@ class AuthController extends \Core\Controller
 
         $this -> view -> form = $form;
     }
-
 
 
     /**

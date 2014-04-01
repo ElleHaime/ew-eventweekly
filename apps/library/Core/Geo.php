@@ -98,6 +98,7 @@ class Geo extends Plugin
 
 	public function getLocation($coordinates = array())
 	{
+		
 		if (empty($coordinates)) {
 			if ($location = $this -> getFromCache()) {
 				return $location;
