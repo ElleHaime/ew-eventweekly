@@ -56,6 +56,7 @@ require.config({
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
         'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
         'profileRestorePasswordControl': 'frontend/profile/controls/profileRestorePasswordControl',
+        'frontCounterUpdater': 'frontend/general/counterUpdater',
 
         'SingleEvent': 'frontend/list/singleEvent',
         'listListener': 'frontend/list/listListener',
@@ -162,9 +163,13 @@ require.config({
 
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, bootstrap){
+        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){
             $('.tooltip-text').tooltip();
             frontSearchPanel.init();
+
+            //if (moduleName != 'frontend/map') {
+                frontCounterUpdater.init();
+            //}
 
             frontTopPanel.init({
                 searchCityBlock: '.searchCityBlock'

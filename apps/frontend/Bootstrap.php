@@ -2,6 +2,9 @@
 
 namespace Frontend;
 
+use \Core\Utils as _U,
+	\Frontend\Component\Counter;
+
 
 class Bootstrap extends \Core\Bootstrap
 {
@@ -15,5 +18,15 @@ class Bootstrap extends \Core\Bootstrap
 	public function registerServices($di)
 	{
 		parent::registerServices($di);
+		$this -> _initCounters($di);
 	}
+
+
+    public function _initCounters($di)
+	{
+		$di -> set('counters', function() use ($di) {
+			return new Counter();
+		});
+	}
+
 }

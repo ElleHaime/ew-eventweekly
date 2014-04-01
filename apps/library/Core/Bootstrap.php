@@ -11,8 +11,9 @@ use \Phalcon\Mvc\ModuleDefinitionInterface,
 	\Core\Mail,
 	\Core\Geo,
 	\Core\Acl,
-    Frontend\Events\ViewListener;
-use \Core\Utils\DateTime as DTime;
+	\Core\Utils as _U,
+    \Frontend\Events\ViewListener,
+	\Core\Utils\DateTime as DTime;
 
 abstract class Bootstrap implements ModuleDefinitionInterface
 {
@@ -45,7 +46,6 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 		$this -> _initModels($di);
         $this -> initCoreTag($di);
         $this -> _initHttp($di);
- 
 	}
 
 	protected function _initView($di)
@@ -137,13 +137,17 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
 	protected function _initSession($di)
 	{
-		$di -> set('session', function() {
-			//$session = new \Phalcon\Session\Adapter\Files();
-			$session = new \Core\Session();
-			$session -> start();
-			
-			return $session;
-		});
+		if (!$di -> has('session')) {
+			$di -> set('session', function() {
+				//$session = new \Phalcon\Session\Adapter\Files();
+				$session = new \Core\Session();
+				$session -> start();
+				
+				return $session;
+			});
+		} elseif ($di -> has('session') && !$di->get('session')->isStarted()) {
+			$di->get('session')->start();
+		}
 	}
 
 	protected function _initMail($di)
@@ -233,5 +237,4 @@ abstract class Bootstrap implements ModuleDefinitionInterface
             return new \Core\Http($di);
         });
     }
-
 }

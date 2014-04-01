@@ -16,10 +16,6 @@ define('newGmapEvents',
 
                 eventsCounter: '#events_count',
                 searchCityBtn: '.locationCity',
-                userEventsCreated: '#userEventsCreated',
-                userFriendsGoing: '#userFriendsGoing',
-                userEventsGoing: '#userEventsGoing',
-                userEventsLiked: '#userEventsLiked',
                 alreadyGrabbed: true
             };
 
@@ -179,22 +175,6 @@ define('newGmapEvents',
                         $(settings.eventsCounter).html(0);
                         noty({text: 'No event in this area!', type: 'warning'});
                     }
-                }
-
-                if (data.eventsCreated) {
-                    $(settings.userEventsCreated).text(data.eventsCreated);
-                }
-
-                if (data.eventsFriendsGoing) {
-                    $(settings.userFriendsGoing).text(data.eventsFriendsGoing);
-                }
-
-                if (data.userEventsGoing) {
-                    $(settings.userEventsGoing).text(data.userEventsGoing);
-                }
-
-                if (data.userEventsLiked) {
-                    $(settings.userEventsLiked).text(data.userEventsLiked);
                 }
 
                 if (data.stop == true) {

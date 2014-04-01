@@ -29,14 +29,14 @@
                             <div class="span12">
 
                                 <div class="padd_30"> </div>
-                                <div class="event-discription">
+                                <div class="event-discription" id="current_event_id"  event="{{ event.id }}">
                                     {% if cover is defined %}
                                         <div class="event-photo">
                                             <img src="/upload/img/event/{{ event.id }}/cover/{{ cover.image }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="add-img">
-                                            <div id="current_event_id" class="event-one-img" event="{{ event.id }}">
+                                            <div class="event-one-img">
                                                 {% if eventPreview is defined %}
                                                     {% if eventPreviewLogo is defined %}
                                                         <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">

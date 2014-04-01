@@ -8,7 +8,6 @@ define('eventsPointer',
                 debug: false,
                 autoGetEvents: true,
                 eventsUrl: '/eventmap',
-                eventsCounter: '#events_count',
                 truncateLength: 30
             },
 

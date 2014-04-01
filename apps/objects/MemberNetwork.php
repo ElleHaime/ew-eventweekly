@@ -22,17 +22,17 @@ class MemberNetwork extends Model
 		$this -> belongsTo('network_id', '\Objects\Network', 'id', array('alias' => 'network'));
 	}
 
-	public static function setCache()
+	public function setCache()
 	{
 		$members = self::find();
 
 		if ($members) {
 			foreach($members as $member) {
-				 if (!self::$cacheData -> exists('member_' . $member -> account_uid)) {
-		            self::$cacheData -> save('member_' . $member -> account_uid, $member -> member_id);
+				 if (!$this -> getCache() -> exists('member_' . $member -> account_uid)) {
+		            $this -> getCache() -> save('member_' . $member -> account_uid, $member -> member_id);
 		        }
 			}
-			self::$cacheData -> save('fb_members', 'cached');
+			$this -> getCache() -> save('fb_members', 'cached');
 		}
 	}
 }

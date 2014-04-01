@@ -111,7 +111,7 @@
                 </div>
 
                 <div class="location clearfix">
-                <div class="header-count">All events <span>2 349</span></div>  
+                <div class="header-count">All events <span id="events_total">{{ eventsGTotal }}</span></div> 
                     {% if eventsTotal is defined %}
                         <span class="location-count"
                               data-placement="bottom" 
@@ -125,8 +125,7 @@
                               title=""
                               id="events_count"
                               data-original-title="0">0</span>
-                    {% endif %}
-
+                    {% endif %} 
                     <div class="location-place location-place_country">
                         <a href="#" class="location-city locationCity">
                             <i class="caret"></i>

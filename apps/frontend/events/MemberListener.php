@@ -70,40 +70,20 @@ class MemberListener {
             $userId = $params->id;
 
             $model = new Event();
-            $this->subject->session->set('userEventsCreated', $model->getCreatedEventsCount($userId));
+            $ecSummary = $model->getCreatedEventsCount($userId);
+            $this -> processCounters($ecSummary, 'member.create.' . $userId . '.', 'userEventsCreated.' . $userId);
 
             $model = new EventLike();
             $elSummary = $model->getLikedEventsCount($userId);
-            // set counter 
-            $this->subject->session->set('userEventsLiked', $elSummary -> count());
-            // set cache
-            foreach ($elSummary as $item) {
-                if (!$this -> subject -> cacheData -> exists('member.like.' . $userId . '.' . $item -> id)) {
-                    $this -> subject -> cacheData -> save('member.like.' . $userId . '.' . $item -> id, $item -> fb_uid);
-                }
-            }
+            $this -> processCounters($elSummary, 'member.like.' . $userId . '.', 'userEventsLiked.' . $userId);
 
             $model = new EventMember();
             $emSummary = $model->getEventMemberEventsCount($userId);
-            // set counter
-            $this->subject->session->set('userEventsGoing', $emSummary->count());
-            // set cache
-            foreach ($emSummary as $item) {
-                if (!$this -> subject -> cacheData -> exists('member.go.' . $userId . '.' . $item -> id)) {
-                    $this -> subject -> cacheData -> save('member.go.' . $userId . '.' . $item -> id, $item -> fb_uid);
-                }
-            }
+            $this -> processCounters($emSummary, 'member.go.' . $userId . '.', 'userEventsGoing.' . $userId);
 
             $model = new EventMemberFriend();
             $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
-            // set counter
-            $this->subject->session->set('userFriendsEventsGoing', $emfSummary -> count());
-            // set cache
-            foreach ($emfSummary as $item) {
-                if (!$this -> subject -> cacheData -> exists('member.friends.go.' . $userId . '.' . $item -> id)) {
-                    $this -> subject -> cacheData -> save('member.friends.go.' . $userId . '.' . $item -> id, $item -> id);
-                }
-            }
+            $this -> processCounters($emfSummary, 'member.friends.go.' . $userId . '.', 'userFriendsGoing.' . $userId);
         }
     }
 
@@ -128,6 +108,24 @@ class MemberListener {
             if ((strtolower($fblocation['country']) != strtolower($memberLocation->country)) || (strtolower($fblocation['city']) != strtolower($memberLocation->city))) {
                 $this->subject->session->set('location_conflict', true);
                 $this->subject->session->set('location_conflict_profile_flag', true);
+            }
+        }
+    }
+
+
+    protected function processCounters($data, $cacheNameItem, $cacheNameSum)
+    {
+        if (!$this -> subject -> cacheData -> exists($cacheNameSum)) {
+            $this -> subject -> cacheData -> save($cacheNameSum, 0);
+        }
+
+        // set cache
+        foreach ($data as $item) {
+            if (!$this -> subject -> cacheData -> exists($cacheNameItem . $item -> id)) {
+                $this -> subject -> cacheData -> save($cacheNameItem . $item -> id, $item -> fb_uid);
+
+                $this -> subject -> cacheData -> save($cacheNameSum, 
+                            $this -> subject -> cacheData -> get($cacheNameSum)+1);
             }
         }
     }

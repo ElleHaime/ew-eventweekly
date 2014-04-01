@@ -43,7 +43,6 @@ class Event extends Model
 		$this -> hasMany('id', '\Objects\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
-		//$this -> hasMany('id', '\Objects\EventCategory', 'event_id', array('alias' => 'event_category'));
 		$this -> hasManyToMany('id', '\Objects\EventCategory',
 							   'event_id', 'category_id',
 							   '\Objects\Category', 'id', array('alias' => 'category',
@@ -56,29 +55,17 @@ class Event extends Model
 	}
 
 	
-	public static function setCache()
+	public function setCache()
 	{
-		$events = self::find();
+		$events = self::find('event_status = 1');
 		if ($events) {
 			foreach($events as $event) {
-				if ($event -> fb_uid && !self::$cacheData -> exists('fbe_' . $event -> fb_uid)) {
-					self::$cacheData -> save('fbe_' . $event -> fb_uid, $event -> id);
+				if ($event -> fb_uid && !$this -> getCache() -> exists('fbe_' . $event -> fb_uid)) {
+					$this -> getCache() -> save('fbe_' . $event -> fb_uid, $event -> id);
 				}
 			}
-			self::$cacheData -> save('fb_events', 'cached');
+			$this -> getCache() -> save('fb_events', 'cached');
 		}
-	}
-
-
-	public function beforeValidationOnCreate()
-	{
-	}
-	
-	public function afterSave()
-	{
-	}
-	
-	public function validation()
-	{
+		$this -> getCache() -> save('eventsGTotal', $events -> count());
 	}
 }
