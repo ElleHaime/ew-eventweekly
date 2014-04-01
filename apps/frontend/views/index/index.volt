@@ -11,7 +11,7 @@
             <span>Get<br/> personalised<br/> listings</span>
         </div>
         <div class="square blue">
-            <span>See which<br/> of your friends<br/> are going</span>
+            <span>Invite<br/> your friends<br/> to events</span>
         </div>
     </div>
 
@@ -36,19 +36,19 @@
         <div class="column">
             <div class="number">1</div>
             <div class="text">
-                <p>Use Facebook login to get your personalised event listings. </p>
+                <p>Login with facebook and personalise event listings. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">2</div>
             <div class="text">
-                <p>Stay informed and up to date with current and upcoming events in your city and all over the world. </p>
+                <p>Find world wide and local events relevant to your tastes. </p>
             </div>
         </div>
         <div class="column">
             <div class="number">3</div>
             <div class="text">
-                <p> Create events and invite more than 100,000 guests to attend from all  over the  world.</p>
+                <p>Create events, post to facebook and invite al your friends. </p>
             </div>
         </div>
     </div>

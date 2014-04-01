@@ -41,12 +41,12 @@ define('frontCounterUpdater',
                     console.log(data);
                 }
 
-                if (data.eventsCreated) {
-                    $(settings.userEventsCreated).text(data.eventsCreated);
+                if (data.userEventsCreated) {
+                    $(settings.userEventsCreated).text(data.userEventsCreated);
                 }
 
-                if (data.eventsFriendsGoing) {
-                    $(settings.userFriendsGoing).text(data.eventsFriendsGoing);
+                if (data.userFriendsGoing) {
+                    $(settings.userFriendsGoing).text(data.userFriendsGoing);
                 }
 
                 if (data.userEventsGoing) {
@@ -57,8 +57,8 @@ define('frontCounterUpdater',
                     $(settings.userEventsLiked).text(data.userEventsLiked);
                 }
 
-                if (data.eventsTotal) {
-                    $(settings.generalEventsTotal).text(data.eventsTotal);
+                if (data.eventsGTotal) {
+                    $(settings.generalEventsTotal).text(data.eventsGTotal);
                 }
             };
 
