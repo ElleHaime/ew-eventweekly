@@ -3,6 +3,7 @@ config/facebook.php
 config/rabbitmq.php
 .htaccess
 .idea
+.buildpath
 public/.htaccess
 public/upload
 ^var/compiled/(?!empty$)
