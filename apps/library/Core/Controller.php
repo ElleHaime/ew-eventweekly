@@ -225,9 +225,6 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function checkCache()
     {
-        //$keys = $this -> cacheData -> queryKeys();
-        //_U::dump($keys);
-
         if (!$this->cacheData->exists('locations')) {
             $location = new Location();
             $location -> setCache();
@@ -247,5 +244,16 @@ class Controller extends \Phalcon\Mvc\Controller
 
         //$keys = $this -> cacheData -> get('eventsGTotal');
         //_U::dump($keys);
+    }
+    
+    public function flushCache()
+    {
+    	$keys = $this -> cacheData -> queryKeys();
+    	foreach ($keys as $key) {
+    		$this -> cacheData -> delete($key);
+    	}
+    	$keys = $this -> cacheData -> queryKeys();
+    	
+    	echo 'Cache cleared';
     }
 }
