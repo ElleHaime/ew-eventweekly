@@ -54,7 +54,6 @@ class SearchController extends \Core\Controller
             }
         }
 
-
         $categories = Category::find();
         $categories = $categories->toArray();
         $this->view->setVar('categories', $categories);
