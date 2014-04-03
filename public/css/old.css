@@ -4065,6 +4065,10 @@ i.icon-map {
     padding-top: 10px;
 }
 
+#friendsBlock ul input {
+    width: 277px;
+}
+
 /*-------------------------------------------- uncategorized_label----------------------------------------------------*/
 .uncategorized_label, .btn.suggest-btn {
     text-align: left;
