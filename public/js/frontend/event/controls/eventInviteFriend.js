@@ -39,9 +39,6 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
             init: function(options){
                 var $this = this;
 
-                // TODO: delete below line
-                //$this.settings.eventLink = 'http://events.apppicker.com';
-
                 $this.settings = _.extend($this.settings, options);
                 _.once($this.__bindClicks());
             },
@@ -194,7 +191,7 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 // generate search filed
                 var friendSearchItem = document.createElement('li');
                 friendSearchItem.id = 'friendSearchInList';
-                friendSearchItem.innerHTML = '<input id="'+$this.settings.fieldSearchFiledId+'" />';
+                friendSearchItem.innerHTML = '<input id="'+$this.settings.fieldSearchFiledId+'" placeholder="Type Name" />';
                 mfsForm.appendChild(friendSearchItem);
                 //
 
