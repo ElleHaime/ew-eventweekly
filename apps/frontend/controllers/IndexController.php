@@ -37,6 +37,16 @@ class IndexController extends \Core\Controller
     }
 
 
+    /**
+     * @Route("/flush", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function flushAction()
+    {
+    	$this -> flushCache();
+    }    
+    
+    
 
     /**
 	 * @Acl(roles={'guest', 'member'}); 

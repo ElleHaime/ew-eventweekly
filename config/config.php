@@ -100,6 +100,7 @@ $cfg_settings = array(
 				'Frontend' => ROOT_FRONT,
 				'Frontend\Form' => ROOT_FRONT . 'form/',
 				'Frontend\Events' => ROOT_FRONT . 'events/',
+				'Frontend\Component' => ROOT_FRONT . 'components/',
 			),
 			'bootstrapNs' => 'Frontend\Bootstrap',
 			'bootstrapPath' => ROOT_FRONT . 'Bootstrap.php',

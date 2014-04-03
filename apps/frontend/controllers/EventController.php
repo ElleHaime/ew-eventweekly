@@ -18,6 +18,7 @@ use Core\Utils as _U,
     Objects\Tag AS TagObject,
     Core\Utils\SlugUri as SUri,
     Frontend\Models\EventImage as EventImageModel;
+    
 use Categoryzator\Core\Inflector;
 
 /**
@@ -142,6 +143,7 @@ class EventController extends \Core\Controllers\CrudController
         if (!file_exists($logoFile)) {
             $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
         }
+       
         $this->view->setVar('logo', $logo);
         $this->view->setVar('event', $event);
         $categories = Category::find();
@@ -250,12 +252,12 @@ class EventController extends \Core\Controllers\CrudController
                 'member_status' => $status
             ));
             if ($eventMember->save()) {
-                $ret = array('status' => 'OK',
-                    'event_member_status' => $data['answer']);
+                $ret = ['status' => 'OK',
+                        'event_member_status' => $data['answer']];
 
                 if ($status == EventMember::JOIN) {
-                    $userEventsGoing = $this->session->get('userEventsGoing') + 1;
-                    $this->session->set('userEventsGoing', $userEventsGoing);
+                    $this -> counters -> increaseUserCounter('userEventsGoing');
+                    $this -> counters -> setUserCounters();
                 }
             }
         } else {
@@ -298,9 +300,6 @@ class EventController extends \Core\Controllers\CrudController
         $event = new Event();
 
         $this->view->setvar('listName', 'Liked Events');
-
-        //$event -> setCondition('event_like.member_id = ' . $this -> session -> get('memberId'));
-        //$events = $event -> listEvent();
 
         $event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
         $event->addCondition('Frontend\Models\EventLike.status = 1');
@@ -430,35 +429,13 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
             $event = Event::findFirst((int)$data['id']);
             if ($event) {
-                //$event -> delete();
                 $event->event_status = 0;
                 $event->deleted = 1;
                 $event->save();
 
+                $result = $this -> counters -> setUserCounters();
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
-
-                $tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
-                $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
-                $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
-                $response['likeCounter'] = $result['userEventsLiked'];
-                $this->session->set('userEventsLiked', $result['userEventsLiked']);
-
-                $tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
-                $tmpEvent->addCondition('Frontend\Models\EventMember.member_status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.deleted = 0');
-                $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();
-                $this->session->set('userEventsGoing', $result['userEventsGoing']);
-//                $result['userEventsLiked'] = EventLike::find(array('member_id = ' . $data['id'] . " AND status = 1"))->count();
-//                $result['userEventsGoing'] = $this -> session -> get('userEventsGoing');
-
-                $userEventsCreated = $this->session->get('userEventsCreated') - 1;
-                $this->session->set('userEventsCreated', $userEventsCreated);
             }
         }
 
@@ -489,36 +466,16 @@ class EventController extends \Core\Controllers\CrudController
             ));
 
             if ($eventLike->save()) {
-                /*if ($status == 1) {
-                    if (!$this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
-                        $this->cacheData->save('member.like.' . $memberId . '.' . $id, $fb_uid);
-                    }
+                if ($status == 1) {
+                    $this -> counters -> increaseUserCounter('userEventsLiked');
                 } else {
-                    if ($this->cacheData->exists('member.like.' . $memberId . '.' . $eventId)) {
-                        $this->cacheData->delete('member.like.' . $memberId . '.' . $id, $fb_uid);
-                    } 
-                }*/
+                    $this -> counters -> decreaseUserCounter('userEventsLiked');
+                }
 
+                $response = $this -> counters -> setUserCounters();
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
-
-                $tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
-                $tmpEvent->addCondition('Frontend\Models\EventLike.status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
-                $result['userEventsLiked'] = $tmpEvent->fetchEvents()->count();
-                $response['likeCounter'] = $result['userEventsLiked'];
-                $this->session->set('userEventsLiked', $response['likeCounter']);
-
-                /*$tmpEvent = new Event();
-                $tmpEvent->addCondition('Frontend\Models\EventMember.member_id = ' . $this -> session -> get('memberId'));
-                $tmpEvent->addCondition('Frontend\Models\EventMember.member_status = 1');
-                $tmpEvent->addCondition('Frontend\Models\Event.event_status = 1');
-                $result['userEventsGoing'] = $tmpEvent->fetchEvents()->count();*/
-
-                /*$response['likeCounter'] = EventLike::find(array('member_id = ' . $memberId . " AND status = 1"))->count();
-                $this -> session -> set('userEventsLiked', $response['likeCounter']);*/
 
                 $this->eventsManager->fire('App.Event:afterLike', $this);
             }
@@ -883,8 +840,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
             if (empty($event['id'])) {
-                $userEventsCreated = $this->session->get('userEventsCreated') + 1;
-                $this->session->set('userEventsCreated', $userEventsCreated);
+                $this -> counters -> increaseUserCounter('userEventsCreated');
             }
         }
 
@@ -1138,21 +1094,6 @@ class EventController extends \Core\Controllers\CrudController
         $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, array(), $applyPersonalization);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
-            $res['eventsCreated'] = $Event->getCreatedEventsCount($this->session->get('memberId'));
-            $res['eventsFriendsGoing'] = $EventFriend->getEventMemberFriendEventsCount($this->session->get('memberId'))->count();
-            $res['userEventsGoing'] = $EventMember->getEventMemberEventsCount($this->session->get('memberId'))->count();
-            $res['userEventsLiked'] = $EventLike->getLikedEventsCount($this->session->get('memberId'))->count();
-
-            $this->session->set('userEventsCreated', $res['eventsCreated']);
-            $this->session->set('userFriendsEventsGoing', $res['eventsFriendsGoing']);
-            $this->session->set('userEventsGoing', $res['userEventsGoing']);
-            $this->session->set('userEventsLiked', $res['userEventsLiked']);
-
-            $this->view->setVar('userEventsCreated', $res['eventsCreated']);
-            $this->view->setVar('userFriendsGoing', $res['eventsFriendsGoing']);
-            $this->view->setVar('userEventsGoing', $res['userEventsGoing']);
-            $this->view->setVar('userEventsLiked', $res['userEventsLiked']);
-
             if (count($events) > 0) {
                 $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
             }
@@ -1205,6 +1146,17 @@ class EventController extends \Core\Controllers\CrudController
                 $newTask -> save();
             }
         }
+    }
+
+
+    /**
+     * @Route("/event/get-counter", methods={'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function getCounterAction()
+    {
+        $res = $this -> counters -> setUserCounters();
+        $this -> sendAjax($res);
     }
 
 

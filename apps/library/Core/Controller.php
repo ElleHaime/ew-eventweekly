@@ -29,17 +29,18 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
-        $this->_setModule();
-        $this->_getChild();
-        $this->_parseQueryVals();
+        $this -> _setModule();
+        $this -> _getChild();
+        $this -> _parseQueryVals();
 
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
 
-        $this->plugSearch();
-        $this->checkCache();
-
+        $this -> plugSearch();
+        $this -> checkCache();
+        $this -> counters -> setUserCounters();
+//_U::dump($this -> counters -> get('userFriendsGoing'));
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
@@ -58,10 +59,6 @@ class Controller extends \Phalcon\Mvc\Controller
             $loc->longitudeMax = (float)$loc->longitudeMax;
 
             $this->session->set('location', $loc);
-        }
-
-        if ($this->session->has('eventsTotal')) {
-            $this->view->setVar('eventsTotal', $this->session->get('eventsTotal'));
         }
 
         if ($this->session->has('location_conflict')) {
@@ -108,24 +105,6 @@ class Controller extends \Phalcon\Mvc\Controller
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);
         }
-
-        if ($this->session->has('role') &&
-            $this->session->get('role') == Acl::ROLE_MEMBER &&
-            !is_null($this->session->get('member'))
-        ) {
-            $eventsCreatedObject = new Event();
-            $eventsFriendsObject = new EventMemberFriend();
-
-            $this->session->set('userEventsCreated', $eventsCreatedObject->getCreatedEventsCount($this->session->get('memberId')));
-            $this->session->set('userFriendsEventsGoing', $eventsFriendsObject->getEventMemberFriendEventsCount($this->session->get('memberId'))->count());
-        }
-
-        $this->view->setVar('userEventsCreated', $this->session->get('userEventsCreated'));
-        $this->view->setVar('userFriendsGoing', $this->session->get('userFriendsEventsGoing'));
-        $this->view->setVar('userEventsCreated', $this->session->get('userEventsCreated'));
-        $this->view->setVar('userEventsLiked', $this->session->get('userEventsLiked'));
-        $this->view->setVar('userEventsGoing', $this->session->get('userEventsGoing'));
-        $this->view->setVar('userFriendsGoing', $this->session->get('userFriendsEventsGoing'));
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
 
@@ -228,25 +207,53 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->send();
     }
 
+    protected function increaseUserCounter($counter, $val = 1)
+    {
+        $this -> cacheData -> exists($counter) ?
+            $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)+(int)$val) :
+            $this -> cacheData -> save($counter, (int)$val);
+    }
+
+    protected function decreaseUserCounter($counter, $val = 1)
+    {
+        if ($this -> cacheData -> exists($counter)) {
+            if ($this -> cacheData -> get($counter) > 0) {
+                $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)-(int)$val);
+            }
+        }
+    }
+
     public function checkCache()
     {
-        //$keys = $this -> cacheData -> queryKeys();
-        //_U::dump($keys);
-
         if (!$this->cacheData->exists('locations')) {
-            Location::setCache();
+            $location = new Location();
+            $location -> setCache();
         }
         if (!$this->cacheData->exists('fb_venues')) {
-            Venue::setCache();
+            $venue = new Venue();
+            $venue -> setCache();
         }
-        if (!$this->cacheData->exists('fb_events')) {
-            Event::setCache();
+        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('eventsGTotal')) {
+            $event = new Event();
+            $event -> setCache();
         }
         if (!$this->cacheData->exists('fb_members')) {
-            MemberNetwork::setCache();
+            $memberNetwork = new MemberNetwork();
+            $memberNetwork -> setCache();
         }
 
-        //$keys = $this -> cacheData -> get('locations');
+        //$keys = $this -> cacheData -> get('eventsGTotal');
         //_U::dump($keys);
+    }
+    
+    public function flushCache()
+    {
+    	$keys = $this -> cacheData -> queryKeys();
+    	foreach ($keys as $key) {
+    		$this -> cacheData -> delete($key);
+    	}
+    	$keys = $this -> cacheData -> queryKeys();
+    	
+    	echo 'Cache cleared';
     }
 }
