@@ -20,7 +20,9 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
 
                 isLogged: '#isLogged',
                 isMobile: '#isMobile',
-                externalLogged: '#external_logged'
+                externalLogged: '#external_logged',
+                fieldBlockId: 'fbFriendList',
+                fieldSearchFiledId: 'friendSearchInListInput'
             },
 
             /**
@@ -54,6 +56,29 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 body.on('click', $this.settings.inviteBtn, $this.__friendsClickHandler());
                 body.on('click', '.'+$this.settings.friendClass, $this.__fbMsgHandler());
                 body.on('click', $this.settings.inviteAllBtn, $this.__postWallHandler());
+            },
+
+            __bindSearch: function() {
+                var $this = this;
+                $('#'+$this.settings.fieldSearchFiledId).keyup(function() {
+                    var typed = $(this).val();
+                    if (typed.length > 1) {
+                        setTimeout(function() {
+                            var searchRes = _.filter($this.__friends, function(friend){
+                                var patt = eval('/.*'+typed+'+./i');
+                                return patt.test(friend.name);
+                            });
+
+                            $('li.'+$this.settings.friendClass).hide();
+
+                            _.each(searchRes, function(searchedFriend) {
+                                $('#friend_'+searchedFriend.id).show();
+                            });
+                        }, 0);
+                    }else {
+                        $('li.'+$this.settings.friendClass).show();
+                    }
+                });
             },
 
             /**
@@ -95,7 +120,6 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 var $this = this;
                 return function(event) {
                     if ($($this.settings.isMobile).val() === '1') {
-                        console.log($(this));
                         var friendId = $(this).attr('data-id');
                         window.location = 'http://www.facebook.com/dialog/feed?app_id='+window.fbAppId+'&link=' +
                             document.URL + '&redirect_uri=' + document.URL + '&to='+ friendId;
@@ -164,8 +188,15 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 var container = $($this.settings.friendsBlock);
                 container.html('');
                 var mfsForm = document.createElement('ul');
-                mfsForm.id = 'fbFriendList';
+                mfsForm.id = $this.settings.fieldBlockId;
                 mfsForm.setAttribute('style', 'overflow-y: scroll; height: 300px');
+
+                // generate search filed
+                var friendSearchItem = document.createElement('li');
+                friendSearchItem.id = 'friendSearchInList';
+                friendSearchItem.innerHTML = '<input id="'+$this.settings.fieldSearchFiledId+'" />';
+                mfsForm.appendChild(friendSearchItem);
+                //
 
                 // generate element with one friend
                 _.each($this.__friends, function(node, index){
@@ -185,6 +216,8 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
 
                 // show button Invite all
                 $($this.settings.inviteAllBtn).css('display', 'block');
+
+                _.once($this.__bindSearch());
             },
 
             /**
@@ -195,10 +228,13 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
             __getFriends: function() {
                 var $this = this;
                 if ($this.__issetFB()) {
-//console.log(fb);                    
                     FB.api('/me/friends?fields=name,picture.width(40).height(40)', function(response) {
-console.log(response);
                         $this.__friends = response.data;
+                        $this.__friends.sort(function(a, b) {
+                            if(a.name < b.name) return -1;
+                            if(a.name > b.name) return 1;
+                            return 0;
+                        });
                         $this.__renderFriends();
                     });
                 }
