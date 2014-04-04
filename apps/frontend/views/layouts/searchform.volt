@@ -51,7 +51,7 @@
             {% else %}
                 {% set searchStartDate = '' %}
             {% endif %}
-            {{ searchForm.render('searchStartDate', {'placeholder':'From date', 'value': searchStartDate, 'class': 'startDatePicker'}) }}
+            {{ searchForm.render('searchStartDate', {'placeholder':'From', 'value': searchStartDate, 'class': 'startDatePicker'}) }}
             {#<i class="icon-calendar"></i>#}
         </div>
         <div class="input-div ">
@@ -60,7 +60,7 @@
             {% else %}
                 {% set searchEndDate = '' %}
             {% endif %}
-            {{ searchForm.render('searchEndDate', {'placeholder':'End date', 'value': searchEndDate, 'class': 'endDatePicker'}) }}
+            {{ searchForm.render('searchEndDate', {'placeholder':'To', 'value': searchEndDate, 'class': 'endDatePicker'}) }}
             {#<i class="icon-calendar"></i>#}
         </div>
     </div>
