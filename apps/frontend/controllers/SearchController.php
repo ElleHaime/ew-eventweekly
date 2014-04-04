@@ -123,8 +123,28 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
             }
 
-            // add search condition by start date
-            if ($elemExists('searchStartDate')) {
+            // add search condition by dates
+            if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
+                $Event->addCondition('Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'"');
+                $Event->addCondition('Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].'"');
+
+                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
+            }
+
+            if ($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
+                $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")');
+                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
+                $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")', Event::CONDITION_SIMPLE);
+                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
+                $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].'"))', Event::CONDITION_SIMPLE);
+
+                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
+                $pageTitle .= 'by end date - "'.$postData['searchEndDate'].'" | ';
+            }else {
+                $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
+            }
+
+            /*if ($elemExists('searchStartDate')) {
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'"');
 
                 $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
@@ -137,7 +157,7 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'by end date - "'.$postData['searchEndDate'].'" | ';
             }else {
                 $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
-            }
+            }*/
 
             // set order by start date
             $Event->addOrder('Frontend\Models\Event.start_date ASC');
