@@ -110,7 +110,9 @@ define('newGmapEvents',
                                     __lastLng = event.venue.longitude;
                                 }
 
-                                if (!_.isUndefined(event.venue)) {
+                                console.log(event);
+
+                                //if (!_.isUndefined(event.venue)) {
                                     var marker = new googleMarker({
                                         Map: Map,
                                         Event: event,
@@ -138,7 +140,7 @@ define('newGmapEvents',
                                             });
                                         }(marker));
                                     }
-                                }
+                                //}
                             }
 
                             $(settings.eventsCounter).html(Map.markers.length);
