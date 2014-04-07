@@ -551,7 +551,7 @@ define('frontEventEditControl',
 			                var lat = locs.getPlace().geometry.location.lat();
 			                var lng = locs.getPlace().geometry.location.lng();
 
-                            console.log(locs.getPlace());
+                            //console.log(locs.getPlace());
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });

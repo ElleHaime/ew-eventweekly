@@ -59,7 +59,7 @@ define('gmap',
 		    } 
 
 		    self.__initializeMarkerClusterer = function() {
-                console.log('Initialize marker clusterer');
+                //console.log('Initialize marker clusterer');
 		        self.MC = new MarkerClusterer(self.Map, 
 		        							  self.markers, 
 		        							  {gridSize: self.settings.mcGridSize, maxZoom: self.settings.mcMaxZoom});

@@ -79,7 +79,7 @@ define('gmapEvents',
 		            url = url + '/' + city;
 		        }
 		        if (self.debug) {
-					console.log(url);
+					//console.log(url);
 				}
 
 		        return $.ajax({
@@ -97,7 +97,7 @@ define('gmapEvents',
 		     */
 		    self.__responseHandler = function(data) {
 		    	if (self.debug) {
-		            console.log(data);
+		            //console.log(data);
 		        }
                 $(self.settings.searchCityBtn).find('span').text(self.__newCity);
                 if (self.resetLocation === true) {
@@ -115,7 +115,7 @@ define('gmapEvents',
 		            if (data.message[0].length > 0) //own events
 		            {
 		                if (self.debug) {
-		                    console.log('My events:' + data.message[0].length);
+		                    //console.log('My events:' + data.message[0].length);
 		                }
 		                $.each(data.message[0], function(index,event) {
 		                    self.__drawMarker(event);
@@ -124,7 +124,7 @@ define('gmapEvents',
 		            if (data.message[1].length > 0) //friend events
 		            {
 		                if (self.debug) {
-		                    console.log('Friend events:' + data.message[1].length);
+		                    //console.log('Friend events:' + data.message[1].length);
 		                }
 		                $.each(data.message[1], function(index,event) {
 		                    self.__drawMarker(event);
@@ -157,8 +157,8 @@ define('gmapEvents',
 		     */
 		    self.__drawMarker = function(event) {
 		        if (self.debug) {
-		            console.log('Draw event below: ');
-		            console.log(event);
+		            //console.log('Draw event below: ');
+		            //console.log(event);
 		        }
 
 		        if (typeof(event.venue.latitude)!='undefined' && typeof(event.venue.longitude) != 'undefined')
@@ -214,8 +214,8 @@ define('gmapEvents',
                     marker.Event = event;
 
 		            if (self.debug) {
-		                console.log('New map marker was created below:');
-		                console.log(marker);
+		                //console.log('New map marker was created below:');
+		                //console.log(marker);
 		            }
 
 		            // push new marker to storage
@@ -232,7 +232,7 @@ define('gmapEvents',
 		    self.__redirectToMap = function(data) {
 		        var lat = null,
 		        	lng = null;
-console.log(data);
+//console.log(data);
 		        if (!_.isEmpty(data.message[0])) {
 		            lat = _.last(data.message[0]).venue.latitude;
 		            lng = _.last(data.message[0]).venue.longitude;
@@ -251,8 +251,8 @@ console.log(data);
 
 		    self.__setCookies = function(lat, lng, path) {
 		        if (this.debug) {
-		            console.log('Set latitude to cookie: '+lat);
-		            console.log('Set longitude to cookie: '+lng);
+		            //console.log('Set latitude to cookie: '+lat);
+		            //console.log('Set longitude to cookie: '+lng);
 		        }
 
 		        if (_.isUndefined(path) || _.isEmpty(path)) {

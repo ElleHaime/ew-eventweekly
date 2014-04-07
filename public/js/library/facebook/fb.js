@@ -195,10 +195,10 @@ define('fb',
 						answer: status, 
 						event_id : $('#current_event_id').attr('event') 
 				};
-console.log(params);
+//console.log(params);
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
-                    console.log(data);
+                    //console.log(data);
 					if (data.status == 'OK') {
 						$('#event-' + data.event_member_status.toLowerCase()).show();
 						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);

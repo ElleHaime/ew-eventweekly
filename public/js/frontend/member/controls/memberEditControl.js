@@ -235,7 +235,7 @@ define('frontMemberEditControl',
                     username: data.username };
                 $.when(self.__request('post', url, params)).then(function(response) {
                     data = $.parseJSON(response);
-                    console.log(data);
+                    //console.log(data);
                     if (data.errors !== 'false') {
                         noty({text: successMsg, type: 'warning'});
 

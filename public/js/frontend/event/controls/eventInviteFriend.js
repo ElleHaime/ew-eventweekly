@@ -166,9 +166,9 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 var $this = this;
                 return function(response) {
                     if (!_.isUndefined(response.post_id) && !_.isNaN(response.post_id) && !_.isNull(response.post_id)) {
-                        console.log('post wall success');
+                        //console.log('post wall success');
                     }else {
-                        console.log('post wall fail!');
+                        //console.log('post wall fail!');
                     }
                     $this.__removeFriendList();
                 }

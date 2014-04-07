@@ -42,8 +42,8 @@ define('newGmapEvents',
              */
             var setCookies = function(lat, lng, path) {
                 if (debug) {
-                    console.log('Set latitude to cookie: '+lat);
-                    console.log('Set longitude to cookie: '+lng);
+                    //console.log('Set latitude to cookie: '+lat);
+                    //console.log('Set longitude to cookie: '+lng);
                 }
 
                 if (_.isUndefined(path) || _.isEmpty(path)) {
@@ -81,7 +81,7 @@ define('newGmapEvents',
              */
             var responseHandler = function(data) {
                 if (debug) {
-                    console.log(data);
+                    //console.log(data);
                 }
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
@@ -169,7 +169,7 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
-                    console.log('interval cleared');
+                    //console.log('interval cleared');
                     clearInterval(interval);
                 }
             };
@@ -231,7 +231,7 @@ define('newGmapEvents',
                     })).done(function(response) {
                         responseHandler(response);
                     }).always(function() {
-                        console.log('empty result');
+                        //console.log('empty result');
                     });
                 };
 

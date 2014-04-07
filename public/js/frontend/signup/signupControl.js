@@ -100,7 +100,7 @@ define('signupControl',
 
 			self.__initError = function(msg)
 			{
-				console.log(msg);
+				//console.log(msg);
 				return false;
 			}
 		};

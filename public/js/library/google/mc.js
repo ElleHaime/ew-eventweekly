@@ -16,7 +16,7 @@ define('googleMc',
             settings = _.extend(settings, options);
 
             if (!_.isNull(settings.Map) && !_.isNull(settings.markers)) {
-                console.log('Initialize marker clusterer');
+                //console.log('Initialize marker clusterer');
                 MC = new MarkerClusterer(settings.Map, settings.markers, {gridSize: settings.mcGridSize, maxZoom: settings.mcMaxZoom});
             }
 
