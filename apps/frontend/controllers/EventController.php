@@ -338,8 +338,6 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         $this->view->setvar('list_type', 'join');
-        //$this -> view -> setvar('events', $events);
-        //$this -> view -> pick('event/userlist');
 
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Where I am going');
@@ -595,40 +593,47 @@ class EventController extends \Core\Controllers\CrudController
         $coords = array();
         $venueId = false;
         $newEvent = array();
+        if (!empty($event['id'])) {
+            $ev = Event::findFirst($event['id']);
+        } else {
+            $ev = new Event();
+            if (isset($this -> session -> get('member') -> network)) {
+                $newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
+            }
+            $newEvent['member_id'] = $this -> session -> get('memberId');
+        }
 
         // process name and descirption
         $newEvent['name'] = $event['name'];
         $newEvent['description'] = $event['description'];
         $newEvent['tickets_url'] = $event['tickets_url'];
-        $newEvent['member_id'] = $this->session->get('memberId');
-        $newEvent['is_description_full'] = 1;
         $newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
         $newEvent['recurring'] = $event['recurring'];
-        $newEvent['deleted'] = 0;
-        //$newEvent['logo'] = $event['logo'];
         $newEvent['campaign_id'] = $event['campaign_id'];
-        if (isset($this->session->get('member')->network)) {
-            $newEvent['fb_creator_uid'] = $this->session->get('member')->network->account_uid;
-        }
 
         // process location
-        if (!empty($event['location_id'])) {
-            $newEvent['location_id'] = $event['location_id'];
-        } elseif (!empty($event['location_latitude']) && !empty($event['location_longitude'])) {
+        if (empty($event['location_id']) && !empty($event['location_latitude']) && !empty($event['location_longitude'])) {
             // check location by coordinates
-            $location = $loc->createOnChange(array('latitude' => $event['location_latitude'],
-                'longitude' => $event['location_longitude']));
-            $newEvent['location_id'] = $location->id;
-            $newEvent['latitude'] = $event['location_latitude'];
-            $newEvent['longitude'] = $event['location_longitude'];
+            $location = $loc->createOnChange(['latitude' => $event['location_latitude'],
+                                              'longitude' => $event['location_longitude']]);
+            if ($location) {
+                $newEvent['location_id'] = $location->id;
+                $newEvent['latitude'] = $event['location_latitude'];
+                $newEvent['longitude'] = $event['location_longitude'];
+            }
         }
+
         // location coordinates wasn't set. Try to get location from venue coordinates
         if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
             if (!isset($newEvent['location_id'])) {
-                $location = $loc->createOnChange(array('latitude' => $event['venue_latitude'],
-                    'longitude' => $event['venue_longitude']));
-                $newEvent['location_id'] = $location->id;
+                $location = $loc -> createOnChange(['latitude' => $event['venue_latitude'],
+                                                  'longitude' => $event['venue_longitude']]);
+                if ($location) {
+                    if (!isset($newEvent['location_id'])) {
+                        $newEvent['location_id'] = $location->id;
+                    }
+                }
             }
             $newEvent['latitude'] = $event['venue_latitude'];
             $newEvent['longitude'] = $event['venue_longitude'];
@@ -637,18 +642,20 @@ class EventController extends \Core\Controllers\CrudController
         // location coordinates wasn't set. Try to get location from address coordinates
         if (!empty($event['address_latitude']) && !empty($event['address_longitude'])) {
             if (!isset($newEvent['location_id'])) {
-                $location = $loc->createOnChange(array('latitude' => $event['address_latitude'],
-                    'longitude' => $event['address_longitude']));
+                $location = $loc->createOnChange(['latitude' => $event['address_latitude'],
+                                                  'longitude' => $event['address_longitude']]);
                 $newEvent['location_id'] = $location->id;
             }
-            $newEvent['latitude'] = $event['address_latitude'];
-            $newEvent['longitude'] = $event['address_longitude'];
+            if (!isset($newEvent['latitude']) && !isset($newEvent['longitude'])) {
+                $newEvent['latitude'] = $event['address_latitude'];
+                $newEvent['longitude'] = $event['address_longitude'];
+            }
         }
 
         // process venue
         if (!empty($event['venue_latitude']) && !empty($event['venue_longitude'])) {
-            $venueInfo = array('latitude' => $event['venue_latitude'],
-                'longitude' => $event['venue_longitude']);
+            $venueInfo = ['latitude' => $event['venue_latitude'],
+                          'longitude' => $event['venue_longitude']];
         }
         if (!empty($newEvent['location_id']) && $newEvent['location_id']) {
             $venueInfo['location_id'] = $newEvent['location_id'];
@@ -663,6 +670,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($event['venue_latitude'] != '' || $event['venue_longitude'] != '') {
             $vn = $venue->createOnChange($venueInfo);
         }
+
 
         if ($vn) {
             $newEvent['venue_id'] = $vn->id;
@@ -695,13 +703,8 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-//_U::dump($newEvent);	
+//_U::dump($newEvent);  
 
-        if (!empty($event['id'])) {
-            $ev = Event::findFirst($event['id']);
-        } else {
-            $ev = new Event();
-        }
         $ev->assign($newEvent);
         if ($ev->save()) {
             // create event dir if not exists
@@ -846,6 +849,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $this->loadRedirect();
     }
+
 
     /**
      * @param $oldFilename string
