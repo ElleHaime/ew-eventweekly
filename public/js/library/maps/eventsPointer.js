@@ -45,8 +45,8 @@ define('eventsPointer',
             __drawMarker: function(event) {
                 var $this = this;
                 if ($this.settings.debug) {
-                    console.log('Draw event: ');
-                    console.log(event);
+                    //console.log('Draw event: ');
+                    //console.log(event);
                 }
 
                 if (!_.isUndefined(event.latitude) && !_.isUndefined(event.longitude))
@@ -115,8 +115,8 @@ define('eventsPointer',
                     marker.content = infoWindow.content;
 
                     if ($this.settings.debug) {
-                        console.log('New map marker was created below:');
-                        console.log(marker);
+                        //console.log('New map marker was created below:');
+                        //console.log(marker);
                     }
 
                     // push new marker to storage

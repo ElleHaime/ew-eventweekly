@@ -10,7 +10,7 @@
  * Prompt Example
  * <code>
  *     noti.createNotification('Are you sure?', 'prompt', function(state) {
- *          console.log(state);
+ *          //console.log(state);
  *      });
  * </code>
  *
@@ -133,7 +133,7 @@ define('noti',
 		     * @private
 		     */
 		    self.__showWindow = function() {
-		        console.log('show');
+		        //console.log('show');
 		        
 		        self.window.animate({
 		            height: self.settings.defaultHeight+'px'

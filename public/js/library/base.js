@@ -6,7 +6,7 @@ define('base',
 		{
 			this.bindClick = function()
 			{
-				console.log(1232131);
+				//console.log(1232131);
 			}
 		};
 

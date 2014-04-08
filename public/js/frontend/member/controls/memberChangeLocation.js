@@ -46,7 +46,7 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
 
                 $.post('/member/update-location', data, function(response){
                     if (response.status == true) {
-                        console.log('all is OK');
+                        //console.log('all is OK');
 
                         // change city text in header
                         $('.location-place_country span').text(city);
@@ -59,7 +59,7 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
                         $.cookie('lastLat', lat, {expires: 1, path: '/'});
                         $.cookie('lastLng', lng, {expires: 1, path: '/'});
                     }
-                    console.log(response);
+                    //console.log(response);
                 }, 'json');
             });
         }

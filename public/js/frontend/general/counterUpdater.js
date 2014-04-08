@@ -28,7 +28,7 @@ define('frontCounterUpdater',
                     if (settings.requestInterval > 0) {
                         interval = setInterval(function(){
                             if (debug) {
-                                console.log('new request');
+                                //console.log('new request');
                             }
                             makeRequest();
                         }, settings.requestInterval);
@@ -38,7 +38,7 @@ define('frontCounterUpdater',
 
             var responseHandler = function(data) {
                 if (debug) {
-                    console.log(data);
+                    //console.log(data);
                 }
 
                 if (data.userEventsCreated) {
@@ -69,7 +69,7 @@ define('frontCounterUpdater',
                     dataType: 'json'})).done(function(response) {
                     responseHandler(response);
                 }).always(function() {
-                    console.log('empty result');
+                    //console.log('empty result');
                 });
             };
         }

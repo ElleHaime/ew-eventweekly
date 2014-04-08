@@ -107,7 +107,7 @@ define('frontEventLike',
 
             self.__minusUserEventsLiked = function()
             {
-                console.log('minus');
+                //console.log('minus');
                 var counter = parseInt($(self.settings.userEventsLiked).text()) - 1;
                 $(self.settings.userEventsLiked).text(counter);
             }

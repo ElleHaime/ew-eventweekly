@@ -6,11 +6,18 @@ define('fb',
 		{
 			var self = this;
 
-			self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
+			/*self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
 								'user_groups,user_interests,user_likes,user_location,user_checkins,user_events,' +
 								'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
 								'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
-								'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages';
+								'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages';*/
+
+            self.permissions = 'email,user_activities,user_birthday,user_interests,user_likes,' +
+                'user_groups,user_location,user_events,' +
+                'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
+                'friends_events,publish_actions,publish_stream,' +
+                'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
+
 			self.settings = {
                 userEventsGoing: '#userEventsGoing',
                 currentEventIdBox: '#current_event_id',
@@ -205,10 +212,10 @@ define('fb',
 						answer: status, 
 						event_id : $('#current_event_id').attr('event') 
 				};
-console.log(params);
+//console.log(params);
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
-                    console.log(data);
+                    //console.log(data);
 					if (data.status == 'OK') {
 						$('#event-' + data.event_member_status.toLowerCase()).show();
 						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);

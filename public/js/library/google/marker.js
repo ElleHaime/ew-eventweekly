@@ -52,9 +52,12 @@ define('googleMarker',
                     if (!_.isUndefined(Event.latitude) && !_.isUndefined(Event.longitude)) {
                         latitude = Event.latitude;
                         longitude = Event.longitude;
-                    }else {
+                    }else if (!_.isUndefined(Event.venue) && !_.isUndefined(Event.venue.latitude) && !_.isUndefined(Event.venue.longitude)) {
                         latitude = Event.venue.latitude;
                         longitude = Event.venue.longitude;
+                    }else {
+                        latitude = (Event.location.latitudeMax + Event.location.latitudeMin) / 2;
+                        longitude = (Event.location.longitudeMax + Event.location.longitudeMin) / 2;
                     }
 
                     var newLatLng = new google.maps.LatLng(latitude, longitude);

@@ -1,6 +1,6 @@
 /*window.onerror = ErrorLog;
 function ErrorLog (msg, url, line) {
-    console.log("error: " + msg + "\n" + "file: " + url + "\n" + "line: " + line);
+    //console.log("error: " + msg + "\n" + "file: " + url + "\n" + "line: " + line);
     return true; // avoid to display an error message in the browser
 } */
 
@@ -159,7 +159,7 @@ require.config({
         	moduleName = 'frontend' + fileName;
         };
 
-        console.log('Call module: '+moduleName);
+        //console.log('Call module: '+moduleName);
 
   		require([moduleName]);
 

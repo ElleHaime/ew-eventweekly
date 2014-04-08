@@ -129,5 +129,10 @@ class Memcache extends Backend implements BackendInterface
     {
         return $this -> memcache -> exists($this -> prefix . $keyName);
     }
+
+    public function flush()
+    {
+        $this -> memcache -> flush();
+    }
     
 }

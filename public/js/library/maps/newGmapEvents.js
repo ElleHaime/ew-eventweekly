@@ -38,8 +38,8 @@ define('newGmapEvents',
              */
             var setCookies = function(lat, lng, path) {
                 if (debug) {
-                    console.log('Set latitude to cookie: '+lat);
-                    console.log('Set longitude to cookie: '+lng);
+                    //console.log('Set latitude to cookie: '+lat);
+                    //console.log('Set longitude to cookie: '+lng);
                 }
 
                 if (_.isUndefined(path) || _.isEmpty(path)) {
@@ -77,7 +77,7 @@ define('newGmapEvents',
              */
             var responseHandler = function(data) {
                 if (debug) {
-                    //console.log(data);
+                    ////console.log(data);
                 }
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
@@ -110,7 +110,9 @@ define('newGmapEvents',
                                     __lastLng = event.venue.longitude;
                                 }
 
-                                if (!_.isUndefined(event.venue)) {
+                                //console.log(event);
+
+                                //if (!_.isUndefined(event.venue)) {
                                     var marker = new googleMarker({
                                         Map: Map,
                                         Event: event,
@@ -124,7 +126,7 @@ define('newGmapEvents',
                                         // initialize click to marker on map for open information window
                                         (function(marker, InfoWindow){
                                             google.maps.event.addListener(marker, 'click', function() {
-                                                console.log('click');
+                                                //console.log('click');
                                                 marker.setIcon(marker.clickedIcon);
                                                 InfoWindow.open(Map, marker);
                                             });
@@ -138,7 +140,7 @@ define('newGmapEvents',
                                             });
                                         }(marker));
                                     }
-                                }
+                                //}
                             }
 
                             $(settings.eventsCounter).html(Map.markers.length);
@@ -178,7 +180,7 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
-                    console.log('interval cleared');
+                    //console.log('interval cleared');
                     clearInterval(interval);
                 }
             };
@@ -240,7 +242,7 @@ define('newGmapEvents',
                     })).done(function(response) {
                         responseHandler(response);
                     }).always(function() {
-                        console.log('empty result');
+                        //console.log('empty result');
                     });
                 };
 
