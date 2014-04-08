@@ -4,6 +4,7 @@ config/rabbitmq.php
 .htaccess
 .idea
 .buildpath
+htpasswd
 public/.htaccess
 public/upload
 ^var/compiled/(?!empty$)
