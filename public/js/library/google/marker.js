@@ -49,13 +49,13 @@ define('googleMarker',
                     //var newLatLng = new google.maps.LatLng(Event.venue.latitude, Event.venue.longitude);
 
                     var latitude, longitude;
-                    if (!_.isUndefined(Event.latitude) && !_.isUndefined(Event.longitude)) {
+                    if (!_.isUndefined(Event.latitude) && !_.isUndefined(Event.longitude) && !_.isEmpty(Event.latitude) && !_.isEmpty(Event.longitude) && Event.latitude != '0.00000000' && Event.longitude != '0.00000000') {
                         latitude = Event.latitude;
                         longitude = Event.longitude;
                     }else if (!_.isUndefined(Event.venue) && !_.isUndefined(Event.venue.latitude) && !_.isUndefined(Event.venue.longitude)) {
                         latitude = Event.venue.latitude;
                         longitude = Event.venue.longitude;
-                    }else {
+                    }else if (!_.isUndefined(Event.location)) {
                         latitude = (Event.location.latitudeMax + Event.location.latitudeMin) / 2;
                         longitude = (Event.location.longitudeMax + Event.location.longitudeMin) / 2;
                     }
