@@ -107,7 +107,7 @@ class SearchController extends \Core\Controller
 
             // add search condition by location
             if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax') && (($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'private') || ($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))) {
-                $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
+                $Event->addCondition('Frontend\Models\Venue.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Venue.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
 
                 $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                 $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
@@ -125,8 +125,9 @@ class SearchController extends \Core\Controller
 
             // add search condition by dates
             if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
-                $Event->addCondition('Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'"');
-                $Event->addCondition('Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].'"');
+                $Event->addCondition('((Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'" AND Frontend\Models\Event.end_date >= "'.$postData['searchStartDate'].'")');
+                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
+                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'")', Event::CONDITION_SIMPLE);
 
                 $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
             }
