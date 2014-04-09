@@ -17,7 +17,8 @@ use Core\Utils as _U,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
     Core\Utils\SlugUri as SUri,
-    Frontend\Models\EventImage as EventImageModel;
+    Frontend\Models\EventImage as EventImageModel,
+	Thirdparty\Facebook\Extractor;
     
 use Categoryzator\Core\Inflector;
 
@@ -119,7 +120,6 @@ class EventController extends \Core\Controllers\CrudController
     public function showAction($slug, $eventId)
     {
         $event = Event::findFirst($eventId);
-
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
             foreach ($event->memberpart as $mpart) {
@@ -131,9 +131,7 @@ class EventController extends \Core\Controllers\CrudController
         }
         $event->memberpart = $memberpart;
 
-        // TODO: refactor this. Get uploads dir and default logo url from config
         $cfg = $this->di->get('config');
-
         $logoFile = '';
         if ($event->logo != '') {
             $logoFile = $cfg->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
@@ -143,7 +141,24 @@ class EventController extends \Core\Controllers\CrudController
         if (!file_exists($logoFile)) {
             $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
         }
-       
+         
+        if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')) {
+        	$fb = new Extractor($this -> getDi());
+        	$res = $fb -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $event -> fb_uid), $this -> session -> get('user_token'));
+
+        	if (!is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
+        		$event -> tickets_url = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
+        	} else {
+        		$event -> tickets_url = false;
+        	}  
+        } else {
+        	if ($event -> tickets_url) {
+        		$event -> tickets_url = 'https://www.facebook.com/events/' . $event -> fb_uid;
+        	} else {
+        		$event -> tickets_url = false;
+        	}
+        }
+        
         $this->view->setVar('logo', $logo);
         $this->view->setVar('event', $event);
         $categories = Category::find();
@@ -165,7 +180,6 @@ class EventController extends \Core\Controllers\CrudController
                 } 
             }
         }
-
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('cover', isset($cover) ? $cover : null);
@@ -175,7 +189,6 @@ class EventController extends \Core\Controllers\CrudController
         foreach ($event->tag as $Tag) {
             $eventTags[] = $Tag->name;
         }
-
 
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
