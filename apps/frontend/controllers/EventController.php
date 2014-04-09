@@ -1085,8 +1085,8 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         if ($withLocation) {
-            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
+            $Event->addCondition('Frontend\Models\Venue.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
+        						AND Frontend\Models\Venue.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"' . '
         						AND Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
         }else {
