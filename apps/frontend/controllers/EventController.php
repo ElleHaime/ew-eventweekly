@@ -141,16 +141,22 @@ class EventController extends \Core\Controllers\CrudController
         if (!file_exists($logoFile)) {
             $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
         }
-
-        $event -> tickets_url = 'https://www.facebook.com/events/' . $event -> fb_uid; 
-        
+         
         if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')) {
         	$fb = new Extractor($this -> getDi());
         	$res = $fb -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $event -> fb_uid), $this -> session -> get('user_token'));
-        	 
-        	if (isset($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
+
+        	if (!is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
         		$event -> tickets_url = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
-        	} 
+        	} else {
+        		$event -> tickets_url = false;
+        	}  
+        } else {
+        	if ($event -> tickets_url) {
+        		$event -> tickets_url = 'https://www.facebook.com/events/' . $event -> fb_uid;
+        	} else {
+        		$event -> tickets_url = false;
+        	}
         }
         
         $this->view->setVar('logo', $logo);
