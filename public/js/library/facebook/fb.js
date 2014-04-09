@@ -52,6 +52,12 @@ define('fb',
 
 			self.shareImg = '/img/logo200.png';
 			self.firstPage = '/map';
+			self.demoPage = '/search/map?searchTitle=&searchLocationField=Dublin%2C+Ireland&searchLocationLatMin=51.4221955&searchLocationLngMin=-10.6694501&searchLocationLatMax=55.3884899&searchLocationLngMax=-5.99471&searchLocationType=country&&searchStartDate=&searchEndDate=&searchCategory%5B%5D=2&searchTag=racing&searchCategoriesType=global&searchType=in_map';
+			self.reDemo = /.*\/motologin$/;
+			self.demoLat = '53.34460075';
+			self.demoLng = '-6.26577123';
+			self.demoCity = 'Dublin';
+			self.demoCookiePath = '/';
 
 
 			self.init = function(options)
@@ -154,7 +160,18 @@ define('fb',
                 $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
-                		window.location.href = self.firstPage;
+                		if (self.reDemo.test(location.pathname) == true) {
+                			console.log('Set latitude to cookie: '+ self.demoLat);
+                            console.log('Set longitude to cookie: '+ self.demoLng);
+                            
+                            $.cookie('lastLat', self.demoLat, {expires: 1, path: self.demoCookiePath});
+                            $.cookie('lastLng', self.demoLng, {expires: 1, path: self.demoCookiePath});
+                            $.cookie('lastCity', self.demoCity, {expires: 1, path: self.demoCookiePath});
+                            
+                			window.location.href = self.demoPage;
+                		} else {
+                			window.location.href = self.firstPage;
+                		}
                 	} else {
                 		$(self.settings.errorBox).html('Facebook return empty result :(');
 		                $(self.settings.errorBox).show();
