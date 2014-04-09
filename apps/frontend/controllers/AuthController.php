@@ -17,7 +17,6 @@ use Frontend\Form\SignupForm,
 
 class AuthController extends \Core\Controller
 {
-
     public function onConstruct()
     {
         $this -> eventsManager -> attach('App.Auth.Member', new MemberListener());
