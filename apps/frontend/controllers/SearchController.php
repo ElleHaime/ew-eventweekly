@@ -159,7 +159,7 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'")', Event::CONDITION_SIMPLE);
 
-                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
+                $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
             }
 
             if ($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
@@ -169,8 +169,8 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].'"))', Event::CONDITION_SIMPLE);
 
-                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
-                $pageTitle .= 'by end date - "'.$postData['searchEndDate'].'" | ';
+                $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
+                $pageTitle .= 'to - "'.$postData['searchEndDate'].'" | ';
             }else {
                 $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
