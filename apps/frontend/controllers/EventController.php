@@ -1120,9 +1120,9 @@ class EventController extends \Core\Controllers\CrudController
             $res['stop'] = false;
             $res['events'] = $events;
         } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
-        	if (!$this->session->has('user_token') || !$this->session->has('user_fb_uid')) {
+        	//if (!$this->session->has('user_token') || !$this->session->has('user_fb_uid')) {
         		$res['stop'] = true;
-        	}
+        	//}
         	$res['status'] = true;
         	$res['events'] = $events;
         } else {
@@ -1139,7 +1139,7 @@ class EventController extends \Core\Controllers\CrudController
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
                 }
-                if (time()-($tsk -> hash) > 600) {
+                if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
                     $newTask = $tsk;
                 }
             } else {

@@ -74,7 +74,8 @@ $cfg_settings = array(
         'uploadDir' => ROOT_APP . 'public/upload/',
         'tempDir' => ROOT_APP . 'var/tmp/',
         'defaultLogo' => '/img/logo200.png',
-		'limitFetchEvents' => 50
+		'limitFetchEvents' => 100,
+		'pingFbPeriod' => 3600	// seconds
     ),
 	
 	'modules' => array(

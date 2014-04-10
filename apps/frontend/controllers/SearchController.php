@@ -32,7 +32,7 @@ class SearchController extends \Core\Controller
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
                 }
-                if (time()-($tsk -> hash) > 600) {
+                if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
                     $newTask = $tsk;
                 }
             } else {

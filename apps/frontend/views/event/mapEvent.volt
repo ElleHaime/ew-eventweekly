@@ -8,6 +8,6 @@
     </div>
 
     <script type="text/javascript">
-        var searchResults = {{ list }};
+        window.searchResults = {{ list }};
     </script>
 {% endblock %}
