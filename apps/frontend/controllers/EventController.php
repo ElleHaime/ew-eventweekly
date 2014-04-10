@@ -1082,7 +1082,7 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false, $applyPersonalization = false)
+    public function testGetAction($lat = null, $lng = null, $city = null, $withLocation = false, $applyPersonalization = false)
     {
         $Event = new Event();
         $EventMember = new EventMember();
@@ -1108,30 +1108,27 @@ class EventController extends \Core\Controllers\CrudController
         }
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
-        $events = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, array(), $applyPersonalization);
+        $events = $Event->fetchEvents(Event::FETCH_ARRAY,
+        							  Event::ORDER_ASC, 
+        							  array(), 
+        							  $applyPersonalization, 
+        							  array('start' => $this -> session -> get('lastFetchedEvent'), 'limit' => $this -> config -> application -> limitFetchEvents));
 
-        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this->session->has('memberId')) {
-            if (count($events) > 0) {
-                $this->session->set('lastFetchedEvent', $events[count($events) - 1]['id']);
-            }
-            $res['stop'] = false;
-        } else {
-            $res['stop'] = true;
-            $this->session->set('lastFetchedEvent', 0);
-        }
-
-        if (count($events) > 0) {
+        if (count($events) ==  $this -> config -> application -> limitFetchEvents) {
+            $this->session->set('lastFetchedEvent', (int)$this -> session -> get('lastFetchedEvent') + (int)$this -> config -> application -> limitFetchEvents);
             $res['status'] = true;
+            $res['stop'] = false;
             $res['events'] = $events;
+        } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
+        	if (!$this->session->has('user_token') || !$this->session->has('user_fb_uid')) {
+        		$res['stop'] = true;
+        	}
+        	$res['status'] = true;
+        	$res['events'] = $events;
         } else {
-            $res['status'] = 'ERROR';
-            $res['message'] = 'no events';
+        	$res['status'] = 'ERROR';
+        	$res['message'] = 'no events';
         }
-
-        if ($needGrab === false) {
-            return $events;
-        }
-
         $this->sendAjax($res);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
@@ -1142,7 +1139,7 @@ class EventController extends \Core\Controllers\CrudController
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
                 }
-                if (time()-($tsk -> hash) > 300) {
+                if (time()-($tsk -> hash) > 600) {
                     $newTask = $tsk;
                 }
             } else {
