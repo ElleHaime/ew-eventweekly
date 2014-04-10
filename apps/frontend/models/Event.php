@@ -26,21 +26,13 @@ class Event extends EventObject
     use \Core\Traits\ModelConverter;
 
     const FETCH_OBJECT = 1;
-
     const FETCH_ARRAY = 2;
-
     const ORDER_ASC = 3;
-
     const ORDER_DESC = 4;
-
     const CONDITION_SIMPLE = 5;
-
     const CONDITION_COMPLEX = 6;
-
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
-
-
 	public static $eventRecurring = array('0' => 'Once',
 										  '1' => 'Daily',
 										  '7' => 'Weekly');
@@ -53,13 +45,12 @@ class Event extends EventObject
         ]
     ];
 	private $selector = ' AND';
-
     private $order;
-
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
     ];
 
+    
     public function afterDelete()
     {
         $di = $this -> getDi();
@@ -112,80 +103,7 @@ class Event extends EventObject
             return 0;
         }
     }
-
-    public function grabEventsByCoordinatesScale($lat, $lng, $uId)
-	{
-        $MemberFilter = new MemberFilter();
-        $member_categories = $MemberFilter->getbyId($uId);
-
-        $tagCategories = array();
-        if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-            $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
-            foreach($results as $tagCategory) {
-                $tagCategories[] = $tagCategory['category_id'];
-            }
-        }
-
-        $query = 'select event.*,
-        				event.logo as logo,
-        				location.alias as location,
-        				event.latitude as location_latitude,
-        				event.longitude as location_longitude,
-        				venue.latitude as venue_latitude,
-        				venue.longitude as venue_longitude,
-        				location.latitudeMin as location_latitudeMin,
-        				location.latitudeMax as location_latitudeMax,
-        				location.longitudeMin as location_longitudeMin,
-        				location.longitudeMax as location_longitudeMax,
-        				category.*
-					from \Frontend\Models\Event as event
-					left join \Frontend\Models\Venue as venue on event.venue_id = venue.id
-					left join \Frontend\Models\Location as location on event.location_id = location.id
-					LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
-                    LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-                    LEFT JOIN \Frontend\Models\EventTag AS et ON (event.id = et.event_id)
-                    LEFT JOIN \Frontend\Models\Tag AS tag ON (tag.id = et.tag_id)';
-
-        if (!empty($uId)) {
-            $query .= 'LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event_like.event_id = event.id and event_like.member_id = '.$uId.')';
-        }
-
-        $query .= 'where (location.latitudeMin <= ' . $lat . '
-			        	and location.latitudeMax >= ' . $lat . '
-			        	and location.longitudeMin <= ' . $lng . '
-			        	and location.longitudeMax >= ' . $lng . ')';
-
-        if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
-            $member_categories['category']['value'] = array_diff($member_categories['category']['value'], $tagCategories);
-
-            if (count($member_categories['category']['value']) > 0) {
-                $query .= ' AND ec.category_id IN ('.implode(',', $member_categories['category']['value']).')';
-            }
-        }
-
-        if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-            if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
-                $query .= ' OR';
-            } else {
-                $query .= ' AND';
-            }
-            $query .= ' et.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')';
-        }
-
-        if (!empty($uId)) {
-            $query .= ' AND (event_like.status != 0 OR event_like.status IS NULL)';
-        }
-
-        $query .= ' AND event.event_status = 1';
-        $query .= ' AND event.deleted = 0';
-
-        $query .= ' GROUP BY event.id';
-
-		$eventsList = $this -> getModelsManager() -> executeQuery($query);
-
-		return $eventsList;
-	}
-
+    
 
     public function setCondition($condition)
     {
@@ -203,40 +121,6 @@ class Event extends EventObject
     	}
     	 
     	return $this;
-    }
-
-    public function listEvent()
-    {
-        $query = '
-                SELECT event.*, category.*, location.*, venue.name AS venue
-                FROM \Frontend\Models\Event AS event
-                LEFT JOIN \Frontend\Models\EventCategory AS ec ON (event.id = ec.event_id)
-                LEFT JOIN \Frontend\Models\Category AS category ON (category.id = ec.category_id)
-                LEFT JOIN \Frontend\Models\Location AS location ON (event.location_id = location.id)
-                LEFT JOIN \Frontend\Models\Venue AS venue ON (location.id = venue.location_id AND event.fb_creator_uid = venue.fb_uid)
-                LEFT JOIN \Frontend\Models\EventLike AS event_like ON (event.id = event_like.event_id AND event_like.status = 1)
-                LEFT JOIN \Objects\EventMember AS event_member ON (event.id = event_member.event_id AND event_member.member_status = 1)
-            ';
-
-        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
-
-        if (!empty($this -> conditions)) {
-            $query .= ' WHERE';
-            $count = count($this -> conditions);
-            for ($i = 0; $i < $count; $i++) {
-                if ($i !== 0) {
-                	$query .= $this -> selector;
-               	}
-                $query .= " " . $this -> conditions[$i];
-            }
-
-            $query .= ' GROUP BY event.id';
-            $result = $this -> getModelsManager() -> executeQuery($query);
-            $result -> setHydrateMode(Resultset::HYDRATE_ARRAYS);
-
-            $result = $result->toArray();
-        }
-        return $result;
     }
 
 
@@ -284,7 +168,7 @@ class Event extends EventObject
      * @param bool $applyPersonalization
      * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
      */
-    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false)
+    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [])
     {
         $builder = $this->getModelsManager()->createBuilder();
 
@@ -363,6 +247,10 @@ class Event extends EventObject
             }
         }else {
             $builder->orderBy($this->order);
+        }
+        
+        if (!empty($limit)) {
+        	$builder -> limit($limit['limit'], $limit['start']);
         }
 
         $builder->groupBy('Frontend\Models\Event.id');

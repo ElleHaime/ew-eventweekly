@@ -11,12 +11,11 @@ define('newGmapEvents',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 60000,
+                requestInterval: 500,
                 eventsUrl: '/event/test-get',
 
                 eventsCounter: '#events_count',
-                searchCityBtn: '.locationCity',
-                alreadyGrabbed: true
+                searchCityBtn: '.locationCity'
             };
 
             var interval = null;
@@ -77,7 +76,7 @@ define('newGmapEvents',
              */
             var responseHandler = function(data) {
                 if (debug) {
-                    ////console.log(data);
+                	console.log(data);
                 }
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
@@ -87,11 +86,10 @@ define('newGmapEvents',
                     if (_.isNull(Map)) {
                         redirectToMap(data);
                     }
-                    settings.alreadyGrabbed = true;
 
                     function processLargeArray(array) {
                         // set this to whatever number of items you can process at once
-                        var chunk = 100;
+                        var chunk = 50;
                         var i = 0;
                         var len = array.length;
                         function doChunk() {
@@ -172,7 +170,7 @@ define('newGmapEvents',
                     processLargeArray(data.events);
 
                 } else {
-                    if (data.stop == true && settings.alreadyGrabbed == false) {
+                    if (data.stop == true) {
                         Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
                         $(settings.eventsCounter).html(0);
                         noty({text: 'No event in this area!', type: 'warning'});
@@ -180,7 +178,7 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
-                    //console.log('interval cleared');
+                    console.log('interval cleared');
                     clearInterval(interval);
                 }
             };

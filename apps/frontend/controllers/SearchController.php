@@ -32,7 +32,7 @@ class SearchController extends \Core\Controller
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
                 }
-                if (time()-($tsk -> hash) > 300) {
+                if (time()-($tsk -> hash) > 600) {
                     $newTask = $tsk;
                 }
             } else {
