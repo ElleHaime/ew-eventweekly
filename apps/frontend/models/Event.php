@@ -158,10 +158,15 @@ class Event extends EventObject
 
         return $this;
     }
+    
+    public function fetchEventsCounter()
+    {
+    	
+    }
+    
 
     /**
      * Get event by conditions which set through Frontend\Models\Event::addCondition()
-     *
      * @param int $fetchType
      * @param int $order
      * @param array $pagination

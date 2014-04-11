@@ -236,11 +236,11 @@ class Controller extends \Phalcon\Mvc\Controller
         if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('eventsGTotal')) {
             $event = new Event();
             $event -> setCache();
-        }
+        } 
         if (!$this->cacheData->exists('fb_members')) {
             $memberNetwork = new MemberNetwork();
             $memberNetwork -> setCache();
-        }
+        }    
 
         //$keys = $this -> cacheData -> get('eventsGTotal');
         //_U::dump($keys);

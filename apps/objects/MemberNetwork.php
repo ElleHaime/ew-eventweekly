@@ -24,13 +24,12 @@ class MemberNetwork extends Model
 
 	public function setCache()
 	{
-		$members = self::find();
+		$query = new \Phalcon\Mvc\Model\Query("SELECT member_id, account_uid FROM Objects\MemberNetwork", $this -> getDI());
+		$members = $query -> execute() -> toArray();
 
 		if ($members) {
-			foreach($members as $member) {
-				 if (!$this -> getCache() -> exists('member_' . $member -> account_uid)) {
-		            $this -> getCache() -> save('member_' . $member -> account_uid, $member -> member_id);
-		        }
+			foreach($members as $key => $member) {
+	            $this -> getCache() -> save('member_' . $member['account_uid'], $member['member_id']);
 			}
 			$this -> getCache() -> save('fb_members', 'cached');
 		}

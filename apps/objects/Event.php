@@ -57,15 +57,18 @@ class Event extends Model
 	
 	public function setCache()
 	{
-		$events = self::find('event_status = 1');
-		if ($events) {
-			foreach($events as $event) {
-				if ($event -> fb_uid && !$this -> getCache() -> exists('fbe_' . $event -> fb_uid)) {
-					$this -> getCache() -> save('fbe_' . $event -> fb_uid, $event -> id);
+		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid FROM Objects\Event WHERE event_status = 1", $this -> getDI());
+		$events = $query -> execute() -> toArray();
+		$ec = count($events);
+		
+		if ($ec > 0) {
+			for ($i = 0; $i < $ec; $i++) {
+				if ($events[$i]['fb_uid'] && !$this -> getCache() -> exists('fbe_' . $events[$i]['fb_uid'])) {
+					$this -> getCache() -> save('fbe_' . $events[$i]['fb_uid'], $events[$i]['id']);
 				}
 			}
-			$this -> getCache() -> save('fb_events', 'cached');
+ 			$this -> getCache() -> save('fb_events', 'cached');
 		}
-		$this -> getCache() -> save('eventsGTotal', $events -> count());
+		$this -> getCache() -> save('eventsGTotal', $ec); 
 	}
 }

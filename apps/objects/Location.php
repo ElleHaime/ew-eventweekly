@@ -33,7 +33,8 @@ class Location extends Model
 
 	public function setCache()
 	{
-		$locations = self::find();
+		$query = new \Phalcon\Mvc\Model\Query("SELECT id, latitudeMin, longitudeMin, latitudeMax, longitudeMax, city, country FROM Objects\Location", $this -> getDI());
+		$locations = $query -> execute();
 		$locationsCache = array();
 
 		if ($locations) {
