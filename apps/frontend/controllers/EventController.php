@@ -95,7 +95,7 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         $events = $this->testGetAction(null, null, null, false, true, $applyPersonalization);
-
+//_U::dump($events);
         if (isset($events[0]) || isset($events[1])) {
             $this->view->setVar('events', $events);
             $this->view->setVar('eventsTotal', count($events));
@@ -322,9 +322,9 @@ class EventController extends \Core\Controllers\CrudController
         $events = $event->fetchEvents();
 
         if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
+            //$this->fetchMemberLikes();
         }
-_U::dump($events -> toArray());
+
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Liked');
         $this->view->pick('event/eventList');
@@ -1082,7 +1082,7 @@ _U::dump($events -> toArray());
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $withLocation = false, $applyPersonalization = false)
+    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false, $applyPersonalization = false)
     {
         $Event = new Event();
         $EventMember = new EventMember();
@@ -1108,6 +1108,7 @@ _U::dump($events -> toArray());
         }
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
+        
         $events = $Event->fetchEvents(Event::FETCH_ARRAY,
         							  Event::ORDER_ASC, 
         							  array(), 
@@ -1129,6 +1130,11 @@ _U::dump($events -> toArray());
         	$res['status'] = 'ERROR';
         	$res['message'] = 'no events';
         }
+        
+        if ($needGrab === false) {
+			return $events;
+        }
+        
         $this->sendAjax($res);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {

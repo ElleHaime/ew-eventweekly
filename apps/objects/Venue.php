@@ -28,10 +28,24 @@ class Venue extends Model
 	public function setCache()
 	{
 		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid, address, location_id, latitude, longitude FROM Objects\Venue", $this -> getDI());
-		$venues = $query -> execute() -> toArray();
-		$vc = count($venues);
+		$venues = $query -> execute();
 		
-		if ($vc > 0) {
+		if ($venues) {
+			foreach ($venues as $venue) {
+				$this -> getCache() -> save('venue_' . $venue -> fb_uid,
+						array('venue_id' => $venue -> id,
+								'address' => $venue -> address,
+								'location_id' => $venue -> location_id,
+								'latitude' => $venue -> latitude,
+								'longitude' => $venue -> longitude));
+			}
+			
+			$this -> getCache() -> save('fb_venues', 'cached');
+		}
+		//$venues = $query -> execute() -> toArray();
+		//$vc = count($venues);
+		
+		/*if ($vc > 0) {
 			for($i = 0; $i < $vc; $i++) {
 				$this -> getCache() -> save('venue_' . $venues[$i]['fb_uid'],
 						array('venue_id' => $venues[$i]['id'],
@@ -41,7 +55,7 @@ class Venue extends Model
 								'longitude' => $venues[$i]['longitude']));
 			}
 			$this -> getCache() -> save('fb_venues', 'cached');
-		}
+		}*/
 	}
 	
 	

@@ -102,7 +102,16 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            return self::find(array('member_id = ' . $uId . ' AND deleted = 0'));
+        	$query = new \Phalcon\Mvc\Model\Query(
+        			"SELECT Frontend\Models\Event.id, Frontend\Models\Event.fb_uid
+	        		FROM Frontend\Models\Event
+        			WHERE Frontend\Models\Event.deleted = 0
+	        			AND Frontend\Models\Event.member_id = " . $uId,
+        			$this -> getDI());
+        	$event = $query -> execute();
+        	return $event;
+        	
+            //return self::find(array('member_id = ' . $uId . ' AND deleted = 0'));
         } else {
             return 0;
         }
@@ -162,8 +171,7 @@ class Event extends EventObject
 
         return $this;
     }
-   
-
+    
     /**
      * Get event by conditions which set through Frontend\Models\Event::addCondition()
      * @param int $fetchType
@@ -255,10 +263,12 @@ class Event extends EventObject
         
         if (!empty($limit)) {
         	$builder -> limit($limit['limit'], $limit['start']);
+        } else {
+        	$builder -> limit(500, 0);
         }
 
         $builder->groupBy('Frontend\Models\Event.id');
-
+//_U::dump($builder -> getPhql());
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
                 'builder' => $builder,

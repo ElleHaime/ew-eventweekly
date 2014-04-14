@@ -209,11 +209,11 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function checkCache()
     {
-        $keys = $this -> cacheData -> queryKeys();
+        /*$keys = $this -> cacheData -> queryKeys();
         foreach ($keys as $key) {
-            //_U::dump($key, true);
+           _U::dump($key, true);
         }
-//die();
+        die(); */
         if (!$this->cacheData->exists('locations')) {
             $location = new Location();
             $location -> setCache();
