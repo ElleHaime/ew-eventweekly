@@ -70,21 +70,30 @@ class MemberListener {
         if ($params) {
             $userId = $params->id;
 
-            $model = new Event();
-            $ecSummary = $model->getCreatedEventsCount($userId);
-            $this -> processCounters($ecSummary, 'member.create.' . $userId . '.', 'userEventsCreated.' . $userId);
+            if (!$this -> subject -> cacheData -> exists('userEventsCreated.' . $userId)) {
+	            $model = new Event();
+	            $ecSummary = $model->getCreatedEventsCount($userId);
+	            $this -> processCounters($ecSummary, 'member.create.' . $userId . '.', 'userEventsCreated.' . $userId);
+            }
 
-            $model = new EventLike();
-            $elSummary = $model->getLikedEventsCount($userId);
-            $this -> processCounters($elSummary, 'member.like.' . $userId . '.', 'userEventsLiked.' . $userId);
+            
+            if (!$this -> subject -> cacheData -> exists('userEventsLiked.' . $userId)) {
+	            $model = new EventLike();
+	            $elSummary = $model->getLikedEventsCount($userId);
+	            $this -> processCounters($elSummary, 'member.like.' . $userId . '.', 'userEventsLiked.' . $userId);
+            }
 
-            $model = new EventMember();
-            $emSummary = $model->getEventMemberEventsCount($userId);
-            $this -> processCounters($emSummary, 'member.go.' . $userId . '.', 'userEventsGoing.' . $userId);
+            if (!$this -> subject -> cacheData -> exists('userEventsGoing.' . $userId)) {
+	            $model = new EventMember();
+	            $emSummary = $model->getEventMemberEventsCount($userId);
+	            $this -> processCounters($emSummary, 'member.go.' . $userId . '.', 'userEventsGoing.' . $userId);
+            }
 
-            $model = new EventMemberFriend();
-            $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
-            $this -> processCounters($emfSummary, 'member.friends.go.' . $userId . '.', 'userFriendsGoing.' . $userId);
+            if (!$this -> subject -> cacheData -> exists('userFriendsGoing.' . $userId)) {
+	            $model = new EventMemberFriend();
+	            $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
+	            $this -> processCounters($emfSummary, 'member.friends.go.' . $userId . '.', 'userFriendsGoing.' . $userId);
+            }
         }
     }
 
