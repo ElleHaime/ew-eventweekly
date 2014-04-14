@@ -125,8 +125,7 @@ class MemberListener {
             if (!$this -> subject -> cacheData -> exists($cacheNameItem . $item -> id)) {
                 $this -> subject -> cacheData -> save($cacheNameItem . $item -> id, $item -> fb_uid);
 
-                $this -> subject -> cacheData -> save($cacheNameSum, 
-                            $this -> subject -> cacheData -> get($cacheNameSum)+1);
+                $this -> subject -> cacheData -> save($cacheNameSum, $this -> subject -> cacheData -> get($cacheNameSum)+1);
             }
         }
     }

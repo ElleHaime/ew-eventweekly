@@ -53,22 +53,4 @@ class Event extends Model
 							   		 							'baseField' => 'name'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
-
-	
-	public function setCache()
-	{
-		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid 
-													FROM Objects\Event 
-													WHERE event_status = 1", $this -> getDI());
-		$events = $query -> execute();
-		
-		if ($events) {
-			foreach ($events as $event) {
-				if ($event -> fb_uid && !$this -> getCache() -> exists('fbe_' . $event -> fb_uid)) {
-					$this -> getCache() -> save('fbe_' . $event -> fb_uid, $event -> id);
-				}
-			}			
-		}
-		$this -> getCache() -> save('eventsGTotal', $events -> count()); 
-	}
 }
