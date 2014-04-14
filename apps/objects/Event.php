@@ -57,7 +57,9 @@ class Event extends Model
 	
 	public function setCache()
 	{
-		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid FROM Objects\Event WHERE event_status = 1", $this -> getDI());
+		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid 
+													FROM Objects\Event 
+													WHERE event_status = 1", $this -> getDI());
 		$events = $query -> execute() -> toArray();
 		$ec = count($events);
 		

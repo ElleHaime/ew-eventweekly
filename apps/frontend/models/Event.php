@@ -2,9 +2,9 @@
 
 namespace Frontend\Models;
 
-use Categoryzator\Categoryzator;
-use Categoryzator\Core\Text;
-use Objects\Event as EventObject,
+use Categoryzator\Categoryzator,
+    Categoryzator\Core\Text,
+    Objects\Event as EventObject,
     Core\Utils as _U,
     Frontend\Models\Location,
     Frontend\Models\Venue,
@@ -18,8 +18,10 @@ use Objects\Event as EventObject,
     Objects\EventCategory AS EventCategoryObject,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
-    Phalcon\Mvc\Model\Resultset;
-use Core\Utils\SlugUri as SUri;
+    Phalcon\Mvc\Model\Resultset,
+    Core\Utils\SlugUri as SUri;
+
+
 
 class Event extends EventObject
 {
@@ -31,6 +33,8 @@ class Event extends EventObject
     const ORDER_DESC = 4;
     const CONDITION_SIMPLE = 5;
     const CONDITION_COMPLEX = 6;
+    const DEF_FIELD = 'id';
+
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 	public static $eventRecurring = array('0' => 'Once',
@@ -158,12 +162,7 @@ class Event extends EventObject
 
         return $this;
     }
-    
-    public function fetchEventsCounter()
-    {
-    	
-    }
-    
+   
 
     /**
      * Get event by conditions which set through Frontend\Models\Event::addCondition()
@@ -184,7 +183,7 @@ class Event extends EventObject
             ->leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id')
             //->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Location.id = Frontend\Models\Venue.id AND Frontend\Models\Event.fb_creator_uid = Frontend\Models\Venue.fb_uid')
             ->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Event.venue_id = Frontend\Models\Venue.id')
-            ->leftJoin('Objects\EventSite', 'Objects\EventSite.event_id = Frontend\Models\Event.id')
+            ->leftJoin('Frontend\Models\EventSite', 'Frontend\Models\EventSite.event_id = Frontend\Models\Event.id')
             ->leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id')
             ->leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id')
             ->leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id')

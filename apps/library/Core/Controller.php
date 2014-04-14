@@ -207,24 +207,13 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->send();
     }
 
-    protected function increaseUserCounter($counter, $val = 1)
-    {
-        $this -> cacheData -> exists($counter) ?
-            $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)+(int)$val) :
-            $this -> cacheData -> save($counter, (int)$val);
-    }
-
-    protected function decreaseUserCounter($counter, $val = 1)
-    {
-        if ($this -> cacheData -> exists($counter)) {
-            if ($this -> cacheData -> get($counter) > 0) {
-                $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)-(int)$val);
-            }
-        }
-    }
-
     public function checkCache()
     {
+        $keys = $this -> cacheData -> queryKeys();
+        foreach ($keys as $key) {
+            //_U::dump($key, true);
+        }
+//die();
         if (!$this->cacheData->exists('locations')) {
             $location = new Location();
             $location -> setCache();
@@ -252,7 +241,6 @@ class Controller extends \Phalcon\Mvc\Controller
     	foreach ($keys as $key) {
     		$this -> cacheData -> delete($key);
     	}
-    	$keys = $this -> cacheData -> queryKeys();
     	
     	echo 'Cache cleared';
     }
