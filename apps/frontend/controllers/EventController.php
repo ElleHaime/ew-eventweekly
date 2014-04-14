@@ -296,7 +296,12 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
-        $events = $event->fetchEvents();
+        $events = $event->fetchEvents(Event::FETCH_OBJECT,
+        							  Event::ORDER_ASC, 
+        							  array(), 
+        							  false, 
+        							  array('start' => 0, 'limit' => 500),
+        							  true, false, false);
 
         $this->view->setvar('list', $events);
         $this->view->setVar('listTitle', 'Friend\'s events');
@@ -319,7 +324,12 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
-        $events = $event->fetchEvents();
+        $events = $event->fetchEvents(Event::FETCH_OBJECT,
+        							  Event::ORDER_ASC, 
+        							  array(), 
+        							  false, 
+        							  array('start' => 0, 'limit' => 500),
+        							  false, false, true);
 
         if ($this->session->has('memberId')) {
             //$this->fetchMemberLikes();
@@ -344,7 +354,12 @@ class EventController extends \Core\Controllers\CrudController
         $event->addCondition('Frontend\Models\Event.event_status = 1');
         $event->addCondition('Frontend\Models\Event.deleted = 0');
         $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-        $events = $event->fetchEvents();
+        $events = $event->fetchEvents(Event::FETCH_OBJECT,
+        							  Event::ORDER_ASC, 
+        							  array(), 
+        							  false, 
+        							  array('start' => 0, 'limit' => 500),
+        							  false, true, false);
 
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
