@@ -50,6 +50,11 @@ class Event extends EventObject
     ];
 	private $selector = ' AND';
     private $order;
+    private $pagination = false;
+    private $personalization = false;
+    
+    private $fetchType = self::FETCH_OBJECT;
+    
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
     ];
@@ -151,7 +156,6 @@ class Event extends EventObject
     	return $this;
     }
 
-
     /**
      * Add condition to model for fetching
      *
@@ -187,21 +191,65 @@ class Event extends EventObject
         return $this;
     }
     
+    public function setStart($start = 0)
+    {
+    	$this -> start = $start;
+    	return $this;
+    }
+    
+    public function setOffset($offset = 0)
+    {
+    	$this -> offset = $offset;
+    	return $this;
+    }
+    
+    
     /**
-     * Get event by conditions which set through Frontend\Models\Event::addCondition()
-     * @param int $fetchType
-     * @param int $order
-     * @param array $pagination
-     * @param bool $applyPersonalization
-     * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
+     * Set pagination
      */
+    public function addPagination($pagination = false)
+    {
+    	if ($pagination) {
+    		$this->pagination = true;
+    	}
+    
+    	return $this;
+    }
+    
+    /**
+     * Set personalization
+     */
+    public function addPersonalization($personalization = false)
+    {
+    	if ($personalization) {
+    		$this->personalization = true;
+    	}
+    
+    	return $this;
+    }
+    
+    
+    /**
+     * Set result format
+     */
+    public function setResultFormat($format)
+    {
+    	if ($format == self::FETCH_ARRAY) {
+    		$this->fetchType = self::FETCH_ARRAY;
+    	} else {
+    		$this->fetchType = self::FETCH_OBJECT;
+    	}
+    
+    	return $this;
+    }
+    
+    
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
-    								$memberFriend = false, $memberGoing = false, $memberLike = false)
+    								$memberFriend = false, $memberGoing = false, $memberLike = false, $eventTag = false)
     {
         $builder = $this->getModelsManager()->createBuilder();
 
         $builder->from('Frontend\Models\Event');
-
         $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
             ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id')
             ->leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id')
@@ -216,6 +264,11 @@ class Event extends EventObject
        	if ($memberLike) {
        		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
        	}
+       	if ($eventTag) {
+       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
+					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
+       	}
+       	
 
         $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 
@@ -243,13 +296,15 @@ class Event extends EventObject
             $MemberFilter = new MemberFilter();
             $member_categories = $MemberFilter->getbyId($uid);
 
-            /*$tagCategories = array();
-            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-                $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
-                foreach($results as $tagCategory) {
-                    $tagCategories[] = $tagCategory['category_id'];
-                }
-            }*/
+            if ($eventTag) {
+	            $tagCategories = array();
+	            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+	                $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
+	                foreach($results as $tagCategory) {
+	                    $tagCategories[] = $tagCategory['category_id'];
+	                }
+	            }
+            }
 
             $prevCondition = $builder->getWhere();
             if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
@@ -260,14 +315,16 @@ class Event extends EventObject
                 }
             }
 
-            /*$prevCondition = $builder->getWhere();
-            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-                if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
-                    $builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-                } else {
-                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-                }
-            }*/
+            if ($eventTag) {
+	            $prevCondition = $builder->getWhere();
+	            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+	                if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
+	                    $builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+	                } else {
+	                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+	                }
+	            }
+            }
         }
 
         if (empty($this->order)) {
@@ -280,14 +337,12 @@ class Event extends EventObject
             $builder->orderBy($this->order);
         }
         
-        if (!empty($limit)) {
+		if (!empty($limit)) {
         	$builder -> limit($limit['limit'], $limit['start']);
-        } else {
-        	$builder -> limit(500, 0);
         }
 
         $builder->groupBy('Frontend\Models\Event.id');
-//_U::dump($builder -> getPhql());
+
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
                 'builder' => $builder,
@@ -296,8 +351,8 @@ class Event extends EventObject
             ));
 
             $result = $paginator->getPaginate();
-
-            $totalRows = $builder->getQuery()->execute()->count(); 
+            $totalRows = $builder->getQuery()->execute()->count();
+            
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
 
@@ -313,5 +368,5 @@ class Event extends EventObject
         }
 
         return $result;
-    }
+    } 
 } 

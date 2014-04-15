@@ -18,9 +18,8 @@ use Core\Utils as _U,
     Objects\Tag AS TagObject,
     Core\Utils\SlugUri as SUri,
     Frontend\Models\EventImage as EventImageModel,
-	Thirdparty\Facebook\Extractor;
-    
-use Categoryzator\Core\Inflector;
+	Thirdparty\Facebook\Extractor,
+	Categoryzator\Core\Inflector;
 
 /**
  * @RouteRule(useCrud = true)
@@ -35,6 +34,7 @@ class EventController extends \Core\Controllers\CrudController
     protected $userGoingUid = array();
     protected $userPagesUid = array();
     protected $pagesUid = array();
+    protected $actualQuery = false;
 
 
     public function initialize()
@@ -57,62 +57,208 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_to_list', true);
     }
 
-    /**
-     * @Route("/eventmap", methods={"GET", "POST"})
-     * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
-     * @Route("/eventmap/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
-     */
-    public function eventmapAction($lat = null, $lng = null, $city = null)
-    {
-        $events = $this->searchAction($lat, $lng, $city);
-
-        if (count($events) > 0) {
-            $res['status'] = 'OK';
-            $res['message'] = $events;
-            $this->sendAjax($res);
-        } else {
-            $res['status'] = 'ERROR';
-            $res['message'] = 'no events';
-
-            $this->sendAjax($res);
-        }
-    }
-
-
+    
     /**
      * @Route("/list", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function eventlistAction()
     {
-        $this->session->set('lastFetchedEvent', 0);
-
-        if ($this->session->get('memberId')) {
-            $applyPersonalization = true;
-        }else {
-            $applyPersonalization = false;
-        }
-
-        $events = $this->testGetAction(null, null, null, false, true, $applyPersonalization);
-//_U::dump($events);
-        if (isset($events[0]) || isset($events[1])) {
-            $this->view->setVar('events', $events);
-            $this->view->setVar('eventsTotal', count($events));
-            $this->session->set('eventsTotal', count($events));
-        } else {
-            $this->view->setVar('eventsTotal', 0);
-            $this->session->set('eventsTotal', 0);
-        }
-
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
-        }
-
-        $this->view->pick('event/events');
+    	$this->session->set('lastFetchedEvent', 0);
+    	
+    	$postData = $this->request->getQuery();
+    	$page = $this->request->getQuery('page');
+    	if (empty($page)) {
+    		$page = 1;
+    	}
+    	if ($this->session->get('memberId')) {
+    		$applyPersonalization = true;
+    	}else {
+    		$applyPersonalization = false;
+    	}
+    	 
+    	$loc = $this->session->get('location');
+    	$event = new Event();
+    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
+    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
+    	$event-> addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$event-> addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
+    	$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
+    	$event-> addCondition('Frontend\Models\Event.event_status = 1');
+    	
+    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
+    			Event::ORDER_ASC,
+    			['page' => $page, 'limit' => 10],
+    			$applyPersonalization);
+		$events = $result -> items;
+		unset($result -> items);
+		 
+		if (isset($events)) {
+			$this->view->setVar('pagination', $result);
+		}
+		$this->view->setVar('list', $events);
+		$this->view->setVar('urlParams', http_build_query($postData));	
+    	$this->view->pick('event/eventList');
     }
+    
+    /**
+     * @Route("/event/friends", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listFriendAction()
+    {
+    	$postData = $this->request->getQuery();
+    	$page = $this->request->getQuery('page');
+    	if (empty($page)) {
+    		$page = 1;
+    	}
+    	
+    	$event = new Event();
+    
+    	$event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
+    	$event->addCondition('Frontend\Models\Event.event_status = 1');
+    	$event->addCondition('Frontend\Models\Event.deleted = 0');
+    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
+    			Event::ORDER_ASC,
+    			['page' => $page, 'limit' => 10],
+    			false,
+    			array('start' => 0, 'limit' => 100),
+    			true, false, false);
 
-
+    	$events = $result -> items;
+    	unset($result -> items);
+    	
+    	if (isset($events)) {
+    		$this->view->setVar('pagination', $result);
+    	}
+    	$this->view->setVar('urlParams', http_build_query($postData));
+    	
+    	$this->view->setvar('listName', 'Friend\'s events');
+    	$this->view->setvar('list', $events);
+    	$this->view->setVar('listTitle', 'Friend\'s events');
+    	$this->view->pick('event/eventList');
+    }
+    
+    
+    /**
+     * @Route("/event/liked", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listLikedAction()
+    {
+    	$postData = $this->request->getQuery();
+    	$page = $this->request->getQuery('page');
+    	if (empty($page)) {
+    		$page = 1;
+    	}
+    	$event = new Event();
+    
+    	$this->view->setvar('listName', 'Liked Events');
+    
+    	$event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
+    	$event->addCondition('Frontend\Models\EventLike.status = 1');
+    	$event->addCondition('Frontend\Models\Event.event_status = 1');
+    	$event->addCondition('Frontend\Models\Event.deleted = 0');
+    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
+    			Event::ORDER_ASC,
+    			['page' => $page, 'limit' => 10],
+    			false,
+    			array(),
+    			false, false, true);
+    	
+    	$events = $result -> items;
+    	unset($result -> items);
+    	
+    	if ($this->session->has('memberId')) {
+    		$this->fetchMemberLikes();
+    	}
+    
+    	if (isset($events)) {
+    		$this->view->setVar('pagination', $result);
+    	}
+    	
+    	$this->view->setVar('urlParams', http_build_query($postData));
+    	
+    	$this->view->setvar('list', $events);
+    	$this->view->setVar('listTitle', 'Liked');
+    	$this->view->pick('event/eventList');
+    }
+    
+    /**
+     * @Route("/event/joined", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listJoinedAction()
+    {
+    	$postData = $this->request->getQuery();
+    	$page = $this->request->getQuery('page');
+    	if (empty($page)) {
+    		$page = 1;
+    	}
+    	
+    	$event = new Event();
+		    
+    	$event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
+    	$event->addCondition('Frontend\Models\EventMember.member_status = 1');
+    	$event->addCondition('Frontend\Models\Event.event_status = 1');
+    	$event->addCondition('Frontend\Models\Event.deleted = 0');
+    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
+						    			Event::ORDER_ASC,
+						    			['page' => $page, 'limit' => 10],
+						    			false,
+						    			array('start' => 0, 'limit' => 500),
+						    			false, true, false);
+		$events = $result -> items;
+		unset($result -> items);
+		    	
+    	if ($this->session->has('memberId')) {
+    		$this->fetchMemberLikes();
+    	}
+    
+    	$this->view->setvar('list_type', 'join');
+    
+    	if (isset($events)) {
+    		$this->view->setVar('pagination', $result);
+    	}
+    	$this->view->setVar('list', $events);
+    	$this->view->setVar('listTitle', 'Where I am going');
+    	$this->view->setVar('urlParams', http_build_query($postData));
+    	
+    	$this->view->pick('event/eventList');
+    }
+    
+    
+    /**
+     * @Route("/event/list", methods={"GET", "POST"})
+     * @Acl(roles={'member'});
+     */
+    public function listAction()
+    {
+    	$event = new Event();
+    
+    	$event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
+    	$event->addCondition('Frontend\Models\Event.deleted = 0');
+    	$event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
+    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$events = $event->fetchEvents();
+    
+    	if ($events->count()) {
+    		$this->view->setVar('object', $events);
+    		$this->view->setVar('list', $events);
+    	}
+    
+    	$this->view->setVar('listTitle', 'Created');
+    
+    	$this->eventListCreatorFlag = true;
+    	$this->view->pick('event/eventList');
+    
+    	return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
+    }
+    
+    
     /**
      * @Route("/{slugUri}-{eventId:[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
@@ -279,126 +425,6 @@ class EventController extends \Core\Controllers\CrudController
 
         echo json_encode($ret);
         //die;
-    }
-
-
-    /**
-     * @Route("/event/friends", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
-     */
-    public function listFriendAction()
-    {
-        $event = new Event();
-
-        $this->view->setvar('listName', 'Friend\'s events');
-
-        $event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\Event.event_status = 1');
-        $event->addCondition('Frontend\Models\Event.deleted = 0');
-        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
-        $events = $event->fetchEvents(Event::FETCH_OBJECT,
-        							  Event::ORDER_ASC, 
-        							  array(), 
-        							  false, 
-        							  array('start' => 0, 'limit' => 500),
-        							  true, false, false);
-
-        $this->view->setvar('list', $events);
-        $this->view->setVar('listTitle', 'Friend\'s events');
-        $this->view->pick('event/eventList');
-    }
-
-
-    /**
-     * @Route("/event/liked", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
-     */
-    public function listLikedAction()
-    {
-        $event = new Event();
-
-        $this->view->setvar('listName', 'Liked Events');
-
-        $event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\EventLike.status = 1');
-        $event->addCondition('Frontend\Models\Event.event_status = 1');
-        $event->addCondition('Frontend\Models\Event.deleted = 0');
-        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');        
-        $events = $event->fetchEvents(Event::FETCH_OBJECT,
-        							  Event::ORDER_ASC, 
-        							  array(), 
-        							  false, 
-        							  array('start' => 0, 'limit' => 500),
-        							  false, false, true);
-
-        if ($this->session->has('memberId')) {
-            //$this->fetchMemberLikes();
-        }
-
-        $this->view->setvar('list', $events);
-        $this->view->setVar('listTitle', 'Liked');
-        $this->view->pick('event/eventList');
-    }
-
-    /**
-     * @Route("/event/joined", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
-     */
-    public function listJoinedAction()
-    {
-        $event = new Event();
-        $this->view->setvar('listName', 'Where I am going');
-
-        $event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\EventMember.member_status = 1');
-        $event->addCondition('Frontend\Models\Event.event_status = 1');
-        $event->addCondition('Frontend\Models\Event.deleted = 0');
-        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-        $events = $event->fetchEvents(Event::FETCH_OBJECT,
-        							  Event::ORDER_ASC, 
-        							  array(), 
-        							  false, 
-        							  array('start' => 0, 'limit' => 500),
-        							  false, true, false);
-
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
-        }
-
-        $this->view->setvar('list_type', 'join');
-
-        $this->view->setvar('list', $events);
-        $this->view->setVar('listTitle', 'Where I am going');
-        $this->view->pick('event/eventList');
-    }
-
-
-    /**
-     * @Route("/event/list", methods={"GET", "POST"})
-     * @Acl(roles={'member'});
-     */
-    public function listAction()
-    {
-        //parent::listAction();
-        $event = new Event();
-
-        $event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
-        $event->addCondition('Frontend\Models\Event.deleted = 0');
-        $event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
-        $event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-        $events = $event->fetchEvents();
-
-        if ($events->count()) {
-            $this->view->setVar('object', $events);
-            $this->view->setVar('list', $events);
-        }
-
-        $this->view->setVar('listTitle', 'Created');
-
-        $this->eventListCreatorFlag = true;
-        $this->view->pick('event/eventList');
-
-        return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
     }
 
 
@@ -1100,10 +1126,6 @@ class EventController extends \Core\Controllers\CrudController
     public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false, $applyPersonalization = false)
     {
         $Event = new Event();
-        $EventMember = new EventMember();
-        $EventFriend = new EventMemberFriend();
-        $EventLike = new EventLike();
-
         $loc = $this->session->get('location');
 
         if (!empty($lat) && !empty($lng)) {
@@ -1117,7 +1139,7 @@ class EventController extends \Core\Controllers\CrudController
         						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"' . '
         						AND Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
-        }else {
+        } else {
             $Event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
             $Event->addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
         }
@@ -1127,7 +1149,7 @@ class EventController extends \Core\Controllers\CrudController
         $events = $Event->fetchEvents(Event::FETCH_ARRAY,
         							  Event::ORDER_ASC, 
         							  array(), 
-        							  $applyPersonalization, 
+        							  $applyPersonalization,
         							  array('start' => $this -> session -> get('lastFetchedEvent'), 'limit' => $this -> config -> application -> limitFetchEvents));
 
         if (count($events) ==  $this -> config -> application -> limitFetchEvents) {
@@ -1136,9 +1158,7 @@ class EventController extends \Core\Controllers\CrudController
             $res['stop'] = false;
             $res['events'] = $events;
         } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
-        	//if (!$this->session->has('user_token') || !$this->session->has('user_fb_uid')) {
-        		$res['stop'] = true;
-        	//}
+        	$res['stop'] = true;
         	$res['status'] = true;
         	$res['events'] = $events;
         } else {

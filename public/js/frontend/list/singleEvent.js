@@ -10,6 +10,7 @@ define('SingleEvent' ,['jquery', 'underscore', 'jTruncate', 'niceDate', 'domRead
 
         var settings = {
             templateId: '#eventListTemplate'
+            //templateId: '.signleEventListElement'
         };
 
         var template = $(settings.templateId).html();

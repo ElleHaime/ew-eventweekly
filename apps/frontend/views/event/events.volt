@@ -10,19 +10,10 @@
                     <div class="row-fluid">
                         <div class="span12">
                             <h3 class="title-page">New events</h3>
-                            {#<div class="events-result">
-                                search result:
-                                <span>123</span>
-                                from
-                                <span>2 334</span>
-                            </div>#}
                         </div>
                     </div>
                     {% if events is defined %}
                         {% for event in events %}
-
-                            {#{{ dateToFormat(event['start_date'], '%m-%d-%y') }}#}
-
                             {% set disabled = '' %}
                             {% if likedEventsIds is defined %}
                                 {% for likedEventsId in likedEventsIds %}

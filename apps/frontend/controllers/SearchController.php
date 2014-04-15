@@ -218,9 +218,11 @@ class SearchController extends \Core\Controller
 
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, array('start' => 0, 'limit' => '500'),
+                        								   false, false, false, true);
                     } else {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, array('start' => 0, 'limit' => '500'),
+                        								   false, false, false, true);
                     }
 
                     $countResults = count($result);
@@ -250,12 +252,19 @@ class SearchController extends \Core\Controller
 							$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33,67)');
 						}
 
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, 
+                        								   Event::ORDER_DESC, 
+                        		                           ['page' => $page, 'limit' => 10],
+                        								   false,
+                        								   array('start' => 0, 'limit' => '500'),
+                        								   false, false, false, true);
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, array('start' => 0, 'limit' => '500'),
+                        								   false, false, false, true);
                     } else {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, array('start' => 0, 'limit' => '500'),
+                        								   false, false, false, true);
                     }
 
 
