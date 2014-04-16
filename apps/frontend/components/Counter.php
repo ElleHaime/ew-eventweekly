@@ -3,7 +3,8 @@
 namespace Frontend\Component;
 
 use \Core\Utils as _U,
-	\Phalcon\Mvc\User\Component;
+	\Phalcon\Mvc\User\Component,
+	\Frontend\Models\EventMemberCounter;
 
 class Counter extends Component
 {
@@ -48,6 +49,13 @@ class Counter extends Component
  		$this -> cacheData -> exists($cacheCounter) ?
             $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
             $this -> cacheData -> save($cacheCounter, (int)$val);
+ 		
+ 		$eventCounter = EventMemberCounter::find(['member_id' => $this -> getDI() -> get('session') -> get('memberId')]);
+ 		if ($eventCounter) {
+ 			$eventCounterCreated = $eventCounter -> getFirst();
+ 			$eventCounterCreated -> $counter = $this -> cacheData -> get($cacheCounter);
+ 			$eventCounterCreated -> save();
+ 		}
 	}
 
 	public function decreaseUserCounter($counter, $val = 1)
@@ -58,6 +66,12 @@ class Counter extends Component
             if ($this -> cacheData -> get($cacheCounter) > 0) {
                 $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
             }
+        }
+        $eventCounter = EventMemberCounter::find(['member_id' => $this -> getDI() -> get('session') -> get('memberId')]);
+        if ($eventCounter) {
+        	$eventCounterCreated = $eventCounter -> getFirst();
+        	$eventCounterCreated -> $counter = $this -> cacheData -> get($cacheCounter);
+        	$eventCounterCreated -> save();
         }
 	}
 

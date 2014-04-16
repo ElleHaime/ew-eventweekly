@@ -40,7 +40,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> plugSearch();
         $this -> checkCache();
         $this -> counters -> setUserCounters();
-//_U::dump($this -> counters -> get('userFriendsGoing'));
+
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
@@ -209,27 +209,16 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function checkCache()
     {
+    	if (!$this->cacheData->exists('eventsGTotal')) {
+    		$event = new Event();
+    		$event -> setCacheTotal();
+    	}
+    	 
         /*$keys = $this -> cacheData -> queryKeys();
         foreach ($keys as $key) {
            _U::dump($key, true);
         }
-        die(); */
-        if (!$this->cacheData->exists('locations')) {
-            $location = new Location();
-            $location -> setCache();
-        }
-        if (!$this->cacheData->exists('fb_venues')) {
-            $venue = new Venue();
-            $venue -> setCache();
-        }
-        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('eventsGTotal')) {
-            $event = new Event();
-            $event -> setCache();
-        } 
-        if (!$this->cacheData->exists('fb_members')) {
-            $memberNetwork = new MemberNetwork();
-            $memberNetwork -> setCache();
-        }    
+        die(); */  
 
         //$keys = $this -> cacheData -> get('eventsGTotal');
         //_U::dump($keys);

@@ -13,6 +13,7 @@ use Core\Utils as _U,
     Objects\EventSite,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
+    Frontend\Models\EventMemberCounter,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
@@ -485,6 +486,8 @@ class EventController extends \Core\Controllers\CrudController
                 $event->deleted = 1;
                 $event->save();
 
+                $this -> counters -> decreaseUserCounter('userEventsCreated');
+             
                 $result = $this -> counters -> setUserCounters();
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
@@ -519,9 +522,9 @@ class EventController extends \Core\Controllers\CrudController
 
             if ($eventLike->save()) {
                 if ($status == 1) {
-                    $this -> counters -> increaseUserCounter('userEventsLiked');
+                   $this -> counters -> increaseUserCounter('userEventsLiked');
                 } else {
-                    $this -> counters -> decreaseUserCounter('userEventsLiked');
+                   $this -> counters -> decreaseUserCounter('userEventsLiked');
                 }
 
                 $response = $this -> counters -> setUserCounters();

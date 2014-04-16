@@ -42,20 +42,6 @@ class Venue extends Model
 			
 			$this -> getCache() -> save('fb_venues', 'cached');
 		}
-		//$venues = $query -> execute() -> toArray();
-		//$vc = count($venues);
-		
-		/*if ($vc > 0) {
-			for($i = 0; $i < $vc; $i++) {
-				$this -> getCache() -> save('venue_' . $venues[$i]['fb_uid'],
-						array('venue_id' => $venues[$i]['id'],
-								'address' => $venues[$i]['address'],
-								'location_id' => $venues[$i]['location_id'],
-								'latitude' => $venues[$i]['latitude'],
-								'longitude' => $venues[$i]['longitude']));
-			}
-			$this -> getCache() -> save('fb_venues', 'cached');
-		}*/
 	}
 	
 	

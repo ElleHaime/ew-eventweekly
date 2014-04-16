@@ -17,7 +17,6 @@ class Network extends Model
 	
 	public function initialize()
 	{
-		//$this -> belongsTo('network_id', '\Objects\Member', 'id', array('alias' => 'member'));
 		$this -> hasOne('id', '\Objects\MemberNetwork', 'network_id', array('alias' => 'member'));
 	}
 }

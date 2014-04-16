@@ -91,8 +91,8 @@ class Event extends EventObject
     public function setCache()
     {
     	$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid
-    			FROM Objects\Event
-    			WHERE event_status = 1", $this -> getDI());
+								    			FROM Objects\Event
+								    			WHERE event_status = 1", $this -> getDI());
     	$events = $query -> execute();
     
     	if ($events) {
@@ -103,6 +103,15 @@ class Event extends EventObject
     		}
     	}
     	$this -> getCache() -> save('eventsGTotal', $events -> count());
+    }
+    
+    public function setCacheTotal()
+    {
+    	$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid
+								    			FROM Objects\Event
+								    			WHERE event_status = 1", $this -> getDI());
+    	$events = $query -> execute();
+    	$this -> getCache() -> save('eventsGTotal', $query -> execute() -> count());
     }
 	
 	public function afterFetch()

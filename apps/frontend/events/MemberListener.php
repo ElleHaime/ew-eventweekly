@@ -11,7 +11,9 @@ use Frontend\Models\Event,
     Frontend\Models\EventLike,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
+    Frontend\Models\EventMemberCounter,
     Frontend\Models\Location,
+    Frontend\Models\Cron,
     Thirdparty\Facebook\Extractor;
 
 class MemberListener {
@@ -64,36 +66,28 @@ class MemberListener {
      * @param $subject
      */
     public function setEventsCounters($subject) {
-        $this->subject = $subject->getSource();
-        $params = $subject->getData();
+        $this->subject = $subject -> getSource();
+        $params = $subject -> getData();
 
         if ($params) {
             $userId = $params->id;
 
-            if (!$this -> subject -> cacheData -> exists('userEventsCreated.' . $userId)) {
-	            $model = new Event();
-	            $ecSummary = $model->getCreatedEventsCount($userId);
-	            $this -> processCounters($ecSummary, 'member.create.' . $userId . '.', 'userEventsCreated.' . $userId);
-            }
-
-            
-            if (!$this -> subject -> cacheData -> exists('userEventsLiked.' . $userId)) {
-	            $model = new EventLike();
-	            $elSummary = $model->getLikedEventsCount($userId);
-	            $this -> processCounters($elSummary, 'member.like.' . $userId . '.', 'userEventsLiked.' . $userId);
-            }
-
-            if (!$this -> subject -> cacheData -> exists('userEventsGoing.' . $userId)) {
-	            $model = new EventMember();
-	            $emSummary = $model->getEventMemberEventsCount($userId);
-	            $this -> processCounters($emSummary, 'member.go.' . $userId . '.', 'userEventsGoing.' . $userId);
-            }
-
-            if (!$this -> subject -> cacheData -> exists('userFriendsGoing.' . $userId)) {
-	            $model = new EventMemberFriend();
-	            $emfSummary = $model -> getEventMemberFriendEventsCount($userId);
-	            $this -> processCounters($emfSummary, 'member.friends.go.' . $userId . '.', 'userFriendsGoing.' . $userId);
-            }
+            // set total counters from db
+			$model = EventMemberCounter::find(['member_id' => $userId]);
+			$this -> subject -> cacheData -> save('userEventsCreated.' . $userId, $model -> getFirst() -> userEventsCreated);
+			$this -> subject -> cacheData -> save('userEventsLiked.' . $userId, $model -> getFirst() -> userEventsLiked);
+			$this -> subject -> cacheData -> save('userEventsGoing.' . $userId, $model -> getFirst() -> userEventsGoing);
+			$this -> subject -> cacheData -> save('userFriendsGoing.' . $userId, $model -> getFirst() -> userFriendsGoing);
+			
+			// set background task for the detailed caching
+			$newTask = new \Objects\Cron();
+			$task = ['name' => 'cache_events_counters',
+					 'parameters' => serialize(['member_id' => $userId]),
+					 'state' => 0,
+					 'member_id' => $userId,
+					 'hash' => time()];
+			$newTask -> assign($task);
+			$newTask -> save();
         }
     }
 
@@ -118,23 +112,6 @@ class MemberListener {
             if ((strtolower($fblocation['country']) != strtolower($memberLocation->country)) || (strtolower($fblocation['city']) != strtolower($memberLocation->city))) {
                 $this->subject->session->set('location_conflict', true);
                 $this->subject->session->set('location_conflict_profile_flag', true);
-            }
-        }
-    }
-
-
-    protected function processCounters($data, $cacheNameItem, $cacheNameSum)
-    {
-        if (!$this -> subject -> cacheData -> exists($cacheNameSum)) {
-            $this -> subject -> cacheData -> save($cacheNameSum, 0);
-        }
-
-        // set cache
-        foreach ($data as $item) {
-            if (!$this -> subject -> cacheData -> exists($cacheNameItem . $item -> id)) {
-                $this -> subject -> cacheData -> save($cacheNameItem . $item -> id, $item -> fb_uid);
-
-                $this -> subject -> cacheData -> save($cacheNameSum, $this -> subject -> cacheData -> get($cacheNameSum)+1);
             }
         }
     }
