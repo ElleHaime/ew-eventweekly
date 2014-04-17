@@ -50,11 +50,10 @@ class Counter extends Component
             $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
             $this -> cacheData -> save($cacheCounter, (int)$val);
  		
- 		$eventCounter = EventMemberCounter::find(['member_id' => $this -> getDI() -> get('session') -> get('memberId')]);
+ 		$eventCounter = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
  		if ($eventCounter) {
- 			$eventCounterCreated = $eventCounter -> getFirst();
- 			$eventCounterCreated -> $counter = $this -> cacheData -> get($cacheCounter);
- 			$eventCounterCreated -> save();
+ 			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+ 			$eventCounter -> save();
  		}
 	}
 
@@ -67,11 +66,10 @@ class Counter extends Component
                 $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
             }
         }
-        $eventCounter = EventMemberCounter::find(['member_id' => $this -> getDI() -> get('session') -> get('memberId')]);
+        $eventCounter = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
         if ($eventCounter) {
-        	$eventCounterCreated = $eventCounter -> getFirst();
-        	$eventCounterCreated -> $counter = $this -> cacheData -> get($cacheCounter);
-        	$eventCounterCreated -> save();
+        	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+        	$eventCounter -> save();
         }
 	}
 

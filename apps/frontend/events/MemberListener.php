@@ -73,11 +73,11 @@ class MemberListener {
             $userId = $params->id;
 
             // set total counters from db
-			$model = EventMemberCounter::find(['member_id' => $userId]);
-			$this -> subject -> cacheData -> save('userEventsCreated.' . $userId, $model -> getFirst() -> userEventsCreated);
-			$this -> subject -> cacheData -> save('userEventsLiked.' . $userId, $model -> getFirst() -> userEventsLiked);
-			$this -> subject -> cacheData -> save('userEventsGoing.' . $userId, $model -> getFirst() -> userEventsGoing);
-			$this -> subject -> cacheData -> save('userFriendsGoing.' . $userId, $model -> getFirst() -> userFriendsGoing);
+			$model = EventMemberCounter::findFirst('member_id = ' . $userId);
+			$this -> subject -> cacheData -> save('userEventsCreated.' . $userId, $model -> userEventsCreated);
+			$this -> subject -> cacheData -> save('userEventsLiked.' . $userId, $model -> userEventsLiked);
+			$this -> subject -> cacheData -> save('userEventsGoing.' . $userId, $model -> userEventsGoing);
+			$this -> subject -> cacheData -> save('userFriendsGoing.' . $userId, $model -> userFriendsGoing);
 			
 			// set background task for the detailed caching
 			$newTask = new \Objects\Cron();
