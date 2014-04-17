@@ -1178,7 +1178,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
             $newTask = null;
 
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId'), 'name = "extract_facebook_events"'));
+            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
             if ($taskSetted -> count() > 0) {
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
