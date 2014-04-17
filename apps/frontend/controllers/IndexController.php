@@ -47,6 +47,14 @@ class IndexController extends \Core\Controller
     }    
     
     
+    /**
+     * @Route("/syncounters", methods={'POST', 'GET'})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function syncountersAction()
+    {
+    	$this -> syncTotalCounters();
+    }
 
     /**
 	 * @Acl(roles={'guest', 'member'}); 

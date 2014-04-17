@@ -29,6 +29,9 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
+    	//$counters = new \Frontend\Models\EventMemberCounter();
+    	//$counters -> syncMemberCounter();
+    	
         $this -> _setModule();
         $this -> _getChild();
         $this -> _parseQueryVals();
@@ -213,14 +216,14 @@ class Controller extends \Phalcon\Mvc\Controller
     		$event = new Event();
     		$event -> setCacheTotal();
     	}
-    	 
+
         /*$keys = $this -> cacheData -> queryKeys();
         foreach ($keys as $key) {
            _U::dump($key, true);
         }
-        die(); */  
-
-        //$keys = $this -> cacheData -> get('eventsGTotal');
+        die();*/    
+    	//$this->cacheData->delete('acl.cache');
+        //$keys = $this -> cacheData -> get('acl.cache');
         //_U::dump($keys);
     }
     
@@ -232,5 +235,11 @@ class Controller extends \Phalcon\Mvc\Controller
     	}
     	
     	echo 'Cache cleared';
+    }
+    
+    public function syncTotalCounters()
+    {
+    	$counters = new \Frontend\Models\EventMemberCounter();
+    	$counters -> syncMemberCounter();
     }
 }
