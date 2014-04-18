@@ -90,7 +90,7 @@ class EventController extends \Core\Controllers\CrudController
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
     			Event::ORDER_ASC,
     			['page' => $page, 'limit' => 10],
-    			$applyPersonalization);
+    			$applyPersonalization, [], false, false, false, true, true);
 		$events = $result -> items;
 		unset($result -> items);
 		 
@@ -123,9 +123,7 @@ class EventController extends \Core\Controllers\CrudController
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
     			Event::ORDER_ASC,
     			['page' => $page, 'limit' => 10],
-    			false,
-    			array('start' => 0, 'limit' => 100),
-    			true, false, false, true);
+    			false, [], true, false, false, true, true);
 
     	$events = $result -> items;
     	unset($result -> items);
@@ -165,9 +163,7 @@ class EventController extends \Core\Controllers\CrudController
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
     			Event::ORDER_ASC,
     			['page' => $page, 'limit' => 10],
-    			false,
-    			array(),
-    			false, false, true, true);
+    			false, [], false, false, true, true, true);
     	
     	$events = $result -> items;
     	unset($result -> items);
@@ -209,9 +205,7 @@ class EventController extends \Core\Controllers\CrudController
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
 						    			Event::ORDER_ASC,
 						    			['page' => $page, 'limit' => 10],
-						    			false,
-						    			array('start' => 0, 'limit' => 500),
-						    			false, true, false, true);
+						    			false, [], false, true, false, true, true);
 		$events = $result -> items;
 		unset($result -> items);
 		    	

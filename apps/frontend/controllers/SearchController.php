@@ -221,10 +221,10 @@ class SearchController extends \Core\Controller
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
-                        								   false, false, false, false, $needTags);
+                        								   false, false, false, false, false, $needTags);
                     } else {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
-                        								   false, false, false, false, $needTags);
+                        								   false, false, false, false, false, $needTags);
                     }
 
                     $countResults = count($result);
@@ -256,14 +256,14 @@ class SearchController extends \Core\Controller
 						}
 
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10],
-                        								   false, [], false, false, false, true, $needTags);
+                        								   false, [], false, false, false, true, true, $needTags);
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
-                        								   false, false, false, true, $needTags);
+                        								   false, false, false, true, true, $needTags);
                     } else {
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
-                        								   false, false, false, true, $needTags);
+                        								   false, false, false, true, true, $needTags);
                     }
 
 
