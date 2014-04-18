@@ -271,7 +271,7 @@ class Event extends EventObject
        	if ($memberLike) {
        		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
        	}
-       	if ($eventTag) {
+       	if ($eventTag || $applyPersonalization) {
        		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
        	}
@@ -308,14 +308,12 @@ class Event extends EventObject
             $MemberFilter = new MemberFilter();
             $member_categories = $MemberFilter->getbyId($uid);
 
-            if ($eventTag) {
-	            $tagCategories = array();
-	            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-	                $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
-	                foreach($results as $tagCategory) {
-	                    $tagCategories[] = $tagCategory['category_id'];
-	                }
-	            }
+            $tagCategories = array();
+            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+                $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
+                foreach($results as $tagCategory) {
+                    $tagCategories[] = $tagCategory['category_id'];
+                }
             }
 
             $prevCondition = $builder->getWhere();
@@ -327,15 +325,13 @@ class Event extends EventObject
                 }
             }
 
-            if ($eventTag) {
-	            $prevCondition = $builder->getWhere();
-	            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-	                if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
-	                    $builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-	                } else {
-	                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-	                }
-	            }
+            $prevCondition = $builder->getWhere();
+            if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+                if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
+                    $builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+                } else {
+                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+                }
             }
         }
 
