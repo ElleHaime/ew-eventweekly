@@ -352,8 +352,12 @@ class Event extends EventObject
 		if (!empty($limit)) {
         	$builder -> limit($limit['limit'], $limit['start']);
         }
-
         $builder->groupBy('Frontend\Models\Event.id');
+        
+		/*$f = fopen('/var/www/EventWeekly/var/logs/bububu.txt', 'a+');
+		fwrite($f, $builder -> getPhql());
+		fwrite($f, "\n\r\n\r");
+		fclose($f);        */
 //_U::dump($builder -> getPhql());
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
