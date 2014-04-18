@@ -125,7 +125,7 @@ class EventController extends \Core\Controllers\CrudController
     			['page' => $page, 'limit' => 10],
     			false,
     			array('start' => 0, 'limit' => 100),
-    			true, false, false);
+    			true, false, false, true);
 
     	$events = $result -> items;
     	unset($result -> items);
@@ -167,7 +167,7 @@ class EventController extends \Core\Controllers\CrudController
     			['page' => $page, 'limit' => 10],
     			false,
     			array(),
-    			false, false, true);
+    			false, false, true, true);
     	
     	$events = $result -> items;
     	unset($result -> items);
@@ -211,7 +211,7 @@ class EventController extends \Core\Controllers\CrudController
 						    			['page' => $page, 'limit' => 10],
 						    			false,
 						    			array('start' => 0, 'limit' => 500),
-						    			false, true, false);
+						    			false, true, false, true);
 		$events = $result -> items;
 		unset($result -> items);
 		    	

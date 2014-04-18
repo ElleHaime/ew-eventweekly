@@ -64,6 +64,7 @@ class SearchController extends \Core\Controller
         $result = array();
         $countResults = 0;
         $Event = new Event();
+        $needTags = false;
         $postData = $this->request->getQuery();
 
         // retrieve data from POST
@@ -199,6 +200,7 @@ class SearchController extends \Core\Controller
 
                 	if ($elemExists('searchTag')) {
 						$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34,67)');
+						$needTags = true;
 					}
                 	
                     if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
@@ -218,11 +220,11 @@ class SearchController extends \Core\Controller
 
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY);
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, array('start' => 0, 'limit' => '500'),
-                        								   false, false, false, true);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
+                        								   false, false, false, false, $needTags);
                     } else {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, array('start' => 0, 'limit' => '500'),
-                        								   false, false, false, true);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
+                        								   false, false, false, false, $needTags);
                     }
 
                     $countResults = count($result);
@@ -250,21 +252,18 @@ class SearchController extends \Core\Controller
                         
                         if ($elemExists('searchTag')) {
 							$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33,67)');
+							$needTags = true;
 						}
 
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, 
-                        								   Event::ORDER_DESC, 
-                        		                           ['page' => $page, 'limit' => 10],
-                        								   false,
-                        								   array('start' => 0, 'limit' => '500'),
-                        								   false, false, false, true);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10],
+                        								   false, [], false, false, false, true, $needTags);
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, array('start' => 0, 'limit' => '500'),
-                        								   false, false, false, true);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
+                        								   false, false, false, true, $needTags);
                     } else {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, array('start' => 0, 'limit' => '500'),
-                        								   false, false, false, true);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
+                        								   false, false, false, true, $needTags);
                     }
 
 
