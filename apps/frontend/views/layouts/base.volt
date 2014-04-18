@@ -34,10 +34,12 @@
         {% endif %}
     {% endif %}
 
-	{% if listSearch is defined %}
-		<script type="text/javascript">
-	        window.searchResults = {{ listSearch }};
-	    </script>
+	{% if searchResult is defined %}
+		{% if list is defined %}
+			<script type="text/javascript">
+		        window.searchResults = {{ list }};
+		    </script>
+		{% endif %}
 	{% endif %}
 
     {{ stylesheet_link('/css/bootstrap.min.css') }}

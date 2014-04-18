@@ -281,7 +281,7 @@ class SearchController extends \Core\Controller
             $this->session->set('userSearch', $postData);
         }
 
-        $this->view->setVar('listSearch', $result);
+        $this->view->setVar('list', $result);
         $this->view->setVar('eventsTotal', $countResults);
         if (isset($fetchedData)) {
             $this->view->setVar('pagination', $fetchedData);
@@ -291,6 +291,7 @@ class SearchController extends \Core\Controller
         $this->view->setVar('urlParams', http_build_query($postData));
 
         if ($postData['searchType'] == 'in_map') {
+        	$this->view->setVar('searchResult', true);
             $this->view->pick('event/mapEvent');
         } else {
             $this->view->pick('event/eventList');
