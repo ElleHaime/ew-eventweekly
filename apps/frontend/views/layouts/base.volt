@@ -34,6 +34,11 @@
         {% endif %}
     {% endif %}
 
+	{% if list is defined %}
+		<script type="text/javascript">
+	        window.searchResults = {{ list }};
+	    </script>
+	{% endif %}
 
     {{ stylesheet_link('/css/bootstrap.min.css') }}
     {#{{ stylesheet_link('/css/bootstrap-datetimepicker.min.css') }}#}
