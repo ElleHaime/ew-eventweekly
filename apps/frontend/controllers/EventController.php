@@ -97,8 +97,8 @@ class EventController extends \Core\Controllers\CrudController
 		if (isset($events)) {
 			$this->view->setVar('pagination', $result);
 		}
+		$this->view->setVar('urlParams', http_build_query($postData));		
 		$this->view->setVar('list', $events);
-		$this->view->setVar('urlParams', http_build_query($postData));	
     	$this->view->pick('event/eventList');
     }
     

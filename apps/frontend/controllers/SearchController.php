@@ -281,7 +281,7 @@ class SearchController extends \Core\Controller
             $this->session->set('userSearch', $postData);
         }
 
-        $this->view->setVar('list', $result);
+        $this->view->setVar('listSearch', $result);
         $this->view->setVar('eventsTotal', $countResults);
         if (isset($fetchedData)) {
             $this->view->setVar('pagination', $fetchedData);

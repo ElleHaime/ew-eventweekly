@@ -34,9 +34,9 @@
         {% endif %}
     {% endif %}
 
-	{% if list is defined %}
+	{% if listSearch is defined %}
 		<script type="text/javascript">
-	        window.searchResults = {{ list }};
+	        window.searchResults = {{ listSearch }};
 	    </script>
 	{% endif %}
 
