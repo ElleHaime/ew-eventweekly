@@ -67,11 +67,15 @@ class Member extends Model
 		}	
 	}
 	
-	public function beforeValidationOnCreate()
+	public function fullDelete()
 	{
-	}
-	
-	public function afterSave()
-	{
+		$this -> getRelated('event_like') -> delete();
+		$this -> getRelated('eventpart') -> delete();
+		$this -> getRelated('eventfriendpart') -> delete();
+		$this -> getRelated('counters') -> delete();
+		$this -> getRelated('network') -> delete();
+		$this -> getRelated('member_filter') -> delete();
+		
+		return;
 	}
 } 

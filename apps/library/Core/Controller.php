@@ -221,10 +221,11 @@ class Controller extends \Phalcon\Mvc\Controller
         foreach ($keys as $key) {
            _U::dump($key, true);
         }
-        die();*/    
-    	//$this->cacheData->delete('acl.cache');
-        //$keys = $this -> cacheData -> get('acl.cache');
-        //_U::dump($keys);
+        die(); */ 
+
+    	/*$this->cacheData->delete('acl.cache');
+        $keys = $this -> cacheData -> get('acl.cache');
+        _U::dump($keys);*/ 
     }
     
     public function flushCache()
