@@ -16,6 +16,8 @@ class EventMemberCounter extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'counters'));
 	}
 }

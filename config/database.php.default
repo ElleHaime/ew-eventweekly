@@ -1,11 +1,26 @@
 <?php
 
-$cfg_database = array(
+$cfg_database_master = array(
   'adapter' => 'Mysql',
   'host' => 'localhost',
   'username' => 'username',
   'password' => 'password',
   'dbname' => 'databasename',
+  'port' => 3306,
+  'charset' =>'utf8',
+  'options' => array (
+      PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+      PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET utf8'
+  )
+);
+
+$cfg_database_slave = array(
+  'adapter' => 'Mysql',
+  'host' => 'localhost',
+  'username' => 'username',
+  'password' => 'password',
+  'dbname' => 'databasename',
+  'port' => 3306,
   'charset' =>'utf8',
   'options' => array (
       PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',

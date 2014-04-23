@@ -24,7 +24,7 @@ class SearchController extends \Core\Controller
      */
     public function searchAction()
     {
-    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
+    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
             $newTask = null;
 
             $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));

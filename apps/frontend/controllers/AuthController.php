@@ -100,7 +100,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                 	$memberCounter = new EventMemberCounter();
-                	$memberNetwork -> assign(['member_id' => $member -> id,
+                	$memberCounter -> assign(['member_id' => $member -> id,
 				                			  'events_liked' => 0,
 				                			  'events_going' => 0,
 				                			  'events_friends' => 0,
@@ -195,7 +195,7 @@ class AuthController extends \Core\Controller
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
                 $memberCounter = new EventMemberCounter();
-                $memberNetwork -> assign(['member_id' => $member -> id,
+                $memberCounter -> assign(['member_id' => $member -> id,
 				               			  'events_liked' => 0,
 				               			  'events_going' => 0,
 				               			  'events_friends' => 0,

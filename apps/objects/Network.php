@@ -17,6 +17,8 @@ class Network extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> hasOne('id', '\Objects\MemberNetwork', 'network_id', array('alias' => 'member'));
 	}
 }

@@ -29,9 +29,6 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
-    	//$counters = new \Frontend\Models\EventMemberCounter();
-    	//$counters -> syncMemberCounter();
-    	
         $this -> _setModule();
         $this -> _getChild();
         $this -> _parseQueryVals();

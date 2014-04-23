@@ -20,6 +20,8 @@ class Venue extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
 		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
 	}

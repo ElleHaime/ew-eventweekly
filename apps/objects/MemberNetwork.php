@@ -18,6 +18,8 @@ class MemberNetwork extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'member'));
 		$this -> belongsTo('network_id', '\Objects\Network', 'id', array('alias' => 'network'));
 	}
