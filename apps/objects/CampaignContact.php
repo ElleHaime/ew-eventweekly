@@ -21,6 +21,8 @@ class CampaignContact extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+		
 		$this -> belongsTo('campaign_id', '\Object\Campaign', 'id', array('alias' => 'campaign'));
 	}
 }

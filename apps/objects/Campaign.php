@@ -18,6 +18,8 @@ class Campaign extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
 																	 	   'baseField' => 'alias'));
 		$this -> hasMany('id', '\Objects\Event', 'campaign_id', array('alias' => 'event'));

@@ -34,6 +34,8 @@ class Event extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('venue_id', '\Objects\Venue', 'id', array('alias' => 'venue',
 																	 'baseField' => 'name'));
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',

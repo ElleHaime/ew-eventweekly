@@ -13,6 +13,8 @@ class EventSite extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('event_id', '\Object\Event', 'id', array('alias' => 'event'));
 	}
 }

@@ -10,9 +10,11 @@ class Model extends \Phalcon\Mvc\Model
 	public $needCache = false;
 
 
-	public function onConstruct()
-	{
-	}
+	public function initialize()
+    {
+        $this -> setReadConnectionService('dbSlave');
+        $this -> setWriteConnectionService('dbMaster');
+    }
 
 	public function getDependencyProperty()
 	{

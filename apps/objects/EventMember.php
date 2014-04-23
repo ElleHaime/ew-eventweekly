@@ -19,6 +19,8 @@ class EventMember extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'eventpart'));
 		$this -> hasMany('member_id', '\Object\Member', 'id', array('alias' => 'memberpart'));
 	}
