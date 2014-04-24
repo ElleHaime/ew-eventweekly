@@ -5,7 +5,7 @@ namespace Objects;
 use Core\Model,
 	Core\Utils as _U;
 
-class Cron extends \Phalcon\Mvc\Model
+class Cron extends \Core\Model
 {
 	public $id;
 	public $name;
@@ -14,4 +14,9 @@ class Cron extends \Phalcon\Mvc\Model
 	public $member_id;
 	public $parameters;
 	public $state;
+	
+	public function initialize()
+	{
+		parent::initialize();
+	}
 }

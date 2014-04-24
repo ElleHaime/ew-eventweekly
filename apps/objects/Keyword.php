@@ -11,4 +11,10 @@ class Keyword extends Model
     public $tag_id;
 
     public $key;
+    
+    
+    public function initialize()
+    {
+    	parent::initialize();
+    }
 }

@@ -25,18 +25,24 @@ class Counter extends Component
 	public function setUserCounters($setView = true)
 	{
 		$result = [];
-
-		foreach($this -> userCounters as $counterName => $options) {
-			$counterCache = $this -> composeCounterName($counterName);
-			$counterView = $counterName;
-
-			$this -> cacheData -> exists($counterCache) ?
-                $result[$counterView] = $this -> cacheData -> get($counterCache) :
-                $result[$counterView] = 0;
-
-            if ($setView) {
-            	$this -> view -> setVar($counterView, $result[$counterView]);
-            } 
+		
+		if ($this -> getDI() -> get('session') -> has('memberId')) {
+			$model = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
+			
+			foreach($this -> userCounters as $counterName => $options) {
+				$counterCache = $this -> composeCounterName($counterName);
+				$result[$counterName] = $model -> $counterName;
+				if ($setView) {
+					$this -> view -> setVar($counterName, $result[$counterName]);
+				}
+			}
+		} else {
+			foreach($this -> userCounters as $counterName => $options) {
+				$result[$counterName] = 0;
+				if ($setView) {
+					$this -> view -> setVar($counterName, $result[$counterName]);
+				}
+			}
 		}
 
 		return $result;
