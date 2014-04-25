@@ -25,27 +25,6 @@ class Venue extends Model
 		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
 		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
 	}
-
-	
-	public function setCache()
-	{
-		$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid, address, location_id, latitude, longitude FROM Objects\Venue", $this -> getDI());
-		$venues = $query -> execute();
-		
-		if ($venues) {
-			foreach ($venues as $venue) {
-				$this -> getCache() -> save('venue_' . $venue -> fb_uid,
-						array('venue_id' => $venue -> id,
-								'address' => $venue -> address,
-								'location_id' => $venue -> location_id,
-								'latitude' => $venue -> latitude,
-								'longitude' => $venue -> longitude));
-			}
-			
-			$this -> getCache() -> save('fb_venues', 'cached');
-		}
-	}
-	
 	
 	public function createOnChange($argument = array())
 	{

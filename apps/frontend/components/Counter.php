@@ -21,13 +21,20 @@ class Counter extends Component
 	{
 		$this -> cacheData = $this -> getDI() -> get('cacheData');
 	}
+	
+	
+	public function getUserCounters($setView = true)
+	{
+		
+	}
 
 	public function setUserCounters($setView = true)
 	{
 		$result = [];
 		
 		if ($this -> getDI() -> get('session') -> has('memberId')) {
-			$model = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
+			$ec = new EventMemberCounter();
+			$model = $ec -> getMemberCounter();
 			
 			foreach($this -> userCounters as $counterName => $options) {
 				$counterCache = $this -> composeCounterName($counterName);
@@ -56,7 +63,8 @@ class Counter extends Component
             $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
             $this -> cacheData -> save($cacheCounter, (int)$val);
  		
- 		$eventCounter = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
+ 		$ec = new EventMemberCounter();
+		$eventCounter = $ec -> getMemberCounter();
  		if ($eventCounter) {
  			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
  			$eventCounter -> save();
@@ -72,7 +80,8 @@ class Counter extends Component
                 $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
             }
         }
-        $eventCounter = EventMemberCounter::findFirst('member_id = ' . $this -> getDI() -> get('session') -> get('memberId'));
+ 		$ec = new EventMemberCounter();
+		$eventCounter = $ec -> getMemberCounter();
         if ($eventCounter) {
         	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
         	$eventCounter -> save();

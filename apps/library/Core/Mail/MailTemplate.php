@@ -16,4 +16,12 @@ class MailTemplates extends \Phalcon\Mvc\Model
 	public $mime;
 	public $body;
 	public $language; 
+	
+	
+	public function __construct($dependencyInjector)
+	{
+		$this -> di = $dependencyInjector;
+		$this -> annotations = $this -> di -> get('annotations');
+	}
+	
 }

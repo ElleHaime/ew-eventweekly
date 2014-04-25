@@ -93,10 +93,6 @@ class Location extends Model
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
-/*		$argument = array('latitude' => 53.32432010, 'longitude' => -6.25169500);
-		$geo = $this -> getGeo();
-		$newLoc = $geo -> getLocation($argument); */ 
-		
 		$isLocationExists = false;
 		!is_null($this -> getCache() -> exists('locations')) 
 						? $locationsScope = $this -> getCache() -> get('locations')

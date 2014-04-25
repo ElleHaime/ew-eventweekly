@@ -13,6 +13,21 @@ use Objects\EventMemberCounter as EventMemberCounterObject,
 
 class EventMemberCounter extends EventMemberCounterObject
 {
+
+	public function getMemberCounter()
+	{
+		if ($this -> getDi() -> get('session') -> has('memberId')) {
+			$model = EventMemberCounter::findFirst('member_id = ' . $this -> getDi() -> get('session') -> get('memberId'));
+			
+			if ($model) {
+				return $model; 
+			}
+		}
+		
+		return false;
+	}
+	
+	
 	public function syncMemberCounter()
 	{
 		$di = $this -> getDI();
@@ -23,7 +38,6 @@ class EventMemberCounter extends EventMemberCounterObject
 		if ($members) {
 		 	foreach ($members as $member) {
 		 		$memberId = $member -> member_id;
-_U::dump($memberId, true);		 		
 		 		$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\Event.id
 		 													FROM  Frontend\Models\Event
 		 													WHERE Frontend\Models\Event.member_id = " . $memberId, $di);

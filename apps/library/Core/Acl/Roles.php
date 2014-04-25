@@ -9,4 +9,11 @@ class Roles extends \Phalcon\Mvc\Model
 	public $description;
 	public $is_default;
 	public $extends;
+	
+	
+	public function initialize()
+	{
+		$this -> setReadConnectionService('dbSlave');
+		$this -> setWriteConnectionService('dbMaster');
+	}
 }
