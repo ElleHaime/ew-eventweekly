@@ -19,7 +19,8 @@ define('eventsPointer',
                 var $this = this;
 
                 $this.settings = _.extend($this.settings, options);
-                $this.pointEvents(window.searchResults);
+
+                $this.pointEvents(searchResults);
             },
 
             pointEvents: function(events) {
