@@ -6,8 +6,4 @@
     <div class="map">
         <div id="map_canvas" style="height:100%;"></div>
     </div>
-
-    <script type="text/javascript">
-        window.searchResults = {{ list }};
-    </script>
 {% endblock %}

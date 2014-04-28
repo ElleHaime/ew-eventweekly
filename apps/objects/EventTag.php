@@ -14,6 +14,8 @@ class EventTag extends Model
 
     public function initialize()
     {
+		parent::initialize();
+		    	
         $this->belongsTo('event_id', '\Objects\Event', 'id', array('alias' => 'event_tag'));
         $this->belongsTo('tag_id', '\Objects\Tag', 'id', array('alias' => 'event_tag'));
     }

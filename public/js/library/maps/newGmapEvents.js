@@ -75,7 +75,7 @@ define('newGmapEvents',
              */
             var responseHandler = function(data) {
                 if (debug) {
-                	console.log(data);
+                	//console.log(data);
                 }
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
@@ -102,42 +102,36 @@ define('newGmapEvents',
                                 if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
                                     __lastLat = event.latitude;
                                     __lastLng = event.longitude;
-                                }else if (!_.isUndefined(event.venue) && !_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
-                                    __lastLat = event.venue.latitude;
-                                    __lastLng = event.venue.longitude;
                                 }
 
-                                //console.log(event);
+                                //console.log(cnt);
 
-                                //if (!_.isUndefined(event.venue)) {
-                                    var marker = new googleMarker({
+                                var marker = new googleMarker({
                                         Map: Map,
                                         Event: event,
                                         InfoWindow: InfoWindow
-                                    });
+                                });
 
-                                    if (!_.isEmpty(marker)) {
-                                        // push new marker to storage
-                                        Map.markers.push(marker);
+                                if (!_.isEmpty(marker)) {
+                                    // push new marker to storage
+                                    Map.markers.push(marker);
 
-                                        // initialize click to marker on map for open information window
-                                        (function(marker, InfoWindow){
-                                            google.maps.event.addListener(marker, 'click', function() {
-                                                //console.log('click');
-                                                marker.setIcon(marker.clickedIcon);
-                                                InfoWindow.open(Map, marker);
-                                            });
-                                        }(marker, InfoWindow));
+                                    // initialize click to marker on map for open information window
+                                    (function(marker, InfoWindow){
+                                        google.maps.event.addListener(marker, 'click', function() {
+                                            marker.setIcon(marker.clickedIcon);
+                                            InfoWindow.open(Map, marker);
+                                        });
+                                    }(marker, InfoWindow));
 
 
-                                        // info window click handle
-                                        (function(marker){
-                                            google.maps.event.addListener(InfoWindow,'closeclick',function(){
-                                                marker.setIcon(marker.defaultIcon);
-                                            });
-                                        }(marker));
-                                    }
-                                //}
+                                    // info window click handle
+                                    (function(marker){
+                                        google.maps.event.addListener(InfoWindow,'closeclick',function(){
+                                            marker.setIcon(marker.defaultIcon);
+                                        });
+                                    }(marker));
+                                }
                             }
 
                             $(settings.eventsCounter).html(Map.markers.length);
@@ -165,7 +159,6 @@ define('newGmapEvents',
                         }
                         doChunk();
                     }
-
                     processLargeArray(data.events);
 
                 } else {
@@ -177,7 +170,7 @@ define('newGmapEvents',
                 }
 
                 if (data.stop == true) {
-                    console.log('interval cleared');
+                    //console.log('interval cleared');
                     clearInterval(interval);
                 }
             };

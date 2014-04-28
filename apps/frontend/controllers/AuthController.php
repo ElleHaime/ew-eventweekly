@@ -8,6 +8,7 @@ use Frontend\Form\SignupForm,
     Frontend\Form\RestoreForm,
     Frontend\Form\ResetForm,
     Frontend\Models\Member,
+    Frontend\Models\EventMemberCounter,
     Frontend\Models\MemberNetwork,
     Frontend\Events\MemberListener,
     Core\Auth,
@@ -98,6 +99,14 @@ class AuthController extends \Core\Controller
                 }
 
                 if ($member -> save()) {
+                	$memberCounter = new EventMemberCounter();
+                	$memberCounter -> assign(['member_id' => $member -> id,
+				                			  'events_liked' => 0,
+				                			  'events_going' => 0,
+				                			  'events_friends' => 0,
+				                			  'events_created' => 0]);
+                	$memberCounter -> save();
+                	 
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this -> eventsManager -> fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this -> response -> redirect('/map');
@@ -185,8 +194,15 @@ class AuthController extends \Core\Controller
 
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
+                $memberCounter = new EventMemberCounter();
+                $memberCounter -> assign(['member_id' => $member -> id,
+				               			  'events_liked' => 0,
+				               			  'events_going' => 0,
+				               			  'events_friends' => 0,
+				               			  'events_created' => 0]);
+                $memberCounter -> save();
+                
                 $memberNetwork = new MemberNetwork();
-
                 $memberNetwork -> assign(array(
                         'member_id' => $member -> id,
                         'network_id' => 1,
@@ -328,11 +344,6 @@ class AuthController extends \Core\Controller
      */
     public function logoutAction()
     {
-/*        $keys = $this -> cacheData -> queryKeys();
-        foreach ($keys as $key) {
-            $this -> cacheData -> delete($key);
-        }
-*/        
 		$this -> session -> destroy();
 		return $this -> response -> redirect('/');
     }

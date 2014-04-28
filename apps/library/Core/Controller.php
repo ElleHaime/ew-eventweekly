@@ -40,7 +40,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> plugSearch();
         $this -> checkCache();
         $this -> counters -> setUserCounters();
-//_U::dump($this -> counters -> get('userFriendsGoing'));
+
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
 
@@ -207,43 +207,22 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->send();
     }
 
-    protected function increaseUserCounter($counter, $val = 1)
-    {
-        $this -> cacheData -> exists($counter) ?
-            $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)+(int)$val) :
-            $this -> cacheData -> save($counter, (int)$val);
-    }
-
-    protected function decreaseUserCounter($counter, $val = 1)
-    {
-        if ($this -> cacheData -> exists($counter)) {
-            if ($this -> cacheData -> get($counter) > 0) {
-                $this -> cacheData -> save($counter, $this -> cacheData -> get($counter)-(int)$val);
-            }
-        }
-    }
-
     public function checkCache()
     {
-        if (!$this->cacheData->exists('locations')) {
-            $location = new Location();
-            $location -> setCache();
-        }
-        if (!$this->cacheData->exists('fb_venues')) {
-            $venue = new Venue();
-            $venue -> setCache();
-        }
-        if (!$this->cacheData->exists('fb_events') || !$this->cacheData->exists('eventsGTotal')) {
-            $event = new Event();
-            $event -> setCache();
-        }
-        if (!$this->cacheData->exists('fb_members')) {
-            $memberNetwork = new MemberNetwork();
-            $memberNetwork -> setCache();
-        }
+    	if (!$this->cacheData->exists('eventsGTotal')) {
+    		$event = new Event();
+    		$event -> setCacheTotal();
+    	}
 
-        //$keys = $this -> cacheData -> get('eventsGTotal');
-        //_U::dump($keys);
+        /*$keys = $this -> cacheData -> queryKeys();
+        foreach ($keys as $key) {
+           _U::dump($key, true);
+        }
+        die(); */ 
+
+    	/*$this->cacheData->delete('acl.cache');
+        $keys = $this -> cacheData -> get('acl.cache');
+        _U::dump($keys);*/ 
     }
     
     public function flushCache()
@@ -252,8 +231,13 @@ class Controller extends \Phalcon\Mvc\Controller
     	foreach ($keys as $key) {
     		$this -> cacheData -> delete($key);
     	}
-    	$keys = $this -> cacheData -> queryKeys();
     	
     	echo 'Cache cleared';
+    }
+    
+    public function syncTotalCounters()
+    {
+    	$counters = new \Frontend\Models\EventMemberCounter();
+    	$counters -> syncMemberCounter();
     }
 }

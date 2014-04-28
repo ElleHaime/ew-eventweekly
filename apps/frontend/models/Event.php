@@ -2,9 +2,9 @@
 
 namespace Frontend\Models;
 
-use Categoryzator\Categoryzator;
-use Categoryzator\Core\Text;
-use Objects\Event as EventObject,
+use Categoryzator\Categoryzator,
+    Categoryzator\Core\Text,
+    Objects\Event as EventObject,
     Core\Utils as _U,
     Frontend\Models\Location,
     Frontend\Models\Venue,
@@ -18,8 +18,10 @@ use Objects\Event as EventObject,
     Objects\EventCategory AS EventCategoryObject,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
-    Phalcon\Mvc\Model\Resultset;
-use Core\Utils\SlugUri as SUri;
+    Phalcon\Mvc\Model\Resultset,
+    Core\Utils\SlugUri as SUri;
+
+
 
 class Event extends EventObject
 {
@@ -31,6 +33,8 @@ class Event extends EventObject
     const ORDER_DESC = 4;
     const CONDITION_SIMPLE = 5;
     const CONDITION_COMPLEX = 6;
+    const DEF_FIELD = 'id';
+
 	public static $eventStatus = array(0 => 'inactive',
 							  		   1 => 'active');
 	public static $eventRecurring = array('0' => 'Once',
@@ -46,6 +50,11 @@ class Event extends EventObject
     ];
 	private $selector = ' AND';
     private $order;
+    private $pagination = false;
+    private $personalization = false;
+    
+    private $fetchType = self::FETCH_OBJECT;
+    
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
     ];
@@ -78,6 +87,15 @@ class Event extends EventObject
             }
         }
     }
+    
+    public function setCacheTotal()
+    {
+    	$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid
+								    			FROM Objects\Event
+								    			WHERE event_status = 1", $this -> getDI());
+    	$events = $query -> execute();
+    	$this -> getCache() -> save('eventsGTotal', $query -> execute() -> count());
+    }
 	
 	public function afterFetch()
 	{
@@ -98,7 +116,14 @@ class Event extends EventObject
     public function getCreatedEventsCount($uId)
     {
         if ($uId) {
-            return self::find(array('member_id = ' . $uId . ' AND deleted = 0'));
+        	$query = new \Phalcon\Mvc\Model\Query(
+        			"SELECT Frontend\Models\Event.id, Frontend\Models\Event.fb_uid
+	        		FROM Frontend\Models\Event
+        			WHERE Frontend\Models\Event.deleted = 0
+	        			AND Frontend\Models\Event.member_id = " . $uId,
+        			$this -> getDI());
+        	$event = $query -> execute();
+        	return $event;
         } else {
             return 0;
         }
@@ -122,7 +147,6 @@ class Event extends EventObject
     	 
     	return $this;
     }
-
 
     /**
      * Add condition to model for fetching
@@ -158,33 +182,88 @@ class Event extends EventObject
 
         return $this;
     }
-
+    
+    public function setStart($start = 0)
+    {
+    	$this -> start = $start;
+    	return $this;
+    }
+    
+    public function setOffset($offset = 0)
+    {
+    	$this -> offset = $offset;
+    	return $this;
+    }
+    
+    
     /**
-     * Get event by conditions which set through Frontend\Models\Event::addCondition()
-     *
-     * @param int $fetchType
-     * @param int $order
-     * @param array $pagination
-     * @param bool $applyPersonalization
-     * @return array|mixed|\Phalcon\Paginator\Adapter\stdClass
+     * Set pagination
      */
-    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [])
+    public function addPagination($pagination = false)
+    {
+    	if ($pagination) {
+    		$this->pagination = true;
+    	}
+    
+    	return $this;
+    }
+    
+    /**
+     * Set personalization
+     */
+    public function addPersonalization($personalization = false)
+    {
+    	if ($personalization) {
+    		$this->personalization = true;
+    	}
+    
+    	return $this;
+    }
+    
+    
+    /**
+     * Set result format
+     */
+    public function setResultFormat($format)
+    {
+    	if ($format == self::FETCH_ARRAY) {
+    		$this->fetchType = self::FETCH_ARRAY;
+    	} else {
+    		$this->fetchType = self::FETCH_OBJECT;
+    	}
+    
+    	return $this;
+    }
+    
+    
+    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
+    								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false)
     {
         $builder = $this->getModelsManager()->createBuilder();
 
         $builder->from('Frontend\Models\Event');
-
         $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
-            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id')
-            ->leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id')
-            //->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Location.id = Frontend\Models\Venue.id AND Frontend\Models\Event.fb_creator_uid = Frontend\Models\Venue.fb_uid')
-            ->leftJoin('Frontend\Models\Venue', 'Frontend\Models\Event.venue_id = Frontend\Models\Venue.id')
-            ->leftJoin('Objects\EventSite', 'Objects\EventSite.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id')
-            ->leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
-            ->leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
+	            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
+            
+       	if ($memberFriend) {
+       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
+       	}
+       	if ($memberGoing) {
+       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
+       	}
+       	if ($memberLike) {
+       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
+       	}
+       	if ($eventTag || $applyPersonalization) {
+       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
+					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
+       	}
+       	if ($needVenue) {
+       		$builder -> leftJoin('Frontend\Models\Venue', 'Frontend\Models\Event.venue_id = Frontend\Models\Venue.id');
+       	}
+       	if ($needLocation) {
+       		$builder -> leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id');
+       	}
 
         $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 
@@ -249,12 +328,16 @@ class Event extends EventObject
             $builder->orderBy($this->order);
         }
         
-        if (!empty($limit)) {
+		if (!empty($limit)) {
         	$builder -> limit($limit['limit'], $limit['start']);
         }
-
         $builder->groupBy('Frontend\Models\Event.id');
-
+        
+		/*$f = fopen('/var/www/EventWeekly/var/logs/bububu.txt', 'a+');
+		fwrite($f, $builder -> getPhql());
+		fwrite($f, "\n\r\n\r");
+		fclose($f);        */
+//_U::dump($builder -> getPhql());
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
                 'builder' => $builder,
@@ -263,8 +346,8 @@ class Event extends EventObject
             ));
 
             $result = $paginator->getPaginate();
-
-            $totalRows = $builder->getQuery()->execute()->count(); 
+            $totalRows = $builder->getQuery()->execute()->count();
+            
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
 
@@ -280,5 +363,5 @@ class Event extends EventObject
         }
 
         return $result;
-    }
+    } 
 } 

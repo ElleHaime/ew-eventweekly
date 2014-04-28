@@ -10,9 +10,11 @@ class Model extends \Phalcon\Mvc\Model
 	public $needCache = false;
 
 
-	public function onConstruct()
-	{
-	}
+	public function initialize()
+    {
+        $this -> setReadConnectionService('dbSlave');
+        $this -> setWriteConnectionService('dbMaster');
+    }
 
 	public function getDependencyProperty()
 	{
@@ -47,11 +49,6 @@ class Model extends \Phalcon\Mvc\Model
 		
 		if (!empty($relationsManyToMany)) {
 			foreach ($relationsManyToMany as $i => $rel) {
-/*				_U::dump($rel -> getReferencedModel(), true);
-				_U::dump($rel -> getReferencedFields(), true);
-				_U::dump($rel -> getFields(), true);
-				_U::dump($rel -> getIntermediateFields(), true);
-				_U::dump($rel -> getIntermediateReferencedFields(), true); */
 				$refOptions = $rel -> getOptions();
 
 				$alias = $this -> getRelationAlias($refOptions);
@@ -104,7 +101,6 @@ class Model extends \Phalcon\Mvc\Model
 		return $extra;
 	}
 
-
 	public function setExtraRelations($addOptions = false)
 	{
 		$this -> extraOptions = $addOptions;
@@ -116,7 +112,6 @@ class Model extends \Phalcon\Mvc\Model
 	{
 		return false;
 	}
-
 
 	public function setCache()
 	{

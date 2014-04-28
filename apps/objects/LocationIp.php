@@ -14,6 +14,7 @@ class LocationIp extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
 		$this -> hasMany('location_id', '\Object\Location', 'id', array('alias' => 'location'));
 	}
 }

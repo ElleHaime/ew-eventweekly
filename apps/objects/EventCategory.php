@@ -13,6 +13,8 @@ class EventCategory extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+				
         $this -> belongsTo('event_id', '\Objects\Event', 'id', array('alias' => 'event_category'));
         $this -> belongsTo('category_id', '\Objects\Category', 'id', array('alias' => 'eventpart2'));
 	}

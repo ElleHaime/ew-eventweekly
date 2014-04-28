@@ -24,10 +24,10 @@ class SearchController extends \Core\Controller
      */
     public function searchAction()
     {
-    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
+    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
             $newTask = null;
 
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId')));
+            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
             if ($taskSetted -> count() > 0) {
                 foreach ($taskSetted as $task) {
                     $tsk = $task;
@@ -64,6 +64,7 @@ class SearchController extends \Core\Controller
         $result = array();
         $countResults = 0;
         $Event = new Event();
+        $needTags = false;
         $postData = $this->request->getQuery();
 
         // retrieve data from POST
@@ -199,6 +200,7 @@ class SearchController extends \Core\Controller
 
                 	if ($elemExists('searchTag')) {
 						$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34,67)');
+						$needTags = true;
 					}
                 	
                     if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
@@ -216,11 +218,14 @@ class SearchController extends \Core\Controller
                             $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
                         }
 
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], false, [],
+                                                           false, false, false, false, false, $needTags);
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
+                        								   false, false, false, false, false, $needTags);
                     } else {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY);
+                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
+                        								   false, false, false, false, false, $needTags);
                     }
 
                     $countResults = count($result);
@@ -248,14 +253,18 @@ class SearchController extends \Core\Controller
                         
                         if ($elemExists('searchTag')) {
 							$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33,67)');
+							$needTags = true;
 						}
 
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10],
+                        								   false, [], false, false, false, true, true, $needTags);
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
+                        								   false, false, false, true, true, $needTags);
                     } else {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10]);
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
+                        								   false, false, false, true, true, $needTags);
                     }
 
 
@@ -283,6 +292,7 @@ class SearchController extends \Core\Controller
         $this->view->setVar('urlParams', http_build_query($postData));
 
         if ($postData['searchType'] == 'in_map') {
+        	$this->view->setVar('searchResult', true);
             $this->view->pick('event/mapEvent');
         } else {
             $this->view->pick('event/eventList');

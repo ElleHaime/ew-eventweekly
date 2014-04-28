@@ -3,7 +3,8 @@
 namespace Frontend\Component;
 
 use \Core\Utils as _U,
-	\Phalcon\Mvc\User\Component;
+	\Phalcon\Mvc\User\Component,
+	\Frontend\Models\EventMemberCounter;
 
 class Counter extends Component
 {
@@ -20,22 +21,35 @@ class Counter extends Component
 	{
 		$this -> cacheData = $this -> getDI() -> get('cacheData');
 	}
+	
+	
+	public function getUserCounters($setView = true)
+	{
+		
+	}
 
 	public function setUserCounters($setView = true)
 	{
 		$result = [];
-
-		foreach($this -> userCounters as $counterName => $options) {
-			$counterCache = $this -> composeCounterName($counterName);
-			$counterView = $counterName;
-
-			$this -> cacheData -> exists($counterCache) ?
-                $result[$counterView] = $this -> cacheData -> get($counterCache) :
-                $result[$counterView] = 0;
-
-            if ($setView) {
-            	$this -> view -> setVar($counterView, $result[$counterView]);
-            } 
+		
+		if ($this -> getDI() -> get('session') -> has('memberId')) {
+			$ec = new EventMemberCounter();
+			$model = $ec -> getMemberCounter();
+			
+			foreach($this -> userCounters as $counterName => $options) {
+				$counterCache = $this -> composeCounterName($counterName);
+				$result[$counterName] = $model -> $counterName;
+				if ($setView) {
+					$this -> view -> setVar($counterName, $result[$counterName]);
+				}
+			}
+		} else {
+			foreach($this -> userCounters as $counterName => $options) {
+				$result[$counterName] = 0;
+				if ($setView) {
+					$this -> view -> setVar($counterName, $result[$counterName]);
+				}
+			}
 		}
 
 		return $result;
@@ -48,6 +62,13 @@ class Counter extends Component
  		$this -> cacheData -> exists($cacheCounter) ?
             $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
             $this -> cacheData -> save($cacheCounter, (int)$val);
+ 		
+ 		$ec = new EventMemberCounter();
+		$eventCounter = $ec -> getMemberCounter();
+ 		if ($eventCounter) {
+ 			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+ 			$eventCounter -> save();
+ 		}
 	}
 
 	public function decreaseUserCounter($counter, $val = 1)
@@ -58,6 +79,12 @@ class Counter extends Component
             if ($this -> cacheData -> get($cacheCounter) > 0) {
                 $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
             }
+        }
+ 		$ec = new EventMemberCounter();
+		$eventCounter = $ec -> getMemberCounter();
+        if ($eventCounter) {
+        	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+        	$eventCounter -> save();
         }
 	}
 

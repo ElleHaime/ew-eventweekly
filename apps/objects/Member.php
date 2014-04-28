@@ -22,6 +22,8 @@ class Member extends Model
 	
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> hasOne('location_id', '\Objects\Location', 'id', array('alias' => 'location'));
 		$this -> hasMany('id', '\Objects\Campaign', 'member_id', array('alias' => 'campaign'));
 		$this -> hasMany('id', '\Objects\Event', 'member_id', array('alias' => 'event'));
@@ -30,6 +32,7 @@ class Member extends Model
 		$this -> hasOne('id', '\Objects\EventMemberFriend', 'member_id', array('alias' => 'eventfriendpart'));
         $this -> hasMany('id', '\Objects\MemberFilter', 'member_id', array('alias' => 'member_filter'));
         $this -> hasMany('id', '\Objects\EventLike', 'member_id', array('alias' => 'event_like'));
+        $this -> hasOne('id', '\Objects\EventMemberCounter', 'member_id', array('alias' => 'counters'));
 	}
 	
 	public function getDependency()
@@ -66,11 +69,15 @@ class Member extends Model
 		}	
 	}
 	
-	public function beforeValidationOnCreate()
+	public function fullDelete()
 	{
-	}
-	
-	public function afterSave()
-	{
+		$this -> getRelated('event_like') -> delete();
+		$this -> getRelated('eventpart') -> delete();
+		$this -> getRelated('eventfriendpart') -> delete();
+		$this -> getRelated('counters') -> delete();
+		$this -> getRelated('network') -> delete();
+		$this -> getRelated('member_filter') -> delete();
+		
+		return;
 	}
 } 

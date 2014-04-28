@@ -11,7 +11,11 @@ use Core\Utils as _U,
     Frontend\Form\ChangePassForm,
     Frontend\Form\MemberForm,
     Frontend\Form\LoginForm,
-    Frontend\Models\MemberNetwork;
+    Frontend\Models\MemberNetwork,
+	Frontend\Models\EventLike,
+	Frontend\Models\EventMember,
+	Frontend\Models\EventMemberFriend,
+	Frontend\Models\EventMemberCounter;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -452,7 +456,7 @@ class MemberController extends \Core\Controllers\CrudController
                 if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
                 	$newTask = null;
                 
-                	$taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId')));
+                	$taskSetted = \Objects\Cron::find(array('member_id = ' . $member -> id  . ' and name =  "extract_facebook_events"'));
                 	if ($taskSetted -> count() > 0) {
                 		foreach ($taskSetted as $task) {
                 			$tsk = $task;
@@ -485,5 +489,28 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         echo json_encode($response);
+    }
+    
+    
+    /**
+     * @Route("/member/annihilate", methods={'post','get'})
+     * @Acl(roles={'member'});
+     */
+    public function annihilateAction()
+    {
+    	$newTask = new \Objects\Cron();
+    	$params = ['member_id' => $this -> session -> get('memberId')];
+    	$task = ['name' => 'clear_member_cache',
+		    	 'parameters' => serialize($params),
+		    	 'state' => 0,
+		    	 'member_id' => $this -> session -> get('memberId'),
+		    	 'hash' => time()];
+    	$newTask -> assign($task);
+    	$newTask -> save();
+    	
+    	$member = Member::findFirst($this -> session -> get('memberId'));
+		$member -> fullDelete();
+
+		$this -> response -> redirect('/logout');
     }
 }

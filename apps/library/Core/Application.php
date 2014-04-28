@@ -32,7 +32,8 @@ class Application extends BaseApplication
 		include_once(FACEBOOK_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
-		$this -> _databaseConfig = new Config($cfg_database);
+		$this -> _databaseConfigWrite = new Config($cfg_database_master);
+		$this -> _databaseConfigRead = new Config($cfg_database_slave);
 		$this -> _facebookConfig = new Config($cfg_facebook);
 
 		$di = new DIFactory();
@@ -189,12 +190,12 @@ class Application extends BaseApplication
 	
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
-		if (!$di -> has('db')) {
+		if (!$di -> has('dbSlave')) {
 
-			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfig -> adapter;
-			$config = $this -> _databaseConfig;
+			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigRead -> adapter;
+			$config = $this -> _databaseConfigRead;
 			
-			$di -> set('db',
+			$di -> set('dbSlave',
 				function () use ($config, $adapter) {
 
                     $eventsManager = new EventsManager();
@@ -202,7 +203,7 @@ class Application extends BaseApplication
                     $logger = new FileAdapter(ROOT_APP.'var/logs/sql.log');
 
                     //Listen all the database events
-                    $eventsManager->attach('db', function($event, $connection) use ($logger) {
+                    $eventsManager->attach('dbSlave', function($event, $connection) use ($logger) {
                             if ($event->getType() == 'beforeQuery') {
                                 $logger->log($connection->getSQLStatement());
                             }
@@ -213,6 +214,44 @@ class Application extends BaseApplication
 							  'username' => $config -> username,
 							  'password' => $config -> password,
 							  'dbname' => $config -> dbname,
+							  'port' => $config -> port,
+                              'charset' => $config->charset,
+                              'options' => $config->options->toArray()
+						)
+					);
+
+                    $connection->setEventsManager($eventsManager);
+
+					return $connection;
+				} 
+			);
+		}
+
+		if (!$di -> has('dbMaster')) {
+
+			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigWrite -> adapter;
+			$config = $this -> _databaseConfigWrite;
+			
+			$di -> set('dbMaster',
+				function () use ($config, $adapter) {
+
+                    $eventsManager = new EventsManager();
+
+                    $logger = new FileAdapter(ROOT_APP.'var/logs/sql.log');
+
+                    //Listen all the database events
+                    $eventsManager->attach('dbMaster', function($event, $connection) use ($logger) {
+                            if ($event->getType() == 'beforeQuery') {
+                                $logger->log($connection->getSQLStatement());
+                            }
+                        });
+
+					$connection = new $adapter(
+						array('host' => $config -> host,
+							  'username' => $config -> username,
+							  'password' => $config -> password,
+							  'dbname' => $config -> dbname,
+							  'port' => $config -> port,
                               'charset' => $config->charset,
                               'options' => $config->options->toArray()
 						)
@@ -233,7 +272,7 @@ class Application extends BaseApplication
 			'host' => $this -> _config -> application -> cache -> host,
 			'port' => $this -> _config -> application -> cache -> port,
 			'persistent' => $this -> _config -> application -> cache -> persistent,
-			'prefix' => $this -> _databaseConfig -> dbname
+			'prefix' => $this -> _databaseConfigRead -> dbname
 		 ]);
 
 

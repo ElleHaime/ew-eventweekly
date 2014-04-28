@@ -105,7 +105,7 @@ class Memcache extends Backend implements BackendInterface
      */
     public function delete($keyName)
     {
-        return $this -> memcache -> delete($keyName);
+        return $this -> memcache -> delete($this -> prefix . $keyName);
     }
 
     /**

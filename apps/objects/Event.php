@@ -34,6 +34,8 @@ class Event extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+				
 		$this -> belongsTo('venue_id', '\Objects\Venue', 'id', array('alias' => 'venue',
 																	 'baseField' => 'name'));
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
@@ -52,20 +54,5 @@ class Event extends Model
 							   '\Objects\Tag', 'id', array('alias' => 'tag',
 							   		 							'baseField' => 'name'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
-	}
-
-	
-	public function setCache()
-	{
-		$events = self::find('event_status = 1');
-		if ($events) {
-			foreach($events as $event) {
-				if ($event -> fb_uid && !$this -> getCache() -> exists('fbe_' . $event -> fb_uid)) {
-					$this -> getCache() -> save('fbe_' . $event -> fb_uid, $event -> id);
-				}
-			}
-			$this -> getCache() -> save('fb_events', 'cached');
-		}
-		$this -> getCache() -> save('eventsGTotal', $events -> count());
 	}
 }

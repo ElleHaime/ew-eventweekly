@@ -25,6 +25,8 @@ class Location extends Model
 
 	public function initialize()
 	{
+		parent::initialize();
+		
 		$this -> hasMany('id', '\Objects\Member', 'location_id', array('alias' => 'member'));
 		$this -> hasMany('id', '\Objects\Event', 'location_id', array('alias' => 'event'));
 		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaign'));
@@ -33,7 +35,8 @@ class Location extends Model
 
 	public function setCache()
 	{
-		$locations = self::find();
+		$query = new \Phalcon\Mvc\Model\Query("SELECT id, latitudeMin, longitudeMin, latitudeMax, longitudeMax, city, country FROM Objects\Location", $this -> getDI());
+		$locations = $query -> execute();
 		$locationsCache = array();
 
 		if ($locations) {
@@ -90,10 +93,6 @@ class Location extends Model
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
-/*		$argument = array('latitude' => 53.32432010, 'longitude' => -6.25169500);
-		$geo = $this -> getGeo();
-		$newLoc = $geo -> getLocation($argument); */ 
-		
 		$isLocationExists = false;
 		!is_null($this -> getCache() -> exists('locations')) 
 						? $locationsScope = $this -> getCache() -> get('locations')
