@@ -37,15 +37,27 @@ class Counter extends Component
 			$model = $ec -> getMemberCounter();
 			
 			foreach($this -> userCounters as $counterName => $options) {
-				$counterCache = $this -> composeCounterName($counterName);
-				$result[$counterName] = $model -> $counterName;
+				if ($counterName == 'eventsGTotal') {
+					$this -> cacheData -> exists($counterName) ?
+						$result[$counterName] = $this -> cacheData -> get($counterName) :
+						$result[$counterName] = 0;
+				} else {
+					$result[$counterName] = $model -> $counterName;
+				}
 				if ($setView) {
 					$this -> view -> setVar($counterName, $result[$counterName]);
 				}
 			}
 		} else {
 			foreach($this -> userCounters as $counterName => $options) {
-				$result[$counterName] = 0;
+				if ($counterName == 'eventsGTotal') {
+					$this -> cacheData -> exists($counterName) ?
+						$result[$counterName] = $this -> cacheData -> get($counterName) :
+						$result[$counterName] = 0;
+				} else {
+					$result[$counterName] = 0;
+				}
+				
 				if ($setView) {
 					$this -> view -> setVar($counterName, $result[$counterName]);
 				}
@@ -62,12 +74,14 @@ class Counter extends Component
  		$this -> cacheData -> exists($cacheCounter) ?
             $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
             $this -> cacheData -> save($cacheCounter, (int)$val);
- 		
- 		$ec = new EventMemberCounter();
-		$eventCounter = $ec -> getMemberCounter();
- 		if ($eventCounter) {
- 			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
- 			$eventCounter -> save();
+
+ 		if ($cacheCounter != 'eventsGTotal') {
+	 		$ec = new EventMemberCounter();
+			$eventCounter = $ec -> getMemberCounter();
+	 		if ($eventCounter) {
+	 			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+	 			$eventCounter -> save();
+	 		}
  		}
 	}
 
@@ -80,12 +94,15 @@ class Counter extends Component
                 $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
             }
         }
- 		$ec = new EventMemberCounter();
-		$eventCounter = $ec -> getMemberCounter();
-        if ($eventCounter) {
-        	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
-        	$eventCounter -> save();
-        }
+        
+        if ($cacheCounter != 'eventsGTotal') {
+	 		$ec = new EventMemberCounter();
+			$eventCounter = $ec -> getMemberCounter();
+	        if ($eventCounter) {
+	        	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+	        	$eventCounter -> save();
+	        }
+       }
 	}
 
 	public function get($counter) 
