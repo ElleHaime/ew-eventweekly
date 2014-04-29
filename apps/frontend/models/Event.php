@@ -10,6 +10,7 @@ use Categoryzator\Categoryzator,
     Frontend\Models\Venue,
     Frontend\Models\MemberNetwork,
     Objects\EventImage,
+    Objects\Total,
     Objects\EventMember,
     Frontend\Models\Category,
     Frontend\Models\MemberFilter,
@@ -20,7 +21,6 @@ use Categoryzator\Categoryzator,
     Objects\Tag AS TagObject,
     Phalcon\Mvc\Model\Resultset,
     Core\Utils\SlugUri as SUri;
-
 
 
 class Event extends EventObject
@@ -90,11 +90,8 @@ class Event extends EventObject
     
     public function setCacheTotal()
     {
-    	$query = new \Phalcon\Mvc\Model\Query("SELECT id, fb_uid
-								    			FROM Objects\Event
-								    			WHERE event_status = 1", $this -> getDI());
-    	$events = $query -> execute();
-    	$this -> getCache() -> save('eventsGTotal', $query -> execute() -> count());
+    	$evTotal = Total::findFirst('entity = "event"');
+    	$this -> getCache() -> save('eventsGTotal', $evTotal -> total);
     }
 	
 	public function afterFetch()

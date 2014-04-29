@@ -38,7 +38,7 @@ class Controller extends \Phalcon\Mvc\Controller
         }
 
         $this -> plugSearch();
-        $this -> checkCache();
+//        $this -> checkCache();
         $this -> counters -> setUserCounters();
 
         $member = $this->session->get('member');

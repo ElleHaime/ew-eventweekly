@@ -23,11 +23,6 @@ class Counter extends Component
 	}
 	
 	
-	public function getUserCounters($setView = true)
-	{
-		
-	}
-
 	public function setUserCounters($setView = true)
 	{
 		$result = [];
@@ -38,9 +33,9 @@ class Counter extends Component
 			
 			foreach($this -> userCounters as $counterName => $options) {
 				if ($counterName == 'eventsGTotal') {
-					$this -> cacheData -> exists($counterName) ?
-						$result[$counterName] = $this -> cacheData -> get($counterName) :
-						$result[$counterName] = 0;
+					$ev = new \Frontend\Models\Event();
+					$ev -> setCacheTotal();
+					$result[$counterName] = $this -> cacheData -> get($counterName);
 				} else {
 					$result[$counterName] = $model -> $counterName;
 				}
@@ -51,9 +46,9 @@ class Counter extends Component
 		} else {
 			foreach($this -> userCounters as $counterName => $options) {
 				if ($counterName == 'eventsGTotal') {
-					$this -> cacheData -> exists($counterName) ?
-						$result[$counterName] = $this -> cacheData -> get($counterName) :
-						$result[$counterName] = 0;
+					$ev = new \Frontend\Models\Event();
+					$ev -> setCacheTotal();
+					$result[$counterName] = $this -> cacheData -> get($counterName);
 				} else {
 					$result[$counterName] = 0;
 				}

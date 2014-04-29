@@ -10,7 +10,7 @@ define('frontCounterUpdater',
 
             var settings = {
                 autoGetEvents: true,
-                requestInterval: 2000, // TODO: set some interval
+                requestInterval: 5000, // TODO: set some interval
                 eventsUrl: '/event/get-counter',
 
                 externalLogged: '#external_logged',
