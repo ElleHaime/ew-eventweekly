@@ -1150,13 +1150,13 @@ class EventController extends \Core\Controllers\CrudController
         							  array('start' => $this -> session -> get('lastFetchedEvent'), 'limit' => $this -> config -> application -> limitFetchEvents));
 
         if (count($events) ==  $this -> config -> application -> limitFetchEvents) {
-        	$this -> increaseUserCounter('eventsGTotal', count($events)); 
+        	$this -> counters -> increaseUserCounter('eventsGTotal', count($events)); 
             $this->session->set('lastFetchedEvent', (int)$this -> session -> get('lastFetchedEvent') + (int)$this -> config -> application -> limitFetchEvents);
             $res['status'] = true;
             $res['stop'] = false;
             $res['events'] = $events;
         } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
-        	$this -> increaseUserCounter('eventsGTotal', count($events));
+        	$this -> counters -> increaseUserCounter('eventsGTotal', count($events));
         	$res['stop'] = true;
         	$res['status'] = true;
         	$res['events'] = $events;
