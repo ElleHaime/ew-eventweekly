@@ -113,6 +113,10 @@
                                 </div>
                             </form>
                         </div>
+                        <div class="change-box">
+                            <button class="btn btn-block" id="deleteMemberAcc">Delete account</button>
+						</div>
+                        
                     </div>
                 </div>
             </div>

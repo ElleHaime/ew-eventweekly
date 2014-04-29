@@ -53,7 +53,9 @@ define('frontMemberEditControl',
                 inpTagIds: '#tagIds',
 
                 linkToFbAccBtn: '#linkToFbAcc',
-                syncFbAccBtn: '#syncFbAcc'
+                syncFbAccBtn: '#syncFbAcc',
+                
+                deleteMemberAcc: '#deleteMemberAcc'
             },
 
             self.init = function()
@@ -68,6 +70,29 @@ define('frontMemberEditControl',
 
             self.bindEvents = function()
             {
+            	$(self.settings.deleteMemberAcc).click(function() {
+            		noty({text: 'Warning: this cannot be undone! Are you sure you want to delete your account? If you click “OK”, all your details, preferences, settings, and events will be deleted permanently. <br>Please click “Cancel” if you want to keep your account. (We would love for you to stay with us!)', 
+            			  type: 'warning',
+            			  buttons: [
+            			            {
+            			             addClass: 'background-color="red"; align: center; paddign-right: 5px; width: 15px; content: "OK"', 
+            			             onClick: function($noty) { 
+            			            		$noty.close();
+            			            		alert('Ok'); 
+            			            	}
+            			            },
+            			            {
+            			             addClass: 'background-color="green"; align: center; content: "No, no, please!!!"', 
+            			             onClick: function($noty)
+                			            {
+        			            			$noty.close();            			            	
+            			            		alert('No, no, please!!!'); 
+            			            	}
+            			            }
+            			  ]});
+                    //self.__confirmSuicide();
+                });
+            	
                 $(self.settings.btnImg).click(function() {
                     self.__imitateUpload();
                 });
@@ -328,6 +353,11 @@ define('frontMemberEditControl',
                 return $.ajax({ url: url,
                     data: params,
                     type: method});
+            }
+            
+            self.__confirmSuicide = function()
+            {
+            	
             }
         }
 
