@@ -117,7 +117,6 @@ define('fb',
 		                    self.accessUid = response.authResponse.userID;
 		                    authParams = { uid: self.accessUid, 
 		                    			   access_token: self.accessToken };
-
 		                    $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
 		                    		data = $.parseJSON(data);
 		                    		if (data.status == 'OK') {
@@ -131,10 +130,10 @@ define('fb',
 							               			return false;
 							               		}
 							               		self.__register(facebookData[0]);
-							               	});
+							               	}); 
 		                    		} else {
 		                    			alert('I can\'t authorize you, sorry, bro');
-		                    		}
+		                    		}  
 		                    	}); 
 		                } else {
 		                    alert('You need to be logged in.');
@@ -157,6 +156,7 @@ define('fb',
                            first_name: data.first_name,
                            last_name: data.last_name,
                            username: data.username };
+			
                 $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
@@ -176,7 +176,7 @@ define('fb',
                 		$(self.settings.errorBox).html('Facebook return empty result :(');
 		                $(self.settings.errorBox).show();
                 	}
-                });
+                }); 
 			}
 
 			self.__shareEvent = function()

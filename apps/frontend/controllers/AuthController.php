@@ -160,13 +160,13 @@ class AuthController extends \Core\Controller
     public function fbregisterAction()
     {
         $userData =  $this -> request -> getPost();
-
+        $res = [];
+        
         if (!$this -> session -> has('member')) {
             $member = new Member();
 
             $locationByIp = $this->session->get('location');
-
-            if (isset($userData['location']) || !empty($userData['location'])) {
+            if (isset($userData['location']) && !empty($userData['location']) && $locationByIp) {
                 $locationByFb = $userData['location'];
 
                 if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) 
@@ -191,7 +191,6 @@ class AuthController extends \Core\Controller
                 ));
 
             if ($member -> save()) {
-
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
                 $memberCounter = new EventMemberCounter();
@@ -203,6 +202,11 @@ class AuthController extends \Core\Controller
                 $memberCounter -> save();
                 
                 $memberNetwork = new MemberNetwork();
+                if ($userData['username'] == '' || empty($userData['username'])) {
+                	if ($userData['email']) {
+                		$userData['username'] = $userData['email'];
+                	}
+                }
                 $memberNetwork -> assign(array(
                         'member_id' => $member -> id,
                         'network_id' => 1,
