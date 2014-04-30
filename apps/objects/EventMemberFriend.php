@@ -17,7 +17,7 @@ class EventMemberFriend extends Model
 	{
 		parent::initialize();
 				
-		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'eventfriendart'));
-		$this -> hasMany('member_id', '\Object\Member', 'id', array('alias' => 'memberfriendpart'));
+		$this -> belongsTo('event_id', '\Object\Event', 'id', array('alias' => 'eventfriendart'));
+		$this -> belongsTo('member_id', '\Object\Member', 'id', array('alias' => 'eventfriendpart'));
 	}
 }

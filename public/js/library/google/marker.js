@@ -63,7 +63,7 @@ define('googleMarker',
                     var newLatLng = new google.maps.LatLng(latitude, longitude);
 
                     var category = 'other';
-                    if (!_.isUndefined(Event.category) && !_.isUndefined(Event.category[0]) && !_.isUndefined(Event.category[0].key)) {
+                    if (Event.category && !_.isUndefined(Event.category) && !_.isUndefined(Event.category[0]) && !_.isUndefined(Event.category[0].key)) {
                         category = Event.category[0].key;
                     }
 

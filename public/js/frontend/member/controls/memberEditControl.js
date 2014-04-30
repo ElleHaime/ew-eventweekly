@@ -53,7 +53,10 @@ define('frontMemberEditControl',
                 inpTagIds: '#tagIds',
 
                 linkToFbAccBtn: '#linkToFbAcc',
-                syncFbAccBtn: '#syncFbAcc'
+                syncFbAccBtn: '#syncFbAcc',
+                
+                deleteMemberAcc: '#deleteMemberAcc',
+                deleteMemberLoc: '/member/annihilate'
             },
 
             self.init = function()
@@ -68,6 +71,26 @@ define('frontMemberEditControl',
 
             self.bindEvents = function()
             {
+            	$(self.settings.deleteMemberAcc).click(function() {
+            		noty({text: 'Warning: this cannot be undone! Are you sure you want to delete your account? If you click “OK”, all your details, preferences, settings, and events will be deleted permanently. <br>Please click “Cancel” if you want to keep your account. (We would love for you to stay with us!)', 
+            			  type: 'warning',
+            			  buttons: [
+            			            {
+            			             addClass: 'btn btn-noty-ok', text: 'Ok', 
+            			             onClick: function($noty) { 
+            			            	 $noty.close();
+            			            	 self.__confirmSuicide(); 
+            			             }
+            			            },
+            			            {
+            			             addClass: 'btn btn-noty-close', text: 'Cancel',
+            			             onClick: function($noty) {
+        			            		$noty.close(); 
+            			             }
+            			            }
+            			  ]});
+                });
+            	
                 $(self.settings.btnImg).click(function() {
                     self.__imitateUpload();
                 });
@@ -328,6 +351,11 @@ define('frontMemberEditControl',
                 return $.ajax({ url: url,
                     data: params,
                     type: method});
+            }
+            
+            self.__confirmSuicide = function()
+            {
+            	window.location.href = self.settings.deleteMemberLoc;
             }
         }
 

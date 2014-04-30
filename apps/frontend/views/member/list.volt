@@ -113,6 +113,10 @@
                                 </div>
                             </form>
                         </div>
+                        <div class="change-box">
+                            <button class="btn btn-block" id="deleteMemberAcc">Delete account</button>
+						</div>
+                        
                     </div>
                 </div>
             </div>
@@ -219,13 +223,13 @@
                          <button id="saveFilter" class="btn " >Save</button>
                     </div>
 
-                    <div class=" row-fluid add-settings-box clearfix">
+                    <!-- div class=" row-fluid add-settings-box clearfix">
                         <div class="span11"><p><i class="icon-plus"></i> Or add your interests manually: rock, queen, zombie walk, golf
                                 party etc.</p></div>
                         <div class="span1">
                             <button class="btn btn-block"> Add</button>
                         </div>
-                    </div>
+                    </div -->
                 </div>
             </div>
 
