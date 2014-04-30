@@ -31,16 +31,18 @@ class Counter extends Component
 			$ec = new EventMemberCounter();
 			$model = $ec -> getMemberCounter();
 			
-			foreach($this -> userCounters as $counterName => $options) {
-				if ($counterName == 'eventsGTotal') {
-					$ev = new \Frontend\Models\Event();
-					$ev -> setCacheTotal();
-					$result[$counterName] = $this -> cacheData -> get($counterName);
-				} else {
-					$result[$counterName] = $model -> $counterName;
-				}
-				if ($setView) {
-					$this -> view -> setVar($counterName, $result[$counterName]);
+			if ($model) {
+				foreach($this -> userCounters as $counterName => $options) {
+					if ($counterName == 'eventsGTotal') {
+						$ev = new \Frontend\Models\Event();
+						$ev -> setCacheTotal();
+						$result[$counterName] = $this -> cacheData -> get($counterName);
+					} else {
+						$result[$counterName] = $model -> $counterName;
+					}
+					if ($setView) {
+						$this -> view -> setVar($counterName, $result[$counterName]);
+					}
 				}
 			}
 		} else {

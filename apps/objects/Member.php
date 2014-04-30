@@ -71,12 +71,26 @@ class Member extends Model
 	
 	public function fullDelete()
 	{
-		$this -> getRelated('event_like') -> delete();
-		$this -> getRelated('eventpart') -> delete();
-		$this -> getRelated('eventfriendpart') -> delete();
-		$this -> getRelated('counters') -> delete();
-		$this -> getRelated('network') -> delete();
-		$this -> getRelated('member_filter') -> delete();
+//_U::dump($this -> getRelated('eventpart') -> toArray());
+		if ($this -> getRelated('event_like')) {		
+			$this -> getRelated('event_like') -> delete();
+		}
+		if ($this -> getRelated('eventpart')) {
+			$this -> getRelated('eventpart') -> delete();
+		}
+		if ($this -> getRelated('eventfriendpart')) {
+			$this -> getRelated('eventfriendpart') -> delete();
+		}
+		if ($this -> getRelated('counters')) {
+			$this -> getRelated('counters') -> delete();
+		}
+		if ($this -> getRelated('network')) {
+			$this -> getRelated('network') -> delete();
+		}
+		if ($this -> getRelated('member_filter')) {
+			$this -> getRelated('member_filter') -> delete();
+		} 
+		$this -> delete();
 		
 		return;
 	}

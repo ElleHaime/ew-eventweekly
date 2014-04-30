@@ -21,7 +21,7 @@ class EventMember extends Model
 	{
 		parent::initialize();
 				
-		$this -> hasMany('event_id', '\Object\Event', 'id', array('alias' => 'eventpart'));
-		$this -> hasMany('member_id', '\Object\Member', 'id', array('alias' => 'memberpart'));
+		$this -> belongsTo('event_id', '\Object\Event', 'id', array('alias' => 'eventpart'));
+		$this -> belongsTo('member_id', '\Object\Member', 'id', array('alias' => 'eventpart'));
 	}
 }

@@ -55,7 +55,8 @@ define('frontMemberEditControl',
                 linkToFbAccBtn: '#linkToFbAcc',
                 syncFbAccBtn: '#syncFbAcc',
                 
-                deleteMemberAcc: '#deleteMemberAcc'
+                deleteMemberAcc: '#deleteMemberAcc',
+                deleteMemberLoc: '/member/annihilate'
             },
 
             self.init = function()
@@ -75,22 +76,19 @@ define('frontMemberEditControl',
             			  type: 'warning',
             			  buttons: [
             			            {
-            			             addClass: 'background-color="red"; align: center; paddign-right: 5px; width: 15px; content: "OK"', 
+            			             addClass: 'btn btn-noty-ok', text: 'Ok', 
             			             onClick: function($noty) { 
-            			            		$noty.close();
-            			            		alert('Ok'); 
-            			            	}
+            			            	 $noty.close();
+            			            	 self.__confirmSuicide(); 
+            			             }
             			            },
             			            {
-            			             addClass: 'background-color="green"; align: center; content: "No, no, please!!!"', 
-            			             onClick: function($noty)
-                			            {
-        			            			$noty.close();            			            	
-            			            		alert('No, no, please!!!'); 
-            			            	}
+            			             addClass: 'btn btn-noty-close', text: 'Cancel',
+            			             onClick: function($noty) {
+        			            		$noty.close(); 
+            			             }
             			            }
             			  ]});
-                    //self.__confirmSuicide();
                 });
             	
                 $(self.settings.btnImg).click(function() {
@@ -357,7 +355,7 @@ define('frontMemberEditControl',
             
             self.__confirmSuicide = function()
             {
-            	
+            	window.location.href = self.settings.deleteMemberLoc;
             }
         }
 

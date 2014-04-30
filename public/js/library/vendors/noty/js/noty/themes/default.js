@@ -63,10 +63,10 @@
 			});
 
 			this.$buttons.css({
-				padding: 5,
-				textAlign: 'right',
-				borderTop: '1px solid #ccc',
-				backgroundColor: '#fff'
+				padding: 5
+				//textAlign: 'right',
+				//borderTop: '1px solid #ccc',
+				//backgroundColor: '#fff'
 			});
 
 			this.$buttons.find('button').css({

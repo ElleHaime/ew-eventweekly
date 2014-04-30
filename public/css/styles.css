@@ -702,3 +702,11 @@ footer .login-variants .link a {
 .text-label span {
     font:300 30px "Open Sans";
 }
+
+.btn-noty-close { 
+	background: #DB4D30 !important; 
+}
+
+.btn-noty-ok, .btn-noty-close {
+	width: 45%;
+}

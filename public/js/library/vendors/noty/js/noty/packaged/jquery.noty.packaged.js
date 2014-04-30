@@ -1277,9 +1277,9 @@ window.noty = function noty(options) {
 
             this.$buttons.css({
                 padding: 5,
-                textAlign: 'right',
-                borderTop: '1px solid #ccc',
-                backgroundColor: '#fff'
+                marginLeft: 'auto',
+                marginRight: 'auto',
+                width: 320
             });
 
             this.$buttons.find('button').css({
