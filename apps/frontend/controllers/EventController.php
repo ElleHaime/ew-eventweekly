@@ -1170,21 +1170,19 @@ class EventController extends \Core\Controllers\CrudController
         $this->sendAjax($res);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
-            $newTask = null;
+            $newTask = false;
 
             $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
             if ($taskSetted -> count() > 0) {
-                foreach ($taskSetted as $task) {
-                    $tsk = $task;
-                }
+                $tsk = $taskSetted -> getLast();
                 if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
-                    $newTask = $tsk;
+                    $newTask = new \Objects\Cron();
                 }
             } else {
                 $newTask = new \Objects\Cron();
             }
 
-            if (!is_null($newTask)) {
+            if ($newTask) {
                 $params = ['user_token' => $this -> session -> get('user_token'),
                            'user_fb_uid' => $this -> session -> get('user_fb_uid'),
                            'member_id' => $this -> session -> get('memberId')];
