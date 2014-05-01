@@ -21,7 +21,6 @@ class Bootstrap extends \Core\Bootstrap
 		$this -> _initCounters($di);
 	}
 
-
     public function _initCounters($di)
 	{
 		$di -> set('counters', function() use ($di) {
