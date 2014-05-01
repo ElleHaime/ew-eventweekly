@@ -287,7 +287,7 @@ class EventController extends \Core\Controllers\CrudController
         	$fb = new Extractor($this -> getDi());
         	$res = $fb -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $event -> fb_uid), $this -> session -> get('user_token'));
 
-        	if (!is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
+        	if ($res['STATUS'] && !is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
         		$event -> tickets_url = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
         	} else {
         		$event -> tickets_url = false;

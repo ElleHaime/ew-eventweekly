@@ -41,16 +41,7 @@
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
                                                 <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-                                                    {% if event.logo is defined %}
-                                                        {% if event.logo is empty %}
-                                                            {% set pic = defaultEventLogo %}
-                                                        {% else %}
-                                                            {% set pic = '/upload/img/event/'~event.id~'/'~event.logo %}
-                                                        {% endif %}
-                                                        <img src="{{ pic }}" >
-                                                    {% else %}
-                                                        <img src="{{ event.pic_big }}">
-                                                    {% endif %}
+                                                    <img src="{{ checkEventLogo(event.logo,event.id) }}">
                                                 </a>
                                             </div>
 
