@@ -221,6 +221,32 @@ abstract class Bootstrap implements ModuleDefinitionInterface
             $args = explode(',', $resolvedArgs);
             return '\Core\Utils\DateTime::format('.trim($args[0]).', '.trim($args[1]).')';
         });
+
+        $compiler->addFunction('checkEventLogo', function($resolvedArgs) {
+        	$args = explode(',', $resolvedArgs);
+        	$id = trim($args[1]);
+        	$logo = trim($args[0]);
+        	$result = '/img/logo200.png';
+
+        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $id . '/' . $logo)) {
+        		$result = '/upload/img/event/' . $id . '/' . $logo;
+        	}
+        	
+        	return '"' . $result . '"';
+        });
+
+         $compiler->addFunction('checkEventCover', function($resolvedArgs) {
+        	$args = explode(',', $resolvedArgs);
+        	$id = trim($args[1]);
+        	$cover = trim($args[0]);
+        	$result = '/img/logo200.png';
+
+        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $id . '/cover//' . $cover)) {
+        		$result = '/upload/img/event/' . $id . '/cover//' . $cover;
+        	} 
+        	
+        	return '"' . $result . '"';
+        });
     }
 
     public function initCoreTag($di)
