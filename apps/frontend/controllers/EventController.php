@@ -237,7 +237,7 @@ class EventController extends \Core\Controllers\CrudController
     	$event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
     	$event->addCondition('Frontend\Models\Event.deleted = 0');
     	$event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	//$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
     	$events = $event->fetchEvents();
     
     	if ($events->count()) {

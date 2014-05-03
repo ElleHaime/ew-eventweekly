@@ -241,8 +241,8 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         	$cover = trim($args[0]);
         	$result = '/img/logo200.png';
 
-        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $id . '/cover//' . $cover)) {
-        		$result = '/upload/img/event/' . $id . '/cover//' . $cover;
+        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $id . '/cover/' . $cover)) {
+        		$result = '/upload/img/event/' . $id . '/cover/' . $cover;
         	} 
         	
         	return '"' . $result . '"';

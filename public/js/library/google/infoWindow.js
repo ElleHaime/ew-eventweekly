@@ -14,7 +14,14 @@ define('googleInfoWindow',
                 }
 
                 if (!_.isUndefined(event.logo)) {
-                    img = '/upload/img/event/' + event.id + '/' + event.logo;
+                    var curImg = new Image();
+                    curImg.src = '/upload/img/event/' + event.id + '/' + event.logo;
+                    console.log(curImg);
+                    if (curImg.height != 0) {
+                        img = '/upload/img/event/' + event.id + '/' + event.logo;
+                    } else {
+                        img = '/img/logo200.png';    
+                    }
                 } else {
                     img = '/img/logo200.png';
                 }

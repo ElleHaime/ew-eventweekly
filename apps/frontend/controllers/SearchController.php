@@ -64,7 +64,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-
+//_U::dump($postData, true);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -117,39 +117,29 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
             }
 
-            // add search condition by categories
-            /*if ($elemExists('searchCategory')) {
-                $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
-
-                $pageTitle .= 'by categories - ';
-
-                foreach ($categories as $node) {
-                    if (in_array($node['id'], $postData['searchCategory'])) {
-                        $pageTitle .= ' '.$node['name'];
-                    }
-                }
-
-                if (count($postData['searchCategory']) == 1) {
-                    $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
-                }
-            }*/
-
             // add search condition by location
-            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax') && (($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'private') || ($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))) {
-                $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
+            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && 
+                $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax'))
+            {
+                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') ||
+                    ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
+                        $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
+                {
+                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
 
-                $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
-                $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+                    $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
+                    $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
-                $loc = new Location();
-                $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+                    $loc = new Location();
+                    $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
 
-                $this->session->set('location', $newLocation);
+                    $this->session->set('location', $newLocation);
 
-                $this->cookies->get('lastLat')->delete();
-                $this->cookies->get('lastLng')->delete();
+                    $this->cookies->get('lastLat')->delete();
+                    $this->cookies->get('lastLng')->delete();
 
-                $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
+                    $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
+                }
             }
 
             // add search condition by dates
@@ -159,9 +149,8 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'")', Event::CONDITION_SIMPLE);
 
                 $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
-            }
 
-            if ($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
+            } elseif($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
                 $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")');
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")', Event::CONDITION_SIMPLE);
@@ -170,25 +159,10 @@ class SearchController extends \Core\Controller
 
                 $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
                 $pageTitle .= 'to - "'.$postData['searchEndDate'].'" | ';
-            }else {
+
+            } else {
                 $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
             }
-
-            /*if ($elemExists('searchStartDate')) {
-                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'"');
-
-                $pageTitle .= 'by start date - "'.$postData['searchStartDate'].'" | ';
-            }
-
-            // add search condition by end date if specify
-            if ($elemExists('searchEndDate')) {
-                $Event->addCondition('Frontend\Models\Event.end_date <= "'.$postData['searchEndDate'].'"');
-
-                $pageTitle .= 'by end date - "'.$postData['searchEndDate'].'" | ';
-            }else {
-                $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
-            }*/
-
             // set order by start date
             $Event->addOrder('Frontend\Models\Event.start_date ASC');
 
@@ -228,7 +202,7 @@ class SearchController extends \Core\Controller
 
                     $countResults = count($result);
                     $result = json_encode($result, JSON_UNESCAPED_UNICODE);
-                }else {
+                } else {
                     $page = $this->request->getQuery('page');
                     if (empty($page)) {
                         $page = 1;
@@ -264,12 +238,8 @@ class SearchController extends \Core\Controller
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
                         								   false, false, false, true, true, $needTags);
                     }
-
-
                     $result = $fetchedData->items;
-
                     unset($fetchedData->items);
-
                     $countResults = $fetchedData->total_items;
                 }
             }
