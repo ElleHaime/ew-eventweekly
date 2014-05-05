@@ -41,7 +41,7 @@
                                         <div class="event-one clearfix">
                                             <div class="event-one-img">
                                                 <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-                                                    <img src="{{ checkEventLogo(event.logo,event.id) }}">
+                                                    <img src="{{ checkLogo(event) }}">
                                                 </a>
                                             </div>
 

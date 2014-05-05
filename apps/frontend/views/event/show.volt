@@ -32,7 +32,7 @@
                                 <div class="event-discription" id="current_event_id"  event="{{ event.id }}">
                                     {% if cover is defined %}
                                         <div class="event-photo">
-                                            <img src="{{ checkEventCover(cover.image,event.id) }}" alt="">
+                                            <img src="{{ checkCover(cover) }}" alt="">
                                         </div>
                                     {% else %}
                                         <div class="add-img">
@@ -44,7 +44,7 @@
                                                         <img src="/upload/img/event/tmp/{{ event.logo }}">
                                                     {% endif %}
                                                 {% else %}
-                                                    <img src="{{ checkEventLogo(event.logo,event.id) }}">
+                                                    <img src="{{ checkLogo(event) }}">
                                                 {% endif %}
                                             </div>
 

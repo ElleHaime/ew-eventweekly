@@ -13,18 +13,7 @@ define('googleInfoWindow',
                     date = Date.parse(event.start_date_nice).toString('d MMM yyyy');
                 }
 
-                if (!_.isUndefined(event.logo)) {
-                    var curImg = new Image();
-                    curImg.src = '/upload/img/event/' + event.id + '/' + event.logo;
-                    console.log(curImg);
-                    if (curImg.height != 0) {
-                        img = '/upload/img/event/' + event.id + '/' + event.logo;
-                    } else {
-                        img = '/img/logo200.png';    
-                    }
-                } else {
-                    img = '/img/logo200.png';
-                }
+                img = event.logo;    
 
                 if (event.category && !_.isUndefined(event.category) && !_.isUndefined(event.category[0]) && !_.isUndefined(event.category[0].key)) {
                     category = event.category[0].key;

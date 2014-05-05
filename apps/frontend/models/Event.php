@@ -232,6 +232,11 @@ class Event extends EventObject
     	return $this;
     }
     
+    public function setLogo($event, $logo) 
+    {
+    	$event -> logo = $logo;
+    }
+    
     
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
     								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false)
@@ -337,6 +342,7 @@ class Event extends EventObject
 		fwrite($f, "\n\r\n\r");
 		fclose($f);        */
 //_U::dump($builder -> getPhql());
+
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
                 'builder' => $builder,
@@ -346,10 +352,12 @@ class Event extends EventObject
 
             $result = $paginator->getPaginate();
             $totalRows = $builder->getQuery()->execute()->count();
+/*            array_walk($result->items, function(&$item) { $item -> logo = 123; });
             
+_U::dump($result -> items -> toArray()); */            
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
-
+            
             if ($fetchType === self::FETCH_ARRAY) {
                 $result->items = $this->resultToArray($result->items);
             }

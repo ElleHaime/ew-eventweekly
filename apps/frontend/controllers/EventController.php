@@ -214,10 +214,11 @@ class EventController extends \Core\Controllers\CrudController
     	}
     
     	$this->view->setvar('list_type', 'join');
-    
+
     	if (isset($events)) {
     		$this->view->setVar('pagination', $result);
     	}
+
     	$this->view->setVar('list', $events);
     	$this->view->setVar('listTitle', 'Where I am going');
     	$this->view->setVar('urlParams', http_build_query($postData));
@@ -321,6 +322,7 @@ class EventController extends \Core\Controllers\CrudController
                 } 
             }
         }
+        
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('cover', isset($cover) ? $cover : null);
@@ -1135,10 +1137,10 @@ class EventController extends \Core\Controllers\CrudController
             $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
         						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax . '
         						AND Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"' . '
-        						AND Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
+        						AND Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +20 days')) . '"');
         } else {
             $Event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-            $Event->addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
+            $Event->addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +20 days')) . '"');
         }
         $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
         $Event->addCondition('Frontend\Models\Event.event_status = 1');
@@ -1163,10 +1165,18 @@ class EventController extends \Core\Controllers\CrudController
         	$res['message'] = 'no events';
         }
         
+        foreach($res['events'] as $id => $event) {
+        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
+        		$res['events'][$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
+        	} else {
+        		$res['events'][$id]['logo'] = $this -> config -> application -> defaultLogo;
+        	}
+        }
+
         if ($needGrab === false) {
 			return $events;
         }
-        
+      
         $this->sendAjax($res);
 
         if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
