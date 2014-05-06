@@ -232,6 +232,11 @@ class Event extends EventObject
     	return $this;
     }
     
+    public function setLogo($event, $logo) 
+    {
+    	$event -> logo = $logo;
+    }
+    
     
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
     								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false)
@@ -287,7 +292,7 @@ class Event extends EventObject
 
             $MemberFilter = new MemberFilter();
             $member_categories = $MemberFilter->getbyId($uid);
-//_U::dump($member_categories, true);
+
             $tagCategories = array();
             if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
                 $results = Tag::find('id IN (' . implode(',', $member_categories['tag']['value']) . ') GROUP BY category_id')->toArray();
@@ -295,15 +300,18 @@ class Event extends EventObject
                     $tagCategories[] = $tagCategory['category_id'];
                 }
             }
-//_U::dump($tagCategories, true);
+
             $prevCondition = $builder->getWhere();
             if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
                 $extra_categories = array_diff($member_categories['category']['value'], $tagCategories);
                 $member_categories['category']['value'] = array_merge($extra_categories, $tagCategories);
-                //$member_categories['category']['value'] = array_diff($member_categories['category']['value'], $tagCategories);
-//_U::dump(implode(',', $member_categories['category']['value']), true);
+
                 if (count($member_categories['category']['value']) > 0) {
-                    $builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $member_categories['category']['value']).')');
+                	if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+                    	$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $member_categories['category']['value']).')');
+                	} else {
+                		$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $member_categories['category']['value']).')');
+                	}
                 }
             }
 
@@ -312,7 +320,7 @@ class Event extends EventObject
                 if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value']) && count($member_categories['category']['value']) > 0) {
                     $builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
                 } else {
-                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
+                    $builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
                 }
             }
         }
@@ -337,6 +345,7 @@ class Event extends EventObject
 		fwrite($f, "\n\r\n\r");
 		fclose($f);        */
 //_U::dump($builder -> getPhql());
+
         if (!empty($pagination)) {
             $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
                 'builder' => $builder,
@@ -346,10 +355,12 @@ class Event extends EventObject
 
             $result = $paginator->getPaginate();
             $totalRows = $builder->getQuery()->execute()->count();
+/*            array_walk($result->items, function(&$item) { $item -> logo = 123; });
             
+_U::dump($result -> items -> toArray()); */            
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
-
+            
             if ($fetchType === self::FETCH_ARRAY) {
                 $result->items = $this->resultToArray($result->items);
             }
