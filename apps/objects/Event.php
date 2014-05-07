@@ -40,6 +40,8 @@ class Event extends Model
 																	 'baseField' => 'name'));
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
 																	 	   'baseField' => 'alias'));
+		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'event',
+																		'baseField' => 'name'));		
 		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
 		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
 		$this -> hasMany('id', '\Objects\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));

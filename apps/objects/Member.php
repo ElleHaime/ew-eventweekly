@@ -72,11 +72,14 @@ class Member extends Model
 	public function fullDelete()
 	{
 //_U::dump($this -> getRelated('eventpart') -> toArray());
-		if ($this -> getRelated('event_like')) {		
-			$this -> getRelated('event_like') -> delete();
+		if ($this -> getRelated('event')) {		
+			$this -> getRelated('event') -> delete();
 		}
 		if ($this -> getRelated('eventpart')) {
 			$this -> getRelated('eventpart') -> delete();
+		}
+		if ($this -> getRelated('event_like')) {
+			$this -> getRelated('event_like') -> delete();
 		}
 		if ($this -> getRelated('eventfriendpart')) {
 			$this -> getRelated('eventfriendpart') -> delete();
@@ -89,7 +92,7 @@ class Member extends Model
 		}
 		if ($this -> getRelated('member_filter')) {
 			$this -> getRelated('member_filter') -> delete();
-		} 
+		}
 		$this -> delete();
 		
 		return;
