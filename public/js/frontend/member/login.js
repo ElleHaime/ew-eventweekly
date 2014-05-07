@@ -37,7 +37,7 @@ require([
                         noty({text: data.error, type: 'error'});
                     } else if (data.success != undefined) {
                         if (window.opener) {
-                            window.opener.$('#popupRedirect').val('reload');
+                            window.opener.location.href = '/map';
                             window.close();
                         } else {
                             window.location.href = '/map';
