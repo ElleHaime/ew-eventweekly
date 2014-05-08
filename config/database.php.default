@@ -14,7 +14,6 @@ $cfg_database_master = array(
   )
 );
 
-
 $cfg_database_slave = array(
   'adapter' => 'Mysql',
   'host' => 'localhost',
