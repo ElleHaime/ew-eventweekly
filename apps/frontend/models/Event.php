@@ -353,9 +353,6 @@ class Event extends EventObject
 
             $result = $paginator->getPaginate();
             $totalRows = $builder->getQuery()->execute()->count();
-/*            array_walk($result->items, function(&$item) { $item -> logo = 123; });
-            
-_U::dump($result -> items -> toArray()); */            
             $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
             $result->total_items = $totalRows;
             
