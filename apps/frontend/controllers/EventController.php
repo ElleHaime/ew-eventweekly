@@ -97,6 +97,10 @@ class EventController extends \Core\Controllers\CrudController
 		if (isset($events)) {
 			$this->view->setVar('pagination', $result);
 		}
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
 		$this->view->setVar('urlParams', http_build_query($postData));		
 		$this->view->setVar('list', $events);
     	$this->view->pick('event/eventList');
@@ -133,6 +137,10 @@ class EventController extends \Core\Controllers\CrudController
     	}
     	$this->view->setVar('urlParams', http_build_query($postData));
     	
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
+
     	$this->view->setvar('listName', 'Friend\'s events');
     	$this->view->setvar('list', $events);
     	$this->view->setVar('listTitle', 'Friend\'s events');
