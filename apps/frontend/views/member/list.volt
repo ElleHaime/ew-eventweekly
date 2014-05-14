@@ -82,9 +82,9 @@
                 <div class=" profile-btn-rt clearfix">
                     <div class="profile-btn">
                         {% if acc_external.account_uid is empty %}
-                            <button id="linkToFbAcc" class="btn btn-block">Link to Facebook Account</button>
+                            <button id="linkToFbAcc" class="btn btn-block">Link to facebook account</button>
                         {% else %}
-                            <button id="syncFbAcc" class="btn btn-block ">Facebook sync </button>
+                            <button id="syncFbAcc" class="btn btn-block ">facebook sync </button>
                             <p>import interests from facebook / login through facebook</p>
                         {% endif %}
 
@@ -126,7 +126,7 @@
                 <div class="span12">
                     <form action="#" method="post" id="mLocationForm">
                         {% if conflict is defined %}
-                            <p id="lConflict" style="color: #333333">Your location from Facebook does not match to location from IP. Please type and choose location from list.</p>
+                            <p id="lConflict" style="color: #333333">Your location from facebook does not match to location from IP. Please type and choose location from list.</p>
                         {% endif %}
 
                         <div class="control-group">

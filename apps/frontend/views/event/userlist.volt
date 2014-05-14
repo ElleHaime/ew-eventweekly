@@ -84,7 +84,7 @@
 
                                                     {% if node['event']['fb_uid'] is defined %}
                                                         <div class="event-site clearfix">
-                                                            <a target="_blank" href="https://www.facebook.com/events/{{ node['event']['fb_uid'] }}">Facebook link</a>
+                                                            <a target="_blank" href="https://www.facebook.com/events/{{ node['event']['fb_uid'] }}">facebook link</a>
                                                         </div>
                                                     {% endif %}
                                                 </div>

@@ -148,7 +148,7 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'")', Event::CONDITION_SIMPLE);
 
-                $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
+                $pageTitle .= 'from - "'.$postData['searchStartDate'].'"  and later | ';
 
             } elseif($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
                 $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")');

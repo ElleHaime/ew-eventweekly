@@ -109,7 +109,7 @@
 
                                                     {% if event['eid'] is defined %}
                                                         <div class="event-site clearfix">
-                                                            <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">Facebook link</a>
+                                                            <a target="_blank" href="https://www.facebook.com/events/{{ event['eid'] }}">facebook link</a>
                                                         </div>
                                                     {% endif %}
                                                 </div>
