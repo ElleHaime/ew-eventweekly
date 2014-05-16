@@ -136,6 +136,10 @@ define('frontSearchPanel',
                 autoclose: true,
                 minView: 2
             });
+            
+            startDate.on('changeDate', function(e) {
+            	endDate.focus();
+            });
         },
 
         /**
@@ -329,7 +333,12 @@ define('frontSearchPanel',
                 $($this.settings.searchSubmitOnList).attr('style', 'width: 100%');
                 mapBtn.attr('style', 'display: none;');
             }
+        },
+        
+        __switchDatetimeCursor: function() {
+        	alert(123213213);
         }
+        
 
     };
 
