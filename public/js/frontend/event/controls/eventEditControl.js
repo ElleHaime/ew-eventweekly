@@ -260,6 +260,7 @@ define('frontEventEditControl',
                 }).on('changeDate', function(ev){
                     var offsetTime = new Date(ev.date.getTime() + (0.00 * 60 + ev.date.getTimezoneOffset()) * 60 * 1000);
                     endDate.datetimepicker('setStartDate', offsetTime);
+                    endDate.focus();
 
                 });
 
@@ -267,6 +268,7 @@ define('frontEventEditControl',
                     autoclose: true,
                     startDate: new Date()
                 });
+
 			}
 
             self.__eventPreview = function() {

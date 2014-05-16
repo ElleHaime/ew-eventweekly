@@ -32,7 +32,7 @@
                             <div class="controls">
                                 <button type="submit" class="btn btn-block">Log In</button>
                             </div>
-                            <div class="controls"><a href="restore">Forgot password?</a></div>
+                            <div class="controls"><a href="/restore">Forgot password?</a></div>
                         </div>
                     </form>
 

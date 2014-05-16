@@ -63,7 +63,7 @@
 
                                                             {% if event.fb_uid == '' %}
                                                             <label>
-                                                                {{ form.render('event_fb_status') }} Publish event to Facebook
+                                                                {{ form.render('event_fb_status') }} Publish event to facebook
                                                             </label>
                                                             {% endif %}
 

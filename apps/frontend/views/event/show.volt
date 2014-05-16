@@ -238,7 +238,7 @@
                                                 Invite friends
                                             </button>
                                             <div id="friendsBlock"></div>
-                                            <input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>
+                                            <input type="button" value="Invite all" id="fb-invite-all" style="display: none"/>
                                             {% if event.site|length %}
                                                 <div class="event-site clearfix">
                                                     {% for site in event.site %}
@@ -287,7 +287,7 @@
 
                                             {% if event.fb_uid is defined %}
                                                 <div class="event-site clearfix">
-                                                    <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">Facebook link</a>
+                                                    <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">facebook link</a>
                                                 </div>
                                             {% endif %}
 

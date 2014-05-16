@@ -199,7 +199,6 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $postData = $this->request->getPost();
-
         if (!empty($postData)) {
             $elemExists = function($elem) use (&$postData) {
                 if (!is_array($postData[$elem])) {
@@ -223,19 +222,47 @@ class MemberController extends \Core\Controllers\CrudController
                 }
 
                 $MemberFilter->save($toSave);
-            } else {
+                
+                // add unselected tags to full categories
+                !empty($postData['tagIds']) ? $tagDiff = explode(',', $postData['tagIds']) : $tagDiff = [];
+                $isTagSetted = [];
+                $additionalCatTags = [];
+                $additionalTags = [];
+                foreach ($postData['category'] as $key => $val) { 
+                	$curTags = Tag::find(['category_id = ' . $val]) -> toArray();
+                	$isTagSetted[$val] = false;
+                	if ($curTags) {
+						while (list(, $tagOptions) = each($curTags)) {
+	                		if (in_array($tagOptions['id'], $tagDiff)) {
+	                			$isTagSetted[$val] = true;
+	                			break;
+	                		} else {
+	                			$additionalCatTags[$val][] = $tagOptions['id']; 
+	                		}
+                		}
+                	}
+                	if ($isTagSetted[$val]) {
+                		unset($additionalCatTags[$val]);
+                	} else {
+                		$additionalTags = array_merge($additionalTags, $additionalCatTags[$val]);
+                	}
+                }
+
+        	} else {
                 $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
                 if ($filters) {
                     $filters->delete();
                 }
             }
-
+            
             $MemberFilter = new MemberFilter();
-            if (!empty($postData['tagIds'])) {
+            if (!empty($postData['tagIds']) || !empty($additionalTags)) {
+				!empty($postData['tagIds']) ? $allTags = $postData['tagIds'] . ',' . implode(',', $additionalTags) : $allTags = implode(',', $additionalTags); 	
+            	
                 $toSave = array(
                     'member_id' => $Member->id,
                     'key' => 'tag',
-                    'value' => json_encode(array_filter(explode(',', $postData['tagIds'])))
+                    'value' => json_encode(array_filter(explode(',', $allTags)))
                 );
 
                 if (!empty($postData['recordTagId']) && isset($postData['recordTagId'])) {

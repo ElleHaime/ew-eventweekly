@@ -59,7 +59,7 @@
                             <hr>
                             <div class="account-info">
                                 <h5> Don't have an account with any of the above?<br/>
-                                    <a href="/signup" id="createAcc">Create new account using e-mail only</a>
+                                    <a style="cursor:pointer;" id="createAcc">Create new account using e-mail only</a>
                                 </h5>
                                 <hr/>
                                 <h5>Log into your existing account with e-mail:</h5>
@@ -70,7 +70,7 @@
                                 <div class="control-group">
                                     {{ form.render('password') }}
                                     <div class="controls-btn">
-                                        <a href="/restore" id="restorePass"> restore password</a>
+                                        <a style="cursor:pointer;" id="restorePass"> restore password</a>
                                         <button id="loginBtn" type="submit" class="btn">Login</button>
                                     </div>
                                 </div>

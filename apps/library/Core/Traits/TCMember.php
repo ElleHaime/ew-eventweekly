@@ -14,17 +14,20 @@ trait TCMember {
 
     public function fetchMemberLikes()
     {
-    	$events = $this -> cacheData -> queryKeys();
-    	$likedEventsIds = [];
-    	
-    	foreach ($events as $key) {
-    		if (strpos($key, 'member.like.' . $this -> session -> get('memberId'))) {
-    			$id = substr($key, strrpos($key, '.') + 1);
-    			$likedEventsIds[] = $id;
-    		}
-    	}
-    	
-    	$this -> view -> setvar('likedEventsIds', $likedEventsIds);
+        $query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.event_id
+                                                FROM Frontend\Models\EventLike
+                                                WHERE Frontend\Models\EventLike.status = 1
+                                                    AND Frontend\Models\EventLike.member_id = " . $this -> session -> get('memberId'), 
+                                            $this -> getDI());
+        $event = $query -> execute();
+        $likedEventsIds = [];
+
+        if($event) {
+            foreach ($event as $key) {
+                $likedEventsIds[] = $key -> event_id;
+            }
+        }
+        $this -> view -> setvar('likedEventsIds', $likedEventsIds);
     }
 
 } 

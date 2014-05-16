@@ -168,9 +168,19 @@ define('fb',
                             $.cookie('lastLng', self.demoLng, {expires: 1, path: self.demoCookiePath});
                             $.cookie('lastCity', self.demoCity, {expires: 1, path: self.demoCookiePath});
                             
-                			window.location.href = self.demoPage;
+                            if (window.opener) {
+                            	window.opener.location.href = self.demoPage;
+                            	window.close();
+                            } else {
+                            	window.location.href = self.demoPage;
+                            }
                 		} else {
-                			window.location.href = self.firstPage;
+                			if (window.opener) {
+                				window.opener.location.href = self.firstPage;
+                				window.close();
+                			} else {
+                				window.location.href = self.firstPage;
+                			}
                 		}
                 	} else {
                 		$(self.settings.errorBox).html('Facebook return empty result :(');
