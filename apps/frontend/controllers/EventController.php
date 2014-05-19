@@ -649,6 +649,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
+_U::dump($event, true);        
         $loc = new Location();
         $venue = new Venue();
         $coords = array();
@@ -764,7 +765,6 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-//_U::dump($newEvent);  
 
         $ev->assign($newEvent);
         if ($ev->save()) {

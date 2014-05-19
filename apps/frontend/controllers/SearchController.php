@@ -166,7 +166,9 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'to "'.$postData['searchEndDate'].'" | ';
                 
             } else {
-                $Event->addCondition('Frontend\Models\Event.end_date BETWEEN "'.date('Y-m-d H:m:i', time()).'" AND "' . date('Y-m-d H:i:s', strtotime('+3 days midnight')) . '"');
+            	if ($elemExists('searchTitle', false)) {
+	                $Event->addCondition('Frontend\Models\Event.end_date BETWEEN "'.date('Y-m-d H:m:i', time()).'" AND "' . date('Y-m-d H:i:s', strtotime('+3 days midnight')) . '"');
+            	}
             }
             
             // set order by start date
