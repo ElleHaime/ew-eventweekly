@@ -144,18 +144,18 @@ class SearchController extends \Core\Controller
 
             // add search condition by dates
             if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
-                $Event->addCondition('((Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'" AND Frontend\Models\Event.end_date >= "'.$postData['searchStartDate'].'")');
+                $Event->addCondition('((Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].' 00:00:00" AND Frontend\Models\Event.end_date >= "'.$postData['searchStartDate'].' 23:59:59")');
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].'")', Event::CONDITION_SIMPLE);
+                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].' 00:00:00")', Event::CONDITION_SIMPLE);
 
                 $pageTitle .= 'from - "'.$postData['searchStartDate'].'"  and later | ';
 
             } elseif($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
-                $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")');
+                $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].' 00:00:00" AND "'.$postData['searchEndDate'].' 23:59:59")');
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$postData['searchStartDate'].'" AND "'.$postData['searchEndDate'].'")', Event::CONDITION_SIMPLE);
+                $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$postData['searchStartDate'].' 00:00:00" AND "'.$postData['searchEndDate'].' 23:59:59")', Event::CONDITION_SIMPLE);
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].'" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].'"))', Event::CONDITION_SIMPLE);
+                $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].' 00:00:00" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].' 23:59:59"))', Event::CONDITION_SIMPLE);
 
                 $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
                 $pageTitle .= 'to - "'.$postData['searchEndDate'].'" | ';
