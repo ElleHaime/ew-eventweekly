@@ -168,6 +168,7 @@ class SearchController extends \Core\Controller
             } else {
             	if ($elemExists('searchTitle', false)) {
 	                $Event->addCondition('Frontend\Models\Event.end_date BETWEEN "'.date('Y-m-d H:m:i', time()).'" AND "' . date('Y-m-d H:i:s', strtotime('+3 days midnight')) . '"');
+	                $pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	}
             }
             
