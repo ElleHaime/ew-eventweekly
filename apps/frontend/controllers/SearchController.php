@@ -148,8 +148,13 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].' 00:00:00")', Event::CONDITION_SIMPLE);
 
-                $pageTitle .= 'from - "'.$postData['searchStartDate'].'"  and later | ';
+                $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
 
+            } elseif ($elemExists('searchStartDate', false) && $elemExists('searchEndDate')) {
+            	$Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "' . date('Y-m-d H:m:i', time()). '" AND "'.$postData['searchEndDate'].' 23:59:59")');
+            	
+            	$pageTitle .= 'now and till "'.$postData['searchEndDate'].'" | ';
+            	 
             } elseif($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
                 $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].' 00:00:00" AND "'.$postData['searchEndDate'].' 23:59:59")');
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
@@ -157,12 +162,13 @@ class SearchController extends \Core\Controller
                 $Event->addCondition('OR', Event::CONDITION_SIMPLE);
                 $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].' 00:00:00" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].' 23:59:59"))', Event::CONDITION_SIMPLE);
 
-                $pageTitle .= 'from - "'.$postData['searchStartDate'].'" | ';
-                $pageTitle .= 'to - "'.$postData['searchEndDate'].'" | ';
-
+                $pageTitle .= 'from "'.$postData['searchStartDate'].'" | ';
+                $pageTitle .= 'to "'.$postData['searchEndDate'].'" | ';
+                
             } else {
-                $Event->addCondition('Frontend\Models\Event.end_date >= "'.date('Y-m-d H:m:i', time()).'"');
+                $Event->addCondition('Frontend\Models\Event.end_date BETWEEN "'.date('Y-m-d H:m:i', time()).'" AND "' . date('Y-m-d H:i:s', strtotime('+3 days midnight')) . '"');
             }
+            
             // set order by start date
             $Event->addOrder('Frontend\Models\Event.start_date ASC');
 

@@ -1,8 +1,8 @@
 require([
     'jquery',
-    'profileRestorePasswordControl',
     'fb',
     'noty',
+    'profileRestorePasswordControl',    
     'utils',
     'domReady',
     'underscore',

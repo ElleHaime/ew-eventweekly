@@ -66,37 +66,23 @@ class Counter extends Component
 
 	public function increaseUserCounter($counter, $val = 1)
 	{
-		$cacheCounter = $this -> composeCounterName($counter);
-
- 		$this -> cacheData -> exists($cacheCounter) ?
-            $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)+(int)$val) :
-            $this -> cacheData -> save($cacheCounter, (int)$val);
-
- 		if ($cacheCounter != 'eventsGTotal') {
-	 		$ec = new EventMemberCounter();
+		if ($counter != 'eventsGTotal') {
+			$ec = new EventMemberCounter();
 			$eventCounter = $ec -> getMemberCounter();
-	 		if ($eventCounter) {
-	 			$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
-	 			$eventCounter -> save();
-	 		}
- 		}
+			if ($eventCounter) {
+				$eventCounter -> $counter = $eventCounter -> $counter + (int)$val;
+				$eventCounter -> save();
+			}
+		}
 	}
 
 	public function decreaseUserCounter($counter, $val = 1)
 	{
-		$cacheCounter = $this -> composeCounterName($counter);
-
-        if ($this -> cacheData -> exists($cacheCounter)) {
-            if ($this -> cacheData -> get($cacheCounter) > 0) {
-                $this -> cacheData -> save($cacheCounter, $this -> cacheData -> get($cacheCounter)-(int)$val);
-            }
-        }
-        
-        if ($cacheCounter != 'eventsGTotal') {
+       if ($counter != 'eventsGTotal') {
 	 		$ec = new EventMemberCounter();
 			$eventCounter = $ec -> getMemberCounter();
 	        if ($eventCounter) {
-	        	$eventCounter -> $counter = $this -> cacheData -> get($cacheCounter);
+	        	$eventCounter -> $counter = $eventCounter -> $counter - (int)$val;
 	        	$eventCounter -> save();
 	        }
        }
@@ -104,9 +90,17 @@ class Counter extends Component
 
 	public function get($counter) 
 	{
-		$cacheCounter = $this -> composeCounterName($counter);
-
-		return $this -> cacheData -> get($cacheCounter);
+		if ($counter != 'eventsGTotal') {
+			$ec = new EventMemberCounter();
+			$eventCounter = $ec -> getMemberCounter();
+			if ($eventCounter) {
+				return $eventCounter -> counter;				
+			}
+		} else {
+			$ev = new \Frontend\Models\Event();
+			$ev -> setCacheTotal();
+			return $this -> cacheData -> get($counter);
+		}
 	}
 
 

@@ -61,6 +61,10 @@
                                                     {% if event.end_date != '0000-00-00' %}
                                                         <i class="icon-time"></i>
                                                         <span class="date-start">{{ dateToFormat(event.end_date, '%d %b %Y') }}</span>
+                                                        {% if dateToFormat(event.end_date, '%R') != '00:00' %}
+                                                            ends at
+                                                            <span class="date-time">{{ dateToFormat(event.end_date, '%R') }}</span>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                                 <p>

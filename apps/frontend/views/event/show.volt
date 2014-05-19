@@ -178,14 +178,15 @@
                                                     <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
                                                 {% endif %}
                                             {% endif %}
-                                            {#{% if event.start_date_nice is defined  %}
+                                            
+                                            {% if event.end_date != '0000-00-00' %}
                                                 <i class="icon-time"></i>
-                                                <span class="date-start">{{ event.start_date_nice }}</span>
-                                                {% if event.start_time is defined %}
-                                                    starts at
-                                                    <span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>
+                                                <span class="date-start">{{ dateToFormat(event.end_date, '%d %b %Y') }}</span>
+                                                {% if dateToFormat(event.end_date, '%R') != '00:00' %}
+                                                    ends at
+                                                    <span class="date-time">{{ dateToFormat(event.end_date, '%R') }}</span>
                                                 {% endif %}
-                                            {% endif %}#}
+                                            {% endif %}
                                         </div>
                                         <div class="description-text">
                                             <p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>

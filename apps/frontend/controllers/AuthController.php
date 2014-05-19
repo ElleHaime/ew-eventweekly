@@ -258,14 +258,14 @@ class AuthController extends \Core\Controller
                 $resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri;
 
                 $template = "Here is your link for new password: http://" . $resetLink. "\n\nDon't lose it again";
-                $subject = 'Reset password';
+                $subject = 'EventWeekly::Reset password';
                 $to = $email;
 
                 $message = $this->di->get('mailMessage');
                 $message->setSubject($subject)
-                    ->setFrom(array('support@eventweekly.com' => 'EW Support'))
-                    ->setTo(array($to))
-                    ->setBody($template);
+	                    ->setFrom(array('support@eventweekly.com' => 'EW Support'))
+	                    ->setTo(array($to))
+	                    ->setBody($template);
 
                 $mailer = $this->di->get('mailEmailer');
                 $res = $mailer->send($message);
@@ -312,7 +312,6 @@ class AuthController extends \Core\Controller
                         }
                     }
                 }
-
                 $this -> view -> form = $form;
             }
         }
