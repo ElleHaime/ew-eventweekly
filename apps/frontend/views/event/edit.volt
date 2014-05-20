@@ -217,8 +217,8 @@
                                             </div>
 
                                             <div class="radio-box">
-                                                <p> {{ form.label('recurring') }}</p>
-                                                {{ form.render('recurring') }}
+                                                {#<p> {{ form.label('recurring') }}</p>
+                                                {{ form.render('recurring') }} #}
                                                 <div class="checkbox-block">
                                                     {{ form.render('campaign_id') }}
                                                     <input id="hiddenCampaignId" name="hiddenCampaignId" value="{{ event.campaign_id }}" type="hidden"/>
