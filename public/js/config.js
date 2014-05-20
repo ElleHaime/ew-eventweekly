@@ -1,9 +1,3 @@
-/*window.onerror = ErrorLog;
-function ErrorLog (msg, url, line) {
-    //console.log("error: " + msg + "\n" + "file: " + url + "\n" + "line: " + line);
-    return true; // avoid to display an error message in the browser
-} */
-
 require.config({
 	baseUrl: '/js',
    // urlArgs: "bust=" + (new Date()).getTime(),
@@ -136,22 +130,20 @@ require.config({
 
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
+        
         var moduleName, fileName = '',
         	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
-            //re1 = /\/event\/(\d+){1}\-([a-zA-Z0-9\-_]+)*$/;
-            re1 = /\/([a-zA-Z0-9\-_]+)*\-(\d+){1}$/;
-        if (re1.test(location.pathname) == true) {
+            re1 = /\/([a-zA-Z0-9\-_]+)*\-(\d+){1}$/,
+            restoreRel = /\/reset\/.+/;
+        if (restoreRel.test(location.pathname)) {
+            fileName = '/restore'
+        } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/\d+)?$/, '');
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
-        }
-
-        var restoreRel = /\/reset\/.+/;
-        if (restoreRel.test(location.pathname)) {
-            fileName = '/restore'
-        }
+        } 
 
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
@@ -164,11 +156,7 @@ require.config({
         require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){
             $('.tooltip-text').tooltip();
             frontSearchPanel.init();
-
-            //if (moduleName != 'frontend/map') {
-                frontCounterUpdater.init();
-            //}
-
+            frontCounterUpdater.init();
             frontTopPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });
