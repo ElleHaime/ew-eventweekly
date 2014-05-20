@@ -523,12 +523,20 @@ class EventController extends \Core\Controllers\CrudController
                 'member_id' => $memberId,
                 'status' => $status
             ));
-
+            
             if ($eventLike->save()) {
+            	if ($status != 1) {
+            		$eventGoing = EventMember::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            		if ($eventGoing) {
+            			$eventGoing->delete();
+            		}
+            	}
+            	 
                 if ($status == 1) {
-                   $this -> counters -> increaseUserCounter('userEventsLiked');
+                   $this -> counters -> increaseUserCounter('userEventsLiked', 1);
                 } else {
-                   $this -> counters -> decreaseUserCounter('userEventsLiked');
+                   $this -> counters -> decreaseUserCounter('userEventsLiked', 1);
+                   $this -> counters -> decreaseUserCounter('userEventsGoing', 1);
                 }
 
                 $response = $this -> counters -> setUserCounters();
