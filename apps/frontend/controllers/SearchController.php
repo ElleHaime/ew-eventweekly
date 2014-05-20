@@ -15,6 +15,7 @@ use Frontend\Form\SearchForm,
  */
 class SearchController extends \Core\Controller
 {
+    use \Core\Traits\TCMember;
 
     /**
      * @Route("/search", methods={"GET", "POST"})
@@ -263,6 +264,10 @@ class SearchController extends \Core\Controller
         $this->view->setVar('eventsTotal', $countResults);
         if (isset($fetchedData)) {
             $this->view->setVar('pagination', $fetchedData);
+        }
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
         }
 
         $this->view->setVar('listTitle', $pageTitle);
