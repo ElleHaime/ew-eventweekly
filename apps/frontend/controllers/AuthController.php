@@ -248,7 +248,8 @@ class AuthController extends \Core\Controller
             if ($form -> isValid($this -> request -> getPost())) {
                 $member = Member::findFirst('email = "'.$email.'"');
                 if (!$member) {
-                    $this -> flash -> error('Use with such email doesn\'t exists');
+                    $this -> view -> setVar('flashMsgText', 'No such email in database');
+					$this -> view -> setVar('flashMsgType', 'error');
                     $this -> view -> form = $form;
                     return false;
                 }
@@ -288,8 +289,6 @@ class AuthController extends \Core\Controller
      */
     public function resetAction($hash = false)
     {
-        //$form = new ResetForm();
-
         if ($hash) {
             if ($hash == $this -> session -> get('reset_uri')) {
                 $form = new ResetForm();
@@ -313,10 +312,11 @@ class AuthController extends \Core\Controller
                     }
                 }
                 $this -> view -> form = $form;
+            } else {
+				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
+				$this -> view -> setVar('flashMsgType', 'error');
             }
-        }
-
-        //$this -> view -> form = $form;
+        } 
     }
 
    /**
