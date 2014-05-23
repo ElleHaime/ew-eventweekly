@@ -57,7 +57,7 @@ class Location extends Model
 		$result = false;
 
 		if (!empty($argument) && !empty($locationsScope)) {
-			$this -> checkInCache($argument);
+			//$this -> checkInCache($argument);
             foreach ($scope as $loc_id => $coords) {
                 if ($argument['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $argument['latitude'] &&
                     $argument['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $argument['longitude'])
@@ -89,7 +89,6 @@ class Location extends Model
             $this -> getCache() -> save('locations', $locationsScope);
         }
 	}
-
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{

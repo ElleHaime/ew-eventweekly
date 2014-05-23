@@ -82,8 +82,10 @@ class Counter extends Component
 	 		$ec = new EventMemberCounter();
 			$eventCounter = $ec -> getMemberCounter();
 	        if ($eventCounter) {
-	        	$eventCounter -> $counter = $eventCounter -> $counter - (int)$val;
-	        	$eventCounter -> save();
+	        	if ((int)$eventCounter -> $counter != 0) {
+		        	$eventCounter -> $counter = $eventCounter -> $counter - (int)$val;
+		        	$eventCounter -> save();
+	        	}
 	        }
        }
 	}

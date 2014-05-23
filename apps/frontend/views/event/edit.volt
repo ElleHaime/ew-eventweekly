@@ -247,7 +247,7 @@
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box' src="/img/demo/q1.jpg" alt="" />
+                    <img class='img-box img-uploaded-logo' src="/img/demo/q1.jpg" alt="" />
                     <span class="delete-logo"></span>
                 {% endif %}
                 <input type="hidden" name="event_logo" value="{{ event.logo }}"/>
@@ -268,7 +268,7 @@
 
                     <img
                             data-id="{{ poster.id }}"
-                            class='img-box'
+                            class='img-box img-poster'
                             src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
                             alt=""
                             />
@@ -277,7 +277,7 @@
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box' src="/img/demo/q1.jpg" alt="" />
+                    <img class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" />
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>
@@ -297,7 +297,7 @@
 
                     <img
                             data-id="{{ flyer.id }}"
-                            class='img-box'
+                            class='img-box img-flyer'
                             src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
                             alt=""
                             />
@@ -306,7 +306,7 @@
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box' src="/img/demo/q1.jpg" alt="" />
+                    <img class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" />
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>

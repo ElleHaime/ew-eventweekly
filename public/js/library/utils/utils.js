@@ -19,7 +19,6 @@ define('utils',
                 }else {
                     typess.push(type);
                 }
-
 			    var input = selector, options = {types: typess};
 
 			    if (lat != '' && lat != undefined && lng != '' && lng != undefined) {
@@ -61,6 +60,7 @@ define('utils',
 
 				return $.ajax(call);
 			},
+			
 				
 			self.isDomElementEmpty = function(elem)
 			{

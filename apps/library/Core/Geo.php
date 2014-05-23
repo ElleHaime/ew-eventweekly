@@ -40,7 +40,7 @@ class Geo extends Plugin
 		} 
 		
 		$this -> setUserIp();
-		$this -> setUserLocation();
+//		$this -> setUserLocation();
 	}
 	
 	public function setUserIp()
@@ -100,8 +100,11 @@ class Geo extends Plugin
 	{
 		
 		if (empty($coordinates)) {
+			
 			if ($location = $this -> getFromCache()) {
 				return $location;
+			} else {
+				$this -> setUserLocation();
 			}
 		}
 

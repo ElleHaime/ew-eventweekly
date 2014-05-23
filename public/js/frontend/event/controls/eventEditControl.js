@@ -1,5 +1,5 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'normalDatePicker', 'noty', 'domReady'],
+	['jquery', 'utils', 'normalDatePicker', 'noty', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
 	function($, utils, normalDatePicker, noty) {
 
 		function frontEventEditControl($, utils, normalDatePicker, noty)
@@ -59,12 +59,17 @@ define('frontEventEditControl',
 
                 btnImgLogoUpload: '#add-img-logo-upload',
 				inpLogo: '#logo',
+				inpLogoUploaded: '#add-img-logo-upload',
 
                 btnImgPosterUpload: '#add-img-poster-upload',
                 inpPoster: '#poster',
+                inpPosterUploaded: '#add-img-poster-upload',
 
                 btnImgFlyerUpload: '#add-img-flyer-upload',
                 inpFlyer: '#flyer',
+                inpFlyerUploaded: '#add-img-flyer-upload',
+                
+                imgDefault: '/img/demo/q1.jpg',
 
 				inpCampaign: '#campaign_id',
 				inpCampaignExists: '#is_campaign',
@@ -83,6 +88,8 @@ define('frontEventEditControl',
 
                 inpTicketsUrl: '#tickets_url',
                 inpSites: '#sites',
+                
+                fbPublishUrl: '/event/eventsave',
 
                 urlPattern: new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')
 			},
@@ -103,22 +110,11 @@ define('frontEventEditControl',
 					$(self.settings.inpCampaign + ' option[value=' + camp + ']').attr('selected', true);
 				}
 
-				/*self.__presetDate($(self.settings.inpDateStart), $(self.settings.textDateStart), 'start');
-				self.__presetDate($(self.settings.inpDateEnd), $(self.settings.textDateEnd), 'end');
-				self.__presetTime($(self.settings.inpTimeStart), $(self.settings.textTimeStart));
-				self.__presetTime($(self.settings.inpTimeEnd), $(self.settings.textTimeEnd));*/
-
                 self.__initCategoryList();
-
-//                self.__initFieldsForDateTimePicker();
-
                 self.__checkEnablePreviewBtn();
                 $(self.settings.btnPreview).change();
 
 				self.bindEvents();
-
-//                self.__setupDateTimePicker();
-
                 self.__initFacebookPublish();
 			}
 
@@ -214,8 +210,6 @@ define('frontEventEditControl',
                     }
 
                     if (!self.__checkRequiredFields(true)) return false;
-//                    if (!self.__checkDatesContradictions(true)) return false;
-
                     if ($(self.settings.inpVenue).val() == '') {
                         $(self.settings.coordsVenueLat).val('');
                         $(self.settings.coordsVenueLng).val('');
@@ -268,6 +262,32 @@ define('frontEventEditControl',
                     autoclose: true,
                     startDate: new Date()
                 });
+                
+/*                $(self.settings.btnSubmit).on('click', function(e) {
+                	//var data = $(self.settings.addEventForm).serialize();
+
+                	if ($(self.settings.inpLogoUploaded)[0].files.length > 0) {
+                		data.push({ 'logo-file': $(self.settings.inpLogoUploaded)[0].files });
+                	}
+                	if ($(self.settings.inpPosterUploaded)[0].files.length > 0) {
+                		data.push({ 'poster-file': $(self.settings.inpPosterUploaded)[0].files });
+                	}
+                	if ($(self.settings.inpFlyerUploaded)[0].files.length > 0) {
+                		data.push({ 'flyer-file': $(self.settings.inpFlyerUploaded)[0].files });
+                	}
+
+					//var formData = JSON.stringify(data);
+                	var data = new FormData($(self.settings.addEventForm));
+
+                	$.when(utils.request('post', self.settings.fbPublishUrl, data)).then(function(response) {
+                		console.log(response);
+                		if (response.status == 'OK') {
+                			noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'success', timeout: false, maxVisible: 60});
+                		}
+                	}); 
+	                	               
+                	return false;
+                }); */
 
 			}
 
@@ -277,7 +297,6 @@ define('frontEventEditControl',
                 }
 
                 if (!self.__checkRequiredFields(true)) return false;
-//                if (!self.__checkDatesContradictions(true)) return false;
 
                 $(self.settings.form).attr('target', 'eventPreview_iframe').attr('action', '/event/preview').submit();
                 $(self.settings.form).removeAttr('target').removeAttr('action');
@@ -340,29 +359,6 @@ define('frontEventEditControl',
 
 				reader.readAsDataURL(file);
 			}
-
-            /*self.__loadImage = function(content)
-            {
-                var reader = new FileReader();
-                var file = content.target.files[0];
-
-                reader.onload = (function(f) {
-                    $(self.settings.inpLogo).attr('value', f.name);
-                    return function(e) {
-                        var img = new Image();
-                        img.src = e.target.result;
-                        //alert(img.width);
-
-                        if (img.width < 180 || img.height < 60) {
-                            noti.createNotification('Image size should be min 180x60 pixels!', 'warning');
-                        }
-
-                        $(self.settings.boxImg).attr('src', img.src);
-                    }
-                })(file);
-
-                reader.readAsDataURL(file);
-            }*/
 
 			self.__makePreview = function(img, size)
 			{
@@ -501,23 +497,6 @@ define('frontEventEditControl',
 				}
 			}
 
-             /*self.__presetDate = function(elem, txt, type)
-			{
-				elem.datetimepicker({ pickTime: false,
-									  startDate: new Date() });
-				if (txt.val() == '') {
-					txt.attr('placeholder', type + 's ' + utils.dateFormat('%d/%m/%Y'))
-				}
-			}
-
-			self.__presetTime = function(elem, txt)
-			{
-				elem.datetimepicker({ pickDate: false });
-				if (txt.val() == '') {
-					txt.attr('placeholder', 'at ' + '00:00');
-				}
-			}*/
-
 			self.__checkInputFill = function(input, list)
 			{
 				if($(input).val() == '') {
@@ -527,20 +506,6 @@ define('frontEventEditControl',
 
 				return true;
 			}
-
-            // setup datetimepicker to close on click
-            /*self.__setupDateTimePicker = function()
-            {
-                var startDate = $(self.settings.inpDateStart).datetimepicker()
-                    .on('changeDate', function(ev) {
-                        startDate.datetimepicker('hide');
-                    });
-
-                var endDate = $(self.settings.inpDateEnd).datetimepicker()
-                    .on('changeDate', function(ev) {
-                        endDate.datetimepicker('hide');
-                    });
-            }*/
 
 			// input -- input element (usualy type == text)
 			// list -- destination element (found values will be rendered here)
@@ -552,8 +517,20 @@ define('frontEventEditControl',
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.lat();
 			                var lng = locs.getPlace().geometry.location.lng();
+			                
+/*console.log(locs.getPlace());
 
-                            //console.log(locs.getPlace());
+var request = {
+	reference: locs.getPlace().reference
+};
+var service = new google.maps.places.PlacesService($(self.settings.inpLocation)[0]);
+service.getDetails(request, 
+		function (place, status) {
+			if (status == google.maps.places.PlacesServiceStatus.OK) {
+				console.log(place);
+			}
+		}
+);*/
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });
@@ -582,7 +559,7 @@ define('frontEventEditControl',
 				}
 			}
 
-self.__checkDatesContradictions = function(showNoti)
+			self.__checkDatesContradictions = function(showNoti)
             {
                 var isValid = true;
 
@@ -661,22 +638,6 @@ self.__checkDatesContradictions = function(showNoti)
                 return isValid;
             }
 
-            /*self.__initFieldsForDateTimePicker = function()
-            {
-                var fields = [
-                    $(self.settings.inpDateStart),
-                    $(self.settings.inpDateEnd),
-                    $(self.settings.inpTimeStart),
-                    $(self.settings.inpTimeEnd)
-                ];
-
-                fields.forEach(function(field) {
-                    field.click(function(){
-                        $(this).datetimepicker('show');
-                    });
-                });
-            }*/
-
             self.__initFacebookPublish = function()
             {
                 if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
@@ -702,6 +663,17 @@ self.__checkDatesContradictions = function(showNoti)
                     }
                 });
             }
+            
+			self.__requestFile = function(url, params)
+			{
+				var call = { url: url, type: 'post',  contentType: false, processData:false };
+				if (params) {
+					call.data = params;
+				}
+
+				return $.ajax(call);
+			}
+
 		};
 
 		return new frontEventEditControl($, utils, normalDatePicker, noty);

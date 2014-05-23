@@ -631,33 +631,15 @@ class EventController extends \Core\Controllers\CrudController
     }
 
     /**
-     * @Route("/event/facebook", methods={"GET", "POST"})
+     * @Route("/event/eventsave", methods={"POST"})
      * @Acl(roles={'member'});
      */
-    public function facebookAction()
-    {
-
-        $http = $this->di->get('http');
-        $httpClient = $http::getProvider();
-        $httpClient->setBaseUri('https://graph.facebook.com/');
-
-
-        $response = $httpClient->post('me/events', array(
-            'access_token' => $this->session->get('user_token'),
-            'name' => "!!!",
-            'description' => "!!!",
-            //'start_time' => date('c', strtotime('2012-02-01 13:00:00')),
-            //'end_time' => date('c', strtotime('2012-02-01 14:00:00')),
-            'location' => 'Moldova',
-            'privacy_type' => 'SECRET'
-        ));
-        $result = $response->body;
-    }
-
     public function processForm($form)
+    //public function eventsaveAction()
     {
         $event = $form->getFormValues();
-_U::dump($event, true);        
+    	//$event = $this -> request -> getPost();
+       
         $loc = new Location();
         $venue = new Venue();
         $coords = array();
@@ -789,14 +771,10 @@ _U::dump($event, true);
                 'start_time' => date('c', strtotime($newEvent['start_date'])),
                 'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
             );
-
-            /*if ($newEvent['event_fb_status'] == 1) {
-                $fbParams['privacy_type'] = 'OPEN';
-            }*/
-
             if ($newEvent['start_date'] !== $newEvent['end_date']) {
-                $fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
+            	$fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
             }
+            
 
             if ($event['venue'] != '') {
                 $fbParams['location'] = $event['venue'];
@@ -812,7 +790,7 @@ _U::dump($event, true);
                 $filename = $this->uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
                 $ev->logo = $filename;
-                $ev->save();
+                $ev->save(); 
             } else if ($ev->logo != '') {
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
 
@@ -914,9 +892,14 @@ _U::dump($event, true);
             if (empty($event['id'])) {
                 $this -> counters -> increaseUserCounter('userEventsCreated');
             }
-        }
+        } 
 
+        /*$res = ['status' => 'OK',
+        		'event' => $event];
+        $this -> sendAjax($res);
+        exit(); */
         $this->loadRedirect();
+        
     }
 
 
