@@ -28,7 +28,7 @@ class CrudController extends \Core\Controller
 		}
 	}
 
-	public function editAction()
+	public function editAction($id = false)
 	{
 		$object = $this -> getObj();
 		$model = strtolower($this -> getModel());
@@ -37,7 +37,8 @@ class CrudController extends \Core\Controller
 		$this -> loadObject();
 		$this -> obj -> member_id = $this -> memberId;
 
-		$param = $this -> dispatcher -> getParam('id');
+		$param = $this -> dispatcher -> getParam('id');	
+
 		if ($param !== null) {
 			$this -> obj = $object::findFirstById((int)$param);
 			$this -> obj -> setExtraRelations($this -> getEditExtraRelations());
@@ -45,14 +46,14 @@ class CrudController extends \Core\Controller
 			//$this -> setDependencyProperty($this -> obj -> getDependency());
 		} 
 		$form = $this -> loadForm();
-
-		if ($this -> request -> isPost()) {
+		
+		if ($this -> request -> isPost() && $id === false) {
 			if ($form -> isValid($this -> request -> getPost())) {
 				$this -> processForm($form);
 				$this -> loadRedirect();
 			}
 		}
-
+		 
 		$this -> view -> $model = $this -> obj;
 		$this -> view -> setVar('edit' . ucfirst($model), true);
 		$this -> view -> form = $form;
@@ -74,6 +75,11 @@ class CrudController extends \Core\Controller
 		}
 	}
 
+	
+	public function viewAction()
+	{
+	}
+	
 
 	public function loadObject()
 	{
@@ -94,10 +100,14 @@ class CrudController extends \Core\Controller
 	}
 
 
-	public function loadRedirect()
+	public function loadRedirect($id = false)
 	{
-		$model = strtolower($this -> getModel());
-		$this -> response -> redirect('/' . strtolower($model). '/list');
+//		if (!$id) {
+			$model = strtolower($this -> getModel());
+			$this -> response -> redirect('/' . strtolower($model). '/list');
+	//	} else {
+		//	$this -> dispatcher -> forward(['controller' => 'event', 'action' => 'view', 'params' => ['id' => $id]]);
+		//}
 	}
 	
 	public function processForm($form) 

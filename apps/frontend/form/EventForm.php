@@ -97,6 +97,6 @@ class EventForm extends Form
 								array('options' => $this -> session -> get('member') -> campaign,
 									  'using' => array('id', 'name')));
 		
-		$this -> add(new Submit('Save'));
+		//$this -> add(new Submit('Save'));
 	}
 }

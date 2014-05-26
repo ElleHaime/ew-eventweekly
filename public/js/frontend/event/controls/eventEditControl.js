@@ -217,13 +217,20 @@ define('frontEventEditControl',
 
                     $(self.settings.btnSubmit).prop('disabled', true);
                     $(self.settings.btnSubmit).text('Saving...');
+                    
+                    
                 });
 
                 $(self.settings.form).on('click', self.settings.btnPreview, function(e) {
                     e.preventDefault();
                     self.__eventPreview();
                 });
-
+                
+                /*$(self.settings.form).on('click', self.settings.btnSubmit, function(e) {
+                    e.preventDefault();
+                    self.__eventPublish();
+                });*/
+                
                 $(self.settings.linkAddImg).click(function(){
                     return false;
                 });
@@ -263,13 +270,23 @@ define('frontEventEditControl',
                     startDate: new Date()
                 });
                 
-/*                $(self.settings.btnSubmit).on('click', function(e) {
-                	//var data = $(self.settings.addEventForm).serialize();
+             /*   $(self.settings.addEventForm).on('submit', function(e) {
+                	e.preventDefault();
+                	
+                	$(self.settings.form).attr('action', self.settings.fbPublishUrl).submit();
+                	/*$.when($(self.settings.addEventForm).submit()).then(function(response) {
+                			console.log(response);
+					        if (response.status == 'OK') {
+					        	noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'success', timeout: false, maxVisible: 60});
+					        }
+                	});
+                	
+                	//var data = $(self.settings.addEventForm).serializeArray();
 
-                	if ($(self.settings.inpLogoUploaded)[0].files.length > 0) {
-                		data.push({ 'logo-file': $(self.settings.inpLogoUploaded)[0].files });
+                	/*if ($(self.settings.inpLogoUploaded)[0].files.length > 0) {
+                		data.push({ 'add-img-logo-upload': $(self.settings.inpLogoUploaded)[0].files });
                 	}
-                	if ($(self.settings.inpPosterUploaded)[0].files.length > 0) {
+                	/*if ($(self.settings.inpPosterUploaded)[0].files.length > 0) {
                 		data.push({ 'poster-file': $(self.settings.inpPosterUploaded)[0].files });
                 	}
                 	if ($(self.settings.inpFlyerUploaded)[0].files.length > 0) {
@@ -277,9 +294,11 @@ define('frontEventEditControl',
                 	}
 
 					//var formData = JSON.stringify(data);
-                	var data = new FormData($(self.settings.addEventForm));
-
-                	$.when(utils.request('post', self.settings.fbPublishUrl, data)).then(function(response) {
+                	//var data = new FormData($(self.settings.addEventForm)); */
+                	/*var formData = JSON.stringify(data);
+                	console.log(formData);
+                	
+                	$.when(utils.request('post', self.settings.fbPublishUrl, formData)).then(function(response) {
                 		console.log(response);
                 		if (response.status == 'OK') {
                 			noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'success', timeout: false, maxVisible: 60});
@@ -287,9 +306,19 @@ define('frontEventEditControl',
                 	}); 
 	                	               
                 	return false;
-                }); */
+                }); */ 
 
 			}
+			
+            self.__eventPublish = function() {
+            	if (!self.__checkRequiredFields(true)) return false;
+            	
+            	$.when($(self.settings.form).attr('action', self.settings.fbPublishUrl).submit()).then(function() {
+            		noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'alert', timeout: false, maxVisible: 60});
+            		console.log(response);            		
+            		alert(123);
+            	});
+            }
 
             self.__eventPreview = function() {
                 if ($(self.settings.inpCategoryReal).val().trim() == '') {
@@ -666,7 +695,7 @@ service.getDetails(request,
             
 			self.__requestFile = function(url, params)
 			{
-				var call = { url: url, type: 'post',  contentType: false, processData:false };
+				var call = { url: url, type: 'post',  contentType: false, processData: false };
 				if (params) {
 					call.data = params;
 				}

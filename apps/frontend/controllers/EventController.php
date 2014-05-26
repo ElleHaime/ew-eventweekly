@@ -438,16 +438,16 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
-    public function editAction()
+    public function editAction($id = false)
     {
         $category = new Category();
         $this->view->setVar('categories', $category->getDefaultIdsAsString());
 
-        parent::editAction();
+       	parent::editAction();
 
-        $posters = $flyers = $gallery = [];
+       	$posters = $flyers = $gallery = [];
         if (isset($this->obj->id)) {
-            $eventImages = EventImageModel::find('event_id = ' . $this->obj->id);
+            $eventImages = EventImageModel::find('event_id = ' . $id);
 
             foreach ($eventImages as $eventImage) {
                 if ($eventImage->type == 'poster') {
@@ -463,6 +463,41 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('gallery', $gallery);
+    }
+    
+    /**
+     * @Route("/event/view/{id:[0-9]+}", methods={"GET"})
+     * @Acl(roles={'member'});
+     */
+    public function viewAction()
+    {
+    	$param = $this -> dispatcher -> getParam('id');
+    	$event = Event::findFirst((int)$param);
+    	
+    	$category = new Category();
+    	$this->view->setVar('categories', $category -> getDefaultIdsAsString());
+   	
+    	$form = $this -> loadForm();
+    	$this -> view -> form = $form;
+    	$this -> view -> event = $event;
+    	$this -> view -> setVar('formDisabled', true);
+
+    	$eventImages = EventImageModel::find('event_id = ' . $event -> id);
+    	
+    	foreach ($eventImages as $eventImage) {
+    			if ($eventImage->type == 'poster') {
+    				$posters[] = $eventImage;
+    				$this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);    				
+    			} else if ($eventImage->type == 'flyer') {
+    				$flyers[] = $eventImage;
+    				$this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);    				
+    			} else if ($eventImage->type == 'gallery') {
+    				$gallery[] = $eventImage;
+    				$this->view->setVar('gallery', $gallery);
+    			}
+    	}
+		
+    	$this -> view -> pick('event/edit');
     }
 
     public function setEditExtraRelations()
@@ -894,14 +929,8 @@ class EventController extends \Core\Controllers\CrudController
             }
         } 
 
-        /*$res = ['status' => 'OK',
-        		'event' => $event];
-        $this -> sendAjax($res);
-        exit(); */
-        $this->loadRedirect();
-        
+        $this -> loadRedirect();
     }
-
 
     /**
      * @param $oldFilename string

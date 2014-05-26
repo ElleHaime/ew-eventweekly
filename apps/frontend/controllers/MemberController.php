@@ -66,7 +66,7 @@ class MemberController extends \Core\Controllers\CrudController
 	 * @Route("/member/edit", methods={"GET"})
 	 * @Acl(roles={'member'});   	 
 	 */
-	public function editAction()
+	public function editAction($id = false)
 	{
         $cfg = $this -> di -> get('config');
         $member = Member::findFirst('id = '.$this->session->get('memberId'));
@@ -132,7 +132,7 @@ class MemberController extends \Core\Controllers\CrudController
 	}
 	
 	
-	public function loadRedirect()
+	public function loadRedirect($id = false)
 	{
 		$this -> response -> redirect('/profile');
 	}

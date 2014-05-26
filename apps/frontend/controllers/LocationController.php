@@ -27,7 +27,7 @@ class LocationController extends \Core\Controllers\CrudController
 	 * @Route("/location/edit/{id:[0-9]+}", methods={"GET"})
 	 * @Acl(roles={'member'});
 	 */
-	public function editAction()
+	public function editAction($id = false)
 	{
 		parent::editAction();
 	}
