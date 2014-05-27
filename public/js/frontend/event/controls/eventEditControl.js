@@ -90,6 +90,8 @@ define('frontEventEditControl',
                 inpSites: '#sites',
                 
                 fbPublishUrl: '/event/eventsave',
+                
+                viewMode: '#viewMode',
 
                 urlPattern: new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')
 			},
@@ -116,6 +118,13 @@ define('frontEventEditControl',
 
 				self.bindEvents();
                 self.__initFacebookPublish();
+                
+                if ($(self.settings.viewMode).attr('switch') == 'on') {
+                	console.log($(self.settings.viewMode));
+                	console.log($(self.settings.viewMode).attr('fbevent'));
+                	$(self.settings.addEventForm + ' :input').attr('disabled', true);
+                	noty({text: 'Dude, let\'s smoke cannabis, eh? Here <a href="http://www.facebook.com/events/' + $(self.settings.viewMode).attr('fbevent') + '" target="_blank">http://www.facebook.com/events/' + $(self.settings.viewMode).attr('fbevent') + '</a>', type: 'success', timeout: false, maxVisible: 60});
+                }
 			}
 
 			self.bindEvents = function()
@@ -269,57 +278,8 @@ define('frontEventEditControl',
                     autoclose: true,
                     startDate: new Date()
                 });
-                
-             /*   $(self.settings.addEventForm).on('submit', function(e) {
-                	e.preventDefault();
-                	
-                	$(self.settings.form).attr('action', self.settings.fbPublishUrl).submit();
-                	/*$.when($(self.settings.addEventForm).submit()).then(function(response) {
-                			console.log(response);
-					        if (response.status == 'OK') {
-					        	noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'success', timeout: false, maxVisible: 60});
-					        }
-                	});
-                	
-                	//var data = $(self.settings.addEventForm).serializeArray();
-
-                	/*if ($(self.settings.inpLogoUploaded)[0].files.length > 0) {
-                		data.push({ 'add-img-logo-upload': $(self.settings.inpLogoUploaded)[0].files });
-                	}
-                	/*if ($(self.settings.inpPosterUploaded)[0].files.length > 0) {
-                		data.push({ 'poster-file': $(self.settings.inpPosterUploaded)[0].files });
-                	}
-                	if ($(self.settings.inpFlyerUploaded)[0].files.length > 0) {
-                		data.push({ 'flyer-file': $(self.settings.inpFlyerUploaded)[0].files });
-                	}
-
-					//var formData = JSON.stringify(data);
-                	//var data = new FormData($(self.settings.addEventForm)); */
-                	/*var formData = JSON.stringify(data);
-                	console.log(formData);
-                	
-                	$.when(utils.request('post', self.settings.fbPublishUrl, formData)).then(function(response) {
-                		console.log(response);
-                		if (response.status == 'OK') {
-                			noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'success', timeout: false, maxVisible: 60});
-                		}
-                	}); 
-	                	               
-                	return false;
-                }); */ 
-
 			}
 			
-            self.__eventPublish = function() {
-            	if (!self.__checkRequiredFields(true)) return false;
-            	
-            	$.when($(self.settings.form).attr('action', self.settings.fbPublishUrl).submit()).then(function() {
-            		noty({text: 'Dude, let\'s smoke cannabis, eh?', type: 'alert', timeout: false, maxVisible: 60});
-            		console.log(response);            		
-            		alert(123);
-            	});
-            }
-
             self.__eventPreview = function() {
                 if ($(self.settings.inpCategoryReal).val().trim() == '') {
                     $(self.settings.inpCategoryReal).val($(self.settings.defaultCategories).text());

@@ -67,9 +67,9 @@ class Geo extends Plugin
 			$location['location_id'] = $locExists -> location_id;			
 
 			return $location;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
 	public function setUserLocation()
@@ -98,7 +98,6 @@ class Geo extends Plugin
 
 	public function getLocation($coordinates = array())
 	{
-		
 		if (empty($coordinates)) {
 			
 			if ($location = $this -> getFromCache()) {

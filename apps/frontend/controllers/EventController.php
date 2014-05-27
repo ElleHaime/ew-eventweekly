@@ -440,6 +440,15 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function editAction($id = false)
     {
+    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
+    		$isSessionActive = $this -> checkFacebookExpiration();
+
+    		if (!$isSessionActive) {
+    			$this -> view -> setVar('flashMsgText', 'Your facebook authorization has expired =/ <br>Please <a href=&quot;#&quot; class=&quot;fb-login-popup&quot; onclick=&quot;return false;&quot;>re-auth via Facebook</a> to be able to publish events there');
+    			$this -> view -> setVar('flashMsgType', 'warning');
+    		}
+    	}
+    	
         $category = new Category();
         $this->view->setVar('categories', $category->getDefaultIdsAsString());
 
@@ -463,43 +472,12 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
         $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
         $this->view->setVar('gallery', $gallery);
+        
+        if ($this -> dispatcher -> wasForwarded()) {
+        	$this -> view -> setVar('viewMode', true); 
+        }
     }
     
-    /**
-     * @Route("/event/view/{id:[0-9]+}", methods={"GET"})
-     * @Acl(roles={'member'});
-     */
-    public function viewAction()
-    {
-    	$param = $this -> dispatcher -> getParam('id');
-    	$event = Event::findFirst((int)$param);
-    	
-    	$category = new Category();
-    	$this->view->setVar('categories', $category -> getDefaultIdsAsString());
-   	
-    	$form = $this -> loadForm();
-    	$this -> view -> form = $form;
-    	$this -> view -> event = $event;
-    	$this -> view -> setVar('formDisabled', true);
-
-    	$eventImages = EventImageModel::find('event_id = ' . $event -> id);
-    	
-    	foreach ($eventImages as $eventImage) {
-    			if ($eventImage->type == 'poster') {
-    				$posters[] = $eventImage;
-    				$this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);    				
-    			} else if ($eventImage->type == 'flyer') {
-    				$flyers[] = $eventImage;
-    				$this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);    				
-    			} else if ($eventImage->type == 'gallery') {
-    				$gallery[] = $eventImage;
-    				$this->view->setVar('gallery', $gallery);
-    			}
-    	}
-		
-    	$this -> view -> pick('event/edit');
-    }
-
     public function setEditExtraRelations()
     {
         $this->editExtraRelations = array(
@@ -664,16 +642,29 @@ class EventController extends \Core\Controllers\CrudController
 
         return $id;
     }
+    
+    public function checkFacebookExpiration()
+    {
+    	$http = $this->di->get('http');
+    	$httpClient = $http::getProvider();
+    	
+    	$httpClient->setBaseUri('https://graph.facebook.com/');
+    	$response = $httpClient->get('me?access_token=' . $this->session->get('user_token'));
+
+    	if($response -> header -> statusCode == 200 && $response -> header -> statusMessage == 'OK') {
+    		return true;
+    	} else {
+    		return false;
+		}
+    }
 
     /**
      * @Route("/event/eventsave", methods={"POST"})
      * @Acl(roles={'member'});
      */
     public function processForm($form)
-    //public function eventsaveAction()
     {
         $event = $form->getFormValues();
-    	//$event = $this -> request -> getPost();
        
         $loc = new Location();
         $venue = new Venue();
@@ -929,7 +920,11 @@ class EventController extends \Core\Controllers\CrudController
             }
         } 
 
-        $this -> loadRedirect();
+        if ((int)$ev -> event_fb_status == 1) {
+        	return (int)$ev -> id;
+        } else {
+        	return true;
+        }
     }
 
     /**
@@ -944,7 +939,7 @@ class EventController extends \Core\Controllers\CrudController
     protected function uploadImageFile($oldFilename, $file, $path)
     {
         if (!is_dir($path)) {
-            mkdir($path);
+            mkdir($path, 0777, true);
         }
 
         $imgExts = array('image/jpeg', 'image/png');
@@ -955,6 +950,7 @@ class EventController extends \Core\Controllers\CrudController
 
             $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
             $file->moveTo($path . '/' . $filename);
+            chmod($path . '/' . $filename, 0777);
 
             if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
                 unlink($path . '/' . $oldFilename);
@@ -1048,6 +1044,7 @@ class EventController extends \Core\Controllers\CrudController
 
                     $post['logo'] = end($logoPieces);
                     $file->moveTo($filePath);
+                    chmod($filePath, 0777);
 
                 } else if ($file->getKey() == 'add-img-poster-upload') {
                     $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
@@ -1056,6 +1053,7 @@ class EventController extends \Core\Controllers\CrudController
 
                     $post['poster'] = end($logoPieces);
                     $file->moveTo($filePath);
+                    chmod($filePath, 0777);
                 } else if ($file->getKey() == 'add-img-flyer-upload') {
                     $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
 
@@ -1063,6 +1061,7 @@ class EventController extends \Core\Controllers\CrudController
 
                     $post['flyer'] = end($logoPieces);
                     $file->moveTo($filePath);
+                    chmod($filePath, 0777);
                 }
             }
 

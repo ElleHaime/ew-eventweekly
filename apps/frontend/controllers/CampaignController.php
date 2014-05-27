@@ -133,7 +133,5 @@ class CampaignController extends \Core\Controllers\CrudController
 				$logo -> moveTo($this -> config -> application -> uploadDir . 'img/campaign/' . $logo -> getName());
 			}
 		}
-
-        $this -> loadRedirect();
 	}
 }

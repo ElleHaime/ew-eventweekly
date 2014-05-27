@@ -328,6 +328,11 @@
                 </div>
             </div>
         </form>
+        {% if viewMode is defined %}
+        	<div id = "viewMode" switch = "on" fbevent = "{{ event.fb_uid }}" style="display:none; visibility:hidden;"></div>
+        {% else %}
+        	<div id = "viewMode" switch = "off" style="display:none; visibility:hidden;"></div>
+        {% endif %}
     </div>
 
 
