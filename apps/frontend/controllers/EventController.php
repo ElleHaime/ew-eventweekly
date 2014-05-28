@@ -269,6 +269,11 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
+    	if ($this -> session -> has('eventViewForwarded') && $this -> session -> get('eventViewForwarded') == 1) {
+    		$this -> session -> set('eventViewForwarded', 0);
+    		$this -> view -> setVar('viewMode', true);
+    	}
+    	 
         $event = Event::findFirst($eventId);
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
@@ -340,7 +345,7 @@ class EventController extends \Core\Controllers\CrudController
         foreach ($event->tag as $Tag) {
             $eventTags[] = $Tag->name;
         }
-
+      
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
             'eventMetaData' => $event,
@@ -920,13 +925,24 @@ class EventController extends \Core\Controllers\CrudController
             }
         } 
 
-        if ((int)$ev -> event_fb_status == 1) {
-        	return (int)$ev -> id;
-        } else {
-        	return true;
-        }
+        return (int)$ev -> id;
+    }
+    
+    
+    public function loadRedirect($id = false)
+    {
+    	if (!$id) {
+    		$this -> response -> redirect('/event/list');
+    	} else {
+    		$ev = Event::findFirst((int)$id);
+    		$name = SUri::slug($ev -> name);
+    		$this -> session -> set('eventViewForwarded', 1);
+    		
+    		$this -> response -> redirect('/' . $name . '-' . $id);
+    	}
     }
 
+    
     /**
      * @param $oldFilename string
      * @param $file \Phalcon\Http\Request\FileInterface

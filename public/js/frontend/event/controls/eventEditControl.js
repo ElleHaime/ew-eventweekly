@@ -90,8 +90,6 @@ define('frontEventEditControl',
                 inpSites: '#sites',
                 
                 fbPublishUrl: '/event/eventsave',
-                
-                viewMode: '#viewMode',
 
                 urlPattern: new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')
 			},
@@ -118,13 +116,6 @@ define('frontEventEditControl',
 
 				self.bindEvents();
                 self.__initFacebookPublish();
-                
-                if ($(self.settings.viewMode).attr('switch') == 'on') {
-                	console.log($(self.settings.viewMode));
-                	console.log($(self.settings.viewMode).attr('fbevent'));
-                	$(self.settings.addEventForm + ' :input').attr('disabled', true);
-                	noty({text: 'Dude, let\'s smoke cannabis, eh? Here <a href="http://www.facebook.com/events/' + $(self.settings.viewMode).attr('fbevent') + '" target="_blank">http://www.facebook.com/events/' + $(self.settings.viewMode).attr('fbevent') + '</a>', type: 'success', timeout: false, maxVisible: 60});
-                }
 			}
 
 			self.bindEvents = function()

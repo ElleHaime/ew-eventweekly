@@ -11,6 +11,7 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
              * @type {{inviteBtn: string, inviteAllBtn: string, friendsBlock: string, friendClass: string, eventLink: string, wallText: string}}
              */
             settings: {
+            	
                 inviteBtn: '#fb-invite',
                 inviteAllBtn: '#fb-invite-all',
                 friendsBlock: '#friendsBlock',
@@ -22,7 +23,9 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 isMobile: '#isMobile',
                 externalLogged: '#external_logged',
                 fieldBlockId: 'fbFriendList',
-                fieldSearchFiledId: 'friendSearchInListInput'
+                fieldSearchFiledId: 'friendSearchInListInput',
+                	
+                viewMode: '#viewMode'
             },
 
             /**
@@ -41,6 +44,14 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
 
                 $this.settings = _.extend($this.settings, options);
                 _.once($this.__bindClicks());
+                
+                if ($($this.settings.viewMode).attr('switch') == 'on') {
+                	if ($($this.settings.viewMode).attr('fbevent').length) {
+                		noty({text: 'Congratulations! You have created event on EW site and published it to facebook. You can edit  event\'s  start time, cover photo by following link:  <a href="http://www.facebook.com/events/' + $($this.settings.viewMode).attr('fbevent') + '" target="_blank">http://www.facebook.com/events/' + $($this.settings.viewMode).attr('fbevent') + '</a>', type: 'success', timeout: false, maxVisible: 60});
+                	} else {
+                		noty({text: 'Сongratulations, you have created event on Event Weekly!', type: 'success', timeout: false, maxVisible: 60});	
+                	}
+                }
             },
 
             /**

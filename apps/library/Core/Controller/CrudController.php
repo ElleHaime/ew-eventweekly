@@ -101,12 +101,8 @@ class CrudController extends \Core\Controller
 
 	public function loadRedirect($id = false)
 	{
-		if (!$id) {
-			$model = strtolower($this -> getModel());
-			$this -> response -> redirect('/' . strtolower($model). '/list');
-		} else {
-			$this -> dispatcher -> forward(['controller' => 'event', 'action' => 'edit', 'params' => ['id' => $id]]);
-		}
+		$model = strtolower($this -> getModel());
+		$this -> response -> redirect('/' . strtolower($model). '/list');
 	}
 	
 	public function processForm($form) 
