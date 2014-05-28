@@ -27,56 +27,109 @@ class EventMemberCounter extends EventMemberCounterObject
 		return false;
 	}
 	
-	
-	public function syncMemberCounter()
+	public function syncDeleted($id)
 	{
 		$di = $this -> getDI();
-		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\MemberNetwork.member_id 
-												FROM Frontend\Models\MemberNetwork", $this -> getDI());
-		$members = $query -> execute();
-	 
+		$members = ['liked', 'going', 'friends'];
+		
+		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.member_id
+												FROM Frontend\Models\EventLike
+												WHERE Frontend\Models\EventLike.status = 1
+												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
+		$result = $query -> execute();
+		if ($result) {
+			foreach ($result as $item) {
+				$members['liked'][] = $item -> member_id;
+			}
+		}
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventLike 
+												WHERE Frontend\Models\EventLike.status = 1
+												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+
+		
+		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMember.member_id
+												FROM Frontend\Models\EventMember
+												WHERE Frontend\Models\EventMember.member_status = 1
+												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
+		$result = $query -> execute();
+		if ($result) {
+			foreach ($result as $item) {
+				$members['going'][] = $item -> member_id;
+			}
+		}
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMember 
+												WHERE Frontend\Models\EventMember.member_status = 1
+												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+		
+		
+		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMemberFriend.member_id
+												FROM Frontend\Models\EventMemberFriend
+												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
+		$result = $query -> execute();
+		if ($result) {
+			foreach ($result as $item) {
+				$members['friends'][] = $item -> member_id;
+			}
+		}
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMemberFriend
+												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+		
+		$this -> syncMemberCounter($members);
+	}
+	
+	
+	public function syncMemberCounter($members = [])
+	{
+		$di = $this -> getDI();
+		
 		if ($members) {
-		 	foreach ($members as $member) {
-		 		$memberId = $member -> member_id;
-		 		$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\Event.id
-		 													FROM  Frontend\Models\Event
-		 													WHERE Frontend\Models\Event.member_id = " . $memberId, $di);
-		 		$created = $query -> execute() -> count(); 
-		 		
-		 		$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventMember.event_id
-											 				FROM  Frontend\Models\EventMember
-											 				WHERE Frontend\Models\EventMember.member_status = 1
-		 														AND Frontend\Models\EventMember.member_id = " . $memberId, $di);
-		 		$going = $query -> execute() -> count();
-		 		
-		 		$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventLike.event_id
+			if (!empty($members['liked'])) {
+				foreach ($members['liked'] as $key => $memberId) {
+					$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventLike.event_id
 											 				FROM  Frontend\Models\EventLike
 											 				WHERE Frontend\Models\EventLike.status = 1
 											 					AND Frontend\Models\EventLike.member_id = " . $memberId, $di);
-		 		$liked = $query -> execute() -> count();
-		 		
-		 		$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventMemberFriend.event_id
-											 				FROM  Frontend\Models\EventMemberFriend
-											 				WHERE Frontend\Models\EventMemberFriend.member_id = " . $memberId, $di);
-		 		$friends = $query -> execute() -> count();
-		 		
-		 		$counters = self::findFirst('member_id = ' . $memberId);
-		 		if ($counters) {
-		 			$upCounter = $counters;
-		 		} else {
-		 			$upCounter = new self;
-		 			$upCounter -> assign(['member_id' => $memberId]);
-		 		}
-
-		 		$upCounter -> assign(['userEventsCreated' => $created,
-					 					'userEventsLiked' => $liked,
-					 					'userEventsGoing' => $going,
-					 					'userFriendsGoing' => $friends]);
-		 		$upCounter -> save();
-		 	}
+		 			$liked = $query -> execute() -> count();
+					$counters = self::findFirst('member_id = ' . $memberId);
+					if ($counters) {
+						$counters -> userEventsLiked = $liked;
+						$counters -> save();
+					} 
+						
+				}
+			}
+			
+			if (!empty($members['going'])) {
+				foreach ($members['going'] as $key => $memberId) {
+					$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventMember.event_id
+															FROM  Frontend\Models\EventMember
+															WHERE Frontend\Models\EventMember.member_status = 1
+															AND Frontend\Models\EventMember.member_id = " . $memberId, $di);
+					$going = $query -> execute() -> count();
+					$counters = self::findFirst('member_id = ' . $memberId);
+					if ($counters) {
+						$counters -> userEventsGoing = $going;
+						$counters -> save();
+					}
+				}
+			}
+			
+			if (!empty($members['friends'])) {
+				foreach ($members['friends'] as $key => $memberId) {
+					$query = new \Phalcon\Mvc\Model\Query("SELECT DISTINCT Frontend\Models\EventMemberFriend.event_id
+															FROM  Frontend\Models\EventMemberFriend
+															WHERE Frontend\Models\EventMemberFriend.member_id = " . $memberId, $di);
+					$friends = $query -> execute() -> count();
+					$counters = self::findFirst('member_id = ' . $memberId);
+					if ($counters) {
+						$counters -> userFriendsGoing = $friends;
+						$counters -> save();
+					}
+				}	
+			}
 		}
-		
-		echo 'Counters synced';
-		die();
 	}
 } 

@@ -513,6 +513,9 @@ class EventController extends \Core\Controllers\CrudController
                 $result = $this -> counters -> setUserCounters();
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
+
+                $syncCounters = new EventMemberCounter();
+                $syncCounters -> syncDeleted((int)$data['id']);
             }
         }
 
