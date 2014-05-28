@@ -8,9 +8,10 @@ use Core\Model,
 class EventMember extends Model
 {
 	const
-	JOIN    = 1,
-	MAYBE   = 2,
-	DECLINE = 3;
+	JOIN    	= 1,
+	MAYBE   	= 1,
+	DECLINE 	= 3,
+	UNPUBLISHED	= 5;
 
 	public $id;
 	public $event_id;

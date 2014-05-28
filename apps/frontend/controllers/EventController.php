@@ -587,6 +587,9 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 $result = array_merge($res, array('status' => 'OK'));
+                
+                $syncCounters = new EventMemberCounter();
+                $syncCounters -> syncPublished((int)$data['id']);
             }
         }
 
@@ -607,6 +610,9 @@ class EventController extends \Core\Controllers\CrudController
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 /* delete sites, event members, send mails etc */
                 $result = array_merge($res, array('status' => 'OK'));
+                
+                $syncCounters = new EventMemberCounter();
+                $syncCounters -> syncUnpublished((int)$data['id']);
             }
         }
 
@@ -623,7 +629,8 @@ class EventController extends \Core\Controllers\CrudController
             $event->assign(array('event_status' => $status));
             if ($event->save()) {
                 $result = array('id' => $event->id,
-                    'event_status' => $event->event_status);
+                    			'event_status' => $event->event_status);
+             
             }
         }
 
