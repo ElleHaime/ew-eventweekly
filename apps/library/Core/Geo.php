@@ -40,7 +40,6 @@ class Geo extends Plugin
 		} 
 		
 		$this -> setUserIp();
-//		$this -> setUserLocation();
 	}
 	
 	public function setUserIp()
@@ -74,15 +73,21 @@ class Geo extends Plugin
 
 	public function setUserLocation()
 	{
-        $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
-        					 $this -> _config -> application -> GeoIp2 -> licenseKey);
-
-        $record = $client->city($this->_userIp);
-
-        $this -> _locLatCur = $record->location->latitude;
-        $this -> _locLonCur = $record->location->longitude;
-        $this -> _countryCode = $record->country->isoCode;
-
+		try {
+	        $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
+	        					 $this -> _config -> application -> GeoIp2 -> licenseKey);
+	
+	        $record = $client->city($this->_userIp);
+	
+	        $this -> _locLatCur = $record->location->latitude;
+	        $this -> _locLonCur = $record->location->longitude;
+	        $this -> _countryCode = $record->country->isoCode;
+		} catch (\Exception $e) {
+			$dublin = \Frontend\Models\Location::findFirst('city = "Dublin"');
+			$this -> _locLatCur = ($dublin -> latitudeMax + $dublin -> latitudeMin)/2;
+			$this -> _locLonCur = ($dublin -> longitudeMax + $dublin -> longitudeMin)/2;
+		}
+		
         \Core\Logger::logFile('ips');
         \Core\Logger::log($this -> _userIp);
         if (isset($record)) {
