@@ -425,25 +425,28 @@ class MemberController extends \Core\Controllers\CrudController
 
             $memberNetwork = new MemberNetwork();
 
+            empty($userData['username']) ? $username = $member -> email : $username = $userData['username'];
+            
             $memberNetwork -> assign(array(
                 'member_id' => $member->id,
                 'network_id' => 1,
                 'account_uid' => $userData['uid'],
-                'account_id' => $userData['username']
+                'account_id' => $username
             ));
 
             if ($memberNetwork -> save()) {
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
                 $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-                    'member' => $member,
-                    'uid' => $userData['uid'],
-                    'token' => $userData['token']
-                ));
+						                    'member' => $member,
+						                    'uid' => $userData['uid'],
+						                    'token' => $userData['token']));
 
                 $this -> session -> set('user_fb_uid', $userData['uid']);
-                $this->session->set('user_token', $userData['token']);
-                $this->session->set('acc_synced', true);
+                $this -> session -> set('user_token', $userData['token']);
+                $this -> session -> set('acc_synced', true);
                 $this -> view -> setVar('acc_external', $memberNetwork);
+            } else {
+            	$response['errors'] = true;	
             }
         }
 

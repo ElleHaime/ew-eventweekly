@@ -238,27 +238,26 @@ define('frontMemberEditControl',
             self.__linkFBAccount = function(data, action)
             {
                 var url = '/member/link-fb';
-                var successMsg = 'Your account was successfully linked with Facebook account';
+                var successMsg = 'Your account was successfully linked with Facebook account. We are updating your account with facebook events, you will have your listings available shortly.';
                 var errorMsg = 'Error during linking accounts';
 
                 if (action == 'sync') {
                     url = '/member/sync-fb';
-                    successMsg = 'Your account was successfully synced with Facebook account';
+                    successMsg = 'Your account was successfully synced with Facebook account. We are updating your account with facebook events, you will have your listings available shortly.';
                     errorMsg = 'Error during syncing accounts';
                 }
 
                 params = { uid: self.accessUid,
-                    token: self.accessToken,
-                    address: data.current_address,
-                    location: data.current_location,
-                    email: data.email,
-                    logo: data.pic_big,
-                    first_name: data.first_name,
-                    last_name: data.last_name,
-                    username: data.username };
+		                    token: self.accessToken,
+		                    address: data.current_address,
+		                    location: data.current_location,
+		                    email: data.email,
+		                    logo: data.pic_big,
+		                    first_name: data.first_name,
+		                    last_name: data.last_name,
+		                    username: data.username };
                 $.when(self.__request('post', url, params)).then(function(response) {
                     data = $.parseJSON(response);
-                    //console.log(data);
                     if (data.errors !== 'false') {
                         noty({text: successMsg, type: 'warning'});
 
