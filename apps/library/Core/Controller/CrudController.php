@@ -49,9 +49,9 @@ class CrudController extends \Core\Controller
 		
 		if ($this -> request -> isPost() && !$this -> dispatcher -> wasForwarded()) {
 			if ($form -> isValid($this -> request -> getPost())) {
-				$item = $this -> processForm($form);
-				if(is_int($item)) {
-					$this -> loadRedirect($item);
+				$redirectOptions = $this -> processForm($form);
+				if(is_array($redirectOptions)) {
+					$this -> loadRedirect($redirectOptions);
 				} else {
 					$this -> loadRedirect();
 				}
@@ -99,7 +99,7 @@ class CrudController extends \Core\Controller
 	}
 
 
-	public function loadRedirect($id = false)
+	public function loadRedirect($params = [])
 	{
 		$model = strtolower($this -> getModel());
 		$this -> response -> redirect('/' . strtolower($model). '/list');

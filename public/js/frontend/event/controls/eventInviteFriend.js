@@ -25,7 +25,8 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 fieldBlockId: 'fbFriendList',
                 fieldSearchFiledId: 'friendSearchInListInput',
                 	
-                viewMode: '#viewMode'
+                viewModeNew: '#viewModeNew',
+                viewModeUp: '#viewModeUp'
             },
 
             /**
@@ -45,12 +46,14 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
                 $this.settings = _.extend($this.settings, options);
                 _.once($this.__bindClicks());
                 
-                if ($($this.settings.viewMode).attr('switch') == 'on') {
-                	if ($($this.settings.viewMode).attr('fbevent').length) {
-                		noty({text: 'Congratulations! You have created event on EW site and published it to facebook. You can edit  event\'s  start time, cover photo by following link:  <a href="http://www.facebook.com/events/' + $($this.settings.viewMode).attr('fbevent') + '" target="_blank">http://www.facebook.com/events/' + $($this.settings.viewMode).attr('fbevent') + '</a>', type: 'success', timeout: false, maxVisible: 60});
+                if ($($this.settings.viewModeNew).attr('switch') == 'on') {
+                	if ($($this.settings.viewModeNew).attr('fbevent').length) {
+                		noty({text: 'Congratulations! You have created event on EW site and published it to facebook. You can edit  event\'s  start time, cover photo by following link:  <a href="http://www.facebook.com/events/' + $($this.settings.viewModeNew).attr('fbevent') + '" target="_blank">http://www.facebook.com/events/' + $($this.settings.viewModeNew).attr('fbevent') + '</a>', type: 'success', timeout: false, maxVisible: 60});
                 	} else {
                 		noty({text: 'Сongratulations, you have created event on Event Weekly!', type: 'success', timeout: false, maxVisible: 60});	
                 	}
+                } else if ($($this.settings.viewModeUp).attr('switch') == 'on') {
+                	noty({text: 'Your event has been updated', type: 'success', timeout: false, maxVisible: 60});
                 }
             },
 

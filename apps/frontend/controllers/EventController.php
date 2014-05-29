@@ -269,9 +269,12 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
-    	if ($this -> session -> has('eventViewForwarded') && $this -> session -> get('eventViewForwarded') == 1) {
-    		$this -> session -> set('eventViewForwarded', 0);
-    		$this -> view -> setVar('viewMode', true);
+    	if ($this -> session -> has('eventViewForwardedNew') && $this -> session -> get('eventViewForwardedNew') == 1) {
+    		$this -> session -> set('eventViewForwardedNew', 0);
+    		$this -> view -> setVar('viewModeNew', true);
+    	} elseif($this -> session -> has('eventViewForwardedUp') && $this -> session -> get('eventViewForwardedUp') == 1) {
+    		$this -> session -> set('eventViewForwardedUp', 0);
+    		$this -> view -> setVar('viewModeUp', true);
     	}
     	 
         $event = Event::findFirst($eventId);
@@ -935,20 +938,32 @@ class EventController extends \Core\Controllers\CrudController
             }
         } 
 
-        return (int)$ev -> id;
+        if (!empty($event['id'])) {
+        	return ['id' => (int)$ev -> id, 'type' => 'update'];
+        } else {
+        	return ['id' => (int)$ev -> id, 'type' => 'new'];
+        }
     }
     
     
-    public function loadRedirect($id = false)
+    public function loadRedirect($params = [])
     {
-    	if (!$id) {
-    		$this -> response -> redirect('/event/list');
-    	} else {
-    		$ev = Event::findFirst((int)$id);
+    	if (!empty($params) && $params['type'] == 'update') {
+    		$ev = Event::findFirst((int)$params['id']);
     		$name = SUri::slug($ev -> name);
-    		$this -> session -> set('eventViewForwarded', 1);
+    		$this -> session -> set('eventViewForwardedUp', 1);
     		
-    		$this -> response -> redirect('/' . $name . '-' . $id);
+    		$this -> response -> redirect('/' . $name . '-' . $ev -> id);
+    		
+    	} elseif(!empty($params) && $params['type'] == 'new') {
+    		$ev = Event::findFirst((int)$params['id']);
+    		$name = SUri::slug($ev -> name);
+    		$this -> session -> set('eventViewForwardedNew', 1);
+    		
+    		$this -> response -> redirect('/' . $name . '-' . $ev -> id);
+    		
+    	} else {
+    		$this -> response -> redirect('/event/list');
     	}
     }
 

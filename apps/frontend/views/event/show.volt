@@ -26,12 +26,17 @@
 
             <div class="event-one-box">
             
-		            	{% if viewMode is defined %}
-			        		<div id = "viewMode" switch = "on" fbevent = "{{ event.fb_uid }}" style="display:none; visibility:hidden;"></div>
+		            	{% if viewModeNew is defined %}
+			        		<div id = "viewModeNew" switch = "on" fbevent = "{{ event.fb_uid }}" style="display:none; visibility:hidden;"></div>
 				        {% else %}
-				        	<div id = "viewMode" switch = "off" style="display:none; visibility:hidden;"></div>
+				        	<div id = "viewModeNew" switch = "off" style="display:none; visibility:hidden;"></div>
 				        {% endif %}
 				        
+				        {% if viewModeUp is defined %}
+			        		<div id = "viewModeUp" switch = "on" fbevent = "{{ event.fb_uid }}" style="display:none; visibility:hidden;"></div>
+				        {% else %}
+				        	<div id = "viewModeUp" switch = "off" style="display:none; visibility:hidden;"></div>
+				        {% endif %}
 		        
                         <div class="row-fluid ">
                             <div class="span12">

@@ -132,7 +132,7 @@ class MemberController extends \Core\Controllers\CrudController
 	}
 	
 	
-	public function loadRedirect($id = false)
+	public function loadRedirect($params = [])
 	{
 		$this -> response -> redirect('/profile');
 	}
