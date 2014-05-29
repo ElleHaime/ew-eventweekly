@@ -29,21 +29,22 @@ class EventMemberCounter extends EventMemberCounterObject
 	
 	public function syncUnpublished($id)
 	{
-		$up = $this -> updateCounters($id, 1, 5);
-		$members = $this -> getMembers($id); 
+		$members = $this -> getMembers($id);
+		$this -> updateCounters($id, 1, 5);
 		$this -> syncCounters($members);
 	}
 	
 	public function syncPublished($id)
 	{
-		$up = $this -> updateCounters($id, 5, 1);
+		$this -> updateCounters($id, 5, 1);
 		$members = $this -> getMembers($id);
 		$this -> syncCounters($members);
 	}
 	
 	public function syncDeleted($id)
 	{
-		$members = $this -> getMembers($id);
+		$members = $this -> getMembers($id); 
+		$this -> deleteMembers($id);
 		$this -> syncCounters($members);		
 	}
 
@@ -65,6 +66,25 @@ class EventMemberCounter extends EventMemberCounterObject
 												AND Frontend\Models\EventMember.event_id = " . $eventId, $this -> getDI());
 		$query -> execute();
 	}
+	
+	private function deleteMembers($id)
+	{
+		$di = $this -> getDI();
+		
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventLike
+												WHERE Frontend\Models\EventLike.status = " . \Frontend\Models\EventLike::LIKE . "
+												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+		
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMember
+												WHERE Frontend\Models\EventMember.member_status = " . \Frontend\Models\EventMember::JOIN . "
+												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+		
+		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMemberFriend
+												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
+		$query -> execute();
+	}
 
 	private function getMembers($id) 
 	{
@@ -81,11 +101,6 @@ class EventMemberCounter extends EventMemberCounterObject
 				$members['liked'][] = $item -> member_id;
 			}
 		}
-		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventLike 
-												WHERE Frontend\Models\EventLike.status = " . \Frontend\Models\EventLike::LIKE . "
-												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
-		$query -> execute();
-
 		
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMember.member_id
 												FROM Frontend\Models\EventMember
@@ -97,11 +112,6 @@ class EventMemberCounter extends EventMemberCounterObject
 				$members['going'][] = $item -> member_id;
 			}
 		}
-		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMember 
-												WHERE Frontend\Models\EventMember.member_status = " . \Frontend\Models\EventMember::JOIN . "
-												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
-		$query -> execute();
-		
 		
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMemberFriend.member_id
 												FROM Frontend\Models\EventMemberFriend
@@ -112,9 +122,6 @@ class EventMemberCounter extends EventMemberCounterObject
 				$members['friends'][] = $item -> member_id;
 			}
 		}
-		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMemberFriend
-												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
-		$query -> execute();
 		
 		return $members;
 	}
