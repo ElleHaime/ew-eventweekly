@@ -90,6 +90,9 @@ class Member extends Model
 		if ($this -> getRelated('member_filter')) {
 			$this -> getRelated('member_filter') -> delete();
 		}
+		if ($this -> getRelated('counters')) {
+			$this -> getRelated('counters') -> delete();
+		}
 		$this -> delete();
 		
 		return;
