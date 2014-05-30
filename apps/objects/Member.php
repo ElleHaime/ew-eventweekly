@@ -84,9 +84,6 @@ class Member extends Model
 		if ($this -> getRelated('eventfriendpart')) {
 			$this -> getRelated('eventfriendpart') -> delete();
 		}
-		if ($this -> getRelated('counters')) {
-			$this -> getRelated('counters') -> delete();
-		}
 		if ($this -> getRelated('network')) {
 			$this -> getRelated('network') -> delete();
 		}
