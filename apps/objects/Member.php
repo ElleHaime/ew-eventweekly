@@ -71,7 +71,6 @@ class Member extends Model
 	
 	public function fullDelete()
 	{
-//_U::dump($this -> getRelated('eventpart') -> toArray());
 		if ($this -> getRelated('event')) {		
 			$this -> getRelated('event') -> delete();
 		}
