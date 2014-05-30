@@ -18,16 +18,21 @@ class Geo extends Plugin
 								  'administrative_area_level_1',
 								  'country');
 
-	protected $_locLonCur	= false;
-	protected $_locLatCur	= false;
-	protected $_locLonMin	= false;
-	protected $_locLatMin	= false;
-	protected $_locLonMax 	= false;
-	protected $_locLatMax	= false;
-	protected $_countryCode = false;	
-	protected $_userIp 		= false;
-	protected $_config 		= false;
-	protected $_errors		= array();
+	protected $_locLonCur				= false;
+	protected $_locLatCur				= false;
+	protected $_locLonMin				= false;
+	protected $_locLatMin				= false;
+	protected $_locLonMax 				= false;
+	protected $_locLatMax				= false;
+	protected $_cityCur 				= false;
+	protected $_aliasCur 				= false;
+	protected $_countryCur 				= false;
+	protected $_stateCur 				= false;
+	protected $_countryCode 			= false;	
+	protected $_userIp 					= false;
+	protected $_config 					= false;
+	protected $_isLocationDefault 		= false;
+	protected $_errors					= array();
 	
 	public function __construct($dependencyInjector = null)
 	{
@@ -84,8 +89,18 @@ class Geo extends Plugin
 	        $this -> _countryCode = $record->country->isoCode;
 		} catch (\Exception $e) {
 			$dublin = \Frontend\Models\Location::findFirst('city = "Dublin"');
+			
 			$this -> _locLatCur = ($dublin -> latitudeMax + $dublin -> latitudeMin)/2;
 			$this -> _locLonCur = ($dublin -> longitudeMax + $dublin -> longitudeMin)/2;
+			$this -> _locLonMin	= $dublin -> longitudeMin;
+			$this -> _locLatMin	= $dublin -> latitudeMin;
+			$this -> _locLonMax = $dublin -> longitudeMax;
+			$this -> _locLatMax = $dublin -> latitudeMax;
+			$this -> _cityCur = $dublin -> city;
+			$this -> _stateCur = $dublin -> state;
+			$this -> _aliasCur = $dublin -> alias;
+			$this -> _countryCur = $dublin -> country;
+			$this -> _isLocationDefault = true;
 		}
 		
         \Core\Logger::logFile('ips');
@@ -109,6 +124,22 @@ class Geo extends Plugin
 				return $location;
 			} else {
 				$this -> setUserLocation();
+				
+				if ($this -> _isLocationDefault) {
+					$location['ip'] = $this -> _userIp;
+					$location['latitude'] = (float)$this -> _locLatCur ;
+					$location['longitude'] = (float)$this -> _locLonCur;
+					$location['latitudeMin'] = (float)$this -> _locLatMin;
+					$location['longitudeMin'] = (float)$this -> _locLonMin;
+					$location['latitudeMax'] = (float)$this -> _locLatMax;
+					$location['longitudeMax'] = (float)$this -> _locLonMax;
+					$location['alias'] = $this -> _aliasCur;
+					$location['city'] = $this -> _cityCur;
+					$location['state'] = $this -> _stateCur;
+					$location['country'] = $this -> _countryCur;
+					
+					return $location;
+				}		
 			}
 		}
 
@@ -211,9 +242,7 @@ class Geo extends Plugin
 			} else {
 			 	$return = $result -> status;
 			}
-		} else {
-			return false;
-		}
+		} 
 	} 
 	
 	protected function _buildQuery($lat, $lon, $countryCode = false)
