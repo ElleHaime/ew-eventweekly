@@ -6,17 +6,15 @@ define('fb',
 		{
 			var self = this;
 
-			/*self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
-								'user_groups,user_interests,user_likes,user_location,user_checkins,user_events,' +
-								'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
-								'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
-								'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages';*/
-
             self.permissions = 'email,user_activities,user_birthday,user_interests,user_likes,' +
                 'user_groups,user_location,user_events,' +
                 'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
                 'friends_events,publish_actions,publish_stream,' +
-                'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
+                'create_event,rsvp_event,read_friendlists,read_insights,manage_pages'; 
+            
+            /*self.permissions = 'email,user_likes,user_location,user_events,' +
+					            'user_friends,friends_events,publish_actions,publish_stream,' +
+					            'create_event,rsvp_event,read_friendlists,read_insights,manage_pages'; */
 
 			self.settings = {
                 userEventsGoing: '#userEventsGoing',

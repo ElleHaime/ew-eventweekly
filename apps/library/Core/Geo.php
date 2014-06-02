@@ -32,11 +32,13 @@ class Geo extends Plugin
 	protected $_userIp 					= false;
 	protected $_config 					= false;
 	protected $_isLocationDefault 		= false;
+	protected $di 						= false;
 	protected $_errors					= array();
 	
 	public function __construct($dependencyInjector = null)
 	{
 		if ($dependencyInjector) {
+			$this -> _di = $dependencyInjector;
 			$this -> _config = $dependencyInjector -> get('config');
 			$this -> _fb_config = $dependencyInjector -> get('facebook_config');
 		} else {
@@ -53,7 +55,7 @@ class Geo extends Plugin
 			$this -> _userIp = '31.172.138.197'; 		// Odessa
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
-		}
+		} 
 		return;
 	}
 
@@ -87,7 +89,7 @@ class Geo extends Plugin
 	        $this -> _locLatCur = $record->location->latitude;
 	        $this -> _locLonCur = $record->location->longitude;
 	        $this -> _countryCode = $record->country->isoCode;
-		} catch (\Exception $e) {
+		} catch (\Exception $e) { 
 			$dublin = \Frontend\Models\Location::findFirst('city = "Dublin"');
 			
 			$this -> _locLatCur = ($dublin -> latitudeMax + $dublin -> latitudeMin)/2;
@@ -101,6 +103,8 @@ class Geo extends Plugin
 			$this -> _aliasCur = $dublin -> alias;
 			$this -> _countryCur = $dublin -> country;
 			$this -> _isLocationDefault = true;
+			
+			$this -> _di -> get('session') -> set('isLocationDefined', false);
 		}
 		
         \Core\Logger::logFile('ips');
@@ -154,12 +158,11 @@ class Geo extends Plugin
 
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
 			$result = json_decode(file_get_contents($url));
-//_U::dump($result);
+
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
 				foreach ($result -> results as $object => $details) {
 					$units[$details -> types[0]] = $object;
 				}
-//_U::dump($units);
 				if (!isset($units['locality'])) {
 					$newArgs = $result -> results[0];
 			
@@ -232,7 +235,7 @@ class Geo extends Plugin
 							$location['latitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lat;
 							$location['longitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lng;
 						}						
-//_U::dump($location);	
+
 						return $location;
 					} 
 				} else {

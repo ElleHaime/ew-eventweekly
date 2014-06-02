@@ -36,6 +36,10 @@ class Controller extends \Phalcon\Mvc\Controller
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
+        
+        if (!$this -> session -> has('isLocationDefined')) {
+        	$this -> session -> set('isLocationDefined', true);
+        }
 
         $this -> plugSearch();
         $this -> checkCache();
@@ -107,6 +111,13 @@ class Controller extends \Phalcon\Mvc\Controller
         }
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
+
+        if($this -> session -> get('isLocationDefined') === false) {
+        	$this -> view -> setVar('flashMsgText', 'Sorry, we can\'t define your current location by your IP');
+        	$this -> view -> setVar('flashMsgType', 'info');
+        	
+        	$this -> session -> set('isLocationDefined', true);
+        }
 
         $detect = new MobileDetect();
         if ($detect->isMobile() || $detect->isTablet()) {
