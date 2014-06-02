@@ -16,6 +16,24 @@
     <div id="external_logged" extname="{{ external_logged }}" display="none;"></div>
 {% endif %}
 
+{% if permission_base is defined %}
+	<input type="hidden" id="permission_base" value="{{ permission_base }}">
+{% else %}
+	<input type="hidden" id="permission_base" values = "0">
+{% endif %}
+
+{% if permission_publish is defined %}
+    <input type="hidden" id="permission_publish" value="{{ permission_publish }}">
+{% else %}
+	<input type="hidden" id="permission_publish" value="0">
+{% endif %}
+
+{% if permission_manage is defined %}
+    <input type="hidden" id="permission_manage" value="{{ permission_manage }}">
+{% else %}
+	<input type="hidden" id="permission_manage" value="0">
+{% endif %}
+
 {% if acc_external is defined %}
     <input type="hidden" id="member_ext_uid" value="{{ acc_external.account_uid }}">
 {% endif %}

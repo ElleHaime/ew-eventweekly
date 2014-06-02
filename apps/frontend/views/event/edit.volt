@@ -33,6 +33,7 @@
                                             <div id="content-box">
                                                 <div class="form-center clearfix">
                                                     <div class="input-div clearfix">
+                                                    	
                                                         {{ form.render('name') }}
 
                                                         <div class="arrow_box"> arrow</div>

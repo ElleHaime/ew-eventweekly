@@ -233,6 +233,43 @@ class AuthController extends \Core\Controller
         $res['status'] = 'OK';
         echo json_encode($res);
     }
+    
+    
+    /**
+     * @Route("/fbpermissions", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function fbpermissionsAction()
+    {
+    	$data = $this -> request -> getPost();
+    	$res = [];
+    
+    	if (!empty($data)) {
+    		$memberNetwork = MemberNetwork::findFirst('member_id = "' . $this -> session -> get('memberId') . '"');
+    
+    		if ($memberNetwork) {
+    			$memberNetwork -> permission_base = $data['permission_base'];
+    			$memberNetwork -> permission_publish = $data['permission_publish'];
+    			$memberNetwork -> permission_manage = $data['permission_manage'];
+    			$memberNetwork -> update();
+    			
+    			$this -> session -> set('permission_base', $data['permission_base']);
+    			$this -> session -> set('permission_publish', $data['permission_publish']);
+    			$this -> session -> set('permission_manage', $data['permission_manage']);
+    			
+    			$res['status'] = 'OK';
+    			echo json_encode($res);
+    		} else {
+    			$res['status'] = 'ERROR';
+    			$res['message'] = 'No such FB user';
+    			echo json_encode($res);
+    		}
+    	} else {
+    		$res['status'] = 'ERROR';
+    		$res['message'] = 'Permissions is empty';
+    		echo json_encode($res);
+    	}
+    }
 
 
     /**

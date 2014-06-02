@@ -83,6 +83,9 @@ define('frontEventEditControl',
                 eventFbStatus: '#event_fb_status',
                 accSynced: '#acc_synced',
                 externalLogged: '#external_logged',
+                permissionBase: '#permission_base',
+                permissionPublish: '#permission_publish',
+                permissionManage: '#permission_manage',
                 btnPreview: '#btn-preview',
                 deleteImage: '.delete-logo',
 
@@ -623,6 +626,12 @@ service.getDetails(request,
                 if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
                     $(self.settings.eventFbStatus).parent().append(
                         '<br/><span>To publish events on facebook link or sync with your Facebook account at <a href="/profile">profile</a></span>'
+                    );
+                    $(self.settings.eventFbStatus).prop('checked', false);
+                    $(self.settings.eventFbStatus).attr('disabled', true);
+                } else if ($(self.settings.permissionPublish).val() != '1' || $(self.settings.permissionManage).val() != '1') {
+                	$(self.settings.eventFbStatus).parent().append(
+                        '<br/><span style="color:red;">You are about to create an event on EW site. If you want it published to facebook, please synchronize your account with facebook <a href="/profile">here</a> and allow all required permissions for EW application.<br> We respect your privacy and will not be posting any information from your behalf, unless you approve it.</span>'
                     );
                     $(self.settings.eventFbStatus).prop('checked', false);
                     $(self.settings.eventFbStatus).attr('disabled', true);

@@ -6,11 +6,19 @@ define('frontMemberEditControl',
         {
             var self = this;
 
-            self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
+            /*self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
                 'user_groups,user_interests,user_likes,user_location,user_checkins,user_events,' +
                 'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
                 'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
-                'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages',
+                'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages', */
+            
+            self.permissions = 'email,user_likes,user_location,user_events,' +
+					            'user_friends,friends_events,publish_actions,publish_stream,' +
+					            'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
+            
+            self.basicPermList = ['basic_info', 'email', 'friends_events', 'installed', 'public_profile', 'read_friendlists', 'user_events', 'user_friends', 'user_likes', 'user_location'];
+            self.publishPermList = ['create_note', 'photo_upload', 'publish_actions', 'publish_checkins', 'publish_stream', 'share_item', 'status_update', 'video_upload'];
+            self.managePermList = ['create_event', 'manage_pages', 'read_insights', 'rsvp_event'];
 
             self.userData = [
                 'first_name',
@@ -233,6 +241,7 @@ define('frontMemberEditControl',
                         { scope: self.permissions }
                     );
                 });
+               
             }
 
             self.__linkFBAccount = function(data, action)
@@ -261,16 +270,61 @@ define('frontMemberEditControl',
                     if (data.errors !== 'false') {
                         noty({text: successMsg, type: 'warning'});
 
-                        if (action == 'link') {
+                        self.__checkPermissions(action);
+                        /*if (action == 'link') {
                             $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
                             $(self.settings.linkToFbAccBtn).remove();
-                        }
+                        }*/
 
                     } else {
                         noty({text: errorMsg, type: 'error'});
                     }
                 });
             }
+            
+            self.__checkPermissions = function(action)
+			{
+            	FB.api(
+                	'/me/permissions',
+	               	function(permData) {
+	               		permission_base = 1;
+	               		permission_publish = 1;
+	               		permission_manage = 1;
+	               		
+	               		self.basicPermList.forEach(function(item) {
+	    					if (!(item in permData.data[0])) {
+	    						permission_base = 0;
+	    					}
+	    				});
+	               		self.publishPermList.forEach(function(item) {
+	    					if (!(item in permData.data[0])) {
+	    						permission_publish = 0;
+	    					}
+	    				});
+	               		self.managePermList.forEach(function(item) {
+	    					if (!(item in permData.data[0])) {
+	    						permission_manage = 0;
+	    					}
+	    				});
+	               		
+	               		params = {'permission_base': permission_base,
+	               				  'permission_publish': permission_publish,
+	               				  'permission_manage': permission_manage};
+	               		
+	               		$.when(self.__request('post', '/fbpermissions', params)).then(function(response) {
+	               			data = $.parseJSON(response);
+	                    	if (data.status != 'OK') {
+	                    		$(self.settings.errorBox).html('Facebook return empty permissions :(');
+	    		                $(self.settings.errorBox).show();
+	                    	} 
+	               		})
+                	});
+            	
+                if (action == 'link') {
+	                $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
+	                $(self.settings.linkToFbAccBtn).remove();
+            	}
+			}
 
             self.checkFill = function(field)
             {

@@ -93,7 +93,14 @@ class Controller extends \Phalcon\Mvc\Controller
 
             if ($this->session->has('user_token')) {
                 $this->view->setVar('external_logged', 'facebook');
+                                    
+                $this->view->setVar('permission_base', $this->session->get('permission_base'));
+                $this->view->setVar('permission_publish', $this->session->get('permission_publish'));
+                $this->view->setVar('permission_manage', $this->session->get('permission_manage'));
+                
                 if (isset($this->view->member->network)) {
+                    $this->view->setVar('acc_external', $this->view->member->network);
+                    $this->view->setVar('acc_external', $this->view->member->network);
                     $this->view->setVar('acc_external', $this->view->member->network);
                 }
             }
