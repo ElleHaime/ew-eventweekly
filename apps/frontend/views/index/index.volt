@@ -58,7 +58,7 @@
         <div class="container-box">
             <div class="text-label"><span>Login</span> <br/>with facebook:</div>
             <div class="button clearfix">
-                <a href="#"  class="btn-facebook" onclick="return false;" id="fb-login">facebook</a>
+                <a style="cursor:pointer;" class="btn-facebook" onclick="return false;" id="fb-login">facebook</a>
             </div>
             <div class="tip clear">
                 <i class="fb-lock"></i>
