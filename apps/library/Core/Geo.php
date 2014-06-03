@@ -52,7 +52,7 @@ class Geo extends Plugin
 	public function setUserIp()
 	{
 		if ($this -> _fb_config -> debug) {
-			$this -> _userIp = '31.172.138.197'; 		// Odessa
+			$this -> _userIp = '195.24.243.10'; 		// Hz gde
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		} 
@@ -78,6 +78,39 @@ class Geo extends Plugin
 		}
 	}
 
+	public function setDefaultLocation()
+	{
+		$dublin = \Frontend\Models\Location::findFirst('city = "Dublin"');
+		
+		$this -> _locLatCur = ($dublin -> latitudeMax + $dublin -> latitudeMin)/2;
+		$this -> _locLonCur = ($dublin -> longitudeMax + $dublin -> longitudeMin)/2;
+		$this -> _locLonMin	= $dublin -> longitudeMin;
+		$this -> _locLatMin	= $dublin -> latitudeMin;
+		$this -> _locLonMax = $dublin -> longitudeMax;
+		$this -> _locLatMax = $dublin -> latitudeMax;
+		$this -> _cityCur = $dublin -> city;
+		$this -> _stateCur = $dublin -> state;
+		$this -> _aliasCur = $dublin -> alias;
+		$this -> _countryCur = $dublin -> country;
+		$this -> _isLocationDefault = true;
+		
+		$this -> _di -> get('session') -> set('isLocationDefined', false);
+
+		$location['ip'] = $this -> _userIp;
+		$location['latitude'] = (float)$this -> _locLatCur ;
+		$location['longitude'] = (float)$this -> _locLonCur;
+		$location['latitudeMin'] = (float)$this -> _locLatMin;
+		$location['longitudeMin'] = (float)$this -> _locLonMin;
+		$location['latitudeMax'] = (float)$this -> _locLatMax;
+		$location['longitudeMax'] = (float)$this -> _locLonMax;
+		$location['alias'] = $this -> _aliasCur;
+		$location['city'] = $this -> _cityCur;
+		$location['state'] = $this -> _stateCur;
+		$location['country'] = $this -> _countryCur;
+		
+		return $location;
+	}
+
 	public function setUserLocation()
 	{
 		try {
@@ -85,26 +118,12 @@ class Geo extends Plugin
 	        					 $this -> _config -> application -> GeoIp2 -> licenseKey);
 	
 	        $record = $client->city($this->_userIp);
-	
+
 	        $this -> _locLatCur = $record->location->latitude;
 	        $this -> _locLonCur = $record->location->longitude;
 	        $this -> _countryCode = $record->country->isoCode;
 		} catch (\Exception $e) { 
-			$dublin = \Frontend\Models\Location::findFirst('city = "Dublin"');
-			
-			$this -> _locLatCur = ($dublin -> latitudeMax + $dublin -> latitudeMin)/2;
-			$this -> _locLonCur = ($dublin -> longitudeMax + $dublin -> longitudeMin)/2;
-			$this -> _locLonMin	= $dublin -> longitudeMin;
-			$this -> _locLatMin	= $dublin -> latitudeMin;
-			$this -> _locLonMax = $dublin -> longitudeMax;
-			$this -> _locLatMax = $dublin -> latitudeMax;
-			$this -> _cityCur = $dublin -> city;
-			$this -> _stateCur = $dublin -> state;
-			$this -> _aliasCur = $dublin -> alias;
-			$this -> _countryCur = $dublin -> country;
 			$this -> _isLocationDefault = true;
-			
-			$this -> _di -> get('session') -> set('isLocationDefined', false);
 		}
 		
         \Core\Logger::logFile('ips');
@@ -128,21 +147,8 @@ class Geo extends Plugin
 				return $location;
 			} else {
 				$this -> setUserLocation();
-				
 				if ($this -> _isLocationDefault) {
-					$location['ip'] = $this -> _userIp;
-					$location['latitude'] = (float)$this -> _locLatCur ;
-					$location['longitude'] = (float)$this -> _locLonCur;
-					$location['latitudeMin'] = (float)$this -> _locLatMin;
-					$location['longitudeMin'] = (float)$this -> _locLonMin;
-					$location['latitudeMax'] = (float)$this -> _locLatMax;
-					$location['longitudeMax'] = (float)$this -> _locLonMax;
-					$location['alias'] = $this -> _aliasCur;
-					$location['city'] = $this -> _cityCur;
-					$location['state'] = $this -> _stateCur;
-					$location['country'] = $this -> _countryCur;
-					
-					return $location;
+					return $this -> setDefaultLocation();
 				}		
 			}
 		}
@@ -163,6 +169,7 @@ class Geo extends Plugin
 				foreach ($result -> results as $object => $details) {
 					$units[$details -> types[0]] = $object;
 				}
+		
 				if (!isset($units['locality'])) {
 					$newArgs = $result -> results[0];
 			
@@ -182,14 +189,16 @@ class Geo extends Plugin
 					if (!isset($newRequestLoc) && isset($newRequestArea)) {
 						$newComponents[] = 'locality:' . $newRequestArea;
 					}
-					
+
 					$url = 'http://maps.googleapis.com/maps/api/geocode/json?components=' . implode('|', $newComponents) . '&sensor=false&language=en';
 					$result = json_decode(file_get_contents($url));
-		
+
 					if ($result -> status == 'OK' && count($result -> results) > 0) {
 						foreach ($result -> results as $object => $details) {
 							$units[$details -> types[0]] = $object;
 						}
+					} else {
+						return $this -> setDefaultLocation();						
 					}
 				}
 
