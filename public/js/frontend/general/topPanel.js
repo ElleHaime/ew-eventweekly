@@ -153,14 +153,14 @@ define('frontTopPanel',
                         "/member/login", "_blank",
                         "toolbar=yes, scrollbars=yes, resizable=yes, top=" + top + ", left=" + left + ", width=" + width + ", height=" + height
                     );
-                    popup.onbeforeunload = function(){
+                    /*popup.onbeforeunload = function(){
                         popup.close();
 
                         var ppVal = $('#popupRedirect').val();
                         if (ppVal == 'reload') {
                             location.reload();
                         }
-                    }
+                    }*/
                 }
 
                 $('body').on('click', '.fb-login-popup', showPopup);

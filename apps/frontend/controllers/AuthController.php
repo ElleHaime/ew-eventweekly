@@ -236,6 +236,15 @@ class AuthController extends \Core\Controller
     
     
     /**
+     * @Route("/auth/fbauthresponse{request}", methods={"GET", "POST"})
+     * @Acl(roles={'guest', 'member'});
+     */
+    public function fbauthresponseAction()
+    {
+    	$this -> view -> pick('auth/fbresponse');
+    }
+    
+    /**
      * @Route("/fbpermissions", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */

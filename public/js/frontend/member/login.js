@@ -12,19 +12,13 @@ require([
 
         if (window.opener) {
             $("#createAcc").click(function(){
-                //window.opener.$('#popupRedirect').val('signup');
                 window.opener.location.href = "/signup";
                 window.close();
             });
 
             $("#restorePass").click(function(){
-                //window.opener.$('#popupRedirect').val('restore');
                 window.opener.location.href = "/restore";
                 window.close();
-            });
-
-            $("#fb-login").click(function(){
-                window.opener.$('#popupRedirect').val('reload');
             });
         }
 

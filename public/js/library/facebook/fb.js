@@ -6,12 +6,6 @@ define('fb',
 		{
 			var self = this;
 
-            /*self.permissions = 'email,user_activities,user_birthday,user_interests,user_likes,' +
-                'user_groups,user_location,user_events,' +
-                'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
-                'friends_events,publish_actions,publish_stream,' +
-                'create_event,rsvp_event,read_friendlists,read_insights,manage_pages'; */ 
-            
             self.permissions = 'email,user_likes,user_location,user_events,' +
 					            'user_friends,friends_events,publish_actions,publish_stream,' +
 					            'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
@@ -64,14 +58,15 @@ define('fb',
 
 			self.init = function(options)
 			{
-                /*self.settings = $.extend(self.settings, options);*/
-
-
                 FB.init({
                     appId: window.fbAppId,
                     status: self.settings.status
                 });
-
+                
+                FB.Event.subscribe('auth.login', function(response) {
+                	self.__getLoginResponse(response);
+                });
+                
                 FB.XFBML.parse();
 
 			    self.bindEvents();
@@ -80,12 +75,12 @@ define('fb',
 			self.bindEvents = function()
 			{
 				$(self.settings.btnLogin).click(function(e) {
-					self.__login();
+					if (window.opener) {
+						window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id="+window.fbAppId+"&scope=" + self.permissions + "&redirect_uri=http://" + window.location.host + "/auth/fbauthresponse&response_type=token");
+					} else {
+						self.__login();
+					} 
 				});
-
-				/*$(self.settings.btnInvite).click(function(e) {
-					self.__inviteFriends();
-				});*/
 
 				$(self.settings.btnEventGoing).click(function(e) {
                     if ($(self.settings.isLogged).val() != 1) {
@@ -109,43 +104,14 @@ define('fb',
 					self.__shareEvent();
 				});
 			}
-
+			
 			self.__login = function()
 			{
-			 	FB.login(
-		            function(response) {
-		                if (response.authResponse) {
-		                    self.accessToken = response.authResponse.accessToken;
-		                    self.accessUid = response.authResponse.userID;
-		                    authParams = { uid: self.accessUid, 
-		                    			   access_token: self.accessToken };
-		                    $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
-		                    		data = $.parseJSON(data);
-		                    		if (data.status == 'OK') {
-		                    			var userData = self.userData.join(',');
-		                    			FB.api({
-							                method: 'fql.query',
-						               		query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
-							               	function(facebookData) {
-							               		if (!facebookData) {
-							               			alert('Can\'t get your info from FB acc');
-							               			return false;
-							               		}
-							               		
-							               		self.__register(facebookData[0]);
-							               	}); 
-		                    		} else {
-		                    			alert('I can\'t authorize you, sorry, bro');
-		                    		}  
-		                    	}); 
-		                } else {
-		                    alert('You need to be logged in.');
-		                }
-		            },
-
- 					{scope: self.permissions}
- 				);
- 			}
+			 	FB.login(function(response) {
+			 		self.__getLoginResponse(response);
+			 	}, 
+			 	{scope: self.permissions});
+			}
 
 
 			self.__register = function(data)
@@ -171,6 +137,43 @@ define('fb',
                 }); 
 			}
 			
+			self.__getLoginResponse = function(response)
+			{
+				if (response.status === 'connected') {
+					 self.accessToken = response.authResponse.accessToken;
+					 self.accessUid = response.authResponse.userID;
+					 
+	                 self.__getLoginData();
+			    } else {
+			    	alert('You need to be logged in.');
+				}
+			}
+			
+			self.__getLoginData = function()
+			{
+				authParams = { uid: self.accessUid, 
+         			   		   access_token: self.accessToken };
+				
+		        $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
+		         		data = $.parseJSON(data);
+		         		if (data.status == 'OK') {
+		         			var userData = self.userData.join(',');
+		         			FB.api({
+					                method: 'fql.query',
+				               		query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
+					               	function(facebookData) {
+					               		if (!facebookData) {
+					               			alert('Can\'t get your info from FB acc');
+					               			return false;
+					               		}
+					               		
+					               		self.__register(facebookData[0]);
+					               	}); 
+		         		} else {
+		         			alert('I can\'t authorize you, sorry, bro');
+		         		}  
+		        }); 
+			}
 			
 			self.__checkPermissions = function()
 			{
