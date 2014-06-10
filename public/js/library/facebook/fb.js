@@ -45,6 +45,7 @@ define('fb',
 			];
 			self.accessToken = '';
 			self.accessUid = '';
+			self.relocateAfterLogin = true;
 
 			self.shareImg = '/img/logo200.png';
 			self.firstPage = '/map';
@@ -54,17 +55,13 @@ define('fb',
 			self.demoLng = '-6.26577123';
 			self.demoCity = 'Dublin';
 			self.demoCookiePath = '/';
-
+			
 
 			self.init = function(options)
 			{
                 FB.init({
                     appId: window.fbAppId,
                     status: self.settings.status
-                });
-                
-                FB.Event.subscribe('auth.login', function(response) {
-                	self.__getLoginResponse(response);
                 });
                 
                 FB.XFBML.parse();
@@ -142,6 +139,9 @@ define('fb',
 				if (response.status === 'connected') {
 					 self.accessToken = response.authResponse.accessToken;
 					 self.accessUid = response.authResponse.userID;
+					 if (response.relocate != undefined) {
+						 self.relocateAfterLogin = false;
+					 }
 					 
 	                 self.__getLoginData();
 			    } else {
@@ -208,22 +208,23 @@ define('fb',
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {
 	                    		if (self.reDemo.test(location.pathname) == true) {
-	                    			console.log('Set latitude to cookie: '+ self.demoLat);
-	                                console.log('Set longitude to cookie: '+ self.demoLng);
-	                                
 	                                $.cookie('lastLat', self.demoLat, {expires: 1, path: self.demoCookiePath});
 	                                $.cookie('lastLng', self.demoLng, {expires: 1, path: self.demoCookiePath});
 	                                $.cookie('lastCity', self.demoCity, {expires: 1, path: self.demoCookiePath});
 	                                
 	                                if (window.opener) {
-	                                	window.opener.location.href = self.demoPage;
+                                		window.opener.location.href = self.demoPage;
 	                                	window.close();
 	                                } else {
 	                                	window.location.href = self.demoPage;
 	                                }  
 	                    		} else {
 	                    			if (window.opener) {
-	                    				window.opener.location.href = self.firstPage;
+	                                	if (self.relocateAfterLogin === true) {
+	                                		window.opener.location.href = self.firstPage;
+	                                	} else {
+	                                		window.opener.location.href = self.firstPage;
+	                                	}
 	                    				window.close();
 	                    			} else {
 	                    				window.location.href = self.firstPage;

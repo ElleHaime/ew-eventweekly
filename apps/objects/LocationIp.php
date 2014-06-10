@@ -17,4 +17,20 @@ class LocationIp extends Model
 		parent::initialize();
 		$this -> hasMany('location_id', '\Object\Location', 'id', array('alias' => 'location'));
 	}
+	
+	public function saveNewIp($locationId, $ip)
+	{
+		if ($ip != '') {
+			$ipExists = self::findFirst('ip = "' . $ip . '"');
+			
+			if (!$ipExists) {
+				$newIp = new self;			
+				$newIp -> assign([
+						'location_id' => $locationId,
+						'ip' => $ip
+						]);
+				$newIp -> save();
+			}
+		}
+	}
 }

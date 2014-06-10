@@ -93,6 +93,12 @@ class Location extends Model
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
 		$isLocationExists = false;
+		$saveIp = false;
+		
+		if (empty($argument)) {
+			$saveIp = true;
+		}
+		
 		!is_null($this -> getCache() -> exists('locations')) 
 						? $locationsScope = $this -> getCache() -> get('locations')
 						: $locationsScope = [];
@@ -142,7 +148,7 @@ class Location extends Model
 					} else {
 						$newLoc = $argument;
 					}
-	
+
 					if ($newLoc) {
 						if (!isset($argument['id']) || empty($argument['id'])) {
 							$newLoc[$network . '_id'] = null;
@@ -159,13 +165,14 @@ class Location extends Model
 
 						if (isset($newLoc['ip'])) {
 							$newIp = new LocationIp();
-							$newIp -> assign([
-								'location_id' => $isLocationExists -> id,
-								'ip' => $newLoc['ip']
-							]);
-							$newIp -> save();
+							$newIp -> saveNewIp($isLocationExists -> id, $newLoc['ip']);
 						}
 					}
+				} else {
+					if ($saveIp !== false) {
+						$newIp = new LocationIp();
+						$newIp -> saveNewIp($isLocationExists -> id, $geo -> getUserIp());
+					} 
 				}
 
 				if (!empty($newLoc)) {

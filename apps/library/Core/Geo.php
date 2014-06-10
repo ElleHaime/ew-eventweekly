@@ -52,10 +52,12 @@ class Geo extends Plugin
 	public function setUserIp()
 	{
 		if ($this -> _fb_config -> debug) {
-			$this -> _userIp = '195.24.243.10'; 		// Hz gde
+			//$this -> _userIp = '195.24.243.10'; 		// Hz gde
+			$this -> _userIp = '79.140.3.235'; 			// Odessa
+			$this -> _userIp = '202.29.214.2'; 			// Tai, Hankha
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
-		} 
+		}
 		return;
 	}
 
@@ -233,7 +235,7 @@ class Geo extends Plugin
 							$location['latitude'] = (float)$coordinates['latitude'];
 							$location['longitude'] = (float)$coordinates['longitude'];
 						} else {
-							$location['ip'] = $this -> _userIp;
+							$location['ip'] = $this -> getUserIp();
 							$location['latitude'] = (float)$this -> _locLatCur ;
 							$location['longitude'] = (float)$this -> _locLonCur;
 						}

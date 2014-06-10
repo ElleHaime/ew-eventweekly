@@ -15,6 +15,8 @@ require([
         });
         
         FB.Event.subscribe('auth.authResponseChange', function(response) {
+        	response.relocate = true;
+        	
         	fb.__getLoginResponse(response);
         });
     }
