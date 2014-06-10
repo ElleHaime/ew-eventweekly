@@ -50,9 +50,9 @@ class AuthController extends \Core\Controller
 
                 if (!$member || !$this->security->checkHash($pass, $member->pass)) {
                     if (!$this->request->isAjax()) {
-                        $this->setFlash('Wrong login credentials!', 'error');
+                        $this->setFlash('Your email or password are incorrect', 'error');
                     } else {
-                        echo json_encode(array('error' => 'Wrong login credentials!'));
+                        echo json_encode(array('error' => 'Your email or password are incorrect'));
                         exit();
                     }
                 } else {
