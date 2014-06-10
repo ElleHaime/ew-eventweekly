@@ -124,15 +124,15 @@ class Geo extends Plugin
 	        $this -> _locLatCur = $record->location->latitude;
 	        $this -> _locLonCur = $record->location->longitude;
 	        $this -> _countryCode = $record->country->isoCode;
+	        
+	        \Core\Logger::logFile('ips');
+	        \Core\Logger::log($this -> _userIp);
+	        if (isset($record)) {
+	        	\Core\Logger::log($record);
+	        }
 		} catch (\Exception $e) { 
 			$this -> _isLocationDefault = true;
 		}
-		
-        \Core\Logger::logFile('ips');
-        \Core\Logger::log($this -> _userIp);
-        if (isset($record)) {
-            \Core\Logger::log($record);
-        }
 	}
 
 	public function getUserLocation()
