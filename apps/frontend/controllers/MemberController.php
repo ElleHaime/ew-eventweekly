@@ -534,7 +534,7 @@ class MemberController extends \Core\Controllers\CrudController
 		    	 'member_id' => $this -> session -> get('memberId'),
 		    	 'hash' => time()];
     	$newTask -> assign($task);
-    	$newTask -> save();
+    	$newTask -> save(); 
     	
     	$member = Member::findFirst($this -> session -> get('memberId'));
 		$member -> fullDelete();

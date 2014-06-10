@@ -43,7 +43,7 @@ class EventMemberCounter extends EventMemberCounterObject
 	
 	public function syncDeleted($id)
 	{
-		$members = $this -> getMembers($id); 
+		$members = $this -> getMembers($id);
 		$this -> deleteMembers($id);
 		$this -> syncCounters($members);		
 	}
@@ -56,14 +56,14 @@ class EventMemberCounter extends EventMemberCounterObject
 		$query = new \Phalcon\Mvc\Model\Query("UPDATE Frontend\Models\EventLike
 												SET Frontend\Models\EventLike.status = " . $statusTo . "
 												WHERE Frontend\Models\EventLike.status = " . $statusFrom . "
-												AND Frontend\Models\EventLike.event_id = " . $eventId, $this -> getDI());
+												AND Frontend\Models\EventLike.event_id IN (" . $eventId . ")", $this -> getDI());
 		$query -> execute();
 
 		
 		$query = new \Phalcon\Mvc\Model\Query("UPDATE Frontend\Models\EventMember
 												SET Frontend\Models\EventMember.member_status = " . $statusTo . "
 												WHERE Frontend\Models\EventMember.member_status = " . $statusFrom . "
-												AND Frontend\Models\EventMember.event_id = " . $eventId, $this -> getDI());
+												AND Frontend\Models\EventMember.event_id IN  (" . $eventId . ")", $this -> getDI());
 		$query -> execute();
 	}
 	
@@ -73,16 +73,16 @@ class EventMemberCounter extends EventMemberCounterObject
 		
 		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventLike
 												WHERE Frontend\Models\EventLike.status = " . \Frontend\Models\EventLike::LIKE . "
-												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
+												AND Frontend\Models\EventLike.event_id IN (" . $id . ")", $this -> getDI());
 		$query -> execute();
 		
 		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMember
 												WHERE Frontend\Models\EventMember.member_status = " . \Frontend\Models\EventMember::JOIN . "
-												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
+												AND Frontend\Models\EventMember.event_id IN (" . $id . ")", $this -> getDI());
 		$query -> execute();
 		
 		$query = new \Phalcon\Mvc\Model\Query("DELETE FROM Frontend\Models\EventMemberFriend
-												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
+												WHERE Frontend\Models\EventMemberFriend.event_id IN (" . $id . ")", $this -> getDI());
 		$query -> execute();
 	}
 
@@ -94,7 +94,7 @@ class EventMemberCounter extends EventMemberCounterObject
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.member_id
 												FROM Frontend\Models\EventLike
 												WHERE Frontend\Models\EventLike.status = " . \Frontend\Models\EventLike::LIKE . "
-												AND Frontend\Models\EventLike.event_id = " . $id, $this -> getDI());
+												AND Frontend\Models\EventLike.event_id IN (" . $id . ")", $this -> getDI());
 		$result = $query -> execute();
 		if ($result) {
 			foreach ($result as $item) {
@@ -105,7 +105,7 @@ class EventMemberCounter extends EventMemberCounterObject
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMember.member_id
 												FROM Frontend\Models\EventMember
 												WHERE Frontend\Models\EventMember.member_status = " . \Frontend\Models\EventMember::JOIN . "
-												AND Frontend\Models\EventMember.event_id = " . $id, $this -> getDI());
+												AND Frontend\Models\EventMember.event_id IN (" . $id . ")", $this -> getDI());
 		$result = $query -> execute();
 		if ($result) {
 			foreach ($result as $item) {
@@ -115,7 +115,7 @@ class EventMemberCounter extends EventMemberCounterObject
 		
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventMemberFriend.member_id
 												FROM Frontend\Models\EventMemberFriend
-												WHERE Frontend\Models\EventMemberFriend.event_id = " . $id, $this -> getDI());
+												WHERE Frontend\Models\EventMemberFriend.event_id IN (" . $id . ")", $this -> getDI());
 		$result = $query -> execute();
 		if ($result) {
 			foreach ($result as $item) {

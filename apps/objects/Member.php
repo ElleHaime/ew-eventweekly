@@ -4,6 +4,7 @@ namespace Objects;
 
 use Core\Model,
 	Core\Utils as _U,
+	Frontend\Models\EventMemberCounter as EventMemberCounter,
 	Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Member extends Model
@@ -71,6 +72,20 @@ class Member extends Model
 	
 	public function fullDelete()
 	{
+		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\Event.id
+												FROM Frontend\Models\Event
+												WHERE Frontend\Models\Event.member_id = " . $this -> id, $this -> getDI());
+		$result = $query -> execute(); 
+		if ($result) {
+			$eventIds = '';
+			foreach ($result as $item) {
+				$eventIds .= $item -> id . ',';
+			}
+			
+			$syncCounters = new EventMemberCounter();
+			$syncCounters -> syncDeleted(substr($eventIds, 0, strlen($eventIds)-1));
+		}
+		
 		if ($this -> getRelated('event')) {		
 			$this -> getRelated('event') -> delete();
 		}
