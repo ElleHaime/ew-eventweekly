@@ -14,10 +14,23 @@ require([
             status: true
         });
         
-        FB.Event.subscribe('auth.authResponseChange', function(response) {
+        /*FB.Event.subscribe('auth.authResponseChange', function(response) {
+        	alert('123');
         	response.relocate = true;
         	
         	fb.__getLoginResponse(response);
+        }); */
+        
+        FB.Event.subscribe('auth.statusChange', function(response) {
+        	if (response.authResponse != null) {
+            	response.relocate = true;
+            	
+            	fb.__getLoginResponse(response);
+        	} else {
+        		alert('You are not logged in');
+        		window.close();
+        		window.opener.location.href = "/map";
+        	}
         });
     }
 );
