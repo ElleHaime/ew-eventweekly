@@ -1,7 +1,7 @@
 define('frontEventLike',
-	['jquery', 'noty', 'utils', 'underscore'],
-	function($,  noty, utils) {
-		function frontEventLike($, noty)
+	['jquery', 'noty', 'fb', 'utils', 'underscore'],
+	function($,  noty, fb, utils) {
+		function frontEventLike($, noty, fb)
 		{
 			var self = this;
 			
@@ -36,14 +36,14 @@ define('frontEventLike',
 		     */
 		    self.__bindClicks = function() {
 		        $(self.settings.likeBtn).click(function(event) {
-		        	event.preventDefault();
-		        	self.__clickHandler($(this));
+		        	event.preventDefault();		        	
+			    	self.__clickHandler($(this));
 		        });
 		        
 		        $(self.settings.dislikeBtn).click(function(event) {
 		        	event.preventDefault();
 		        	self.__clickHandler($(this));
-		        });
+		        }); 
 		    },
 
 		    /**
@@ -114,5 +114,5 @@ define('frontEventLike',
 
 		};
 		
-		return new frontEventLike($, noty, utils);
+		return new frontEventLike($, noty, fb, utils);
 });

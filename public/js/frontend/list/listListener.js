@@ -37,7 +37,6 @@ define('listListener' ,['jquery','noty','SingleEvent','utils','domReady','unders
 	        };
 	
 	        var responseHandler = function(data) {
-console.log(data);	        	
 	            if (data.status == true && !_.isUndefined(data.events)) {
 	                var eventsBlock = $(settings.eventsBlock);
 	                

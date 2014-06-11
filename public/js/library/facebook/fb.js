@@ -27,7 +27,8 @@ define('fb',
 				errorBox: '#login_message',
 				status: true,
 
-                isLogged: '#isLogged'
+                isLogged: '#isLogged',
+                externalLogged: '#external_logged'
 			};
 			self.eventStatuses = {
 				join: 'JOIN',
@@ -80,13 +81,22 @@ define('fb',
 				});
 
 				$(self.settings.btnEventGoing).click(function(e) {
-                    if ($(self.settings.isLogged).val() != 1) {
-                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
-                        return false;
+					status = self.__checkLoginStatus();
+					
+                    if (status === 'not_logged') {
+                    	if ($(self.settings.isLogged).val() != 1) {
+	                    	noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login</a> to be able do this', type: 'warning'});
+	                    	return false;
+                    	} else {
+                    		self.__goingEvent();
+                    	}
+                    } else if(status === 'session_expired') {
+                    	self.__goingEvent();
+                    	noty({text: 'Your facebook authorization has expired =/ We can\'t share your action. <br>Please <a href="#" class="fb-login-popup" onclick="return false;">re-auth via Facebook</a> to be able to share this', type: 'info', timeout: false, maxVisible: 20});
+                    } else {
+                    	self.__goingEvent();
+                    	self.__shareEvent();
                     }
-
-					self.__goingEvent();
-                    self.__shareEvent();
 				});
 
 				$(self.settings.btnEventMaybe).click(function(e) {
@@ -236,6 +246,28 @@ define('fb',
 	                    	} 
 	               		})
                 	});
+			}
+			
+			
+			self.__checkLoginStatus = function()
+			{
+				if ($(self.settings.isLogged).val() != 1 || $(self.settings.externalLogged).length == 0) {
+					return 'not_logged';
+				} else {
+					FB.getLoginStatus(function(response) {
+						if (response.status === 'connected') {
+							return 'connected';
+						} else if (response.status === 'not_authorized') {
+							 if ($(self.settings.externalLogged).length > 0) {
+								 return 'session_expired';
+							 } else {
+								 return 'not_logged';
+							 }
+						} else {
+							return 'error';
+						}
+					});
+				}
 			}
 
 			self.__shareEvent = function()

@@ -101,9 +101,13 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
             __friendsClickHandler: function() {
                 var $this = this;
                 return function(event){
-                    if ($($this.settings.isLogged).val() === '0' || $($this.settings.externalLogged).length == 0) {
+                	status = fb.__checkLoginStatus();
+                	
+                    if (status === 'not_logged') {
                         noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', type: 'warning'});
-                    } else {
+                    } else if(status === 'session_expired') {
+                    	noty({text: 'Your facebook authorization has expired =/ <br>Please <a href="#" class="fb-login-popup" onclick="return false;">re-auth via Facebook</a> to be able to publish events there', type: 'warning'});
+                	} else if(status === 'connected') {
                         event.preventDefault();
 
                         // open or close invite friend panel
