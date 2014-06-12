@@ -251,23 +251,25 @@ define('fb',
 			
 			self.__checkLoginStatus = function()
 			{
+				result = '';
 				if ($(self.settings.isLogged).val() != 1 || $(self.settings.externalLogged).length == 0) {
 					return 'not_logged';
 				} else {
 					FB.getLoginStatus(function(response) {
-						if (response.status === 'connected') {
-							return 'connected';
-						} else if (response.status === 'not_authorized') {
+						if (response.status == 'connected') {
+							result = 'connected';
+						} else if (response.status == 'not_authorized') {
 							 if ($(self.settings.externalLogged).length > 0) {
-								 return 'session_expired';
+								 result = 'session_expired';
 							 } else {
-								 return 'not_logged';
+								 result = 'not_logged';
 							 }
 						} else {
-							return 'error';
+							result = 'error';
 						}
 					});
 				}
+				return result;
 			}
 
 			self.__shareEvent = function()

@@ -101,27 +101,29 @@ define('frontEventInviteFriend', ['jquery', 'noty',  'fb', 'domReady'],
             __friendsClickHandler: function() {
                 var $this = this;
                 return function(event){
-                	status = fb.__checkLoginStatus();
-                	
-                    if (status === 'not_logged') {
-                        noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', type: 'warning'});
-                    } else if(status === 'session_expired') {
-                    	noty({text: 'Your facebook authorization has expired =/ <br>Please <a href="#" class="fb-login-popup" onclick="return false;">re-auth via Facebook</a> to be able to publish events there', type: 'warning'});
-                	} else if(status === 'connected') {
-                        event.preventDefault();
+                	//status = fb.__checkLoginStatus();
 
-                        // open or close invite friend panel
-                        if ($($this.settings.friendsBlock + ' ul').length == 0) {
-                            $this.__getFriends();
-                        } else {
-                            // remove events
-                            $($this.settings.friendsBlock).empty();
+                    $.when(fb.__checkLoginStatus()).then(function(status) {
+                        if (status === 'not_logged') {
+                            noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to invite your friends to event', type: 'warning'});
+                        } else if(status === 'session_expired') {
+                        	noty({text: 'Your facebook authorization has expired =/ <br>Please <a href="#" class="fb-login-popup" onclick="return false;">re-auth via Facebook</a> to be able to publish events there', type: 'warning'});
+                    	} else if(status === 'connected') {
+                            event.preventDefault();
 
-                            // hide button Invite all
-                            $($this.settings.inviteAllBtn).css('display', 'none');
+                            // open or close invite friend panel
+                            if ($($this.settings.friendsBlock + ' ul').length == 0) {
+                                $this.__getFriends();
+                            } else {
+                                // remove events
+                                $($this.settings.friendsBlock).empty();
+
+                                // hide button Invite all
+                                $($this.settings.inviteAllBtn).css('display', 'none');
+                            }
                         }
-                    }
-                    return true;
+                        return true;
+                    });
                 }
             },
 
