@@ -41,7 +41,6 @@ define('fb',
 				'email', 
 				'current_location', 
 				'current_address', 
-				'username', 
 				'pic_big'
 			];
 			self.accessToken = '';
@@ -131,7 +130,7 @@ define('fb',
                            logo: data.pic_big,
                            first_name: data.first_name,
                            last_name: data.last_name,
-                           username: data.username };
+                           username: data.first_name + ' ' + data.last_name };
 			
                 $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
