@@ -75,8 +75,9 @@ class Member extends Model
 		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\Event.id
 												FROM Frontend\Models\Event
 												WHERE Frontend\Models\Event.member_id = " . $this -> id, $this -> getDI());
-		$result = $query -> execute(); 
-		if ($result) {
+		$result = $query -> execute();
+
+		if ($result -> count() > 0) {
 			$eventIds = '';
 			foreach ($result as $item) {
 				$eventIds .= $item -> id . ',';

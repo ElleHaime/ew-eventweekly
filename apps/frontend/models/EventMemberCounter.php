@@ -95,8 +95,9 @@ class EventMemberCounter extends EventMemberCounterObject
 												FROM Frontend\Models\EventLike
 												WHERE Frontend\Models\EventLike.status = " . \Frontend\Models\EventLike::LIKE . "
 												AND Frontend\Models\EventLike.event_id IN (" . $id . ")", $this -> getDI());
+		
 		$result = $query -> execute();
-		if ($result) {
+		if ($result -> count() > 0) {
 			foreach ($result as $item) {
 				$members['liked'][] = $item -> member_id;
 			}
@@ -107,7 +108,7 @@ class EventMemberCounter extends EventMemberCounterObject
 												WHERE Frontend\Models\EventMember.member_status = " . \Frontend\Models\EventMember::JOIN . "
 												AND Frontend\Models\EventMember.event_id IN (" . $id . ")", $this -> getDI());
 		$result = $query -> execute();
-		if ($result) {
+		if ($result -> count() > 0) {
 			foreach ($result as $item) {
 				$members['going'][] = $item -> member_id;
 			}
@@ -117,7 +118,7 @@ class EventMemberCounter extends EventMemberCounterObject
 												FROM Frontend\Models\EventMemberFriend
 												WHERE Frontend\Models\EventMemberFriend.event_id IN (" . $id . ")", $this -> getDI());
 		$result = $query -> execute();
-		if ($result) {
+		if ($result -> count() > 0) {
 			foreach ($result as $item) {
 				$members['friends'][] = $item -> member_id;
 			}
