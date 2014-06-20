@@ -263,6 +263,21 @@ class Application extends BaseApplication
 				} 
 			);
 		}
+		
+		if (!$di -> has('modelsMetadata')) {
+			$di -> set('modelsMetadata', 
+				function($config) {
+				
+					$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
+							'lifetime' => 86400,
+							'prefix' => 'ewtemp_',
+							'metaDataDir' => $config -> application -> cache -> cacheDir
+					));
+				
+					return $metaData;
+				}
+			);
+		}
 	}
 
 	protected function _initCache(\Phalcon\DI $di)
