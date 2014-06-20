@@ -100,13 +100,25 @@
                                 data-original-title="Back link"><i class="icon-back"></i>
                         </button>
                     {% elseif link_to_list is defined %}
-                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
-                                onclick="location.href='/list'" data-original-title="Show all list"><i class="icon-sel"></i>
-                        </button>
+                    	{% if searchResultMap is defined%}
+	                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
+	                                onclick="location.href='/search/list?{{ urlParams }}'" data-original-title="Show as list"><i class="icon-sel"></i>
+	                        </button>
+	                    {% else %}
+	                    	<button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
+	                                onclick="location.href='/list'" data-original-title="Show all list"><i class="icon-sel"></i>
+	                        </button>
+	                    {% endif %}
                     {% else %}
-                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
-                                onclick="location.href='/map'" data-original-title="Event map"><i class="icon-map"></i>
-                        </button>
+                    	{% if searchResultList is defined %}
+                    		<button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
+	                                onclick="location.href='/search/map?{{ urlParams }}'" data-original-title="Show as map"><i class="icon-map"></i>
+	                        </button>
+                    	{% else %}
+	                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
+	                                onclick="location.href='/map'" data-original-title="Event map"><i class="icon-map"></i>
+	                        </button>
+	                    {% endif %}
                     {% endif %}
                 </div>
 

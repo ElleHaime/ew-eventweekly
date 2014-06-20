@@ -271,12 +271,23 @@ class SearchController extends \Core\Controller
         }
 
         $this->view->setVar('listTitle', $pageTitle);
-        $this->view->setVar('urlParams', http_build_query($postData));
-
+        
+        $urlParams = http_build_query($postData);
         if ($postData['searchType'] == 'in_map') {
+        	$urlParams = str_replace(['in_map'], ['in_list'], $urlParams); 
+        } else {
+        	$urlParams = str_replace(['in_list'], ['in_map'], $urlParams);
+        }
+        $this->view->setVar('urlParams', $urlParams);
+
+        
+        if ($postData['searchType'] == 'in_map') {
+        	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
+        	$this->view->setVar('searchResultMap', true);
             $this->view->pick('event/mapEvent');
         } else {
+        	$this->view->setVar('searchResultList', true);
             $this->view->pick('event/eventList');
         }
     }
