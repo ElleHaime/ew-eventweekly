@@ -52,9 +52,13 @@
                                             <div class="event-one-img">
                                                 {% if eventPreview is defined %}
                                                     {% if eventPreviewLogo is defined %}
-                                                        <img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
+                                                    	{% if eventPreviewLogoReal is defined %}
+                                                        	<img src="/upload/img/event/{{ event.id }}/{{ event.logo }}">
+                                                        {% else %}
+                                                        	<img src="/upload/img/event/tmp/{{ event.logo }}">
+                                                        {% endif %}
                                                     {% else %}
-                                                        <img src="/upload/img/event/tmp/{{ event.logo }}">
+                                                        <img src="/img/logo200.png">
                                                     {% endif %}
                                                 {% else %}
                                                     <img src="{{ checkLogo(event) }}">
@@ -67,9 +71,13 @@
                                                     {% if poster is defined %}
                                                         {% if eventPreview is defined %}
                                                             {% if eventPreviewPoster is defined %}
-                                                                <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="" /></a>
+                                                            	{% if eventPreviewPosterReal is defined %}
+                                                            		<a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="" /></a>
+                                                            	{% else %}
+                                                                	<a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ eventPreviewPoster }}" alt="" /></a>
+                                                                {% endif %}
                                                             {% else %}
-                                                                <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ poster }}" alt="" /></a>
+                                                                <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/img/logo200.png" alt="" /></a>
                                                             {% endif %}
                                                         {% else %}
                                                             <a href="#poster-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="" /></a>
@@ -84,9 +92,13 @@
                                                                     <div class="modal-body">
                                                                         {% if eventPreview is defined %}
                                                                             {% if eventPreviewPoster is defined %}
-                                                                                <img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">
+                                                                            	{% if eventPreviewPosterReal is defined %}
+                                                                                	<img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">
+                                                                                {% else %}
+                                                                                	<img src="/upload/img/event/tmp/{{ eventPreviewPoster }}" alt="">
+                                                                                {% endif %}
                                                                             {% else %}
-                                                                                <img src="/upload/img/event/tmp/{{ poster }}" alt="">
+                                                                                <img src="/img/logo200.png" alt="">
                                                                             {% endif %}
                                                                         {% else %}
                                                                             <img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">
@@ -98,33 +110,19 @@
                                                             </div><!-- /.modal-dialog -->
                                                         </div><!-- /.modal -->
 
-
-                                                        {#<div id="poster-img" class="modal" role="dialog" aria-hidden="true">#}
-
-                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
-
-                                                            {#<div class="modal-body">#}
-                                                                {#{% if eventPreview is defined %}#}
-                                                                    {#{% if eventPreviewPoster is defined %}#}
-                                                                        {#<img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPoster }}" alt="">#}
-                                                                    {#{% else %}#}
-                                                                        {#<img src="/upload/img/event/tmp/{{ poster }}" alt="">#}
-                                                                    {#{% endif %}#}
-                                                                {#{% else %}#}
-                                                                    {#<img src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}" alt="">#}
-                                                                {#{% endif %}#}
-
-                                                            {#</div>#}
-                                                        {#</div>#}
                                                         {% set count = count + 1 %}
                                                     {% endif %}
 
                                                     {% if flyer is defined %}
                                                         {% if eventPreview is defined %}
                                                             {% if eventPreviewFlyer is defined %}
-                                                                <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" /></a>
+                                                            	{% if eventPreviewFlyerReal is defined %}
+                                                            		<a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" /></a>
+                                                            	{% else %}
+                                                                	<a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ eventPreviewFlyer }}" alt="" /></a>
+                                                                {% endif %}
                                                             {% else %}
-                                                                <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/tmp/{{ flyer }}" alt="" /></a>
+                                                                <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/img/logo200.png" alt="" /></a>
                                                             {% endif %}
                                                         {% else %}
                                                             <a href="#flyer-img" data-toggle="modal" class="clearfix" style="float:left;cursor: pointer"><img style="width: 93px; height: 84px" src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" /></a>
@@ -140,9 +138,13 @@
 
                                                                             {% if eventPreview is defined %}
                                                                                 {% if eventPreviewFlyer is defined %}
-                                                                                    <img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >
+                                                                                    {% if eventPreviewFlyerReal is defined %}
+                                                                                    	<img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >
+                                                                                    {% else %}
+                                                                                    	<img src="/upload/img/event/tmp/{{ eventPreviewFlyer }}" alt="" >
+                                                                                    {% endif %}
                                                                                 {% else %}
-                                                                                    <img src="/upload/img/event/tmp/{{ flyer }}" alt="" >
+                                                                                    <img src="/img/logo200.png" alt="" >
                                                                                 {% endif %}
                                                                             {% else %}
                                                                                 <img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >

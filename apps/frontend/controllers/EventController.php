@@ -1072,7 +1072,7 @@ class EventController extends \Core\Controllers\CrudController
     public function eventPreviewAction()
     {
         $post = $this->request->getPost();
-
+//_U::dump($post);
         $uploadedFiles = $this->request->getUploadedFiles();
 
         if (!empty($uploadedFiles)) {
@@ -1089,7 +1089,6 @@ class EventController extends \Core\Controllers\CrudController
 
                 } else if ($file->getKey() == 'add-img-poster-upload') {
                     $filePath = $this->config->application->uploadDir . 'img/event/tmp/' . time() . rand(1000, 9999) . $file->getName();
-
                     $logoPieces = explode('/', $filePath);
 
                     $post['poster'] = end($logoPieces);
@@ -1106,18 +1105,32 @@ class EventController extends \Core\Controllers\CrudController
                 }
             }
 
-        }
+        } 
 
         if (!empty($post['event_logo'])) {
             $this->view->setVar('eventPreviewLogo', $post['event_logo']);
+            $this->view->setVar('eventPreviewLogoReal', $post['event_logo']);
+        } else {
+        	if (!empty($post['logo'])) {
+        		$this->view->setVar('eventPreviewLogo', $post['logo']);
+        	}	
         }
-
         if (!empty($post['event_poster'])) {
             $this->view->setVar('eventPreviewPoster', $post['event_poster']);
-        }
+            $this->view->setVar('eventPreviewPosterReal', $post['event_poster']);
+        } else {
+        	if (!empty($post['poster'])) {
+        		$this->view->setVar('eventPreviewPoster', $post['poster']);
+        	}	
+        } 
 
         if (!empty($post['event_flyer'])) {
             $this->view->setVar('eventPreviewFlyer', $post['event_flyer']);
+            $this->view->setVar('eventPreviewFlyerReal', $post['event_flyer']);
+        } else {
+        	if (!empty($post['flyer'])) {
+        		$this->view->setVar('eventPreviewFlyer', $post['flyer']);
+        	}	
         }
 
         $Event = new \stdClass();
@@ -1127,11 +1140,10 @@ class EventController extends \Core\Controllers\CrudController
         } else {
             $Event->id = 0;
         }
+        
         $Event->name = $post['name'];
         $Event->start_date = $post['start_date'];
-        $Event->start_time = $post['start_time'];
         $Event->end_date = $post['end_date'];
-        $Event->end_time = $post['end_time'];
         $Event->description = $post['description'];
         $Event->tickets_url = $post['tickets_url'];
         $loc = new \stdClass();
