@@ -218,6 +218,7 @@ class SearchController extends \Core\Controller
                     	}
                     }
                     
+                    
                     $countResults = count($result);
                     $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 } else {
