@@ -223,7 +223,20 @@ class Application extends BaseApplication
                     $connection->setEventsManager($eventsManager);
 
 					return $connection;
-				} 
+				}
+			);
+
+			$configApp = $this -> _config;			
+			$di -> set('modelsMetadata',
+					function() use ($configApp) {
+						$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
+								'lifetime' => 86400,
+								'prefix' => 'ewtemp_',
+								'metaDataDir' => $configApp -> application -> cache -> cacheDir
+						));
+					
+						return $metaData;
+					}
 			);
 		}
 
@@ -261,21 +274,6 @@ class Application extends BaseApplication
 
 					return $connection;
 				} 
-			);
-		}
-		
-		if (!$di -> has('modelsMetadata')) {
-			$di -> set('modelsMetadata', 
-				function($config) {
-				
-					$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
-							'lifetime' => 86400,
-							'prefix' => 'ewtemp_',
-							'metaDataDir' => $config -> application -> cache -> cacheDir
-					));
-				
-					return $metaData;
-				}
 			);
 		}
 	}
