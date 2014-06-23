@@ -226,7 +226,7 @@ class Application extends BaseApplication
 				}
 			);
 
-			$configApp = $this -> _config;			
+			/*$configApp = $this -> _config;			
 			$di -> set('modelsMetadata',
 					function() use ($configApp) {
 						$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
@@ -237,7 +237,7 @@ class Application extends BaseApplication
 					
 						return $metaData;
 					}
-			);
+			);*/
 		}
 
 		if (!$di -> has('dbMaster')) {
