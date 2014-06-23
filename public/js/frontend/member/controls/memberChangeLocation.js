@@ -2,7 +2,7 @@
  * Created by Slava Basko on 12/19/13 <basko.slava@gmail.com>.
  */
 
-define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($, utils){
+define('frontMemberChangeLocation', ['jquery', 'utils', 'noty', 'domReady'], function($, utils, noty){
 
     var memberChangeLocation = {
 
@@ -49,15 +49,17 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'domReady'], function($,
                         //console.log('all is OK');
 
                         // change city text in header
-                        $('.location-place_country span').text(city);
+                        //$('.location-place_country span').text(city);
 
                         $('#mLocation').text(city);
                         $('#uLocation').val('');
 
                         $('#lConflict').remove();
+                        
+                        noty({text: 'Your default location was changed', type: 'success'});
                         // write last map positions in to cookie
-                        $.cookie('lastLat', lat, {expires: 1, path: '/'});
-                        $.cookie('lastLng', lng, {expires: 1, path: '/'});
+                        //$.cookie('lastLat', lat, {expires: 1, path: '/'});
+                        //$.cookie('lastLng', lng, {expires: 1, path: '/'});
                     }
                     //console.log(response);
                 }, 'json');

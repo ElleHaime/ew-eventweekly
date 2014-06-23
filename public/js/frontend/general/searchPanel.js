@@ -106,17 +106,8 @@ define('frontSearchPanel',
 
                 var latMin = list.getPlace().geometry.viewport.getSouthWest().lat();
                 var lngMin = list.getPlace().geometry.viewport.getSouthWest().lng();
-
-                $($this.settings.searchLocationLatMin).val(latMin);
-                $($this.settings.searchLocationLngMin).val(lngMin);
-
-                $($this.settings.searchLocationLatMax).val(latMax);
-                $($this.settings.searchLocationLngMax).val(lngMax);
-
-                $($this.settings.searchLocation).attr('data-location-chosen', true);
-                $this.__locationChosen = true;
-
-                $this.__switchSearchBtnVisible(true);
+                
+                $this.__setSearchLocation(latMin, lngMin, latMax, lngMax);
             });
 
             // add date picker
@@ -282,7 +273,7 @@ define('frontSearchPanel',
                     }
                     noty({text: err_msg, type: 'warning'});
                     $this.__switchSearchTypeBtnState();
-                }else {
+                } else {
 
                     $($this.settings.searchCategoriesTypeBlock + ' input').prop('checked', false);
                     $($this.settings.searchCategoriesTypeBlock + ' input[value="private"]').prop('checked', true);
@@ -298,8 +289,14 @@ define('frontSearchPanel',
                         $this.__privateCategories.push(elem[0]);
                         elem.trigger('click');
                     });
-
-                    $this.__switchSearchBtnVisible();
+                    
+                    $this.__setSearchLocationCity(response.member_location_city, 
+                    						  	  response.member_location_country);
+                    
+                    $this.__setSearchLocation(response.member_location_latitudeMin, 
+                    						  response.member_location_longitudeMin, 
+                    						  response.member_location_latitudeMax, 
+                    						  response.member_location_longitudeMax);
                 }
             });
         },
@@ -337,8 +334,28 @@ define('frontSearchPanel',
         
         __switchDatetimeCursor: function() {
         	alert(123213213);
-        }
+        },
         
+        __setSearchLocation: function(latMin, lngMin, latMax, lngMax) {
+        	var $this = this;
+        	
+            $($this.settings.searchLocationLatMin).val(latMin);
+            $($this.settings.searchLocationLngMin).val(lngMin);
+
+            $($this.settings.searchLocationLatMax).val(latMax);
+            $($this.settings.searchLocationLngMax).val(lngMax);
+
+            $($this.settings.searchLocation).attr('data-location-chosen', true);
+            $this.__locationChosen = true;
+
+            $this.__switchSearchBtnVisible(true);
+        },
+        
+        __setSearchLocationCity: function(city, country) {
+        	var $this = this;
+            $($this.settings.searchLocation).val(city + ', ' + country);
+        }
+
 
     };
 

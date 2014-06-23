@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData, true);
+//_U::dump($postData);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -273,9 +273,14 @@ class SearchController extends \Core\Controller
         $this->view->setVar('listTitle', $pageTitle);
         
         $urlParams = http_build_query($postData);
+        $urlParamsPaginate = $urlParams;
+        
         if ($postData['searchType'] == 'in_map') {
         	$urlParams = str_replace(['in_map'], ['in_list'], $urlParams); 
         } else {
+        	$urlParamsPaginate = $urlParams;
+        	$this->view->setVar('urlParamsPaginate', $urlParamsPaginate);
+        	
         	$urlParams = str_replace(['in_list'], ['in_map'], $urlParams);
         }
         $this->view->setVar('urlParams', $urlParams);

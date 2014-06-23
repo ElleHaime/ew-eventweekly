@@ -28,12 +28,11 @@ class MemberController extends \Core\Controllers\CrudController
 	{
 		$member = $this -> obj;
 		$list = $member::findFirst($this -> session -> get('memberId'));
-        $memberForm = new MemberForm($list);
-
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
-
+		$memberForm = new MemberForm($list);
+		
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
@@ -321,11 +320,11 @@ class MemberController extends \Core\Controllers\CrudController
             $sMember->location_id = $id;
             $this->session->set('member', $sMember);
 
-            $this->session->set('location', $Location);
+            /*$this->session->set('location', $Location);
 
             $this->cookies->get('lastLat')->delete();
             $this->cookies->get('lastLng')->delete();
-            $this->cookies->get('lastCity')->delete();
+            $this->cookies->get('lastCity')->delete(); */
 
             $result = array('status' => true);
         }else {
@@ -386,6 +385,24 @@ class MemberController extends \Core\Controllers\CrudController
             $filters = $MemberFilter->getbyId($this->session->get('memberId'));
             if (isset($filters['category']['value'])) {
                 $response['member_categories'] = $filters['category']['value'];
+            }
+            $member = new Member();
+            $member = $member::findFirst($this -> session -> get('memberId'));
+            
+            if ($member -> location) {
+            	$response['member_location_latitudeMin'] = $member -> location -> latitudeMin;
+            	$response['member_location_latitudeMax'] = $member -> location -> latitudeMax;
+            	$response['member_location_longitudeMin'] = $member -> location -> longitudeMin;
+            	$response['member_location_longitudeMax'] = $member -> location -> longitudeMax;
+            	$response['member_location_city'] = $member -> location -> city;
+            	$response['member_location_country'] = $member -> location -> country;
+            } else {
+            	$response['member_location_latitudeMin'] = $this -> session -> get('location') -> latitudeMin;
+            	$response['member_location_latitudeMax'] = $this -> session -> get('location') -> latitudeMax;
+            	$response['member_location_longitudeMin'] = $this -> session -> get('location') -> longitudeMin;
+            	$response['member_location_longitudeMax'] = $this -> session -> get('location') -> longitudeMax;
+            	$response['member_location_longitudeMax'] = $this -> session -> get('location') -> city;
+            	$response['member_location_longitudeMax'] = $this -> session -> get('location') -> country;
             }
         } else {
             $response['errors'] = true;

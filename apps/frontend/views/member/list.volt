@@ -130,7 +130,7 @@
                         {% endif %}
 
                         <div class="control-group">
-                            <label for="uLocation" class="control-label mail">Your current location is <strong id="mLocation">{{ location.alias }}</strong>. Change below:</label>
+                            <label for="uLocation" class="control-label mail">Your default location is <strong id="mLocation">{{ member.location.alias }}</strong>. Change below:</label>
                                 <div class="controls">
                                 <input type="text" id="uLocation"/>
                             </div>
