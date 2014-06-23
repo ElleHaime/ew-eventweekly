@@ -1244,14 +1244,14 @@ class EventController extends \Core\Controllers\CrudController
         	$res['status'] = 'ERROR';
         	$res['message'] = 'no events';
         }
-        
-        foreach($res['events'] as $id => $event) {
+  
+        /*foreach($res['events'] as $id => $event) {
         	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
         		$res['events'][$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
         	} else {
         		$res['events'][$id]['logo'] = $this -> config -> application -> defaultLogo;
         	}
-        }
+        }*/
 
         if ($needGrab === false) {
 			return $events;

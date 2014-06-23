@@ -210,6 +210,14 @@ class SearchController extends \Core\Controller
                         								   false, false, false, false, false, $needTags);
                     }
 
+                    foreach($result as $id => $event) {
+                    	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
+                    		$result[$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
+                    	} else {
+                    		$result[$id]['logo'] = $this -> config -> application -> defaultLogo;
+                    	}
+                    }
+                    
                     $countResults = count($result);
                     $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 } else {
@@ -249,6 +257,7 @@ class SearchController extends \Core\Controller
                         								   false, false, false, true, true, $needTags);
                     }
                     $result = $fetchedData->items;
+                    
                     unset($fetchedData->items);
                     $countResults = $fetchedData->total_items;
                 }
