@@ -204,7 +204,7 @@ class SearchController extends \Core\Controller
                                                            false, false, false, false, false, $needTags);
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
-                        								   false, false, false, false, false, $needTags);
+                        								   false, false, false, false, false, $needTags, $postData['searchCategory']);
                     } else {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
                         								   false, false, false, false, false, $needTags);
