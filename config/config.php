@@ -33,6 +33,7 @@ $cfg_settings = array(
 			'lifetime' => '86400',
 			'adapter' => 'Memcache',
 			'cacheDir' => ROOT_APP . 'var/cache/data/',
+			'cachePrefix' => 'ewloc',
 			'host' => 'localhost',
 			'port' => 11211,
 			'persistent' => false

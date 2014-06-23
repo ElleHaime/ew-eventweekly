@@ -231,7 +231,7 @@ class Application extends BaseApplication
 					function() use ($configApp) {
 						$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
 								'lifetime' => 86400,
-								'prefix' => 'ewtemp_',
+								'prefix' => $configApp -> application -> cache -> cachePrefix,
 								'metaDataDir' => $configApp -> application -> cache -> cacheDir
 						));
 					

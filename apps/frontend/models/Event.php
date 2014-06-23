@@ -241,7 +241,7 @@ class Event extends EventObject
     
     
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
-    								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false)
+    								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false, $categorySet = [])
     {
         $builder = $this->getModelsManager()->createBuilder();
 
@@ -293,10 +293,15 @@ class Event extends EventObject
             $uid = $session->get('memberId');
 
             $MemberFilter = new MemberFilter();
-            $member_categories = $MemberFilter->getbyId($uid);
-
+            
+            if (empty($categorySet)) {
+            	$member_categories = $MemberFilter->getbyId($uid);
+            } else {
+            	$member_categories = $MemberFilter->compareById($uid, $categorySet);
+            }
+           
             $tagCategories = array();
-             if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
+            if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
 
 	            if (count($member_categories['category']['value']) > 0) {
 	                	$category = new Category();

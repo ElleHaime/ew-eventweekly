@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData);
+//_U::dump($postData, true);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -232,7 +232,7 @@ class SearchController extends \Core\Controller
                         if (count($postData['searchCategory']) == 1) {
                             $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
                         }
-                        
+
                         if ($elemExists('searchTag')) {
 							$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33,67)');
 							$needTags = true;
@@ -243,7 +243,7 @@ class SearchController extends \Core\Controller
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
-                        								   false, false, false, true, true, $needTags);
+                        								   false, false, false, true, true, $needTags, $postData['searchCategory']);
                     } else {
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
                         								   false, false, false, true, true, $needTags);

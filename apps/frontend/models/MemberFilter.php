@@ -2,7 +2,10 @@
 
 namespace Frontend\Models;
 
-use Objects\MemberFilter as MemberFilterObject;
+use Objects\MemberFilter as MemberFilterObject,
+    Frontend\Models\Category as Category,
+	Frontend\Models\Tag as Tag,
+	Core\Utils as _U;
 
 class MemberFilter extends MemberFilterObject
 {
@@ -19,7 +22,7 @@ class MemberFilter extends MemberFilterObject
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
-    public function getById($id)
+    public function getbyId($id)
     {
         $return = array();
 
@@ -35,6 +38,48 @@ class MemberFilter extends MemberFilterObject
            }
         }
         return $return;
+    }
+    
+    public function compareById($id, $compareSet)
+    {
+    	$return = $this -> getbyId($id);
+
+    	if (!empty($return)) {
+			$isPresetChanged = array_diff($return['category']['value'], $compareSet);
+			
+    		if (!empty($isPresetChanged)) {
+    			$categoryPreseted = $return['category']['value'];
+    			$tagsPreseted = $return['tag']['value'];
+    			
+				$return['category']['value'] = $compareSet;
+				$return['tag']['value'] = [];
+
+				foreach ($return['category']['value'] as $node) {
+					
+					$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\Tag.id 
+															FROM Frontend\Models\Tag
+															WHERE Frontend\Models\Tag.category_id = " . $node, $this -> getDI());
+					$tags = $query -> execute() -> toArray();
+
+					if (in_array($node, $categoryPreseted)) {
+						$tagsInSet = [];
+						foreach ($tags as $id) {
+							$tagsInSet[] = $id['id']; 							
+						}
+						$intersection = array_intersect($tagsInSet, $tagsPreseted);
+						foreach ($intersection as $k => $v) {
+							$return['tag']['value'][] = $v;
+						}	
+					} else {
+						foreach ($tags as $tag) {
+							$return['tag']['value'][] = $tag['id'];
+						}
+					}
+				}
+    		}
+    	} 
+    	
+    	return $return;
     }
 
 } 
