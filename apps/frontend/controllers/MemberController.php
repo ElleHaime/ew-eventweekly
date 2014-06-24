@@ -26,6 +26,11 @@ class MemberController extends \Core\Controllers\CrudController
 	 */
 	public function listAction()
 	{
+		if ($this -> session -> has('passwordChanged') && $this -> session -> get('passwordChanged') === true) {
+			$this -> session -> set('passwordChanged', false);
+			$this -> view -> setVar('passwordChanged', true);
+		} 
+		
 		$member = $this -> obj;
 		$list = $member::findFirst($this -> session -> get('memberId'));
 		if (!$list -> location) {
@@ -358,9 +363,7 @@ class MemberController extends \Core\Controllers\CrudController
                         $this->setFlash('Error while saving your new password! Call to your admin!', 'error');
                     }else {
                         $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
-
-                        $this->setFlash('Your password was successfully changed!');
-
+						$this -> session -> set('passwordChanged', true);
                         $this->loadRedirect();
                     }
                 }

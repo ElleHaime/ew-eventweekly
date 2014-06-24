@@ -64,7 +64,9 @@ define('frontMemberEditControl',
                 syncFbAccBtn: '#syncFbAcc',
                 
                 deleteMemberAcc: '#deleteMemberAcc',
-                deleteMemberLoc: '/member/annihilate'
+                deleteMemberLoc: '/member/annihilate',
+                
+                passwordWasChanged: '#passwordChanged'
             },
 
             self.init = function()
@@ -75,6 +77,10 @@ define('frontMemberEditControl',
                 $(self.settings.inpAddress).keyup(function() {
                     self.__inputFillList(self.settings.inpAddress, self.settings.listAddress);
                 });
+            
+                if ($(self.settings.passwordWasChanged).val() == 1) {
+                	noty({text: 'Your password successfully changed', type: 'success'});
+                }
             }
 
             self.bindEvents = function()

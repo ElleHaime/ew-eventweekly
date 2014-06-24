@@ -239,6 +239,8 @@
 
     </div>
 
+	<input type='hidden' id="passwordChanged" value='{% if passwordChanged is defined %}1{% else %}0{% endif %}'>
+	
     {% if acc_external is defined %}
         <input type='hidden' name='check_ext_profile' id='check_ext_profile's>
         <input type='hidden' name='member_uid' id='member_uid' value='{{ acc_external.account_uid }}'>
