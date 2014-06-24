@@ -119,14 +119,20 @@ class SearchController extends \Core\Controller
             }
 
             // add search condition by location
-            if ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') && 
-                $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax'))
-            {
+            if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
+            	$Event->addCondition('Frontend\Models\Event.latitude = '.$postData['searchLocationLatCurrent'].' 
+            			AND Frontend\Models\Event.longitude = '.$postData['searchLocationLngCurrent']);
+            	
+            } elseif ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') 
+            	&& $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
+            	
                 if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') ||
                     ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
                         $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
                 {
-                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' AND '.$postData['searchLocationLngMax']);
+                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
+                    		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
+                    		AND '.$postData['searchLocationLngMax']);
 
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
@@ -275,13 +281,20 @@ class SearchController extends \Core\Controller
         if (isset($fetchedData)) {
             $this->view->setVar('pagination', $fetchedData);
         }
+        
+        if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
+        	if (isset($fetchedData) && ($fetchedData -> current == $fetchedData -> total_pages)) {
+	        	unset($postData['searchLocationLatCurrent']);
+	        	unset($postData['searchLocationLngCurrent']);
+        	}
+        }
 
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
 
         $this->view->setVar('listTitle', $pageTitle);
-        
+     
         $urlParams = http_build_query($postData);
         $urlParamsPaginate = $urlParams;
         
@@ -293,7 +306,6 @@ class SearchController extends \Core\Controller
         	$urlParams = str_replace(['in_list'], ['in_map'], $urlParams);
         }
         $this->view->setVar('urlParams', $urlParams);
-
         
         if ($postData['searchType'] == 'in_map') {
         	$this->view->setVar('link_to_list', true);

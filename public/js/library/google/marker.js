@@ -100,12 +100,11 @@ define('googleMarker',
                                 if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 4) {
                                     marker.content = InfoWindow.content;
                                 } else if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 5) {
-                                	//console.log(Event.id);
-                                		
-                                    marker.content = InfoWindow.content + '<a href="/list" class="btn view-btn btn-block">View all events</a>';
-                                	//rep_destination = document.URL.replace('in_map', 'in_list');
-                                	//redirect_url = rep_destination.replace('/map', '/list');
-                                    //marker.content = InfoWindow.content + '<a href="' + redirect_url + '" class="btn view-btn btn-block">View all events</a>';
+                                	rep1 = document.URL.replace('/map', '/list');
+                                	rep2 = rep1.replace('searchType=in_map', 'searchType=in_list');
+                                	batchUrl = rep2 + '&searchLocationLatCurrent=' + Event.latitude + '&searchLocationLngCurrent=' + Event.longitude;
+                                	
+                                	marker.content = InfoWindow.content + '<a href="' + batchUrl + '" class="btn view-btn btn-block">View all events</a>';
                                 }
                             }
                         }
