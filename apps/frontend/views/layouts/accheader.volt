@@ -94,12 +94,31 @@
             <div class="span7 location-box">
                 <div class="show-list">
 
+
+
                     {% if link_back_to_list is defined %}
-                        <button class="btn btn-show tooltip-text"
-                                onclick="location.href='/list'" title="" rel="tooltip" data-placement="bottom"
-                                data-original-title="Back link"><i class="icon-back"></i>
-                        </button>
+                    
+                    	{% if searchResultList is defined %}
+	                    	<button class="btn btn-show tooltip-text"
+	                                onclick="location.href='/search/list?{{ urlParams }}'" title="" rel="tooltip" data-placement="bottom"
+	                                data-original-title="Back link"><i class="icon-back"></i>
+	                        </button>
+                    	{% else %}
+                    		{% if back_position_url_params is defined %}
+	                    		<button class="btn btn-show tooltip-text"
+		                                onclick="location.href='{{ back_position_url_params }}'" title="" rel="tooltip" data-placement="bottom"
+		                                data-original-title="Back link"><i class="icon-back"></i>
+		                        </button>
+		                     {% else %}
+		                     	<button class="btn btn-show tooltip-text"
+		                                onclick="location.href='/map'" title="" rel="tooltip" data-placement="bottom"
+		                                data-original-title="Back link"><i class="icon-back"></i>
+		                        </button>
+		                     {% endif %}
+                    	{% endif %}
+                    
                     {% elseif link_to_list is defined %}
+                    
                     	{% if searchResultMap is defined%}
 	                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
 	                                onclick="location.href='/search/list?{{ urlParams }}'" data-original-title="Show as list"><i class="icon-sel"></i>
@@ -109,17 +128,27 @@
 	                                onclick="location.href='/list'" data-original-title="Show all list"><i class="icon-sel"></i>
 	                        </button>
 	                    {% endif %}
+	                    
                     {% else %}
+                    
                     	{% if searchResultList is defined %}
                     		<button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
 	                                onclick="location.href='/search/map?{{ urlParams }}'" data-original-title="Show as map"><i class="icon-map"></i>
+	                        </button>
+	                    {% elseif list_type is defined %}
+	                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
+	                                onclick="location.href='{{ urlParams }}'" data-original-title="Event map"><i class="icon-map"></i>
 	                        </button>
                     	{% else %}
 	                        <button class="btn btn-show  tooltip-text" data-placement="bottom" rel="tooltip" title=""
 	                                onclick="location.href='/map'" data-original-title="Event map"><i class="icon-map"></i>
 	                        </button>
 	                    {% endif %}
+	                    
                     {% endif %}
+                    
+                    
+                    
                 </div>
 
                 <div class="location clearfix">

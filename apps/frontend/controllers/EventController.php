@@ -135,7 +135,8 @@ class EventController extends \Core\Controllers\CrudController
     	if (isset($events)) {
     		$this->view->setVar('pagination', $result);
     	}
-    	$this->view->setVar('urlParams', http_build_query($postData));
+    	///$this->view->setVar('urlParams', http_build_query($postData));
+    	$this->view->setVar('urlParams', 'friends');
     	
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
@@ -184,7 +185,8 @@ class EventController extends \Core\Controllers\CrudController
     		$this->view->setVar('pagination', $result);
     	}
     	
-    	$this->view->setVar('urlParams', http_build_query($postData));
+    	//$this->view->setVar('urlParams', http_build_query($postData));
+    	$this->view->setVar('urlParams', 'liked');
     	
     	$this->view->setvar('list', $events);
     	$this->view->setVar('listTitle', 'Liked');
@@ -229,7 +231,8 @@ class EventController extends \Core\Controllers\CrudController
 
     	$this->view->setVar('list', $events);
     	$this->view->setVar('listTitle', 'Where I am going');
-    	$this->view->setVar('urlParams', http_build_query($postData));
+    	//$this->view->setVar('urlParams', http_build_query($postData));
+    	$this->view->setVar('urlParams', 'joined');
     	
     	$this->view->pick('event/eventList');
     }
@@ -269,6 +272,9 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
+		$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+		$this -> view -> setVar('back_position_url_params', $previousUri);
+		
     	if ($this -> session -> has('eventViewForwardedNew') && $this -> session -> get('eventViewForwardedNew') == 1) {
     		$this -> session -> set('eventViewForwardedNew', 0);
     		$this -> view -> setVar('viewModeNew', true);
