@@ -27,7 +27,8 @@ define('frontSearchPanel',
             searchLocationLngMax: '#searchLocationLngMax',
             startDatePicker: '.startDatePicker',
             endDatePicker: '.endDatePicker',
-            privatePresetUrl: '/member/get-private-preset'
+            privatePresetUrl: '/member/get-private-preset',
+            isLoggedUser: '#isLogged'
         },
 
         /**
@@ -71,6 +72,9 @@ define('frontSearchPanel',
 
             $this.__locationChosen = $($this.settings.searchLocation).data('locationChosen');
 
+            if($($this.settings.isLoggedUser).val() == 1) {
+            	$this.__tryApplyPreset();
+            }
             // Bind click on form
             _.once($this.__bindClicks());
         },
@@ -238,7 +242,7 @@ define('frontSearchPanel',
 
                     $this.__switchSearchTypeBtnState();
                     $this.__tryApplyPreset();
-                }else {
+                } else {
                     $this.__switchSearchTypeBtnState();
                     $this.__tryApplyGlobal();
                 }
@@ -306,6 +310,7 @@ define('frontSearchPanel',
 
             $($this.settings.searchCategoriesTypeBlock + ' input').prop('checked', false);
             $($this.settings.searchCategoriesTypeBlock + ' input[value="global"]').prop('checked', true);
+            $($this.settings.searchLocation).val('');
 
             _.each($($this.settings.chooseCatBtn), function(elem) {
                 if (_.include($this.__privateCategories, elem)) {

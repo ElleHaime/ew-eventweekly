@@ -70,6 +70,10 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->session->remove('location_conflict');
         }
 
+        if ($this -> session -> has('memberId')) {
+        	$this->session->set('userSearchTab', 'private');
+        }
+        
         if ($this->session->has('userSearch')) {
             $this->view->setVar('userSearch', $this->session->get('userSearch'));
         }
