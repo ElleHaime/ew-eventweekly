@@ -151,7 +151,7 @@
                     <div class="pagination pull-right">
                         <ul>
                         
-                        	{% if searchResult is defined %}
+                        	{% if searchResultList is defined %}
 	                            {% if pagination.current > 1 %}
 	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.first }}">First</a></li>
 	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.current-1 }}">Prev</a></li>

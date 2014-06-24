@@ -290,7 +290,6 @@ class SearchController extends \Core\Controller
         } else {
         	$urlParamsPaginate = $urlParams;
         	$this->view->setVar('urlParamsPaginate', $urlParamsPaginate);
-        	
         	$urlParams = str_replace(['in_list'], ['in_map'], $urlParams);
         }
         $this->view->setVar('urlParams', $urlParams);
