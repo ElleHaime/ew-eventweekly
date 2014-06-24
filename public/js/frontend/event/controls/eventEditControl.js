@@ -323,24 +323,29 @@ define('frontEventEditControl',
 			{
 				var reader = new FileReader();
 				var file = content.target.files[0];
-
-				reader.onload = (function(f) {
-					$(inpImage).attr('value', f.name);
-					return function(e) {
-                        var img = new Image();
-                        img.src = e.target.result;
-
-                        img.onload = function() {
-                            if (this.width < 180 || this.height < 60) {
-                                noty({text: 'Image size should be min 180x60 pixels!', type: 'warning'});
-                            }
-
-                            $(inpImage).parent().find(self.settings.boxImg).attr('src', this.src);
-                        };
-					}
-				})(file);
-
-				reader.readAsDataURL(file);
+				
+				if (file.size > 205000) {
+					noty({text: 'Too heavy image. Please load images not larger than 1.98M', type: 'error'});
+					return false;
+				} else {
+					reader.onload = (function(f) {
+						$(inpImage).attr('value', f.name);
+						return function(e) {
+	                        var img = new Image();
+	                        img.src = e.target.result;
+	
+	                        img.onload = function() {
+	                            if (this.width < 180 || this.height < 60) {
+	                                noty({text: 'Image size should be min 180x60 pixels!', type: 'warning'});
+	                            }
+	
+	                            $(inpImage).parent().find(self.settings.boxImg).attr('src', this.src);
+	                        };
+						}
+					})(file);
+	
+					reader.readAsDataURL(file);
+				}
 			}
 
 			self.__makePreview = function(img, size)
