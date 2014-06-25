@@ -1,8 +1,8 @@
 define('frontTopPanel',
-	['jquery', 'utils', 'gmapEvents', 'gmap', 'domReady'],
+	['jquery', 'frontSearchPanel', 'utils', 'gmapEvents', 'gmap', 'domReady'],
 	function($, utils, gmapEvents) {
 
-		function frontTopPanel($, utils, gmapEvents) {
+		function frontTopPanel($, frontSearchPanel, utils, gmapEvents) {
 			var self = this;
 
 			self.settings = {
@@ -105,10 +105,11 @@ define('frontTopPanel',
 		        if (type == 'advanced' && !$(self.settings.advancedSearchBlock).is(":visible")) {
 		            // hide search block
 		            $(self.settings.searchCityBlock).hide();
-
+		            	
 		            // show advanced block
 		            $(self.settings.advancedSearchBtn).closest('div').addClass('active-box');
 		            $(self.settings.advancedSearchBlock).show();
+		            
 		        } else if (type == 'advanced' && $(self.settings.advancedSearchBlock).is(":visible")) {
 		            $(self.settings.advancedSearchBtn).closest('div').removeClass('active-box');
 		            $(self.settings.advancedSearchBlock).hide();

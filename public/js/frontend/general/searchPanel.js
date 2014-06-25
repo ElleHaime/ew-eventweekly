@@ -63,18 +63,15 @@ define('frontSearchPanel',
          */
         init: function(options) {
             var $this = this;
-
+            
             // Extend options
             $this.settings = _.extend($this.settings, options);
 
             // Get search type
             $this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
-
+            $this.__checkSearchState();
             $this.__locationChosen = $($this.settings.searchLocation).data('locationChosen');
 
-            if($($this.settings.isLoggedUser).val() == 1) {
-            	$this.__tryApplyPreset();
-            }
             // Bind click on form
             _.once($this.__bindClicks());
         },
@@ -223,29 +220,45 @@ define('frontSearchPanel',
                 }
             }
         },
+        
+        __checkSearchState: function() {
+            var $this = this;
+            
+            
+            if($($this.settings.isLoggedUser).val() == 1) {
+            	 $this.__state = 'private';
+            	 $this.__switchPreset();
+            }
+        },
 
         __switchSearchTypeHandler: function() {
             var $this = this;
+            
             return function(event) {
                 event.preventDefault();
 
                 $this.__clickedSwitchBtn = $(this);
-
                 $this.__state = $this.__clickedSwitchBtn.data('type');
 
-                if ($this.__state == 'private') {
+                $this.__switchPreset();
+            }
+        },
+        
+        
+        __switchPreset: function() {
+        	var $this = this;
+        	
+        	if ($this.__state == 'private') {
+                $this.__globalCategories.length = 0;
+                _.each($($this.settings.chooseCatBtn+'[data-active="1"]'), function(node) {
+                    $this.__globalCategories.push(node);
+                });
 
-                    $this.__globalCategories.length = 0;
-                    _.each($($this.settings.chooseCatBtn+'[data-active="1"]'), function(node) {
-                        $this.__globalCategories.push(node);
-                    });
-
-                    $this.__switchSearchTypeBtnState();
-                    $this.__tryApplyPreset();
-                } else {
-                    $this.__switchSearchTypeBtnState();
-                    $this.__tryApplyGlobal();
-                }
+                $this.__switchSearchTypeBtnState();
+                $this.__tryApplyPreset();
+            } else {
+                $this.__switchSearchTypeBtnState();
+                $this.__tryApplyGlobal();
             }
         },
 
@@ -267,6 +280,7 @@ define('frontSearchPanel',
 
         __tryApplyPreset: function() {
             var $this = this;
+            
             $.when(utils.request('get', $this.settings.privatePresetUrl)).then(function(response){
                 if (response.errors) {
                     var err_msg = 'Some errors occurred! Call to administrator!';
@@ -313,6 +327,7 @@ define('frontSearchPanel',
             $($this.settings.searchLocation).val('');
 
             _.each($($this.settings.chooseCatBtn), function(elem) {
+            	console.log(elem);
                 if (_.include($this.__privateCategories, elem)) {
                     $(elem).trigger('click');
                 }

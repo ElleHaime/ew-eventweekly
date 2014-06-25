@@ -101,7 +101,8 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
-		$this->view->setVar('urlParams', http_build_query($postData));		
+
+		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $events);
     	$this->view->pick('event/eventList');
     }
