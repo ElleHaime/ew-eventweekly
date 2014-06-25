@@ -68,7 +68,7 @@ define('frontSearchPanel',
             $this.settings = _.extend($this.settings, options);
 
             // Get search type
-            $this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
+            //$this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
             $this.__checkSearchState();
             $this.__locationChosen = $($this.settings.searchLocation).data('locationChosen');
 
@@ -224,10 +224,11 @@ define('frontSearchPanel',
         __checkSearchState: function() {
             var $this = this;
             
-            
             if($($this.settings.isLoggedUser).val() == 1) {
             	 $this.__state = 'private';
             	 $this.__switchPreset();
+            } else {
+            	$this.__state = 'global';
             }
         },
 
@@ -327,7 +328,6 @@ define('frontSearchPanel',
             $($this.settings.searchLocation).val('');
 
             _.each($($this.settings.chooseCatBtn), function(elem) {
-            	console.log(elem);
                 if (_.include($this.__privateCategories, elem)) {
                     $(elem).trigger('click');
                 }

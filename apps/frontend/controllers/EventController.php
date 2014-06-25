@@ -1209,7 +1209,7 @@ class EventController extends \Core\Controllers\CrudController
      * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = false, $applyPersonalization = false)
+    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = true, $applyPersonalization = false)
     {
         $Event = new Event();
         $loc = $this->session->get('location');
