@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData, true);
+//_U::dump($postData);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -211,7 +211,10 @@ class SearchController extends \Core\Controller
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
                         								   false, false, false, false, false, $needTags, $postData['searchCategory']);
-                    } else {
+                    } elseif ($elemExists('searchCategory', false) && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
+                    	$result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
+                    										false, false, false, false, false, $needTags, []);
+                	} else {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
                         								   false, false, false, false, false, $needTags);
                     }
