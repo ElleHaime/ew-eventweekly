@@ -45,11 +45,11 @@ class MemberListener {
         // remove search global preset from session
         $this->subject->session->remove('userSearch');
 
-       /* $location = $this->subject->session->get('location');
+        $location = $this->subject->session->get('location');
         if ($params != false && $location->id != $params->location_id) {
             $location = Location::findFirst('id = ' . $params->location_id);
             $this->subject->session->set('location', $location);
-        }*/
+        }
 
         if ($params) {
             $this->subject->session->set('member', $params);
