@@ -83,7 +83,7 @@ class EventController extends \Core\Controllers\CrudController
     	$request = $this -> request -> getQuery();
     	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
     		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);
-    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLatCurrent']);
+    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLngCurrent']);
     	} else {
 	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
 	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
