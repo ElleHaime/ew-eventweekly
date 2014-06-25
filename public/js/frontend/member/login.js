@@ -31,10 +31,10 @@ require([
                         noty({text: data.error, type: 'error'});
                     } else if (data.success != undefined) {
                         if (window.opener) {
-                            window.opener.location.href = '/map';
+                            window.opener.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
                             window.close();
                         } else {
-                            window.location.href = '/map';
+                            window.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
                         }
                     }
                 });
