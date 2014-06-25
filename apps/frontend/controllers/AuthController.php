@@ -61,7 +61,7 @@ class AuthController extends \Core\Controller
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
                     if (!$this->request->isAjax()) {
-                        $this -> response -> redirect('/map');
+                        $this -> response -> redirect('/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map');
                     } else {
                         echo json_encode(array('success' => 'true'));
                         exit();
