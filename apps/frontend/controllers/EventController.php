@@ -80,11 +80,17 @@ class EventController extends \Core\Controllers\CrudController
     	 
     	$loc = $this->session->get('location');
     	$event = new Event();
-    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
-    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
+    	$request = $this -> request -> getQuery();
+    	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
+    		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);
+    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLatCurrent']);
+    	} else {
+	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
+	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
+    	}
     	$event-> addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
     	$event-> addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
-    	$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
+    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
     	$event-> addCondition('Frontend\Models\Event.event_status = 1');
     	
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
