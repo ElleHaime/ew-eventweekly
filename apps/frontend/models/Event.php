@@ -299,7 +299,7 @@ class Event extends EventObject
             } else {
             	$member_categories = $MemberFilter->compareById($uid, $categorySet);
             }
-           
+//_U::dump($member_categories);           
             $tagCategories = array();
             if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
 

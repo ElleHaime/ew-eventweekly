@@ -192,7 +192,7 @@ class SearchController extends \Core\Controller
 						$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34,67)');
 						$needTags = true;
 					}
-                	
+
                     if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
                         $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
 
@@ -213,7 +213,7 @@ class SearchController extends \Core\Controller
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                         $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
                         								   false, false, false, false, false, $needTags, $postData['searchCategory']);
-                    } elseif ($elemExists('searchCategory', false) && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
+                    } elseif (!$elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
                     	$result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
                     										false, false, false, false, false, $needTags, []);
                 	} else {
