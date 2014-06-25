@@ -54,7 +54,7 @@ class Geo extends Plugin
 		if ($this -> _fb_config -> debug) {
 			//$this -> _userIp = '195.24.243.10'; 		// Hz gde
 			$this -> _userIp = '79.140.3.235'; 			// Odessa
-			$this -> _userIp = '202.29.214.2'; 			// Tai, Hankha
+			//$this -> _userIp = '202.29.214.2'; 			// Tai, Hankha
 		} else {
 			$this -> _userIp = $this -> request -> getClientAddress();
 		}

@@ -99,6 +99,7 @@ class SearchController extends \Core\Controller
         // if no location specify - set from user location
         if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
             $location = $this->session->get('location');
+            
             $postData['searchLocationLatMin'] = $location->latitudeMin;
             $postData['searchLocationLatMax'] = $location->latitudeMax;
             $postData['searchLocationLngMin'] = $location->longitudeMin;
@@ -130,6 +131,7 @@ class SearchController extends \Core\Controller
                     ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
                         $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
                 {
+//_U::dump($postData);                	
                     $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
                     		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
                     		AND '.$postData['searchLocationLngMax']);
@@ -147,7 +149,7 @@ class SearchController extends \Core\Controller
 
                     $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
                 }
-            }
+            } 
 
             // add search condition by dates
             if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {

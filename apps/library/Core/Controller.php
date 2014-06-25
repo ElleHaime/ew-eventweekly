@@ -47,7 +47,7 @@ class Controller extends \Phalcon\Mvc\Controller
 
         $member = $this->session->get('member');
         $loc = $this->session->get('location');
-
+//_U::dump($loc -> city);
         if ($loc === null) {
             $locModel = new Location();
             $loc = $locModel->createOnChange();
