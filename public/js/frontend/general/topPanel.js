@@ -1,8 +1,8 @@
 define('frontTopPanel',
-	['jquery', 'frontSearchPanel', 'utils', 'gmapEvents', 'gmap', 'domReady'],
+	['jquery', 'utils', 'gmapEvents', 'gmap', 'domReady'],
 	function($, utils, gmapEvents) {
 
-		function frontTopPanel($, frontSearchPanel, utils, gmapEvents) {
+		function frontTopPanel($, utils, gmapEvents) {
 			var self = this;
 
 			self.settings = {
