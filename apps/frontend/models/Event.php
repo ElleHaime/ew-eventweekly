@@ -307,14 +307,17 @@ class Event extends EventObject
 	                	$category = new Category();
 	                	$defaultCategories = $category -> getDefaultIdsAsString();
 	                	$extraCats = array_intersect($member_categories['category']['value'], explode(',', $defaultCategories));
-	
+
 						if (!empty($extraCats)) {
 							if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
 								$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
 							} else {
 								$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
 							}
-						}                	
+						} else {
+							$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $member_categories['category']['value']).')');
+						}
+						
 	            }
 				
 				$prevCondition = $builder->getWhere();
@@ -322,7 +325,7 @@ class Event extends EventObject
 					if (!empty($extraCats)) {
 						$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
 					} else {
-						$builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+						$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
 					}
 				}
             }
