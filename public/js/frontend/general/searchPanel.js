@@ -63,7 +63,7 @@ define('frontSearchPanel',
          */
         init: function(options) {
             var $this = this;
-            
+
             // Extend options
             $this.settings = _.extend($this.settings, options);
 
@@ -333,8 +333,8 @@ define('frontSearchPanel',
                 }
             });
 
-            _.each($this.__globalCategories, function(elem) {
-                $(elem).trigger('click');
+            _.each($this.__globalCategories, function(elemg) {
+                $(elemg).trigger('click');
             });
 
             $this.__switchSearchBtnVisible();

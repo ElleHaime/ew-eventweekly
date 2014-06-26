@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData);
+//_U::dump($postData, true);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();

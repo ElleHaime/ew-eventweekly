@@ -72,12 +72,7 @@ class EventController extends \Core\Controllers\CrudController
     	if (empty($page)) {
     		$page = 1;
     	}
-    	if ($this->session->get('memberId')) {
-    		$applyPersonalization = true;
-    	}else {
-    		$applyPersonalization = false;
-    	}
-    	 
+    	
     	$loc = $this->session->get('location');
     	$event = new Event();
     	$request = $this -> request -> getQuery();
@@ -88,9 +83,16 @@ class EventController extends \Core\Controllers\CrudController
 	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
 	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
     	}
-    	$event-> addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$event-> addCondition('Frontend\Models\Event.start_date < "' . date('Y-m-d H:i:s', strtotime('today +3 days')) . '"');
-    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
+    	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
+    	$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
+    	
+    	$event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
+    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
+    	$event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
+    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
+    	$event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
+    	
+    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent')); 
     	$event-> addCondition('Frontend\Models\Event.event_status = 1');
     	
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
