@@ -175,9 +175,17 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'to "'.$postData['searchEndDate'].'" | ';
                 
             } else {
-            	if ($elemExists('searchTitle', false)) {
-	                $Event->addCondition('Frontend\Models\Event.end_date BETWEEN "'.date('Y-m-d H:m:i', time()).'" AND "' . date('Y-m-d H:i:s', strtotime('+3 days midnight')) . '"');
-	                $pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
+            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory')) {
+            		$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
+            		$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
+            		
+            		$Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
+            		$Event->addCondition('OR', Event::CONDITION_SIMPLE);
+            		$Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
+            		$Event->addCondition('OR', Event::CONDITION_SIMPLE);
+            		$Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
+            		
+            		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	}
             }
             
