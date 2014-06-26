@@ -314,10 +314,7 @@ class Event extends EventObject
 							} else {
 								$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
 							}
-						} else {
-							$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $member_categories['category']['value']).')');
-						}
-						
+						} 
 	            }
 				
 				$prevCondition = $builder->getWhere();
@@ -325,7 +322,7 @@ class Event extends EventObject
 					if (!empty($extraCats)) {
 						$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
 					} else {
-						$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
+						$builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
 					}
 				}
             }
