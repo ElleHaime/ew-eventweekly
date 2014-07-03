@@ -126,21 +126,23 @@ class SearchController extends \Core\Controller
             	
             } elseif ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') 
             	&& $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
-            	
+         	
                 if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') ||
                     ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
                         $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
                 {
-//_U::dump($postData);                	
                     $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
                     		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
-                    		AND '.$postData['searchLocationLngMax']);
-
+                    		AND '.$postData['searchLocationLngMax']); 
+                	
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
                     $loc = new Location();
                     $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+/*                    if ($newLocation) {
+                    	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
+                    } */
 
                     $this->session->set('location', $newLocation);
 
@@ -186,7 +188,7 @@ class SearchController extends \Core\Controller
             		$Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
             		
             		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
-            	}
+            	} 
             }
             
             // set order by start date

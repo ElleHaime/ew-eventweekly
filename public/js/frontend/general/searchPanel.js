@@ -253,7 +253,7 @@ define('frontSearchPanel',
                 $this.__globalCategories.length = 0;
                 _.each($($this.settings.chooseCatBtn+'[data-active="1"]'), function(node) {
                     $this.__globalCategories.push(node);
-                });
+                }); 
 
                 $this.__switchSearchTypeBtnState();
                 $this.__tryApplyPreset();
@@ -333,8 +333,8 @@ define('frontSearchPanel',
                 }
             });
 
-            _.each($this.__globalCategories, function(elemg) {
-                $(elemg).trigger('click');
+            _.each($this.__globalCategories, function(elem) {
+                $(elem).trigger('click');
             });
 
             $this.__switchSearchBtnVisible();

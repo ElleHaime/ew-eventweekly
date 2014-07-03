@@ -99,7 +99,7 @@ define('googleMarker',
 
                                 if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 4) {
                                     marker.content = InfoWindow.content;
-                                } else if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length < 5) {
+                                } else if ($('.events-map', '<div>'+InfoWindow.content+'</div>').length > 5) {
                                 	rep1 = document.URL.replace('/map', '/list');
                                 	rep2 = rep1.replace('searchType=in_map', 'searchType=in_list');
                                 	batchUrl = rep2 + '&searchLocationLatCurrent=' + Event.latitude + '&searchLocationLngCurrent=' + Event.longitude;

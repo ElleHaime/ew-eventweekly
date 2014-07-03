@@ -262,12 +262,6 @@ class Event extends EventObject
        		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
        	}
-       	if ($needVenue) {
-       		$builder -> leftJoin('Frontend\Models\Venue', 'Frontend\Models\Event.venue_id = Frontend\Models\Venue.id');
-       	}
-       	if ($needLocation) {
-       		$builder -> leftJoin('Frontend\Models\Location', 'Frontend\Models\Event.location_id = Frontend\Models\Location.id');
-       	}
 
         $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 

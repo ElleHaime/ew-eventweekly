@@ -213,7 +213,7 @@ define('fb',
 	               		params = {'permission_base': permission_base,
 	               				  'permission_publish': permission_publish,
 	               				  'permission_manage': permission_manage};
-	               		
+
 	               		$.when(self.__request('post', '/fbpermissions', params)).then(function(response) {
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {

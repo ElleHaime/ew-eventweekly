@@ -226,7 +226,7 @@ class Application extends BaseApplication
 				}
 			);
 
-			/*$configApp = $this -> _config;			
+			$configApp = $this -> _config;			
 			$di -> set('modelsMetadata',
 					function() use ($configApp) {
 						$metaData = new \Phalcon\Mvc\Model\MetaData\Files(array(
@@ -237,7 +237,7 @@ class Application extends BaseApplication
 					
 						return $metaData;
 					}
-			);*/
+			);
 		}
 
 		if (!$di -> has('dbMaster')) {
@@ -281,6 +281,7 @@ class Application extends BaseApplication
 	protected function _initCache(\Phalcon\DI $di)
 	{
 		$frontCache = new Phalcon\Cache\Frontend\Data(['lifetime' => $this -> _config -> application -> cache -> lifetime]);
+		
 		$cache = new \Core\Cache\Backend\Memcache($frontCache, [
 			'host' => $this -> _config -> application -> cache -> host,
 			'port' => $this -> _config -> application -> cache -> port,

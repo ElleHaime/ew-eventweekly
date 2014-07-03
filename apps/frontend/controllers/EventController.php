@@ -1231,8 +1231,18 @@ class EventController extends \Core\Controllers\CrudController
         $startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
         $endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
         if ($withLocation) {
-            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
+        	$lat = ($loc->latitudeMin + $loc->latitudeMax) / 2;
+            $lng = ($loc->longitudeMin + $loc->longitudeMax) / 2;
+            
+            $loc = new Location();
+            $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+            if ($newLocation) {
+            	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
+            }
+            
+        	
+/*            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
+        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax); */
             
             $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
             $Event->addCondition('OR', Event::CONDITION_SIMPLE);

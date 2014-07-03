@@ -130,18 +130,18 @@ class AuthController extends \Core\Controller
         $uid = $this -> request -> getPost('uid', 'string');
 
         if (!empty($access_token)) {
-            $memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
-
+          	$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
+          
             if ($memberNetwork) {
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
                 $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-            }
+            } 
            
             $this -> session -> set('user_token', $access_token);
             $this -> session -> set('user_fb_uid', $uid);
             $this -> session -> set('role', Acl::ROLE_MEMBER);
 
-            $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+            $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this); 
 
             $res['status'] = 'OK';
             $res['message'] = $access_token;
@@ -161,6 +161,20 @@ class AuthController extends \Core\Controller
     {
         $userData =  $this -> request -> getPost();
         $res = [];
+        
+        if (!$this -> session -> has('member')) {
+        	$checkMember = Member::findFirst('email = "' . $userData['email'] . '"');
+        	if ($checkMember && $checkMember -> network) {
+        		$memberNetwork = MemberNetwork::findFirst('member_id = ' . $checkMember -> id);
+        		if ($memberNetwork) {
+        			$memberNetwork -> account_uid = $userData['uid'];
+        			$memberNetwork -> update();
+        			
+        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+        		}
+        	}
+        }
         
         if (!$this -> session -> has('member')) {
             $member = new Member();
@@ -223,17 +237,13 @@ class AuthController extends \Core\Controller
                     ));
 
                     $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-                } else {
-                    echo 'Sad =/'; die();
-                }
+                } 
             }
-
         }
 
         $res['status'] = 'OK';
         echo json_encode($res);
     }
-    
     
     /**
      * @Route("/auth/fbauthresponse{request}", methods={"GET", "POST"})
@@ -271,6 +281,7 @@ class AuthController extends \Core\Controller
     		} else {
     			$res['status'] = 'ERROR';
     			$res['message'] = 'No such FB user';
+    			$res['memberSessionId'] = $this -> session -> get('memberId');
     			echo json_encode($res);
     		}
     	} else {
