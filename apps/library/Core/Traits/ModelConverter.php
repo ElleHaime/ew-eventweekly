@@ -7,9 +7,26 @@
 
 namespace Core\Traits;
 
+use Core\Utils as _U;
 
 trait ModelConverter {
-
+	
+	public static function findFirst($parameters = NULL)
+	{
+		_U::dump($parameters, true);
+		
+		$className = get_class();
+		$object = new $className;
+		_U::dump($object -> toArray(), true);
+		
+		$classInfo = new \ReflectionClass(get_class());
+		echo '<pre>';
+		_U::dump($classInfo -> getProperties());
+		//\Reflection::export($classInfo);
+		echo '</pre>';
+		die();  
+	}
+	
     /**
      * Convert Phalcon data object to array
      *
