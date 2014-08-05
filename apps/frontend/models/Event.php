@@ -90,6 +90,11 @@ class Event extends EventObject
         }
     }
     
+    public function testtest()
+    {
+    	_U::dump(12313);
+    }
+    
     public function setCacheTotal()
     {
     	$evTotal = Total::findFirst('entity = "event"');

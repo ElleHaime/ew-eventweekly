@@ -17,14 +17,19 @@ trait ModelConverter {
 		
 		$className = get_class();
 		$object = new $className;
-		_U::dump($object -> toArray(), true);
+		$di = $object -> getDI();
 		
-		$classInfo = new \ReflectionClass(get_class());
+		$query = new \Phalcon\Mvc\Model\Query('SELECT * FROM ' . $className . ' WHERE id = ' . $parameters, $di);
+		$result = $query -> execute();
+		_U::dump($result -> toArray());
+		
+		
+/*		$classInfo = new \ReflectionClass(get_class());
 		echo '<pre>';
-		_U::dump($classInfo -> getProperties());
-		//\Reflection::export($classInfo);
+		//_U::dump($classInfo -> getProperties());
+		\Reflection::export($classInfo);
 		echo '</pre>';
-		die();  
+		die(); */   
 	}
 	
     /**

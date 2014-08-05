@@ -281,7 +281,11 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
-		$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+    	if (isset($_SERVER['HTTP_REFERER'])) {
+			$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+    	} else {
+    		$previousUri = $_SERVER['HTTP_HOST'];
+    	}
 		$this -> view -> setVar('back_position_url_params', $previousUri);
 		
     	if ($this -> session -> has('eventViewForwardedNew') && $this -> session -> get('eventViewForwardedNew') == 1) {
