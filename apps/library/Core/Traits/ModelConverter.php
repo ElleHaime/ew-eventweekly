@@ -32,6 +32,11 @@ trait ModelConverter {
 		die(); */   
 	}
 	
+	public function getreadConnection()
+	{
+		_U::dump(213213213213213213);
+	}
+	
     /**
      * Convert Phalcon data object to array
      *

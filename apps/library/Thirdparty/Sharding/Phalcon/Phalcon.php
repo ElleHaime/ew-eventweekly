@@ -5,26 +5,30 @@ namespace Sharding;
 
 trait Phalcon
 {
-	use Sharding\ShardingInterface;
+	public static $shardQueryParams = [];
 	
 	
-	
-	public function setReadDestinationDb() 
+	public static function find($parameters = NULL)
 	{
 		
 	}
 	
-	public function setReadDestinationTable()
+	public static function findFirst($parameters = NULL)
+	{
+	
+	}
+	
+	public function save() 
 	{
 		
 	}
 	
-	public function setWriteDestinationDb()
+	public function update()
 	{
 	
 	}
 	
-	public function setWriteDestinationTable()
+	public function delete()
 	{
 	
 	}
@@ -38,5 +42,4 @@ trait Phalcon
 	{
 		
 	}
-	
 }
