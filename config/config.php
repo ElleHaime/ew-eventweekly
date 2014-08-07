@@ -50,6 +50,7 @@ $cfg_settings = array(
 			'Thirdparty\Geo' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 			'Thirdparty\Facebook' => ROOT_APP . 'apps/library/Thirdparty/Facebook/',
 			'Categoryzator' => ROOT_APP . 'apps/library/Thirdparty/Categoryzator/',
+			'Sharding' => ROOT_APP . 'apps/library/Thirdparty/Sharding/',
             'Thirdparty\MobileDetect' => ROOT_APP . 'apps/library/Thirdparty/MobileDetect/',
 		),
 		'mailer' => array(

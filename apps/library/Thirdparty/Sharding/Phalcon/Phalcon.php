@@ -1,7 +1,9 @@
 <?php 
 
-namespace Sharding;
+namespace Sharding\Phalcon;
 
+use Core\Utils as _U,
+    Sharding\Core\Loader\Config as Config;
 
 trait Phalcon
 {
@@ -15,15 +17,23 @@ trait Phalcon
 	
 	public static function findFirst($parameters = NULL)
 	{
-	
+		$config = new Config();
+		
+		/*$className = get_class();
+		$object = new $className;
+		$di = $object -> getDI();
+		
+		$query = new \Phalcon\Mvc\Model\Query('SELECT * FROM ' . $className . ' WHERE id = ' . $parameters, $di);
+		$result = $query -> execute();
+		_U::dump($result -> toArray()); */
 	}
 	
-	public function save() 
+	public function save($data = NULL, $whiteList = NULL) 
 	{
 		
 	}
 	
-	public function update()
+	public function update($data = NULL, $whiteList = NULL)
 	{
 	
 	}

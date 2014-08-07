@@ -11,8 +11,9 @@ use Core\Utils as _U;
 
 trait ModelConverter {
 	
-	public static function findFirst($parameters = NULL)
+	/*public static function findFirst($parameters = NULL)
 	{
+		_U::dump(__DIR__);
 		_U::dump($parameters, true);
 		
 		$className = get_class();
@@ -24,18 +25,13 @@ trait ModelConverter {
 		_U::dump($result -> toArray());
 		
 		
-/*		$classInfo = new \ReflectionClass(get_class());
+		$classInfo = new \ReflectionClass(get_class());
 		echo '<pre>';
 		//_U::dump($classInfo -> getProperties());
 		\Reflection::export($classInfo);
 		echo '</pre>';
-		die(); */   
-	}
-	
-	public function getreadConnection()
-	{
-		_U::dump(213213213213213213);
-	}
+		die();    
+	} */
 	
     /**
      * Convert Phalcon data object to array

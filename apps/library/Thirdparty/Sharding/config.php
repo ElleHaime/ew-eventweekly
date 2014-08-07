@@ -2,20 +2,23 @@
 
 $config = 
 [
-	'adapter' => 'mysql',
 	'environment' => 'phalcon',
 	'connections'  => [
 		'db1' => [
+			'adapter' => 'mysql',		
 			'host' => '127.0.0.1',
 			'port' => '3307',
 			'user' => 'root',
-			'password' => 'root'
+			'password' => 'root',
+			'database' => 'ew'
 		],
 		'db2' => [
+			'adapter' => 'mysql',
 			'host' => 'localhost',
 			'port' => '3306',
 			'user' => 'root',
-			'password' => 'root'
+			'password' => 'root',
+			'database' => 'ew'
 		],
 	],
 	'shardModels' => [
