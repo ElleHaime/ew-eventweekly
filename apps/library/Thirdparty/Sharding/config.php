@@ -10,7 +10,8 @@ $config =
 			'port' => '3307',
 			'user' => 'root',
 			'password' => 'root',
-			'database' => 'ew'
+			'database' => 'ew',
+			'writeable' => true
 		],
 		'db2' => [
 			'adapter' => 'mysql',
@@ -18,7 +19,8 @@ $config =
 			'port' => '3306',
 			'user' => 'root',
 			'password' => 'root',
-			'database' => 'ew'
+			'database' => 'test',
+			'writeable' => true
 		],
 	],
 	'shardModels' => [
@@ -30,13 +32,13 @@ $config =
 					'baseTableName' => 'event',
 					'tablesMin' => 1,
 					'tablesMax' => 10,
-					'shardType' => 'loadBalancer'
+					'shardType' => 'loadbalance'
 				],
 				'db2' => [
 					'baseTableName' => 'event',
 					'tablesMin' => 1,
 					'tablesMax' => 10,
-					'shardType' => 'loadBalancer'
+					'shardType' => 'loadbalance'
 				]
 			]
 		],
@@ -48,19 +50,25 @@ $config =
 					'baseTableName' => 'member',
 					'tablesMin' => 1,
 					'tablesMax' => 10,
-					'shardType' => 'limitBatch'
+					'shardType' => 'limitbatch'
 				]
 			]
 		],
 		'venue' => [
-			'criteria' => 'id',
+			'criteria' => 'location_id',
 			'primary' => 'id',
 			'shards' => [
 				'db1' => [
 					'baseTableName' => 'venue',
 					'tablesMin' => 1,
-					'tablesMax' => 2,
-					'shardType' => 'oddEven'
+					'tablesMax' => 10,
+					'shardType' => 'loadbalance'
+				],
+				'db2' => [
+					'baseTableName' => 'venue',
+					'tablesMin' => 1,
+					'tablesMax' => 10,
+					'shardType' => 'loadbalance'
 				]
 			]
 		]

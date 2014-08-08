@@ -2,7 +2,7 @@
 
 namespace Sharding\Core\Adapter;
 
-abstract class AdapterAbstract
+abstract class AdapterAbstractWriteable
 {
 	protected $connection;
 	protected $errors;

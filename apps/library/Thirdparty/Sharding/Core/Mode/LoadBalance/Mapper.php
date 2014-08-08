@@ -1,11 +1,11 @@
 <?php 
 
-namespace Sharding\Mode\LoadBalancer;
+namespace Sharding\Mode\Loadbalance;
 
 class Mapper
 {
 	public $id;
-	public $db;
-	public $table;
-	public $entity;
+	public $criteria;
+	public $database;
+	public $tablename;
 }
