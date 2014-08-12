@@ -18,14 +18,14 @@ trait Phalcon
 	public static function findFirst($parameters = NULL)
 	{
 		$config = new Config();
+
+		$className = get_class();
+		$object = new \ReflectionClass(get_class());
+		$entityName = $object -> getShortName();
+		$shardModel = $config -> loadShardModel($entityName);
 		
-		/*$className = get_class();
-		$object = new $className;
-		$di = $object -> getDI();
-		
-		$query = new \Phalcon\Mvc\Model\Query('SELECT * FROM ' . $className . ' WHERE id = ' . $parameters, $di);
-		$result = $query -> execute();
-		_U::dump($result -> toArray()); */
+		_U::dump($shardModel);
+				
 	}
 	
 	public function save($data = NULL, $whiteList = NULL) 

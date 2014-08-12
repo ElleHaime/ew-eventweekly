@@ -2,13 +2,17 @@
 
 namespace Sharding\Core\Loader;
 
-use Core\Utils as _U;
+use Core\Utils as _U,
+	Sharding\Core\Mode\Loadbalance\Mapper as LoadbalancerMapper,
+	Sharding\Core\Mode\Limitbatch\Mapper as LimitbatchMapper,
+	Sharding\Core\Mode\Oddeven\Mapper as OddevenMapper;
 
 class Config
 {
 	public $config;
 	public $serviceConfig;
 	public $connections;
+	public $shardModels;
 	
 	public function __construct()
 	{
@@ -46,19 +50,32 @@ class Config
 	
 	protected function loadShardModels()
 	{
+//TODO: move this shit from here		
 		foreach ($this -> config -> shardModels as $model => $data) {
 			if ($data -> shards) {
 				foreach ($data -> shards as $db => $shard) {			
 					foreach ($this -> connections as $conn) {
 						if (!$conn -> tableExists('shard_mapper_' . $model)) {
-							$shardType = $shard -> shardType;
+							$shardType = $data -> shardType;
 							$driver = $conn -> getDriver();
-							$conn -> createTable('shard_mapper_' . $model, $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
+							$conn -> createShardTable('shard_mapper_' . $model, $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
 						} 
 					}
 				}
 			}
 		}		
-		_U::dump($this -> connections);
+		
+		/*
+		 * Model Object
+		 * - entity
+		 * - criteria
+		 * - connections
+		 */
 	} 
+	
+	
+	public function loadShardModel($entity)
+	{
+		return $this -> config -> shardModels -> $entity; 
+	}
 }

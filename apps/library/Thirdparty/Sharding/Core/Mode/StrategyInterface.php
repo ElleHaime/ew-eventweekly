@@ -1,8 +1,8 @@
 <?php 
 
-namespace Sharding\Mode;
+namespace Sharding\Core\Mode;
 
-interface ModeInterface
+interface StrategyInterface
 {
 	public abstract function getDatabase();
 	

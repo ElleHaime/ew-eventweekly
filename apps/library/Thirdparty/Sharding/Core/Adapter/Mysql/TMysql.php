@@ -2,30 +2,10 @@
 
 namespace Sharding\Core\Adapter\Mysql;
 
-use Sharding\Core\Adapter\AdapterAbstract,
-	Core\Utils as _U;
+use Core\Utils as _U;
 
-class Mysql extends AdapterAbstract
+trait TMysql
 {
-	protected $host;
-	protected $port;
-	protected $user;
-	protected $password;
-	protected $database;
-	
-	
-	public function __construct($data)
-	{
-		$this -> host = $data -> host;
-		$this -> port = $data -> port;
-		$this -> user = $data -> user;
-		$this -> password = $data -> password;
-		$this -> database = $data -> database;
-		$this -> writeable = $data -> writeable; 
-		
-		$this -> connect();
-	}
-	
 	public function connect()
 	{
 		try {
@@ -36,14 +16,6 @@ class Mysql extends AdapterAbstract
 		}
 		
 		return $this;
-	}
-	
-	public function createTable($tblName, $data)
-	{
-		if ($this -> writeable) {
-			_U::dump($tblName, true);
-			_U::dump($data);
-		}
 	}
 	
 	public function tableExists($tblName)
@@ -62,4 +34,4 @@ class Mysql extends AdapterAbstract
 	{
 		return 'mysql';
 	}
-} 
+}

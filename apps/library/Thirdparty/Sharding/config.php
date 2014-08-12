@@ -6,12 +6,12 @@ $config =
 	'connections'  => [
 		'db1' => [
 			'adapter' => 'mysql',		
-			'host' => '127.0.0.1',
-			'port' => '3307',
+			'host' => 'localhost',
+			'port' => '3306',
 			'user' => 'root',
 			'password' => 'root',
 			'database' => 'ew',
-			'writeable' => true
+			'writable' => true
 		],
 		'db2' => [
 			'adapter' => 'mysql',
@@ -20,55 +20,53 @@ $config =
 			'user' => 'root',
 			'password' => 'root',
 			'database' => 'test',
-			'writeable' => true
+			'writable' => true
 		],
 	],
 	'shardModels' => [
-		'event' => [
+		'Event' => [
 			'criteria' => 'location_id',
 			'primary' => 'id',
+			'shardType' => 'loadbalance',
 			'shards' => [
 				'db1' => [
 					'baseTableName' => 'event',
 					'tablesMin' => 1,
-					'tablesMax' => 10,
-					'shardType' => 'loadbalance'
+					'tablesMax' => 10
 				],
 				'db2' => [
 					'baseTableName' => 'event',
 					'tablesMin' => 1,
-					'tablesMax' => 10,
-					'shardType' => 'loadbalance'
+					'tablesMax' => 10
 				]
 			]
 		],
-		'member' => [
+		'Member' => [
 			'criteria' => 'id',
 			'primary' => 'id',
+			'shardType' => 'limitbatch',
 			'shards' => [
 				'db1' => [
 					'baseTableName' => 'member',
 					'tablesMin' => 1,
-					'tablesMax' => 10,
-					'shardType' => 'limitbatch'
+					'tablesMax' => 10
 				]
 			]
 		],
-		'venue' => [
+		'Venue' => [
 			'criteria' => 'location_id',
 			'primary' => 'id',
+			'shardType' => 'loadbalance',
 			'shards' => [
 				'db1' => [
 					'baseTableName' => 'venue',
 					'tablesMin' => 1,
-					'tablesMax' => 10,
-					'shardType' => 'loadbalance'
+					'tablesMax' => 10
 				],
 				'db2' => [
 					'baseTableName' => 'venue',
 					'tablesMin' => 1,
-					'tablesMax' => 10,
-					'shardType' => 'loadbalance'
+					'tablesMax' => 10
 				]
 			]
 		]
