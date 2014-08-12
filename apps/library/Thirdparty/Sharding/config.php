@@ -4,7 +4,7 @@ $config =
 [
 	'environment' => 'phalcon',
 	'connections'  => [
-		'db1' => [
+		'dbSlave' => [
 			'adapter' => 'mysql',		
 			'host' => 'localhost',
 			'port' => '3306',
@@ -12,16 +12,7 @@ $config =
 			'password' => 'root',
 			'database' => 'ew',
 			'writable' => true
-		],
-		'db2' => [
-			'adapter' => 'mysql',
-			'host' => 'localhost',
-			'port' => '3306',
-			'user' => 'root',
-			'password' => 'root',
-			'database' => 'test',
-			'writable' => true
-		],
+		]
 	],
 	'shardModels' => [
 		'Event' => [
@@ -29,12 +20,7 @@ $config =
 			'primary' => 'id',
 			'shardType' => 'loadbalance',
 			'shards' => [
-				'db1' => [
-					'baseTableName' => 'event',
-					'tablesMin' => 1,
-					'tablesMax' => 10
-				],
-				'db2' => [
+				'dbSlave' => [
 					'baseTableName' => 'event',
 					'tablesMin' => 1,
 					'tablesMax' => 10
@@ -46,7 +32,7 @@ $config =
 			'primary' => 'id',
 			'shardType' => 'limitbatch',
 			'shards' => [
-				'db1' => [
+				'dbSlave' => [
 					'baseTableName' => 'member',
 					'tablesMin' => 1,
 					'tablesMax' => 10
@@ -58,12 +44,7 @@ $config =
 			'primary' => 'id',
 			'shardType' => 'loadbalance',
 			'shards' => [
-				'db1' => [
-					'baseTableName' => 'venue',
-					'tablesMin' => 1,
-					'tablesMax' => 10
-				],
-				'db2' => [
+				'dbSlave' => [
 					'baseTableName' => 'venue',
 					'tablesMin' => 1,
 					'tablesMax' => 10
