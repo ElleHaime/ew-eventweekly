@@ -15,6 +15,12 @@ class MysqlWritable extends AdapterAbstractWritable
 			$query = str_replace('$tableName', $tblName, $data);
 			/* validation, big heap of validations */
 			/* and create this fucking table*/
+			try {
+				$this -> connection -> query($query);
+			} catch(\Exception $e) {
+				throw new \Exception('Unable to create mapping table');
+			}
+			
 			return;
 		}
 	}

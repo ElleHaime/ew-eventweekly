@@ -6,22 +6,22 @@ use Sharding\Core\Adapter\AdapterAbstract;
 
 abstract class AdapterAbstractReadonly extends AdapterAbstract 
 {
-	public final save()
+	public final function save()
 	{
 		return;
 	}
 	
-	public final delete()
+	public final function delete()
 	{
 		return;
 	}
 	
-	public final update()
+	public final function update()
 	{
 		return;
 	}
 	
-	public final createTable($tblName, $data)
+	public final function createShardTable($tblName, $data)
 	{
 		return;
 	}

@@ -30,7 +30,7 @@ class Config
 	public function init()
 	{
 		$this -> loadConnections();
-		$this -> loadShardModels();
+		$this -> loadShardMappers();
 	}
 	
 	protected function loadConnections()
@@ -48,17 +48,17 @@ class Config
 		}
 	}
 	
-	protected function loadShardModels()
+	protected function loadShardMappers()
 	{
 //TODO: move this shit from here		
 		foreach ($this -> config -> shardModels as $model => $data) {
 			if ($data -> shards) {
 				foreach ($data -> shards as $db => $shard) {			
 					foreach ($this -> connections as $conn) {
-						if (!$conn -> tableExists('shard_mapper_' . $model)) {
+						if (!$conn -> tableExists('shard_mapper_' . strtolower($model))) {
 							$shardType = $data -> shardType;
 							$driver = $conn -> getDriver();
-							$conn -> createShardTable('shard_mapper_' . $model, $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
+							$conn -> createShardTable('shard_mapper_' . strtolower($model), $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
 						} 
 					}
 				}
@@ -76,6 +76,10 @@ class Config
 	
 	public function loadShardModel($entity)
 	{
-		return $this -> config -> shardModels -> $entity; 
+		if (isset($this -> config -> shardModels -> $entity)) {
+			return $this -> config -> shardModels -> $entity;
+		} else {
+			return false;			
+		}
 	}
 }

@@ -61,6 +61,7 @@ class Event extends EventObject
     public $virtualFields = [
         'slugUri' => '\Core\Utils\SlugUri::slug(self->name).\'-\'.self->id',
     ];
+    
 
     
     public function afterDelete()

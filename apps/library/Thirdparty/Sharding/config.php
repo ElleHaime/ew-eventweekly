@@ -4,6 +4,15 @@ $config =
 [
 	'environment' => 'phalcon',
 	'connections'  => [
+		'dbMaster' => [
+			'adapter' => 'mysql',		
+			'host' => '127.0.0.1',
+			'port' => '3307',
+			'user' => 'root',
+			'password' => 'root',
+			'database' => 'ew',
+			'writable' => true
+		],
 		'dbSlave' => [
 			'adapter' => 'mysql',		
 			'host' => 'localhost',
@@ -11,23 +20,29 @@ $config =
 			'user' => 'root',
 			'password' => 'root',
 			'database' => 'ew',
-			'writable' => true
-		]
+			'writable' => false
+		],
 	],
+	'defautlConnection' => 'dbMaster',
 	'shardModels' => [
 		'Event' => [
 			'criteria' => 'location_id',
 			'primary' => 'id',
 			'shardType' => 'loadbalance',
 			'shards' => [
+				'dbMaster' => [
+					'baseTableName' => 'event',
+					'tablesMin' => 0,
+					'tablesMax' => 0
+				],
 				'dbSlave' => [
 					'baseTableName' => 'event',
-					'tablesMin' => 1,
-					'tablesMax' => 10
+					'tablesMin' => 0,
+					'tablesMax' => 0
 				]
 			]
 		],
-		'Member' => [
+		/*'Member' => [
 			'criteria' => 'id',
 			'primary' => 'id',
 			'shardType' => 'limitbatch',
@@ -50,7 +65,7 @@ $config =
 					'tablesMax' => 10
 				]
 			]
-		]
+		]*/
 	] 
 ];
 

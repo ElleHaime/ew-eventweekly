@@ -1,5 +1,7 @@
 <?php 
 
+use Core\Model;
+
 namespace Sharding\Phalcon;
 
 use Core\Utils as _U,
@@ -7,32 +9,41 @@ use Core\Utils as _U,
 
 trait Phalcon
 {
+	protected $targetShardCriteria = NULL;
+	protected $shardConfig;
 	protected $shardQueryParams = [];
 	protected $destinationDb;
 	protected $destinationTable;
 	protected $searchType;
 	protected $shardModel;
-	
+
+	public function initialize()
+	{
+		$this -> shardConfig = new Config();
+		
+		parent::initialize();
+	}
+
 	
 	public static function find($parameters = NULL)
 	{
+		
 	}
 	
 	public static function findFirst($parameters = NULL)
 	{
-		$config = new Config();
-
+		$shardConfig = new Config();
 		$object = new \ReflectionClass(__CLASS__);
 		$entityName = $object -> getShortName();
-		$shardModel = $config -> loadShardModel($entityName);
 		
-		$objName = '\\' . __CLASS__;
-		$obj = new $objName;
-		//$params = $obj -> processShardArguments($parameters);
-		//$obj -> setReadDestination($entityName, $shardModel, $parameters);
-		
-		$result = $obj -> searchInShards($entityName, $shardModel, $parameters);
-_U::dump($result);		
+		if ($shardModel = $shardConfig -> loadShardModel($entityName)) { 
+			$objName = '\\' . __CLASS__;
+			$obj = new $objName;
+			$result = $obj -> shardingSearchOne($entityName, $shardModel, $parameters);
+		} else {
+			$result = $obj -> defaultSearch($entityName, $parameters);
+		}
+
 		return $result;
 	}
 	
@@ -51,14 +62,39 @@ _U::dump($result);
 	
 	}
 	
+	/**
+	 * Search not-sharded data in the default shard
+	 * 
+	 * @access public
+	 * @param string $entityName
+	 * @param string $parameters
+	 * @return Model|false Phalcon model object 
+	 */
+	public function defaultSearch($entityName, $parameters = NULL)
+	{
+		
+	}
+
 	
-	public function searchInShards($entityName, $shardModel, $parameters = NULL)
+	public function shardingSearchOne($entityName, $shardModel, $parameters = NULL)
 	{
 		$params = $this -> processShardArguments($parameters);
 		$this -> setReadDestination($entityName, $shardModel, $parameters);
 	}
+
 	
+	public function shardingSearchAll($entityName, $shardModel, $parameters = NULL)
+	{
+		if (!isset($this -> targetShardCriteria)) {
+			_U::dump('oooops');
+			throw new \Exception('Sharding criteria required');
+		}
+_U::dump($shardModel);
+		$params = $this -> processShardArguments($parameters);
+		$this -> setReadDestination($entityName, $shardModel, $parameters);
+	}
 	
+
 	public function processShardArguments($parameters = NULL)
 	{
 		$args = [];
@@ -79,6 +115,9 @@ _U::dump($result);
 		$mode = new $modeName;
 		
 		$shard = $mode -> getShard($entity, $args);
+		
+_U::dump($shard);
+		
 		$this -> destinationDb = $shard;
 		$this -> destinationDb = $shard;
 		$this -> destinationTable = 'event';
@@ -97,5 +136,10 @@ _U::dump($result);
 	public function setSource($table = 'event')
 	{
 		return $tthis -> destinationTable;
+	}
+	
+	public function setShardCriteria($criteria)
+	{
+		$this -> targetShardCriteria = $criteria;
 	}
 }

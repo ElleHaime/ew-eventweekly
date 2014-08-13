@@ -26,10 +26,12 @@ class Strategy implements StrategyInterface
 		if (!empty($args) && isset($args[$this -> shardModel -> criteria])) {
 			// search in shards by criteria
 			$result['searchType'] = 'shard';
+			$result['connection'][] = 'dbSlave';
 			//$result['connection'] = $mapper -> findShard($entity);
 		} else {
 			// search in all shards
 			$result['searchType'] = 'all';
+			$result['connection'] = ['dbSlave', 'test'];
 			//$result['connection'] = $mapper -> findAll($entity);
 		}
 		
