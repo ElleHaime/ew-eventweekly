@@ -9,21 +9,42 @@ use Core\Utils as _U,
 
 trait Phalcon
 {
+	public $shardConfig;
+	
 	protected $targetShardCriteria = NULL;
-	protected $shardConfig;
 	protected $shardQueryParams = [];
 	protected $destinationDb;
 	protected $destinationTable;
 	protected $searchType;
 	protected $shardModel;
 
-	public function initialize()
+	
+	public function onConstruct()
 	{
 		$this -> shardConfig = new Config();
-		
-		parent::initialize();
+		parent::onConstruct();
 	}
+	
 
+	public function save($data = NULL, $whiteList = NULL)
+	{
+		$object = new \ReflectionClass(__CLASS__);
+		$entityName = $object -> getShortName();
+
+		if ($shardModel = $this -> shardConfig -> loadShardModel($entityName)) {
+			$modeName = '\Sharding\Core\Mode\\' . ucfirst($shardModel -> shardType) . '\Strategy';
+			$modeStrategy = new $modeName;
+			$modeStrategy -> setShardEntity($entityName);
+			$modeStrategy -> setShardModel($shardModel);
+
+			$shard = $modeStrategy -> getShard($this -> location_id);
+		} else {
+			
+		}
+_U::dump($this -> location_id, true);		
+_U::dump($shardModel);
+	}
+	
 	
 	public static function find($parameters = NULL)
 	{
@@ -47,11 +68,7 @@ trait Phalcon
 		return $result;
 	}
 	
-	public function save($data = NULL, $whiteList = NULL) 
-	{
-		
-	}
-	
+
 	public function update($data = NULL, $whiteList = NULL)
 	{
 	
@@ -86,10 +103,9 @@ trait Phalcon
 	public function shardingSearchAll($entityName, $shardModel, $parameters = NULL)
 	{
 		if (!isset($this -> targetShardCriteria)) {
-			_U::dump('oooops');
 			throw new \Exception('Sharding criteria required');
 		}
-_U::dump($shardModel);
+
 		$params = $this -> processShardArguments($parameters);
 		$this -> setReadDestination($entityName, $shardModel, $parameters);
 	}
@@ -135,7 +151,7 @@ _U::dump($shard);
 	
 	public function setSource($table = 'event')
 	{
-		return $tthis -> destinationTable;
+		return $this -> destinationTable;
 	}
 	
 	public function setShardCriteria($criteria)

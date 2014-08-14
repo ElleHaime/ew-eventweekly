@@ -9,7 +9,11 @@ class Model extends \Phalcon\Mvc\Model
 	public $extraOptions;
 	public $needCache = false;
 
-
+	public function onConstruct()
+	{
+		
+	}
+	
 	public function initialize()
     {
         $this -> setReadConnectionService('dbSlave');

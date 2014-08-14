@@ -13,7 +13,7 @@ $config =
 			'database' => 'ew',
 			'writable' => true
 		],
-		'dbSlave' => [
+		/*'dbSlave' => [
 			'adapter' => 'mysql',		
 			'host' => 'localhost',
 			'port' => '3306',
@@ -21,9 +21,9 @@ $config =
 			'password' => 'root',
 			'database' => 'ew',
 			'writable' => false
-		],
+		],*/
 	],
-	'defautlConnection' => 'dbMaster',
+	'masterConnection' => 'dbMaster',
 	'shardModels' => [
 		'Event' => [
 			'criteria' => 'location_id',
@@ -32,13 +32,7 @@ $config =
 			'shards' => [
 				'dbMaster' => [
 					'baseTableName' => 'event',
-					'tablesMin' => 0,
-					'tablesMax' => 0
-				],
-				'dbSlave' => [
-					'baseTableName' => 'event',
-					'tablesMin' => 0,
-					'tablesMax' => 0
+					'tablesMax' => 10
 				]
 			]
 		],

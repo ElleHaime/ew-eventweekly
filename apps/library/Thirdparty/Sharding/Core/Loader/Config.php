@@ -82,4 +82,9 @@ class Config
 			return false;			
 		}
 	}
+	
+	public function getMasterConnection()
+	{
+		
+	}
 }
