@@ -3,7 +3,7 @@
 namespace Sharding\Core\Mode;
 
 use Core\Utils as _U,
-	Sharding\Core\Loader\Config as Config;
+	Sharding\Core\Loader as Loader;
 
 abstract class StrategyAbstract
 {
@@ -14,7 +14,7 @@ abstract class StrategyAbstract
 	
 	public function __construct()
 	{
-		$this -> config = new Config();
+		$this -> config = new Loader();
 	}
 
 	public function setShardModel($model)

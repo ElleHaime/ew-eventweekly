@@ -47,18 +47,6 @@ $config =
 					'tablesMax' => 10
 				]
 			]
-		],
-		'Venue' => [
-			'criteria' => 'location_id',
-			'primary' => 'id',
-			'shardType' => 'loadbalance',
-			'shards' => [
-				'dbSlave' => [
-					'baseTableName' => 'venue',
-					'tablesMin' => 1,
-					'tablesMax' => 10
-				]
-			]
 		]*/
 	] 
 ];

@@ -5,7 +5,7 @@ use Core\Model;
 namespace Sharding\Phalcon;
 
 use Core\Utils as _U,
-    Sharding\Core\Loader\Config as Config;
+    Sharding\Core\Loader as Loader;
 
 trait Phalcon
 {
@@ -21,7 +21,7 @@ trait Phalcon
 	
 	public function onConstruct()
 	{
-		$this -> shardConfig = new Config();
+		$this -> shardConfig = new Loader();
 		parent::onConstruct();
 	}
 	
