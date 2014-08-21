@@ -9,7 +9,7 @@ use Core\Utils as _U,
 
 trait Phalcon
 {
-	public $shardConfig;
+	public $app;
 	
 	protected $targetShardCriteria = NULL;
 	protected $shardQueryParams = [];
@@ -21,7 +21,7 @@ trait Phalcon
 	
 	public function onConstruct()
 	{
-		$this -> shardConfig = new Loader();
+		$this -> app = new Loader();
 		parent::onConstruct();
 	}
 	
@@ -31,7 +31,7 @@ trait Phalcon
 		$object = new \ReflectionClass(__CLASS__);
 		$entityName = $object -> getShortName();
 
-		if ($shardModel = $this -> shardConfig -> loadShardModel($entityName)) {
+		if ($shardModel = $this -> app -> loadShardModel($entityName)) {
 			$modeName = '\Sharding\Core\Mode\\' . ucfirst($shardModel -> shardType) . '\Strategy';
 			$modeStrategy = new $modeName;
 			$modeStrategy -> setShardEntity($entityName);

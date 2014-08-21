@@ -3,9 +3,10 @@
 namespace Sharding\Core;
 
 use Core\Utils as _U,
-	Sharding\Core\Mode\Loadbalance\Mapper as LoadbalancerMapper,
-	Sharding\Core\Mode\Limitbatch\Mapper as LimitbatchMapper,
-	Sharding\Core\Mode\Oddeven\Mapper as OddevenMapper;
+	Sharding\Core\Mode\Loadbalance\Map as LoadbalancerMapper,
+	Sharding\Core\Mode\Limitbatch\Map as LimitbatchMapper,
+	Sharding\Core\Mode\Oddeven\Map as OddevenMapper;
+
 
 class Loader
 {
@@ -16,11 +17,11 @@ class Loader
 	
 	public function __construct()
 	{
-		$confpath = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'config.php';
+		$confpath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.php';
 		$config = include $confpath;
 		$this -> config = json_decode(json_encode($config), FALSE);
 		
-		$confpath = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'serviceConfig.php';
+		$confpath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'serviceConfig.php';
 		$config = include $confpath;
 		$this -> serviceConfig = json_decode(json_encode($config), FALSE);
 		
@@ -31,6 +32,7 @@ class Loader
 	{
 		$this -> loadConnections();
 		$this -> loadShardMappers();
+		$this -> loadShardTables();
 	}
 	
 	protected function loadConnections()
@@ -50,21 +52,44 @@ class Loader
 	
 	protected function loadShardMappers()
 	{
-//TODO: move this shit from here		
+//TODO: move this shit from here
+		$shardMapPrefix = $this -> getMapPrefix(); 
+				
 		foreach ($this -> config -> shardModels as $model => $data) {
 			if ($data -> shards) {
 				foreach ($data -> shards as $db => $shard) {			
 					foreach ($this -> connections as $conn) {
-						if (!$conn -> tableExists('shard_mapper_' . strtolower($model))) {
+						if (!$conn -> tableExists($shardMapPrefix . strtolower($model))) {
 							$shardType = $data -> shardType;
 							$driver = $conn -> getDriver();
-							$conn -> createShardTable('shard_mapper_' . strtolower($model), $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
+							$conn -> createShardMap($shardMapPrefix . strtolower($model), 
+													  $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
 						} 
 					}
 				}
 			}
 		}		
 	} 
+	
+	
+	protected function loadShardTables()
+	{
+		_U::dump($this -> config -> shardModels, true);
+		// get description of base table
+		$master = $this -> getMasterConnection();
+		$masterConn = $this -> connections -> $master;
+		
+		foreach ($this -> config -> shardModels as $model => $data) {
+			if ($data -> shards) {
+				foreach ($data -> shards as $db => $shard) {
+					for($i = 1; $i <= $shard -> tablesMax; $i++) {
+						$tblName = $data -> baseTablePrefix . $i;
+						$masterConn -> setTable($data -> baseTable) -> createTableBySample($tblName);
+					}
+				}
+			}
+		}
+	}
 	
 	
 	public function loadShardModel($entity)
@@ -78,6 +103,27 @@ class Loader
 	
 	public function getMasterConnection()
 	{
+		$master = null;
 		
+		if ($this -> config -> masterConnection) {
+			$master = $this -> config -> masterConnection;
+		} else {
+			_U::dump('no master connections detected');
+		}
+		
+		return $master;	
+	}
+	
+	public function getMapPrefix()
+	{
+		$prefix = '';
+		
+		if ($this -> config -> shardMapPrefix) {
+			$prefix = $this -> config -> shardMapPrefix;
+		} else {
+			$prefix = 'shard_map_';
+		}
+		
+		return $prefix;
 	}
 }

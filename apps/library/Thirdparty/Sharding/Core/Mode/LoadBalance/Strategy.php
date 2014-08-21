@@ -8,6 +8,7 @@ use Sharding\Core\Mode\StrategyAbstract,
 	Sharding\Core\Mode\Loadbalance\Map as Map,
 	Sharding\Core\Mode\Loadbalance\Shard as Shard;
 
+
 class Strategy extends StrategyAbstract
 {
 	private $shardSelected 		= false;
@@ -15,20 +16,20 @@ class Strategy extends StrategyAbstract
 	
 	public function getShard($arg)
 	{
-_U::dump($this -> shardEntity, true);		
-_U::dump($this -> shardModel, true);
-_U::dump($arg);
-		
-		$mapper = new Map($this -> shardEntity);
-		$mapper -> useConnection($this -> config -> masterConnection);
+		$mapper = new Map($this -> app);
+		$mapper -> setEntity($this -> shardEntity);
+		$mapper -> useConnection($this -> app -> getMasterConnection());
 		$shard = $mapper -> findByCriteria($arg);
+_U::dump($this -> shardModel);
 
 		// create new shard or use existed		
 		if (!$shard) {
+			$sharder = new Shard($this -> app);
+			$sharder -> setEntity($this -> shardEntity);
 			
 			// check number of tables in each available connection 
 			foreach ($this -> shardModel -> shards as $conn => $data) {
-				$mapper -> useConnection($conn);
+				$sharder -> useConnection($conn);
 				
 				$this -> shardsAvailable[$conn] = $mapper -> getShardsData();
 				if ($this -> shardsAvailable[$conn] -> tablesExist < $data -> tablesMax) {

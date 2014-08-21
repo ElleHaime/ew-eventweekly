@@ -7,14 +7,14 @@ use Core\Utils as _U,
 
 abstract class StrategyAbstract
 {
-	public $config;
+	public $app;
 	protected $shardModel;
 	protected $shardEntity;
 
 	
 	public function __construct()
 	{
-		$this -> config = new Loader();
+		$this -> app = new Loader();
 	}
 
 	public function setShardModel($model)

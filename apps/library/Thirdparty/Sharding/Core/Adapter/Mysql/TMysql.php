@@ -30,8 +30,127 @@ trait TMysql
 		}
 	}
 	
+	
+	public function getTableStructure()
+	{
+		$structure = false;
+		
+		if ($this -> queryTable) {
+			$query = 'DESCRIBE ' . $this -> queryTable;
+			$structure = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
+		} 
+
+		return $structure;
+	}
+	
+	
 	public function getDriver()
 	{
 		return 'mysql';
+	}
+	
+	public function setTable($table)
+	{
+		$this -> queryTable = $table;
+		return $this;
+	}
+	
+	public function addCondition($condition)
+	{
+		$this -> conditions[] = $condition;
+		return $this; 
+	}
+	
+	public function addField($field)
+	{
+		$this -> fields[] = $field;
+	} 
+	
+	public function addLimit($limit)
+	{
+		$this -> limit = $limit;
+	}
+	
+	public function fetchOne()
+	{
+		$this -> queryExpr = 'SELECT ';
+		$this -> processFields();		
+		$this -> queryExpr .= ' FROM ' . $this -> queryTable;
+		$this -> processConditions();
+		
+		$fetch = $this -> connection -> query($this -> queryExpr);
+		if ($fetch  -> rowCount() == 0) {
+			$result = false;
+		} else {
+			if ($this -> fetchFormat == 'OBJECT') {
+				$result = $fetch -> fetch(\PDO::FETCH_LAZY);
+			} else {
+				$result = $fetch -> fetch(\PDO::FETCH_ASSOC);
+			}
+		}
+		
+		$this -> clearQuery();
+		
+		return $result;
+	}
+	
+	public function fetch()
+	{
+		
+	}
+	
+
+	public function execute($query)
+	{
+		try {
+			$result = $this -> connection -> query($query);
+			return $result;			
+		} catch(\Exception $e) {
+			throw new \Exception('Unable to create mapping table');
+		}
+	}
+	
+	private function clearQuery()
+	{
+		$this -> queryTable = false;
+		$this -> limit = false;
+		$this -> offset = false;
+		$this -> fields = [];
+		$this -> conditions = [];
+		$this -> queryExpr = '';
+		
+		return;
+	}
+	
+	private function processFields()
+	{
+		if (!empty($this -> fields)) {
+			$this -> processFields();
+			foreach ($this -> fields as $index => $field) {
+				$this -> queryExpr .= $this -> queryTable . '.' . $field . ',';
+			}
+			$this -> queryExpr = substr($this -> queryExpr, 0, strlen($this -> queryExpr) - 1);
+		} else {
+			$this -> queryExpr .= '*';
+		}
+		
+		return;
+	}
+	
+	private function processConditions()
+	{
+		if (!empty($this -> conditions)) {
+			$this -> queryExpr .= ' WHERE ';
+			$conds = count($this -> conditions);
+				
+			for ($i = 0; $i < $conds; $i++) {
+				$this -> queryExpr .= $this -> conditions[$i] . ' ';
+				if ($i < $conds - 1) {
+					$this -> queryExpr .= 'AND ';
+				}
+			}
+		}
+		
+		return;
 	}
 }

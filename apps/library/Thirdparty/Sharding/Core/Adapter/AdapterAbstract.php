@@ -14,6 +14,15 @@ abstract class AdapterAbstract
 	protected $password;
 	protected $database;
 	
+	protected $queryTable	= false;
+	protected $limit		= false;
+	protected $offset		= false;
+	protected $conditions	= [];
+	protected $fields 		= [];
+	protected $queryExpr 	= '';
+	protected $fetchFormat	= 'OBJECT';
+	
+	
 	public function __construct($data)
 	{
 		$this -> host = $data -> host;
@@ -30,7 +39,9 @@ abstract class AdapterAbstract
 	
 	abstract function getDriver();
 	
-	abstract function createShardTable($tblName, $data);
+	abstract function createShardMap($tblName, $data);
+	
+	abstract function createTableBySample($tblName);
 	
 	abstract function tableExists($tableName);
 }

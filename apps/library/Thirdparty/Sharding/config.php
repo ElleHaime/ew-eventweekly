@@ -24,14 +24,16 @@ $config =
 		],*/
 	],
 	'masterConnection' => 'dbMaster',
+	'shardMapPrefix' => 'shard_mapper_',
 	'shardModels' => [
 		'Event' => [
 			'criteria' => 'location_id',
 			'primary' => 'id',
+			'baseTable' => 'event',
 			'shardType' => 'loadbalance',
 			'shards' => [
 				'dbMaster' => [
-					'baseTableName' => 'event',
+					'baseTablePrefix' => 'event_',
 					'tablesMax' => 10
 				]
 			]
@@ -43,7 +45,6 @@ $config =
 			'shards' => [
 				'dbSlave' => [
 					'baseTableName' => 'member',
-					'tablesMin' => 1,
 					'tablesMax' => 10
 				]
 			]
