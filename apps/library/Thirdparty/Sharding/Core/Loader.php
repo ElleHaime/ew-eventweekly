@@ -74,7 +74,6 @@ class Loader
 	
 	protected function loadShardTables()
 	{
-		_U::dump($this -> config -> shardModels, true);
 		// get description of base table
 		$master = $this -> getMasterConnection();
 		$masterConn = $this -> connections -> $master;
@@ -83,7 +82,7 @@ class Loader
 			if ($data -> shards) {
 				foreach ($data -> shards as $db => $shard) {
 					for($i = 1; $i <= $shard -> tablesMax; $i++) {
-						$tblName = $data -> baseTablePrefix . $i;
+						$tblName = $shard -> baseTablePrefix . $i;
 						$masterConn -> setTable($data -> baseTable) -> createTableBySample($tblName);
 					}
 				}

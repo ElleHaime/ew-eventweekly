@@ -11,39 +11,44 @@ use Sharding\Core\Mode\StrategyAbstract,
 
 class Strategy extends StrategyAbstract
 {
-	private $shardSelected 		= false;
-	public $shardsAvailable		= [];
+	protected $shardSelected;	
+	protected $shardsAvailable;
+
 	
+	/**
+	 * Search shard by criteria. If shard not found (was passed new criteria), 
+	 * then compare available shards and return the pair connection+table
+	 * with min records.
+	 * 
+	 * @access public
+	 * @param int|string @arg
+	 * @return array
+	 */
 	public function getShard($arg)
 	{
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
-		$shard = $mapper -> findByCriteria($arg);
-_U::dump($this -> shardModel);
+		$shardSelected = $mapper -> findByCriteria($arg);
 
 		// create new shard or use existed		
-		if (!$shard) {
+		if (!$shardSelected) {
 			$sharder = new Shard($this -> app);
-			$sharder -> setEntity($this -> shardEntity);
 			
-			// check number of tables in each available connection 
+			// check number of rows in all tables for each available connection 
 			foreach ($this -> shardModel -> shards as $conn => $data) {
 				$sharder -> useConnection($conn);
-				
-				$this -> shardsAvailable[$conn] = $mapper -> getShardsData();
-				if ($this -> shardsAvailable[$conn] -> tablesExist < $data -> tablesMax) {
-					$this -> shardSelected = true;
-					break;
-				} 
+				$this -> shardsAvailable[$conn] = $sharder -> compareShardTables($data);
 			}
 			
-			if (!$this -> shardSelected) {
-				// select shard with table with minimum rows
-			}
+			_U::dump($this -> shardsAvailable);
+			// select optimal shard with minimum rows
+			// TODO: add comparison between connections
+			// add record about new location of criteria to the map table
+			  
 		} 
 
-		return $shard;
+		return $shardSelected;
 	}
 }
 

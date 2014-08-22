@@ -42,7 +42,8 @@ trait Phalcon
 			
 		}
 _U::dump($this -> location_id, true);		
-_U::dump($shardModel);
+_U::dump($shardModel, true);
+_U::dump($shard);
 	}
 	
 	

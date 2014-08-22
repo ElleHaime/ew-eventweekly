@@ -11,15 +11,41 @@ class Shard
 	public $entity;
 	public $connection;
 	public $app;
+
 	
 	public function __construct($app)
 	{
 		$this -> app = $app;
 	}
 	
-	public function createShard()
+	/**
+	 * Compare count of rows in each shard(table) 
+	 * 
+	 * @access public
+	 * @param object $shard
+	 * @return array  
+	 */
+	public function compareShardTables($shard)
 	{
-	
+		$shards = [];
+		for ($i = 1; $i <= $shard -> tablesMax; $i++) {
+			$tblName = $shard -> baseTablePrefix . $i;
+			$shards[$tblName] = $this -> connection -> setTable($tblName) -> getRowsCount();
+		}
+		asort($shards);
+		
+		$getTables = $getRows = $shards;
+		$result['max']['rows'] = array_pop($getTables);
+		$result['min']['rows'] = array_shift($getTables);
+
+		$getRows = array_flip($shards);
+		if (count($getRows) < 2) {
+			$getRows = array_keys($shards);
+		}
+		$result['max']['table'] = array_pop($getRows);
+		$result['min']['table'] = array_shift($getRows);
+		
+		return $result;
 	}
 	
 	public function useConnection($conn)

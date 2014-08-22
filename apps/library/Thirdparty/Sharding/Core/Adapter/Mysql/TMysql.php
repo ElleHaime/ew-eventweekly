@@ -36,8 +36,13 @@ trait TMysql
 		$structure = false;
 		
 		if ($this -> queryTable) {
-			$query = 'DESCRIBE ' . $this -> queryTable;
-			$structure = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
+			//$query = 'DESCRIBE ' . $this -> queryTable;
+			$query = 'SHOW CREATE TABLE ' . $this -> queryTable;
+			try {
+				$structure = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
+			} catch (\PDOException $e) {
+				$this -> errors = $e -> getMessage();
+			}
 		} 
 
 		return $structure;
@@ -71,6 +76,14 @@ trait TMysql
 		$this -> limit = $limit;
 	}
 	
+	public function getRowsCount()
+	{
+		$this -> queryExpr = 'SELECT COUNT(*) as records FROM ' . $this -> queryTable;
+		$result = $this -> connection -> query($this -> queryExpr) -> fetch(\PDO::FETCH_OBJ);
+		
+		return (int)$result -> records;
+	}
+	
 	public function fetchOne()
 	{
 		$this -> queryExpr = 'SELECT ';
@@ -79,7 +92,7 @@ trait TMysql
 		$this -> processConditions();
 		
 		$fetch = $this -> connection -> query($this -> queryExpr);
-		if ($fetch  -> rowCount() == 0) {
+		if ($fetch -> rowCount() == 0) {
 			$result = false;
 		} else {
 			if ($this -> fetchFormat == 'OBJECT') {

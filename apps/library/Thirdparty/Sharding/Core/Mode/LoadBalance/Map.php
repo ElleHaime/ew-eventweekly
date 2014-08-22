@@ -22,6 +22,13 @@ class Map
 		$this -> app = $app;
 	}
 	
+	/**
+	 * Search shard by criteria in map table
+	 * 
+	 * @access public
+	 * @param int|string $criteria
+	 * @return PDO object | false
+	 */
 	public function findByCriteria($criteria)
 	{
 		$result = $this -> connection -> setTable($this -> entity)
