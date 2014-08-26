@@ -27,14 +27,23 @@ class Map
 	 * 
 	 * @access public
 	 * @param int|string $criteria
-	 * @return PDO object | false
+	 * @return PDO object | false 
 	 */
 	public function findByCriteria($criteria)
 	{
 		$result = $this -> connection -> setTable($this -> entity)
 									  -> addCondition($this -> entity . '.criteria = ' . $criteria)
 									  -> fetchOne();
-		return $result; 
+		if ($result) {
+			$this -> id = $result -> id;
+			$this -> dbname = $result -> dbname;
+			$this -> tblname = $result -> tblname;
+			$this -> criteria = $result -> criteria;
+			
+			return $this;
+		} else {
+			return false;
+		} 
 	}
 	
 	public function findAll()
@@ -42,9 +51,20 @@ class Map
 		
 	}
 	
-	public function saveShard()
+	public function save()
 	{
-		
+		$data = ['criteria' => $this -> criteria,
+				 'dbname' => $this -> dbname,
+				 'tblname' => $this -> tblname];
+
+		$result = $this -> connection -> setTable($this -> entity)
+									  -> saveRecord($data);
+		if ($result) {
+			$this -> id = $result;
+			return $this;
+		} else {
+			return false;
+		}
 	}
 	
 	public function useConnection($conn)
@@ -56,5 +76,10 @@ class Map
 	{
 		$prefix = $this -> app -> getMapPrefix();
 		$this -> entity = $prefix . $entity;
+	}
+	
+	public function setCriteria($criteria)
+	{
+		$this -> criteria = (int)$criteria;
 	}
 }

@@ -122,6 +122,7 @@ trait TMysql
 			throw new \Exception('Unable to create mapping table');
 		}
 	}
+
 	
 	private function clearQuery()
 	{

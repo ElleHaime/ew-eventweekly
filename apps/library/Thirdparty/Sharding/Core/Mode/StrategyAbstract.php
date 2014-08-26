@@ -27,5 +27,5 @@ abstract class StrategyAbstract
 		$this -> shardEntity = strtolower($entity);
 	}
 	
-	abstract public function getShard($arg);
+	abstract public function selectShard($arg);
 }

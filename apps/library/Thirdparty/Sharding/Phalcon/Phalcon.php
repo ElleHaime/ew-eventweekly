@@ -13,8 +13,11 @@ trait Phalcon
 	
 	protected $targetShardCriteria = NULL;
 	protected $shardQueryParams = [];
-	protected $destinationDb;
-	protected $destinationTable;
+	
+	public $destinationId;
+	public $destinationDb;
+	public $destinationTable;
+	
 	protected $searchType;
 	protected $shardModel;
 
@@ -37,13 +40,28 @@ trait Phalcon
 			$modeStrategy -> setShardEntity($entityName);
 			$modeStrategy -> setShardModel($shardModel);
 
-			$shard = $modeStrategy -> getShard($this -> location_id);
+			$modeStrategy -> selectShard($this -> location_id);
 		} else {
-			
+			$modeStrategy -> selectDefaultShard();
 		}
-_U::dump($this -> location_id, true);		
-_U::dump($shardModel, true);
-_U::dump($shard);
+		
+		$this -> destinationId = $modeStrategy -> getId();
+		$this -> destinationDb = $modeStrategy -> getDbName();
+		$this -> destinationTable = $modeStrategy -> getTableName();
+		
+		$this -> setReadDestination();
+
+/*_U::dump($shardModel, true);
+_U::dump($this -> destinationId, true);
+_U::dump($this -> destinationDb, true);
+_U::dump($this -> destinationTable, true);
+_U::dump($this -> name); */
+
+		$lastObject = parent::findFirst(['limit' => 1, 'order' => 'id DESC']);
+		$this -> id = $this -> composeNewId($lastObject);
+_U::dump($this);		
+		$this -> save();
+		_U::dump('ready');		
 	}
 	
 	
@@ -125,35 +143,32 @@ _U::dump($shard);
 		return $args;
 	}
 	
-	
-	public function setReadDestination($entity, $model, $args)
+	public function setReadDestination()
 	{
-		$modeName = '\Sharding\Core\Mode\\' . ucfirst($model -> shardType) . '\Strategy';
-		$mode = new $modeName;
-		
-		$shard = $mode -> getShard($entity, $args);
-		
-_U::dump($shard);
-		
-		$this -> destinationDb = $shard;
-		$this -> destinationDb = $shard;
-		$this -> destinationTable = 'event';
-	}
-		
-	public function getReadConnection()
-	{
-		return $this -> destinationDb;
+		$this -> setReadConnectionService($this -> destinationDb);
+		$this -> setSource($this -> destinationTable);
 	}
 	
-	public function getWriteConneciton()
-	{
-		return $this -> destinationDb;
-	}
 	
-	public function setSource($table = 'event')
+	public function setWriteDestination()
 	{
-		return $this -> destinationTable;
+		$this -> setWriteConnectionService($this -> destinationDb);
+		$this -> setSource($this -> destinationTable);
 	}
+
+	
+	public function composeNewId($object = false)
+	{
+		if ($object === false) {
+			 $id = '1_' . $this -> destinationId; 
+		} else {
+			$parts = explode('_', $object -> id);
+			$id = (int)$parts[0] + 1 . '_' . $this -> destinationId;  
+		}
+
+		return $id;
+	}	
+
 	
 	public function setShardCriteria($criteria)
 	{

@@ -19,6 +19,36 @@ class Shard
 	}
 	
 	/**
+	 * Return simple table name with min records after comparison
+	 * 
+	 * @access public
+	 * @param object $shard
+	 * @return string 
+	 */	
+	public function getMinTable($shard)
+	{
+		$result = $this -> compareShardTables($shard);
+
+		return $result['min']['table'];
+	}
+	
+	
+	/**
+	 * Return simple table name with max records after comparison
+	 *
+	 * @access public
+	 * @param object $shard
+	 * @return string
+	 */
+	public function getMaxTable($shard)
+	{
+		$result = $this -> compareShardTables($shard);
+	
+		return $result['max']['table'];
+	}
+	
+	
+	/**
 	 * Compare count of rows in each shard(table) 
 	 * 
 	 * @access public

@@ -9,6 +9,60 @@ class MysqlWritable extends AdapterAbstractWritable
 {
 	use \Sharding\Core\Adapter\Mysql\TMysql;
 	
+	
+	public function saveRecord($fields = [])
+	{
+
+		if (!empty($fields)) {
+			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
+
+			$i = 1;
+			$cFields = count($fields);
+			foreach ($fields as $fieldName => $fieldVal) {
+				$this -> queryExpr .= $fieldName;
+				if ($i < $cFields) {
+					$this -> queryExpr .= ', ';
+				}
+				$i++;				
+			}
+			
+			$this -> queryExpr .= ') VALUES (';
+			
+			$i = 1;
+			foreach ($fields as $fieldName => $fieldVal) {
+				if (is_integer($fieldVal)) {
+					$this -> queryExpr .= $fieldVal;
+				} else {
+					$this -> queryExpr .= '"' . $fieldVal . '"';
+				}
+				if ($i < $cFields) {
+					$this -> queryExpr .= ', ';
+				}
+				$i++;
+			}
+			
+			$this -> queryExpr .= ')';
+		}
+//_U::dump($this -> queryExpr);
+		try {
+			$this -> connection -> query($this -> queryExpr);
+			$lastId = $this -> connection -> lastInsertId();
+			
+			return $lastId;
+			
+		} catch(\PDOException $e) {
+			$this -> errors = $e -> getMessage();
+			return false;
+		}
+	}
+	
+	
+	public function updateRecord()
+	{
+		return;
+	}
+	
+	
 	public function createShardMap($tblName, $data)
 	{
 		if ($this -> writable) {
@@ -24,6 +78,7 @@ class MysqlWritable extends AdapterAbstractWritable
 			return;
 		}
 	}
+
 	
 	public function createTableBySample($tblName)
 	{
