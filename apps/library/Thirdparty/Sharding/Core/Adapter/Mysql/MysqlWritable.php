@@ -12,7 +12,6 @@ class MysqlWritable extends AdapterAbstractWritable
 	
 	public function saveRecord($fields = [])
 	{
-
 		if (!empty($fields)) {
 			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
 
@@ -43,17 +42,72 @@ class MysqlWritable extends AdapterAbstractWritable
 			
 			$this -> queryExpr .= ')';
 		}
-//_U::dump($this -> queryExpr);
+
 		try {
 			$this -> connection -> query($this -> queryExpr);
 			$lastId = $this -> connection -> lastInsertId();
-			
+			$this -> clearQuery();	
 			return $lastId;
 			
 		} catch(\PDOException $e) {
 			$this -> errors = $e -> getMessage();
+			$this -> clearQuery();
 			return false;
 		}
+	}
+	
+	
+	public function saveModel($fields = [])
+	{
+		if (!empty($fields)) {
+			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
+			
+			$i = 1;
+			$cFields = count($fields);
+			foreach ($fields as $fieldName => $fieldVal) {
+				$this -> queryExpr .= $fieldName;
+				if ($i < $cFields) {
+					$this -> queryExpr .= ', ';
+				}
+				$i++;
+			}
+				
+			$this -> queryExpr .= ') VALUES (';
+				
+			$i = 1;
+			foreach ($fields as $fieldName => $fieldVal) {
+				if (!$fieldVal['isnull'] && is_null($fieldVal['value'])) {
+					return false;
+				} elseif ($fieldVal['isnull'] && is_null($fieldVal['value'])) {
+					$this -> queryExpr .= 'NULL';
+				} else {
+					if ($fieldVal['type'] == 'int') {
+						$this -> queryExpr .= $fieldVal['value'];
+					} else {
+						$this -> queryExpr .= '"' . $fieldVal['value'] . '"';
+					}
+				}
+				if ($i < $cFields) {
+					$this -> queryExpr .= ', ';
+				}
+				
+				$i++;
+			}
+
+			$this -> queryExpr .= ')';
+			
+			try {
+				$this -> connection -> query($this -> queryExpr);
+				$lastId = $this -> connection -> lastInsertId();
+				$this -> clearQuery();
+				return $lastId;
+					
+			} catch(\PDOException $e) {
+				$this -> errors = $e -> getMessage();
+				$this -> clearQuery();
+				return false;
+			}
+		}	
 	}
 	
 	
@@ -86,7 +140,7 @@ class MysqlWritable extends AdapterAbstractWritable
 			return;
 		}
 		
-		$structure = $this -> getTableStructure();
+		$structure = $this -> getTableScheme();
 
 		if ($structure) {
 			if (!empty($structure[0]['Create Table'])) {

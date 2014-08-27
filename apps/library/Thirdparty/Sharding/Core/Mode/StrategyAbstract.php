@@ -2,8 +2,7 @@
 
 namespace Sharding\Core\Mode;
 
-use Core\Utils as _U,
-	Sharding\Core\Loader as Loader;
+use Core\Utils as _U;
 
 abstract class StrategyAbstract
 {
@@ -12,9 +11,9 @@ abstract class StrategyAbstract
 	protected $shardEntity;
 
 	
-	public function __construct()
+	public function __construct($app)
 	{
-		$this -> app = new Loader();
+		$this -> app = $app;
 	}
 
 	public function setShardModel($model)

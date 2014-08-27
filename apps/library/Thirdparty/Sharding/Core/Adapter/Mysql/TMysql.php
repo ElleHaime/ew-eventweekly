@@ -21,31 +21,59 @@ trait TMysql
 	public function tableExists($tblName)
 	{
 		$query = 'SELECT table_name FROM information_schema.tables WHERE table_schema = "' . $this -> database . '" AND table_name = "' . $tblName . '"';
-		$tblExists = $this -> connection -> query($query) -> rowCount();
+		$tblExists = $this -> connection -> query($query) -> fetch(\PDO::FETCH_OBJ);
 		
-		if ($tblExists != 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return $tblExists;
 	}
 	
 	
-	public function getTableStructure()
+	public function getTableScheme()
 	{
 		$structure = false;
 		
 		if ($this -> queryTable) {
-			//$query = 'DESCRIBE ' . $this -> queryTable;
 			$query = 'SHOW CREATE TABLE ' . $this -> queryTable;
 			try {
-				$structure = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
+				$scheme = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
 			} catch (\PDOException $e) {
 				$this -> errors = $e -> getMessage();
 			}
 		} 
 
-		return $structure;
+		return $scheme;
+	}
+	
+	
+	public function getTableStructure()
+	{
+		$fields = [];
+	
+		if ($this -> queryTable) {
+			$query = 'DESCRIBE ' . $this -> queryTable;
+			try {
+				$structure = $this -> connection -> query($query) -> fetchAll(\PDO::FETCH_ASSOC);
+			} catch (\PDOException $e) {
+				$this -> errors = $e -> getMessage();
+			}
+_U::dump($structure);			
+			if ($structure) {
+				foreach ($structure as $key => $meta) {
+					if (strpos($meta['Type'], 'int') || strpos($meta['Type'], 'decimal') || strpos($meta['Type'], 'timestamp')) {
+						$fields[$meta['Field']]['type'] = 'int';
+					} else {
+						$fields[$meta['Field']]['type'] = 'string';
+					}
+					
+					if (strtolower($meta['Null']) == 'yes') {
+						$fields[$meta['Field']]['isnull'] = true;
+					} else {
+						$fields[$meta['Field']]['isnull'] = false;
+					}
+				}
+			} 
+		}
+	
+		return $fields;
 	}
 	
 	

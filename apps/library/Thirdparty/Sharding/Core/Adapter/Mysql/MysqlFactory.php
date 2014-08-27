@@ -2,8 +2,7 @@
 
 namespace Sharding\Core\Adapter\Mysql;
 
-use Sharding\Core\Loader\Config,
-	Sharding\Core\Adapter\AdapterAbstractFactory,
+use Sharding\Core\Adapter\AdapterAbstractFactory,
 	Core\Utils as _U;
 
 class MysqlFactory extends AdapterAbstractFactory

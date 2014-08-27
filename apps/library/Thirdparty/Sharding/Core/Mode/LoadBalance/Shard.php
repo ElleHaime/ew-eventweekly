@@ -28,7 +28,6 @@ class Shard
 	public function getMinTable($shard)
 	{
 		$result = $this -> compareShardTables($shard);
-
 		return $result['min']['table'];
 	}
 	
@@ -43,7 +42,6 @@ class Shard
 	public function getMaxTable($shard)
 	{
 		$result = $this -> compareShardTables($shard);
-	
 		return $result['max']['table'];
 	}
 	

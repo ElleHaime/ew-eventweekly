@@ -5,7 +5,8 @@ use Core\Model;
 namespace Sharding\Phalcon;
 
 use Core\Utils as _U,
-    Sharding\Core\Loader as Loader;
+    Sharding\Core\Loader as Loader,
+	Sharding\Core\Model as Model;
 
 trait Phalcon
 {
@@ -36,7 +37,7 @@ trait Phalcon
 
 		if ($shardModel = $this -> app -> loadShardModel($entityName)) {
 			$modeName = '\Sharding\Core\Mode\\' . ucfirst($shardModel -> shardType) . '\Strategy';
-			$modeStrategy = new $modeName;
+			$modeStrategy = new $modeName($this -> app);
 			$modeStrategy -> setShardEntity($entityName);
 			$modeStrategy -> setShardModel($shardModel);
 
@@ -51,16 +52,36 @@ trait Phalcon
 		
 		$this -> setReadDestination();
 
-/*_U::dump($shardModel, true);
+		$lastObject = parent::findFirst(['limit' => 1, 'order' => 'id DESC']);
+		$this -> id = $this -> composeNewId($lastObject);
+
+		$reflection = new Model($this -> app);
+		$reflection -> setConnection($this -> destinationDb);
+		$reflection -> setEntity($this -> destinationTable);
+		$reflectionFields = $reflection -> getEntityStructure(); 
+
+		foreach(get_object_vars($this) as $prop => $value) {
+			if (isset($reflectionFields[$prop])) {
+				$reflectionFields[$prop]['value'] = $value;			
+			}
+		}
+		$reflection -> save($reflectionFields);
+		 
+_U::dump($reflectionFields);
+		
+/*
+		$objName = get_parent_class($this);
+		$reflection = new $objName;
+		foreach(get_object_vars($this) as $prop => $value) {
+			$reflection -> $prop = $value;
+		}
+ 
 _U::dump($this -> destinationId, true);
 _U::dump($this -> destinationDb, true);
 _U::dump($this -> destinationTable, true);
-_U::dump($this -> name); */
+_U::dump($this -> name, true);
+_U::dump($this -> id, true); */		
 
-		$lastObject = parent::findFirst(['limit' => 1, 'order' => 'id DESC']);
-		$this -> id = $this -> composeNewId($lastObject);
-_U::dump($this);		
-		$this -> save();
 		_U::dump('ready');		
 	}
 	

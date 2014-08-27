@@ -34,7 +34,7 @@ class Strategy extends StrategyAbstract
 		$mapper -> findByCriteria($arg);
 
 		// create new shard or use existed
-		if ($mapper) {
+		if ($mapper -> id) {
 			$this -> shardDbname = $mapper -> dbname;
 			$this -> shardTblname = $mapper -> tblname;
 			$this -> shardId = $mapper -> id;

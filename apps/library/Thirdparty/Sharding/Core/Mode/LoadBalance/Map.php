@@ -2,15 +2,14 @@
 
 namespace Sharding\Core\Mode\Loadbalance;
 
-use Core\Utils as _U,
-	Sharding\Core\Loader as Loader;
+use Core\Utils as _U;
 
 class Map
 {
-	public $id;
-	public $criteria;
-	public $dbname;
-	public $tblname;
+	public $id			= false;
+	public $criteria	= false;
+	public $dbname		= false;
+	public $tblname		= false;
 	
 	public $entity;
 	public $connection;
@@ -34,16 +33,15 @@ class Map
 		$result = $this -> connection -> setTable($this -> entity)
 									  -> addCondition($this -> entity . '.criteria = ' . $criteria)
 									  -> fetchOne();
+		
 		if ($result) {
 			$this -> id = $result -> id;
 			$this -> dbname = $result -> dbname;
 			$this -> tblname = $result -> tblname;
 			$this -> criteria = $result -> criteria;
-			
-			return $this;
-		} else {
-			return false;
 		} 
+		
+		return;
 	}
 	
 	public function findAll()
