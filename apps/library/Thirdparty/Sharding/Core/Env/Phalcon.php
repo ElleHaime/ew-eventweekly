@@ -39,11 +39,11 @@ trait Phalcon
 	 */
 	public function save($data = NULL, $whiteList = NULL)
 	{
-		if (!self::$targetShardCriteria) {
+		if (self::$targetShardCriteria === false) {
 			_U::dump('shard criteria must be setted');
 			//throw new Exception('shard criteria must be setted');
 			return false;
-		}
+		} 
 
 		$lastObject = parent::findFirst(['limit' => 1, 'order' => 'id DESC']);
 		$this -> id = $this -> composeNewId($lastObject);
@@ -123,7 +123,7 @@ trait Phalcon
 	 */
 	public function update($data = NULL, $whiteList = NULL)
 	{
-	
+_U::dump('ooops, what the fuck are you doing here, bastard?');	
 	}
 
 	
@@ -145,7 +145,7 @@ trait Phalcon
 	 *
 	 * @access public
 	 */
-		public function setReadDestinationDb()
+	public function setReadDestinationDb()
 	{
 		$this -> setReadConnectionService($this -> destinationDb);
 	}

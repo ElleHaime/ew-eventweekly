@@ -129,7 +129,6 @@ trait TMysql
 				$result = $fetch -> fetch(\PDO::FETCH_ASSOC);
 			}
 		}
-		
 		$this -> clearQuery();
 		
 		return $result;

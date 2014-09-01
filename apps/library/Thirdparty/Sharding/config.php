@@ -6,8 +6,8 @@ $config =
 	'connections'  => [
 		'dbMaster' => [
 			'adapter' => 'mysql',		
-			'host' => 'localhost',
-			'port' => '3306',
+			'host' => '127.0.0.1',
+			'port' => '3307',
 			'user' => 'root',
 			'password' => 'root',
 			'database' => 'test',
@@ -36,7 +36,7 @@ $config =
 			'shards' => [
 				'dbMaster' => [
 					'baseTablePrefix' => 'event_',
-					'tablesMax' => 10
+					'tablesMax' => 11
 				]
 			]
 		],

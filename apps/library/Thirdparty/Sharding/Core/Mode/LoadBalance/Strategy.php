@@ -10,7 +10,7 @@ use Sharding\Core\Mode\StrategyAbstract,
 
 class Strategy extends StrategyAbstract
 {
-	protected $shardsAvailable	= [];
+	protected $shardsAvailable		= [];
 	protected $shardDbname			= false;
 	protected $shardTblname			= false;
 	protected $shardId				= false;
@@ -28,6 +28,8 @@ class Strategy extends StrategyAbstract
 	 */
 	public function selectShardByCriteria($arg)
 	{
+_U::dump($this -> shardsAvailable, true);		
+_U::dump('criteria selectShardByCriteria($arg): ' . $arg, true);		
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
@@ -42,7 +44,7 @@ class Strategy extends StrategyAbstract
 		} else {
 			$sharder = new Shard($this -> app);
 			
-			// check number of rows in all tables for each available connection 
+			// check number of rows in all tables for each available connection
 			foreach ($this -> shardModel -> shards as $conn => $data) {
 				$sharder -> useConnection($conn);
 				$this -> shardsAvailable[] = ['connection' => $conn,
@@ -69,6 +71,7 @@ class Strategy extends StrategyAbstract
 	 */
 	public function selectShardById($arg)
 	{
+//_U::dump($this -> shardsAvailable, true);		
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
