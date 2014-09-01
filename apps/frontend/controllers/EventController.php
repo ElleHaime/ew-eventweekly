@@ -53,9 +53,54 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function mapAction()
     {
-        $this->session->set('lastFetchedEvent', 0);
+    	$ev = new Event;
+    	$events = $ev::find(['start_date > now() or end_date > now()']);
+
+		foreach ($events as $e) {
+			//$e -> setShardByCriteria($e -> location_id);
+			//$e -> save();
+			
+			$hasManyToManyRelations = $e -> getModelsManager() -> getHasManyToMany(new Event);
+
+			if ($hasManyToManyRelations) {
+				foreach ($hasManyToManyRelations as $index => $rel) {
+_U::dump($rel, true);					
+					$relField = $rel -> getIntermediateFields();
+					$relModel = $rel -> getIntermediateModel();
+_U::dump($relModel, true);
+_U::dump($relField);					
+				}
+			}
+
+
+
+			$hasManyRelations = $e -> getModelsManager() -> getHasMany(new Event);
+			if ($hasManyRelations) {
+				foreach ($hasManyRelations as $index => $rel) {
+					$relOption = $rel -> getOptions();
+					$relField = $rel -> getReferencedFields();
+					$relations = $e -> $relOption['alias'];
+
+					if ($relations) {
+						foreach ($relations as $obj) {
+							$obj -> $relField = $e -> id;
+							$obj -> update();
+						}						
+					}
+				}
+			}
+			
+			//_U::dump($e -> getModelsManager() -> getHasOne(new Event), true);			
+			//_U::dump($e -> getModelsManager() -> getHasManyToMany(new Event));
+		}
+_U::dump('this is the end');
+    	
+/*    	$event = new Event();
+    	$event -> setShardByCriteria(10);
+    	$result = $event::find('event_status = 1');
+     /*   $this->session->set('lastFetchedEvent', 0);
         $this->view->setVar('view_action', $this->request->getQuery('_url'));
-        $this->view->setVar('link_to_list', true);
+        $this->view->setVar('link_to_list', true);*/
     }
 
     
@@ -276,7 +321,7 @@ class EventController extends \Core\Controllers\CrudController
     
     
     /**
-     * @Route("/{slugUri}-{eventId:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/{slugUri}-{eventId:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function showAction($slug, $eventId)
@@ -295,8 +340,11 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> session -> set('eventViewForwardedUp', 0);
     		$this -> view -> setVar('viewModeUp', true);
     	}
-    	 
-        $event = Event::findFirst($eventId);
+
+    	$ev = new Event;
+    	$ev -> setShardById($eventId);
+    	$event = $ev::findFirst($eventId);
+
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
             foreach ($event->memberpart as $mpart) {
@@ -820,7 +868,9 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         $ev->assign($newEvent);
+        
         if ($ev->save()) {
+_U::dump(123);        	
             // create event dir if not exists
             if (!is_dir($this->config->application->uploadDir . 'img/event/' . $ev->id)) {
                 mkdir($this->config->application->uploadDir . 'img/event/' . $ev->id);
@@ -955,6 +1005,8 @@ class EventController extends \Core\Controllers\CrudController
             if (empty($event['id'])) {
                 $this -> counters -> increaseUserCounter('userEventsCreated');
             }
+        } else {
+_U::dump(321);        	
         } 
 
         if (!empty($event['id'])) {
@@ -1214,6 +1266,7 @@ class EventController extends \Core\Controllers\CrudController
 
         return $loc;
     }
+    
 
     /**
      * @Route("/event/test-get", methods={'GET'})

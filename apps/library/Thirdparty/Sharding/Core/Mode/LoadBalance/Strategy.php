@@ -4,7 +4,6 @@ namespace Sharding\Core\Mode\Loadbalance;
 
 use Sharding\Core\Mode\StrategyAbstract,
 	Core\Utils as _U,
-    Sharding\Core\Loader as Loader,
 	Sharding\Core\Mode\Loadbalance\Map as Map,
 	Sharding\Core\Mode\Loadbalance\Shard as Shard;
 
@@ -15,6 +14,7 @@ class Strategy extends StrategyAbstract
 	protected $shardDbname			= false;
 	protected $shardTblname			= false;
 	protected $shardId				= false;
+	protected $shardCriteria		= false;
 
 	
 	/**
@@ -23,21 +23,22 @@ class Strategy extends StrategyAbstract
 	 * with min records.
 	 * 
 	 * @access public
-	 * @param int|string @arg
+	 * @param int|string $arg
 	 * @return array
 	 */
-	public function selectShard($arg)
+	public function selectShardByCriteria($arg)
 	{
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
-		$mapper -> findByCriteria($arg);
+		$mapper -> findShard('criteria', $arg);
 
 		// create new shard or use existed
 		if ($mapper -> id) {
 			$this -> shardDbname = $mapper -> dbname;
 			$this -> shardTblname = $mapper -> tblname;
 			$this -> shardId = $mapper -> id;
+			$this -> shardCriteria = $mapper -> criteria;
 		} else {
 			$sharder = new Shard($this -> app);
 			
@@ -56,6 +57,31 @@ class Strategy extends StrategyAbstract
 			$this -> addShard($newShard);
 		} 
 
+		return;
+	}
+	
+	/**
+	 * Search shard by shard id
+	 * 
+	 * @access public
+	 * @param int $arg
+	 * @return array
+	 */
+	public function selectShardById($arg)
+	{
+		$mapper = new Map($this -> app);
+		$mapper -> setEntity($this -> shardEntity);
+		$mapper -> useConnection($this -> app -> getMasterConnection());
+		$mapper -> findShard('id', $arg);
+
+		// create new shard or use existed
+		if ($mapper -> id) {
+			$this -> shardDbname = $mapper -> dbname;
+			$this -> shardTblname = $mapper -> tblname;
+			$this -> shardId = $mapper -> id;
+			$this -> shardCriteria = $mapper -> criteria;
+		} 
+		
 		return;
 	}
 
@@ -86,19 +112,44 @@ class Strategy extends StrategyAbstract
 		return;
 	}
 	
+	/** Return shardDbname
+	 * 
+	 * @access public
+	 * @return string 
+	 */
 	public function getDbName()
 	{
 		return $this -> shardDbname; 	
 	} 
-	
+
+	/** Return shardTblname
+	 * 
+	 * @access public
+	 * @return string 
+	 */
 	public function getTableName()
 	{
 		return $this -> shardTblname;
 	}
-	
+
+	/** Return shardId
+	 * 
+	 * @access public
+	 * @return string 
+	 */
 	public function getId()
 	{
 		return $this -> shardId;
+	}
+
+	/** Return criteria
+	 * 
+	 * @access public
+	 * @return string 
+	 */
+	public function getCriteria()
+	{
+		return $this -> shardCriteria;
 	}
 }
 

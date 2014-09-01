@@ -47,11 +47,11 @@ class Event extends Model
 		$this -> hasMany('id', '\Objects\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));
 		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
 		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
-		$this -> hasManyToMany('id', '\Objects\EventCategory',
+		$this -> hasManyToMany('id', '\Frontend\Models\EventCategory',
 							   'event_id', 'category_id',
 							   '\Objects\Category', 'id', array('alias' => 'category',
 							   		 							'baseField' => 'name'));
-        $this -> hasManyToMany('id', '\Objects\EventTag',
+        $this -> hasManyToMany('id', '\Frontend\Models\EventTag',
 							   'event_id', 'tag_id',
 							   '\Objects\Tag', 'id', array('alias' => 'tag',
 							   		 							'baseField' => 'name'));

@@ -55,10 +55,10 @@ trait TMysql
 			} catch (\PDOException $e) {
 				$this -> errors = $e -> getMessage();
 			}
-_U::dump($structure);			
+		
 			if ($structure) {
 				foreach ($structure as $key => $meta) {
-					if (strpos($meta['Type'], 'int') || strpos($meta['Type'], 'decimal') || strpos($meta['Type'], 'timestamp')) {
+					if (strpos($meta['Type'], 'int') !== false || strpos($meta['Type'], 'decimal') !== false || strpos($meta['Type'], 'timestamp') !== false) {
 						$fields[$meta['Field']]['type'] = 'int';
 					} else {
 						$fields[$meta['Field']]['type'] = 'string';

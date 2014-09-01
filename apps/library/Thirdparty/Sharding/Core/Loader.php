@@ -15,6 +15,7 @@ class Loader
 	public $connections;
 	public $shardModels;
 	
+	
 	public function __construct()
 	{
 		$confpath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.php';
@@ -28,6 +29,7 @@ class Loader
 		$this -> init();
 	}
 	
+	
 	public function init()
 	{
 		$this -> loadConnections();
@@ -35,6 +37,12 @@ class Loader
 		$this -> loadShardTables();
 	}
 	
+	
+	/**
+	 * Load all available connections from config
+	 * 
+	 * @access protected
+	 */
 	protected function loadConnections()
 	{
 		$this -> connections = new \stdClass();
@@ -50,6 +58,12 @@ class Loader
 		}
 	}
 	
+	
+	/**
+	 * Create mapping tables for all shardable models
+	 * 
+	 * @access protected
+	 */
 	protected function loadShardMappers()
 	{
 //TODO: move this shit from here
@@ -71,7 +85,12 @@ class Loader
 		}		
 	} 
 	
-	
+
+	/**
+	 * Create sharding tables for all shardable models
+	 * 
+	 * @access protected
+	 */
 	protected function loadShardTables()
 	{
 		// get description of base table
@@ -90,7 +109,15 @@ class Loader
 		}
 	}
 	
-	
+
+	/**
+	 * Load sharding settings for the model if specified.
+	 * Return false if model is non-shardable
+	 * 
+	 * @access public
+	 * @param string $entity
+	 * @return config object|false 
+	 */
 	public function loadShardModel($entity)
 	{
 		if (isset($this -> config -> shardModels -> $entity)) {
@@ -100,6 +127,13 @@ class Loader
 		}
 	}
 	
+
+	/**
+	 * Return master connection (needed for replication)
+	 *
+	 * @access public
+	 * @return PDO object|false
+	 */
 	public function getMasterConnection()
 	{
 		$master = null;
@@ -113,6 +147,35 @@ class Loader
 		return $master;	
 	}
 	
+
+	/**
+	 * Return default connection (for non-shardable models).
+	 * Return master connection if default connection wasn't setted
+	 *
+	 * @access public
+	 * @return PDO object|false
+	 */
+	public function getDefaultConnection()
+	{
+		$default = null;
+		
+		if ($this -> config -> defaultConnection) {
+			$default = $this -> config -> defaultConnection;
+		} else {
+			_U::dump('no master connections detected, search in master', true);
+			$default = $this -> config -> masterConnection;
+		}
+		
+		return $default;	
+	}
+	
+
+	/**
+	 * Return prefix for the mapping tables
+	 *
+	 * @access public
+	 * @return string
+	 */
 	public function getMapPrefix()
 	{
 		$prefix = '';
@@ -124,5 +187,25 @@ class Loader
 		}
 		
 		return $prefix;
+	}
+
+
+	/**
+	 * Return primary key separator for the shardable objects
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function getShardIdSeparator()
+	{
+		$separator = '';
+		
+		if ($this -> config -> shardIdSeparator) {
+			$separator = $this -> config -> shardIdSeparator;
+		} else {
+			$separator = '_';
+		}
+		
+		return $separator;
 	}
 }

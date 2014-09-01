@@ -28,7 +28,7 @@ use Categoryzator\Categoryzator,
 class Event extends EventObject
 {
     use \Core\Traits\ModelConverter;
-    use \Sharding\Phalcon\Phalcon;
+    use \Sharding\Core\Env\Phalcon;
 
     const FETCH_OBJECT = 1;
     const FETCH_ARRAY = 2;

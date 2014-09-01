@@ -6,11 +6,11 @@ $config =
 	'connections'  => [
 		'dbMaster' => [
 			'adapter' => 'mysql',		
-			'host' => '127.0.0.1',
-			'port' => '3307',
+			'host' => 'localhost',
+			'port' => '3306',
 			'user' => 'root',
 			'password' => 'root',
-			'database' => 'ew',
+			'database' => 'test',
 			'writable' => true
 		],
 		/*'dbSlave' => [
@@ -24,7 +24,9 @@ $config =
 		],*/
 	],
 	'masterConnection' => 'dbMaster',
+	'defaultConnection' => 'dbMaster',
 	'shardMapPrefix' => 'shard_mapper_',
+	'shardIdSeparator' => '_',
 	'shardModels' => [
 		'Event' => [
 			'criteria' => 'location_id',
@@ -40,12 +42,13 @@ $config =
 		],
 		/*'Member' => [
 			'criteria' => 'id',
+			'shard_interval' => 10,
 			'primary' => 'id',
+			'baseTable' => 'member',
 			'shardType' => 'limitbatch',
 			'shards' => [
-				'dbSlave' => [
-					'baseTableName' => 'member',
-					'tablesMax' => 10
+				'dbMaster' => [
+					'baseTableName' => 'member'
 				]
 			]
 		]*/

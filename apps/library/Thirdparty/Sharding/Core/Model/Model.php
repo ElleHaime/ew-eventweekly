@@ -1,6 +1,6 @@
 <?php 
 
-namespace Sharding\Core;
+namespace Sharding\Core\Model;
 
 use Core\Utils as _U;
 
@@ -28,13 +28,8 @@ class Model
 	public function save($data)
 	{
 		$result = $this -> connection -> setTable($this -> entity)
-									  -> saveModel($data);
-		if ($result) {
-			$this -> id = $result;
-			return $this;
-		} else {
-			return false;
-		}
+									  -> saveRecord($data);
+		return $result;
 	}
 	
 	public function setConnection($conn)

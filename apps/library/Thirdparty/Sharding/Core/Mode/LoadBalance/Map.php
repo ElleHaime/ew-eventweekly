@@ -25,13 +25,14 @@ class Map
 	 * Search shard by criteria in map table
 	 * 
 	 * @access public
-	 * @param int|string $criteria
-	 * @return PDO object | false 
+	 * @param string $param
+	 * @param int|string $value
+	 * @return Map object | false 
 	 */
-	public function findByCriteria($criteria)
+	public function findShard($param, $value)
 	{
 		$result = $this -> connection -> setTable($this -> entity)
-									  -> addCondition($this -> entity . '.criteria = ' . $criteria)
+									  -> addCondition($this -> entity . '.' . $param . ' = ' . $value)
 									  -> fetchOne();
 		
 		if ($result) {
@@ -43,12 +44,13 @@ class Map
 		
 		return;
 	}
-	
-	public function findAll()
-	{
-		
-	}
-	
+
+	/**
+	 * Save new shard to the map table
+	 * 
+	 * @access public
+	 * @return Map object | false 
+	 */
 	public function save()
 	{
 		$data = ['criteria' => $this -> criteria,
@@ -56,7 +58,7 @@ class Map
 				 'tblname' => $this -> tblname];
 
 		$result = $this -> connection -> setTable($this -> entity)
-									  -> saveRecord($data);
+									  -> saveRec($data);
 		if ($result) {
 			$this -> id = $result;
 			return $this;
@@ -64,20 +66,39 @@ class Map
 			return false;
 		}
 	}
-	
+
+	/**
+	 * Set connection
+	 * 
+	 * @access public
+	 * @param string $conn
+	 */
 	public function useConnection($conn)
 	{
 		$this -> connection = $this -> app -> connections -> $conn;
 	}
+
 	
+	/**
+	 * Set mapping entity 
+	 * 
+	 * @access public
+	 * @param string $entity
+	 */
 	public function setEntity($entity)
 	{
 		$prefix = $this -> app -> getMapPrefix();
 		$this -> entity = $prefix . $entity;
 	}
 	
+	/**
+	 * Set mapping criteria 
+	 * 
+	 * @access public
+	 * @param string $criteria
+	 */
 	public function setCriteria($criteria)
 	{
-		$this -> criteria = (int)$criteria;
+		$this -> criteria = $criteria;
 	}
 }

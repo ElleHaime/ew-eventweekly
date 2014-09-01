@@ -2,9 +2,7 @@
 
 namespace Sharding\Core\Mode\Loadbalance;
 
-use Core\Utils as _U,
-	Sharding\Core\Loader as Loader,
-	Sharding\Core\Mode\ShardAbstract as ShardAbstract;
+use Core\Utils as _U;
 
 class Shard
 {
@@ -75,12 +73,26 @@ class Shard
 		
 		return $result;
 	}
+
 	
+	/**
+	 * Set connection
+	 * 
+	 * @access public
+	 * @param string $conn
+	 */
 	public function useConnection($conn)
 	{
 		$this -> connection = $this -> app -> connections -> $conn;
 	}
 	
+	
+	/**
+	 * Set sharding entity 
+	 * 
+	 * @access public
+	 * @param string $entity
+	 */
 	public function setEntity($entity)
 	{
 		$this -> entity = $entity;

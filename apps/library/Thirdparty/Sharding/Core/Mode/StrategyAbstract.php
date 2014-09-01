@@ -7,8 +7,8 @@ use Core\Utils as _U;
 abstract class StrategyAbstract
 {
 	public $app;
-	protected $shardModel;
-	protected $shardEntity;
+	protected $shardModel			= false;
+	protected $shardEntity			= false;
 
 	
 	public function __construct($app)
@@ -26,5 +26,7 @@ abstract class StrategyAbstract
 		$this -> shardEntity = strtolower($entity);
 	}
 	
-	abstract public function selectShard($arg);
+	abstract public function selectShardByCriteria($arg);
+	
+	abstract public function selectShardById($arg);
 }

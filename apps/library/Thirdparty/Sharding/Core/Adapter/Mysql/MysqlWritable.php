@@ -9,8 +9,8 @@ class MysqlWritable extends AdapterAbstractWritable
 {
 	use \Sharding\Core\Adapter\Mysql\TMysql;
 	
-	
-	public function saveRecord($fields = [])
+	//!!!TODO: remove saveRec; rewrite Map.php work with saveRecord() 
+	public function saveRec($fields = [])
 	{
 		if (!empty($fields)) {
 			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
@@ -57,8 +57,9 @@ class MysqlWritable extends AdapterAbstractWritable
 	}
 	
 	
-	public function saveModel($fields = [])
+	public function saveRecord($fields = [])
 	{
+//_U::dump($fields);		
 		if (!empty($fields)) {
 			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
 			
@@ -90,18 +91,20 @@ class MysqlWritable extends AdapterAbstractWritable
 				if ($i < $cFields) {
 					$this -> queryExpr .= ', ';
 				}
-				
 				$i++;
 			}
 
 			$this -> queryExpr .= ')';
-			
+
 			try {
 				$this -> connection -> query($this -> queryExpr);
-				$lastId = $this -> connection -> lastInsertId();
-				$this -> clearQuery();
-				return $lastId;
-					
+				if ($lastId = $this -> connection -> lastInsertId()) {
+					$this -> clearQuery();
+					return $lastId;
+				} else {
+					$this -> clearQuery();
+					return true;
+				}
 			} catch(\PDOException $e) {
 				$this -> errors = $e -> getMessage();
 				$this -> clearQuery();
