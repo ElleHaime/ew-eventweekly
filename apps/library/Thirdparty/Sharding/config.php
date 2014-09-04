@@ -6,8 +6,8 @@ $config =
 	'connections'  => [
 		'dbMaster' => [
 			'adapter' => 'mysql',		
-			'host' => '127.0.0.1',
-			'port' => '3307',
+			'host' => 'localhost',
+			'port' => '3306',
 			'user' => 'root',
 			'password' => 'root',
 			'database' => 'test',
@@ -29,6 +29,7 @@ $config =
 	'shardIdSeparator' => '_',
 	'shardModels' => [
 		'Event' => [
+			'namespace' => '\Frontend\Models\\',
 			'criteria' => 'location_id',
 			'primary' => 'id',
 			'baseTable' => 'event',
@@ -36,22 +37,23 @@ $config =
 			'shards' => [
 				'dbMaster' => [
 					'baseTablePrefix' => 'event_',
-					'tablesMax' => 11
+					'tablesMax' => 10
 				]
 			]
 		],
-		/*'Member' => [
-			'criteria' => 'id',
-			'shard_interval' => 10,
+		'Venue' => [
+			'namespace' => '\Frontend\Models\\',
+			'criteria' => 'location_id',
 			'primary' => 'id',
-			'baseTable' => 'member',
-			'shardType' => 'limitbatch',
+			'baseTable' => 'venue',
+			'shardType' => 'loadbalance',
 			'shards' => [
 				'dbMaster' => [
-					'baseTableName' => 'member'
+					'baseTablePrefix' => 'venue_',
+					'tablesMax' => 10
 				]
 			]
-		]*/
+		],
 	] 
 ];
 

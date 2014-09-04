@@ -15,6 +15,7 @@ trait Phalcon
 	use Helper;
 	
 	public static $targetShardCriteria	= false;
+	public static $needTargetShard		= true;
 	public $app							= false;
 	public $destinationId				= false;
 	public $destinationDb				= false;
@@ -43,10 +44,7 @@ trait Phalcon
 			_U::dump('shard criteria must be setted');
 			//throw new Exception('shard criteria must be setted');
 			return false;
-		} 
-
-		$lastObject = parent::findFirst(['limit' => 1, 'order' => 'id DESC']);
-		$this -> id = $this -> composeNewId($lastObject);
+		}
 
 		$reflection = new Model($this -> app);
 		$reflection -> setConnection($this -> destinationDb);
@@ -61,13 +59,10 @@ trait Phalcon
 				$reflectionFields[$prop]['value'] = $value;			
 			}
 		}
-		$newObject = $reflection -> save($reflectionFields);
 		
-		if ($newObject) {
-			return $this;		
-		} else {
-			return false;
-		}
+		$newObject = $reflection -> save($reflectionFields, $this -> destinationId);
+
+		return $newObject;		
 	}
 
 	
@@ -78,9 +73,9 @@ trait Phalcon
 	 * @param $parameters
 	 * @return Phalcon\Mvc\Model\Resultset\Simple object|false
 	 */
-/*	public static function find($parameters = NULL)
+	public static function find($parameters = NULL)
 	{
-		if (!self::$targetShardCriteria) {
+		if (!self::$targetShardCriteria && self::$needTargetShard) {
 			_U::dump('shard criteria must be setted');
 			//throw new Exception('shard criteria must be setted');
 			return false;
@@ -88,7 +83,7 @@ trait Phalcon
 		$result = parent::find($parameters);
 		
 		return $result; 
-	} */
+	} 
 	
 	
 	/**
@@ -172,5 +167,11 @@ _U::dump('ooops, what the fuck are you doing here, bastard?');
 	public function setDestinationSource()
 	{
 		$this -> setSource($this -> destinationTable);
+	}
+	
+	
+	public function unsetNeedShard()
+	{
+		self::$needTargetShard = false;
 	}
 }

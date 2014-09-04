@@ -28,8 +28,6 @@ class Strategy extends StrategyAbstract
 	 */
 	public function selectShardByCriteria($arg)
 	{
-_U::dump($this -> shardsAvailable, true);		
-_U::dump('criteria selectShardByCriteria($arg): ' . $arg, true);		
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
@@ -71,7 +69,6 @@ _U::dump('criteria selectShardByCriteria($arg): ' . $arg, true);
 	 */
 	public function selectShardById($arg)
 	{
-//_U::dump($this -> shardsAvailable, true);		
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());

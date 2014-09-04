@@ -59,7 +59,6 @@ class MysqlWritable extends AdapterAbstractWritable
 	
 	public function saveRecord($fields = [])
 	{
-//_U::dump($fields);		
 		if (!empty($fields)) {
 			$this -> queryExpr = 'INSERT INTO `' . $this -> queryTable . '` (';
 			
@@ -85,7 +84,9 @@ class MysqlWritable extends AdapterAbstractWritable
 					if ($fieldVal['type'] == 'int') {
 						$this -> queryExpr .= $fieldVal['value'];
 					} else {
-						$this -> queryExpr .= '"' . $fieldVal['value'] . '"';
+						$val = preg_replace('@(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.-]*(\?\S+)?)?)?)@', '<a href="$1" target="_blank">$1</a>', $fieldVal['value']);
+						//$this -> queryExpr .= '"' . $fieldVal['value'] . '"';
+						$this -> queryExpr .= '"' . addslashes($val) . '"';
 					}
 				}
 				if ($i < $cFields) {
@@ -98,6 +99,7 @@ class MysqlWritable extends AdapterAbstractWritable
 
 			try {
 				$this -> connection -> query($this -> queryExpr);
+				
 				if ($lastId = $this -> connection -> lastInsertId()) {
 					$this -> clearQuery();
 					return $lastId;
@@ -106,6 +108,7 @@ class MysqlWritable extends AdapterAbstractWritable
 					return true;
 				}
 			} catch(\PDOException $e) {
+_U::dump($e -> getMessage(), true);				
 				$this -> errors = $e -> getMessage();
 				$this -> clearQuery();
 				return false;

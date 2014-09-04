@@ -75,28 +75,6 @@ trait THelper
 		$this -> setReadDestinationDb();
 	}
 
-	
-	/**
-	 * Compose primary id for new records in the shard model.
-	 * Based on last inserted primary
-	 *
-	 * @access public 
-	 * @param Model object $object
-	 * @return int|string $id
-	 */
-	public function composeNewId($object = false)
-	{
-		$separator = $this -> app -> getShardIdSeparator();
-		 
-		if ($object === false) {
-			 $id = '1' . $separator . $this -> destinationId; 
-		} else {
-			$parts = explode($separator, $object -> id);
-			$id = (int)$parts[0] + 1 . $separator . $this -> destinationId;  
-		}
-
-		return $id;
-	}	
 
 	
 	/**

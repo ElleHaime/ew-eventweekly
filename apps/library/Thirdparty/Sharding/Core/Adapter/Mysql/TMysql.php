@@ -136,9 +136,32 @@ trait TMysql
 	
 	public function fetch()
 	{
-		
+
 	}
 	
+	
+	public function getLastId()
+	{
+		$primaryKey = $this -> getPrimaryKey();
+		$this -> queryExpr = 'SELECT ' . $primaryKey . ' FROM ' . $this -> queryTable
+								. ' ORDER BY (' . $primaryKey . '+0) DESC LIMIT 1';
+		$lastId = $this -> connection -> query($this -> queryExpr) -> fetch(\PDO::FETCH_LAZY);
+		if ($lastId) {
+			return ['key' => $primaryKey, 'lastId' => $lastId[$primaryKey]];
+		} else {
+			return ['key' => $primaryKey, 'lastId' => false];
+		}
+		
+		$this -> clearQuery();
+	}
+	
+	public function getPrimaryKey()
+	{
+		$this -> queryExpr = 'SHOW KEYS FROM ' . $this -> queryTable . ' WHERE Key_name = "PRIMARY"';
+		$keys = $this -> connection -> query($this -> queryExpr) -> fetch(\PDO::FETCH_LAZY);
+
+		return $keys -> Column_name;					
+	}
 
 	public function execute($query)
 	{

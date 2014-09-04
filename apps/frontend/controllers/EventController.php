@@ -29,6 +29,7 @@ class EventController extends \Core\Controllers\CrudController
 {
 
     use \Core\Traits\TCMember;
+    use \Sharding\Core\Env\Converter\Phalcon;
 
     protected $friendsUid = array();
     protected $friendsGoingUid = array();
@@ -53,62 +54,9 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function mapAction()
     {
-    	$ev = new Event;
-    	$events = $ev::find(['(start_date > now() or end_date > now()) and location_id in(1, 2, 3, 4, 5)', 'limit' => 30, 'offset' => 60]);
-
-		foreach ($events as $e) {
-			$oldId = $e -> id;
-			if (is_null($e -> location_id) or empty($e -> location_id) or $e -> location_id === false) {
-				$e -> location_id = 0;
-			}
-_U::dump('old id: ' . $e -> id, true);
-_U::dump('location id: ' . $e -> location_id, true);			
-			$e -> setShardByCriteria($e -> location_id);
-			//if ($e -> save()) {
-/*				$hasManyToManyRelations = $e -> getModelsManager() -> getHasManyToMany(new Event);
-	
-				if ($hasManyToManyRelations) {
-					foreach ($hasManyToManyRelations as $index => $rel) {
-						$modelName = $rel -> getIntermediateModel();
-						$defField = $rel -> getIntermediateFields(); 
-	
-						$interObject = $modelName::find([$defField . '=' . $oldId]);
-						foreach($interObject as $obj) {
-							$obj -> $defField = $e -> id;
-							$obj -> update();
-						} 
-					}
-				}
-				
-				$hasManyRelations = $e -> getModelsManager() -> getHasMany(new Event);
-				if ($hasManyRelations) {
-					foreach ($hasManyRelations as $index => $rel) {
-						$relOption = $rel -> getOptions();
-						$relField = $rel -> getReferencedFields();
-						$relations = $e -> $relOption['alias'];
-
-						if ($relations) {
-							foreach ($relations as $obj) {
-								$obj -> $relField = $e -> id;
-								$obj -> update();
-							}						
-						} 
-					} 
-				} */
-			//} else {
-				//_U::dump($e -> id . ' not saved');
-			//}
-echo '<br><br><br>';			
-		}
-
-_U::dump('this is the end');
-    	
-/*    	$event = new Event();
-    	$event -> setShardByCriteria(10);
-    	$result = $event::find('event_status = 1');
-     /*   $this->session->set('lastFetchedEvent', 0);
+        $this->session->set('lastFetchedEvent', 0);
         $this->view->setVar('view_action', $this->request->getQuery('_url'));
-        $this->view->setVar('link_to_list', true);*/
+        $this->view->setVar('link_to_list', true);
     }
 
     
