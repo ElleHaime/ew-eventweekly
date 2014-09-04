@@ -103,6 +103,13 @@ class Loader
 					for($i = 1; $i <= $shard -> tablesMax; $i++) {
 						$tblName = $shard -> baseTablePrefix . $i;
 						$masterConn -> setTable($data -> baseTable) -> createTableBySample($tblName);
+						
+						if (isset($data -> relations)) {
+							foreach ($data -> relations as $relation => $elem) {
+								$tblRelName = $elem -> baseTablePrefix . $i;
+								$masterConn -> setTable($elem -> baseTable) -> createTableBySample($tblRelName);
+							}
+						}
 					}
 				}
 			}

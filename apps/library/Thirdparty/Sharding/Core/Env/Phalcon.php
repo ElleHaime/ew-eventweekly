@@ -15,6 +15,7 @@ trait Phalcon
 	use Helper;
 	
 	public static $targetShardCriteria	= false;
+	public static $convertationMode		= false;
 	public static $needTargetShard		= true;
 	public $app							= false;
 	public $destinationId				= false;
@@ -42,8 +43,8 @@ trait Phalcon
 	{
 		if (self::$targetShardCriteria === false) {
 			_U::dump('shard criteria must be setted');
-			//throw new Exception('shard criteria must be setted');
-			return false;
+			/*throw new Exception('shard criteria must be setted');
+			return false; */
 		}
 
 		$reflection = new Model($this -> app);
@@ -77,10 +78,17 @@ trait Phalcon
 	{
 		if (!self::$targetShardCriteria && self::$needTargetShard) {
 			_U::dump('shard criteria must be setted');
-			//throw new Exception('shard criteria must be setted');
-			return false;
+			/*throw new Exception('shard criteria must be setted');
+			return false;*/
+			
+		} elseif(!self::$needTargetShard && !self::$convertationMode) {
+			// search in all shards
+		 		
+			
+		} else {
+			// fetch data from shard
+			$result = parent::find($parameters);
 		}
-		$result = parent::find($parameters);
 		
 		return $result; 
 	} 
@@ -118,7 +126,7 @@ trait Phalcon
 	 */
 	public function update($data = NULL, $whiteList = NULL)
 	{
-_U::dump('ooops, what the fuck are you doing here, bastard?');	
+		_U::dump('ooops, what are you doing here?');
 	}
 
 	
@@ -173,5 +181,10 @@ _U::dump('ooops, what the fuck are you doing here, bastard?');
 	public function unsetNeedShard()
 	{
 		self::$needTargetShard = false;
+	}
+	
+	public function setConvertationMode()
+	{
+		self::$convertationMode = true;
 	}
 }
