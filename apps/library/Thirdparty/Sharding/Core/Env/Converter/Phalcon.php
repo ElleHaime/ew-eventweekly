@@ -88,7 +88,8 @@ _U::dump('ready');
 				
 				$e -> setShardByCriteria($e -> $objCriteria);
 				if ($newObj = $e -> save()) {
-					$e -> $objPrimary = $newObj;
+					//$e -> $objPrimary = $newObj;
+_U::dump($e -> toArray());					
 					
 					$hasOneRelations = $e -> getModelsManager() -> getHasOne(new $objName);
 					if (!empty($hasOneRelations)) {
@@ -99,7 +100,8 @@ _U::dump('ready');
 								
 							if ($relations) {
 								foreach ($relations as $obj) {
-									$obj -> $relField = $e -> $objPrimary;
+									//$obj -> $relField = $e -> $objPrimary;
+									$obj -> $relField = $newObj;
 									$obj -> update();
 								}
 							}
@@ -115,7 +117,8 @@ _U::dump('ready');
 					
 							if ($relations) {
 								foreach ($relations as $obj) {
-									$obj -> $relField = $e -> $objPrimary;
+									//$obj -> $relField = $e -> $objPrimary;
+									$obj -> $relField = $newObj;
 									$obj -> update();
 								}
 							}
@@ -130,7 +133,8 @@ _U::dump('ready');
 		
 							$interObject = $modelName::find([$defField . '=' . $oldId]);
 							foreach($interObject as $obj) {
-								$obj -> $defField = $e -> $objPrimary;
+								//$obj -> $defField = $e -> $objPrimary;
+								$obj -> $relField = $newObj;
 								$obj -> update();
 							} 
 						}

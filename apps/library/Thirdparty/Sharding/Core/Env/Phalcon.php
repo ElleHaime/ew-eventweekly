@@ -76,7 +76,7 @@ trait Phalcon
 	 */
 	public static function find($parameters = NULL)
 	{
-		if (!self::$targetShardCriteria && self::$needTargetShard) {
+		if (!self::$targetShardCriteria && self::$needTargetShard && !self::$convertationMode) {
 			_U::dump('shard criteria must be setted');
 			/*throw new Exception('shard criteria must be setted');
 			return false;*/

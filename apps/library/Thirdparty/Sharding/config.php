@@ -48,6 +48,14 @@ $config =
 				'EventSite' => [
 					'baseTable' => 'event_site',
 					'baseTablePrefix' => 'event_site_',
+				],
+				'EventTag' => [
+					'baseTable' => 'event_tag',
+					'baseTablePrefix' => 'event_tag_',
+				],
+				'EventCategory' => [
+					'baseTable' => 'event_category',
+					'baseTablePrefix' => 'event_category_',
 				]
 			]
 		],
