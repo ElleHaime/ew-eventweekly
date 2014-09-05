@@ -32,7 +32,6 @@ class Model
 		
 		$result = $this -> connection -> setTable($this -> entity)
 									  -> saveRecord($data);
-_U::dump($result);									  
 		if ($result) {
 			return $this -> id;
 		} else {

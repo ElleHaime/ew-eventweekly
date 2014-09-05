@@ -14,6 +14,54 @@ trait Phalcon
 {
 	public $convertLoader;
 	
+	/**
+	 * @Route("/sharding/appendstruct", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});
+	 */
+	public function appendStructureAction()
+	{
+		$this -> convertLoader = new Loader();
+		
+		$shardMapPrefix = $this -> convertLoader -> getMapPrefix();
+		foreach ($this -> convertLoader -> config -> shardModels as $model => $data) {
+			if ($data -> shards) {
+				foreach ($data -> shards as $db => $shard) {
+					foreach ($this -> convertLoader -> connections as $conn) {
+						if (!$conn -> tableExists($shardMapPrefix . strtolower($model))) {
+							$shardType = $data -> shardType;
+							$driver = $conn -> getDriver();
+							$conn -> createShardMap($shardMapPrefix . strtolower($model),
+									$this -> convertLoader -> serviceConfig -> mode -> $shardType -> schema -> $driver);
+						}
+					}
+				}
+			}
+		}
+		
+		
+		$master = $this -> convertLoader -> getMasterConnection();
+		$masterConn = $this -> convertLoader -> connections -> $master;
+		
+		foreach ($this -> convertLoader -> config -> shardModels as $model => $data) {
+			if ($data -> shards) {
+				foreach ($data -> shards as $db => $shard) {
+					for($i = 1; $i <= $shard -> tablesMax; $i++) {
+						$tblName = $shard -> baseTablePrefix . $i;
+						$masterConn -> setTable($data -> baseTable) -> createTableBySample($tblName);
+		
+						if (isset($data -> relations)) {
+							foreach ($data -> relations as $relation => $elem) {
+								$tblRelName = $elem -> baseTablePrefix . $i;
+								$masterConn -> setTable($elem -> baseTable) -> createTableBySample($tblRelName);
+							}
+						}
+					}
+				}
+			}
+		}		
+_U::dump('ready');		
+	}
+	
 	
 	/**
      * @Route("/sharding/convert", methods={"GET", "POST"})
@@ -22,7 +70,7 @@ trait Phalcon
 	public function transferDataAction()
 	{
 		$this -> convertLoader = new Loader(); 
-		
+
 		foreach ($this -> convertLoader -> config -> shardModels as $object => $data) {
 			$objName = $data -> namespace . '\\' . $object;
 			$objPrimary = $data -> primary;

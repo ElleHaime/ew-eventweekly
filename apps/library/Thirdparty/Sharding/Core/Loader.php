@@ -33,8 +33,6 @@ class Loader
 	public function init()
 	{
 		$this -> loadConnections();
-		$this -> loadShardMappers();
-		$this -> loadShardTables();
 	}
 	
 	
@@ -57,66 +55,8 @@ class Loader
 			$this -> connections -> $conn = $instance -> addConnection($data);
 		}
 	}
-	
-	
-	/**
-	 * Create mapping tables for all shardable models
-	 * 
-	 * @access protected
-	 */
-	protected function loadShardMappers()
-	{
-//TODO: move this shit from here
-		$shardMapPrefix = $this -> getMapPrefix(); 
-				
-		foreach ($this -> config -> shardModels as $model => $data) {
-			if ($data -> shards) {
-				foreach ($data -> shards as $db => $shard) {			
-					foreach ($this -> connections as $conn) {
-						if (!$conn -> tableExists($shardMapPrefix . strtolower($model))) {
-							$shardType = $data -> shardType;
-							$driver = $conn -> getDriver();
-							$conn -> createShardMap($shardMapPrefix . strtolower($model), 
-													  $this -> serviceConfig -> mode -> $shardType -> schema -> $driver);  
-						} 
-					}
-				}
-			}
-		}		
-	} 
-	
 
-	/**
-	 * Create sharding tables for all shardable models
-	 * 
-	 * @access protected
-	 */
-	protected function loadShardTables()
-	{
-		// get description of base table
-		$master = $this -> getMasterConnection();
-		$masterConn = $this -> connections -> $master;
-		
-		foreach ($this -> config -> shardModels as $model => $data) {
-			if ($data -> shards) {
-				foreach ($data -> shards as $db => $shard) {
-					for($i = 1; $i <= $shard -> tablesMax; $i++) {
-						$tblName = $shard -> baseTablePrefix . $i;
-						$masterConn -> setTable($data -> baseTable) -> createTableBySample($tblName);
-						
-						if (isset($data -> relations)) {
-							foreach ($data -> relations as $relation => $elem) {
-								$tblRelName = $elem -> baseTablePrefix . $i;
-								$masterConn -> setTable($elem -> baseTable) -> createTableBySample($tblRelName);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 	
-
 	/**
 	 * Load sharding settings for the model if specified.
 	 * Return false if model is non-shardable
