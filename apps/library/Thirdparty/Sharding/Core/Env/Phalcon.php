@@ -27,6 +27,11 @@ trait Phalcon
 	public function onConstruct()
 	{
 		$this -> app = new Loader();
+		if (get_class($this) == 'Frontend\Models\EventImage') {
+			_U::dump(__METHOD__);
+			_U::dump($this -> getModelsManager() -> getBelongsTo($this));			
+		}
+				
 		parent::onConstruct();
 	}
 
@@ -127,7 +132,7 @@ trait Phalcon
 	public function update($data = NULL, $whiteList = NULL)
 	{
 		_U::dump('ooops, what are you doing here?');
-	}
+	} 
 
 	
 	/**

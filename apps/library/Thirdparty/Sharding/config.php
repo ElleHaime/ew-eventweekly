@@ -12,16 +12,7 @@ $config =
 			'password' => 'root',
 			'database' => 'test',
 			'writable' => true
-		],
-		/*'dbSlave' => [
-			'adapter' => 'mysql',		
-			'host' => 'localhost',
-			'port' => '3306',
-			'user' => 'root',
-			'password' => 'root',
-			'database' => 'ew',
-			'writable' => false
-		],*/
+		]
 	],
 	'masterConnection' => 'dbMaster',
 	'defaultConnection' => 'dbMaster',
@@ -58,20 +49,7 @@ $config =
 					'baseTablePrefix' => 'event_category_',
 				]
 			]
-		],
-		/*'Venue' => [
-			'namespace' => '\Frontend\Models',
-			'criteria' => 'location_id',
-			'primary' => 'id',
-			'baseTable' => 'venue',
-			'shardType' => 'loadbalance',
-			'shards' => [
-				'dbMaster' => [
-					'baseTablePrefix' => 'venue_',
-					'tablesMax' => 10
-				]
-			]
-		],*/
+		]
 	] 
 ];
 

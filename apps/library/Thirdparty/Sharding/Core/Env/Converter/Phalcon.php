@@ -30,8 +30,10 @@ trait Phalcon
 						if (!$conn -> tableExists($shardMapPrefix . strtolower($model))) {
 							$shardType = $data -> shardType;
 							$driver = $conn -> getDriver();
-							$conn -> createShardMap($shardMapPrefix . strtolower($model),
-									$this -> convertLoader -> serviceConfig -> mode -> $shardType -> schema -> $driver);
+							$mapperName = $shardMapPrefix . strtolower($model);
+
+							$conn -> createShardMap($mapperName,
+									$this -> convertLoader -> serviceConfig -> mode -> $shardType -> schema -> $driver); 
 						}
 					}
 				}
@@ -41,7 +43,7 @@ trait Phalcon
 		
 		$master = $this -> convertLoader -> getMasterConnection();
 		$masterConn = $this -> convertLoader -> connections -> $master;
-		
+
 		foreach ($this -> convertLoader -> config -> shardModels as $model => $data) {
 			if ($data -> shards) {
 				foreach ($data -> shards as $db => $shard) {
@@ -76,6 +78,7 @@ _U::dump('ready');
 			$objPrimary = $data -> primary;
 			$objCriteria = $data -> criteria;
 			$obj = new $objName;
+			
 			$obj -> setConvertationMode();
 			
 			$items = $obj::find(['limit' => 2]);
@@ -88,10 +91,8 @@ _U::dump('ready');
 				
 				$e -> setShardByCriteria($e -> $objCriteria);
 				if ($newObj = $e -> save()) {
-					//$e -> $objPrimary = $newObj;
-_U::dump($e -> toArray());					
-					
 					$hasOneRelations = $e -> getModelsManager() -> getHasOne(new $objName);
+					
 					if (!empty($hasOneRelations)) {
 						foreach ($hasOneRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
@@ -100,7 +101,6 @@ _U::dump($e -> toArray());
 								
 							if ($relations) {
 								foreach ($relations as $obj) {
-									//$obj -> $relField = $e -> $objPrimary;
 									$obj -> $relField = $newObj;
 									$obj -> update();
 								}
@@ -109,16 +109,19 @@ _U::dump($e -> toArray());
 					}
 					
 					$hasManyRelations = $e -> getModelsManager() -> getHasMany(new $objName);
+					
 					if (!empty($hasManyRelations)) {
 						foreach ($hasManyRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
 							$relField = $rel -> getReferencedFields();
+							$relModel = $rel -> getReferencedModel();
 							$relations = $e -> $relOption['alias'];
-					
+
 							if ($relations) {
 								foreach ($relations as $obj) {
-									//$obj -> $relField = $e -> $objPrimary;
+_U::dump($obj -> event -> id);									
 									$obj -> $relField = $newObj;
+_U::dump($obj);									
 									$obj -> update();
 								}
 							}
@@ -133,7 +136,6 @@ _U::dump($e -> toArray());
 		
 							$interObject = $modelName::find([$defField . '=' . $oldId]);
 							foreach($interObject as $obj) {
-								//$obj -> $defField = $e -> $objPrimary;
 								$obj -> $relField = $newObj;
 								$obj -> update();
 							} 
