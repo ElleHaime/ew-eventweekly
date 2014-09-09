@@ -17,22 +17,36 @@ trait Phalcon
 	public static $targetShardCriteria	= false;
 	public static $convertationMode		= false;
 	public static $needTargetShard		= true;
+	
 	public $app							= false;
 	public $destinationId				= false;
 	public $destinationDb				= false;
 	public $destinationTable			= false;
 	public $modeStrategy				= false;
+	
+	public $relationOf					= false;
 
 	
 	public function onConstruct()
 	{
 		$this -> app = new Loader();
-		if (get_class($this) == 'Frontend\Models\EventImage') {
-			_U::dump(__METHOD__);
-			_U::dump($this -> getModelsManager() -> getBelongsTo($this));			
-		}
+		
+		if ($relation = $this -> isShardRelation()) {
+			$this -> setShardByParent($relation);
+		} 
 				
 		parent::onConstruct();
+	}
+	
+	
+/*	public function getModelsManager()
+	{
+		$manager = $this -> getModelsManager();
+	} */
+	
+	public function getRelationRecords($relation, $method, $record, $parameters = [])
+	{
+		_U::dump(get_class($this));
 	}
 
 	
@@ -188,8 +202,37 @@ trait Phalcon
 		self::$needTargetShard = false;
 	}
 	
+	
 	public function setConvertationMode()
 	{
 		self::$convertationMode = true;
+	}
+
+	
+	/**
+	 * Fucking shame, I'm sorry.
+	 * Here we fetch parent id for related model. 
+	 */
+	protected function setShardByParent($relation)
+	{
+		$trace = debug_backtrace();
+		$callsNum = count($trace);
+		$callsArgs = false;
+			
+		for ($i = 0; $i <= $callsNum; $i++) {
+			if ($trace[$i]['function'] == 'getRelationRecords') {
+				$callArgs = $trace[$i]['args'];
+				break;
+			}
+		}
+		$parent = $this -> relationOf;
+		
+		$parentPrimary = $this -> app -> config -> shardModels -> $parent -> primary;
+		$parentId = $callArgs[2] -> $parentPrimary;
+		$parentId = '1_1';
+		
+		if ($parentId) {
+			$this -> setShardByParentId($parentId, $relation);
+		}
 	}
 }

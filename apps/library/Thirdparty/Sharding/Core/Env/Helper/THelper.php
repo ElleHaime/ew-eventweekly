@@ -40,7 +40,7 @@ trait THelper
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
-			
+		
 			$this -> setDestinationSource();
 		} else {
 			$this -> useDefaultConnection();
@@ -48,7 +48,28 @@ trait THelper
 		
 		$this -> setReadDestinationDb();
 	}
+	
+	
+	/**
+	 * Select destination shard by parfent shard id
+	 * for related tables
+	 *
+	 * @param int $objectId
+	 * @access public
+	 */
+	public function setShardByParentId($objectId, $relation)
+	{
+		$this -> setShardById($objectId);
 
+		$parentDb = $this -> destinationDb;
+		$parentTable = $this -> destinationTable;
+		$parentTablePrefix = $this -> modeStrategy -> getShardModel() -> shards -> $parentDb -> baseTablePrefix;
+		$relationTablePrefix = $relation -> baseTablePrefix;
+		$relationTableName = str_replace($parentTablePrefix, $relationTablePrefix, $parentTable);
+		
+		$this -> destinationTable = $relationTableName;
+	}
+	
 	
 	/**
 	 * Select destination shard by criteria
@@ -66,7 +87,6 @@ trait THelper
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
-			
 			$this -> setDestinationSource();
 		} else {
 			$this -> useDefaultConnection();
@@ -100,14 +120,18 @@ trait THelper
 	
 	/**
 	 * Select strategy mode (Loadbalance, Limitbatch) for 
-	 * specific model
+	 * specific model by default calling class
 	 *
 	 * @access public 
 	 */
 	public function selectModeStrategy()
 	{
-		$object = new \ReflectionClass(__CLASS__);
-		$entityName = $object -> getShortName();
+		if (!$this -> relationOf) {
+			$object = new \ReflectionClass(__CLASS__);
+			$entityName = $object -> getShortName();
+		} else {
+			$entityName = $this -> relationOf;
+		}
 
 		if ($shardModel = $this -> app -> loadShardModel($entityName)) {
 			$modeName = '\Sharding\Core\Mode\\' . ucfirst($shardModel -> shardType) . '\Strategy';
@@ -115,5 +139,41 @@ trait THelper
 			$this -> modeStrategy -> setShardEntity($entityName);
 			$this -> modeStrategy -> setShardModel($shardModel);
 		}
+	}
+	
+	
+	/**
+	 * Check relations for shardable models
+	 *
+	 * @access public
+	 * @return boolean
+	 */
+	public function isShardRelation()
+	{
+		$className = get_class($this);
+	
+		foreach ($this -> app -> config -> shardModels as $model => $data) {
+			if (isset($data -> relations)) {
+				foreach ($data -> relations as $obj => $rel) {
+					$object = $rel -> namespace . '\\' . $obj;
+					if ($object == '\\' . $className) {
+						$this -> relationOf = $model;
+						
+						return $rel;
+					}
+				}
+			}
+		}
+	
+		return false;
+	}
+	
+	
+	/**
+	 *  Just test, nothing else
+	 */	
+	public function testIsHere()
+	{
+		_U::dump('yep, your model supports sharding');
 	}
 }

@@ -84,6 +84,7 @@ _U::dump('ready');
 			$items = $obj::find(['limit' => 2]);
 
 			foreach ($items as $e) {
+_U::dump($e -> image);				
 				$oldId = $e -> $objPrimary;
 				if (is_null($e -> $objCriteria) or empty($e -> $objCriteria) or $e -> $objCriteria === false) {
 					$e -> $objCriteria = 0;

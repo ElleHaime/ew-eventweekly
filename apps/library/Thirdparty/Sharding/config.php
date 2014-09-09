@@ -33,18 +33,22 @@ $config =
 			],
 			'relations' => [
 				'EventImage' => [
+					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_image',
 					'baseTablePrefix' => 'event_image_',
 				],
 				'EventSite' => [
+					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_site',
 					'baseTablePrefix' => 'event_site_',
 				],
 				'EventTag' => [
+					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_tag',
 					'baseTablePrefix' => 'event_tag_',
 				],
 				'EventCategory' => [
+					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_category',
 					'baseTablePrefix' => 'event_category_',
 				]
