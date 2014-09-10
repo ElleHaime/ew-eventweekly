@@ -35,18 +35,18 @@ trait THelper
 		
 		if ($this -> modeStrategy) {
 			$this -> modeStrategy -> selectShardById($shardId);
-			
+				
 			self::$targetShardCriteria = $this -> modeStrategy -> getCriteria();
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
-		
+
 			$this -> setDestinationSource();
 		} else {
 			$this -> useDefaultConnection();
 		}
-		
 		$this -> setReadDestinationDb();
+		$this -> setWriteDestinationDb();
 	}
 	
 	
@@ -60,7 +60,7 @@ trait THelper
 	public function setShardByParentId($objectId, $relation)
 	{
 		$this -> setShardById($objectId);
-
+		
 		$parentDb = $this -> destinationDb;
 		$parentTable = $this -> destinationTable;
 		$parentTablePrefix = $this -> modeStrategy -> getShardModel() -> shards -> $parentDb -> baseTablePrefix;
@@ -110,7 +110,7 @@ trait THelper
 		$separator = $this -> app -> getShardIdSeparator();
 		
 		$idParts = explode($separator, $objectId);
-		if ($idParts) {
+		if ($idParts && count($idParts) > 1) {
 			return $idParts[1];
 		} else {
 			return false;
@@ -166,6 +166,18 @@ trait THelper
 		}
 	
 		return false;
+	}
+	
+	
+	public function unsetNeedShard()
+	{
+		self::$needTargetShard = false;
+	}
+	
+	
+	public function setConvertationMode($mode = true)
+	{
+		self::$convertationMode = $mode;
 	}
 	
 	

@@ -37,17 +37,6 @@ trait Phalcon
 				
 		parent::onConstruct();
 	}
-	
-	
-/*	public function getModelsManager()
-	{
-		$manager = $this -> getModelsManager();
-	} */
-	
-	public function getRelationRecords($relation, $method, $record, $parameters = [])
-	{
-		_U::dump(get_class($this));
-	}
 
 	
 	/**
@@ -193,19 +182,9 @@ trait Phalcon
 	 */
 	public function setDestinationSource()
 	{
+_U::dump($this -> destinationTable, true);
+_U::dump($this -> toArray(), true);
 		$this -> setSource($this -> destinationTable);
-	}
-	
-	
-	public function unsetNeedShard()
-	{
-		self::$needTargetShard = false;
-	}
-	
-	
-	public function setConvertationMode()
-	{
-		self::$convertationMode = true;
 	}
 
 	
@@ -217,22 +196,23 @@ trait Phalcon
 	{
 		$trace = debug_backtrace();
 		$callsNum = count($trace);
-		$callsArgs = false;
+		$callArgs = false;
 			
-		for ($i = 0; $i <= $callsNum; $i++) {
+		for ($i = 0; $i < $callsNum; $i++) {
 			if ($trace[$i]['function'] == 'getRelationRecords') {
 				$callArgs = $trace[$i]['args'];
 				break;
 			}
 		}
-		$parent = $this -> relationOf;
-		
-		$parentPrimary = $this -> app -> config -> shardModels -> $parent -> primary;
-		$parentId = $callArgs[2] -> $parentPrimary;
-		$parentId = '1_1';
-		
-		if ($parentId) {
-			$this -> setShardByParentId($parentId, $relation);
+		if ($callArgs) {		
+			$parent = $this -> relationOf;
+			
+			$parentPrimary = $this -> app -> config -> shardModels -> $parent -> primary;
+			$parentId = $callArgs[2] -> $parentPrimary;
+			
+			if ($parentId) {
+				$this -> setShardByParentId($parentId, $relation);
+			}
 		}
 	}
 }

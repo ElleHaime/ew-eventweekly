@@ -74,17 +74,23 @@ _U::dump('ready');
 		$this -> convertLoader = new Loader(); 
 
 		foreach ($this -> convertLoader -> config -> shardModels as $object => $data) {
+			
+			$relationScope = [];
+			if ($data -> relations) {
+				foreach ($data -> relations as $relName => $relData) {
+					$objRelationScope[$relData -> namespace . '\\' . $relName] = $relData;
+				}
+			}
+			
 			$objName = $data -> namespace . '\\' . $object;
 			$objPrimary = $data -> primary;
 			$objCriteria = $data -> criteria;
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
-			
 			$items = $obj::find(['limit' => 2]);
-
+			
 			foreach ($items as $e) {
-_U::dump($e -> image);				
 				$oldId = $e -> $objPrimary;
 				if (is_null($e -> $objCriteria) or empty($e -> $objCriteria) or $e -> $objCriteria === false) {
 					$e -> $objCriteria = 0;
@@ -110,20 +116,36 @@ _U::dump($e -> image);
 					}
 					
 					$hasManyRelations = $e -> getModelsManager() -> getHasMany(new $objName);
-					
 					if (!empty($hasManyRelations)) {
 						foreach ($hasManyRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
 							$relField = $rel -> getReferencedFields();
 							$relModel = $rel -> getReferencedModel();
-							$relations = $e -> $relOption['alias'];
+							
+							if (array_key_exists($relModel, $objRelationScope)) {
+								$dest = new $relModel;
+								$dest -> setConvertationMode();
+								$relations = $dest::find($relField . ' = ' . $e -> $objPrimary);
 
-							if ($relations) {
-								foreach ($relations as $obj) {
-_U::dump($obj -> event -> id);									
-									$obj -> $relField = $newObj;
-_U::dump($obj);									
-									$obj -> update();
+								if ($relations) {
+									foreach ($relations as $relObj) {
+										$relObj -> $relField = $newObj;
+										$relObj -> setConvertationMode(false);
+										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
+_U::dump($relObj -> destinationTable, true);
+_U::dump($relObj -> toArray(), true);										
+_U::dump(123);										
+										$relObj -> save();
+									}
+								}
+							} else {
+_U::dump('bebebe');								
+								$relations = $e -> $relOption['alias'];
+								if ($relations) {
+									foreach ($relations as $obj) {
+										$obj -> $relField = $newObj;
+										$obj -> update();
+									}
 								}
 							}
 						}
