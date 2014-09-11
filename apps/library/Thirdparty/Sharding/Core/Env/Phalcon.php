@@ -68,7 +68,6 @@ trait Phalcon
 				$reflectionFields[$prop]['value'] = $value;			
 			}
 		}
-		
 		$newObject = $reflection -> save($reflectionFields, $this -> destinationId);
 
 		return $newObject;		
@@ -182,8 +181,6 @@ trait Phalcon
 	 */
 	public function setDestinationSource()
 	{
-_U::dump($this -> destinationTable, true);
-_U::dump($this -> toArray(), true);
 		$this -> setSource($this -> destinationTable);
 	}
 

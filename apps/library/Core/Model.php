@@ -80,7 +80,7 @@ class Model extends \Phalcon\Mvc\Model
 			$alias = $func -> getShortName();
 		}
 		
-		return $alias;;
+		return $alias;
 	}
 	
 	private function getRelationAliasName($refOptions)

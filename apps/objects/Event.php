@@ -49,11 +49,11 @@ class Event extends Model
 		$this -> hasMany('id', '\Frontend\Models\EventSite', 'event_id', array('alias' => 'site'));
 		$this -> hasManyToMany('id', '\Frontend\Models\EventCategory',
 							   'event_id', 'category_id',
-							   '\Objects\Category', 'id', array('alias' => 'category',
+							   '\Frontend\Models\Category', 'id', array('alias' => 'category',
 							   		 							'baseField' => 'name'));
         $this -> hasManyToMany('id', '\Frontend\Models\EventTag',
 							   'event_id', 'tag_id',
-							   '\Objects\Tag', 'id', array('alias' => 'tag',
+							   '\Frontend\Models\Tag', 'id', array('alias' => 'tag',
 							   		 							'baseField' => 'name'));
 	}
 }

@@ -68,6 +68,8 @@ trait THelper
 		$relationTableName = str_replace($parentTablePrefix, $relationTablePrefix, $parentTable);
 		
 		$this -> destinationTable = $relationTableName;
+		
+		$this -> setDestinationSource();
 	}
 	
 	

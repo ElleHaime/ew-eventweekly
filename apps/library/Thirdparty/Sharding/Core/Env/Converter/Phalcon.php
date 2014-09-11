@@ -88,18 +88,20 @@ _U::dump('ready');
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
-			$items = $obj::find(['limit' => 2]);
-			
+			$items = $obj::find(['limit' => ['number' => 2, 'offset' => 6]]);
+//_U::dump($items -> toArray());			
 			foreach ($items as $e) {
 				$oldId = $e -> $objPrimary;
+_U::dump($e -> id, true);
+_U::dump($e -> location_id, true);				
 				if (is_null($e -> $objCriteria) or empty($e -> $objCriteria) or $e -> $objCriteria === false) {
 					$e -> $objCriteria = 0;
 				}
 				
 				$e -> setShardByCriteria($e -> $objCriteria);
 				if ($newObj = $e -> save()) {
+_U::dump('newId: ' . $newObj, true);					
 					$hasOneRelations = $e -> getModelsManager() -> getHasOne(new $objName);
-					
 					if (!empty($hasOneRelations)) {
 						foreach ($hasOneRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
@@ -121,7 +123,7 @@ _U::dump('ready');
 							$relOption = $rel -> getOptions();
 							$relField = $rel -> getReferencedFields();
 							$relModel = $rel -> getReferencedModel();
-							
+_U::dump($relModel, true);							
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
@@ -132,14 +134,15 @@ _U::dump('ready');
 										$relObj -> $relField = $newObj;
 										$relObj -> setConvertationMode(false);
 										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
+_U::dump($relObj -> destinationDb, true);
 _U::dump($relObj -> destinationTable, true);
 _U::dump($relObj -> toArray(), true);										
-_U::dump(123);										
+										
 										$relObj -> save();
 									}
 								}
 							} else {
-_U::dump('bebebe');								
+_U::dump('not shardable', true);								
 								$relations = $e -> $relOption['alias'];
 								if ($relations) {
 									foreach ($relations as $obj) {
@@ -149,19 +152,41 @@ _U::dump('bebebe');
 								}
 							}
 						}
-					}
+					} 
 	
 					$hasManyToManyRelations = $e -> getModelsManager() -> getHasManyToMany(new $objName);
 					if (!empty($hasManyToManyRelations)) {
 						foreach ($hasManyToManyRelations as $index => $rel) {
-							$modelName = $rel -> getIntermediateModel();
-							$defField = $rel -> getIntermediateFields(); 
-		
-							$interObject = $modelName::find([$defField . '=' . $oldId]);
-							foreach($interObject as $obj) {
-								$obj -> $relField = $newObj;
-								$obj -> update();
-							} 
+							$relOption = $rel -> getOptions();
+							$relModel = $rel -> getIntermediateModel();
+							$relField = $rel -> getIntermediateFields(); 
+_U::dump($relModel, true);
+							if (array_key_exists($relModel, $objRelationScope)) {
+								$dest = new $relModel;
+								$dest -> setConvertationMode();
+								$relations = $dest::find($relField . ' = ' . $e -> $objPrimary);
+							
+								if ($relations) {
+									foreach ($relations as $relObj) {
+										$relObj -> $relField = $newObj;
+										$relObj -> setConvertationMode(false);
+										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
+_U::dump($relObj -> destinationDb, true);
+_U::dump($relObj -> destinationTable, true);
+_U::dump($relObj -> toArray(), true);
+										$relObj -> save();
+									}
+								}
+							} else {
+_U::dump('not shardable', true);								
+								$relations = $relModel::find($relField . ' = ' . $e -> $objPrimary);
+								if ($relations) {
+									foreach ($relations as $obj) {
+										$obj -> $relField = $newObj;
+										$obj -> update();
+									}
+								}
+							}
 						}
 					}
 				}	
