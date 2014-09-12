@@ -35,7 +35,7 @@ $config =
 				'EventImage' => [
 					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_image',
-					'baseTablePrefix' => 'event_image_',
+					'baseTablePrefix' => 'event_image_'
 				],
 				'EventSite' => [
 					'namespace' => '\Frontend\Models',
@@ -51,6 +51,12 @@ $config =
 					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_category',
 					'baseTablePrefix' => 'event_category_',
+				]
+			],
+			'files' => [
+				'images' => [
+					'dependencyField' => 'id',
+					'path' => '/var/www/EventWeekly/public/upload/img/event'
 				]
 			]
 		]

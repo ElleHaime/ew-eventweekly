@@ -72,6 +72,13 @@ trait THelper
 		$this -> setDestinationSource();
 	}
 	
+	public function setShardByDefault($relation)
+	{
+		$this -> destinationTable = $relation -> baseTable;
+		$this -> setDestinationSource();
+	}	
+
+	
 	
 	/**
 	 * Select destination shard by criteria

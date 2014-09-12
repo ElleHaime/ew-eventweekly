@@ -90,7 +90,6 @@ trait Phalcon
 			
 		} elseif(!self::$needTargetShard && !self::$convertationMode) {
 			// search in all shards
-		 		
 			
 		} else {
 			// fetch data from shard
@@ -201,6 +200,7 @@ trait Phalcon
 				break;
 			}
 		}
+		
 		if ($callArgs) {		
 			$parent = $this -> relationOf;
 			
@@ -210,6 +210,8 @@ trait Phalcon
 			if ($parentId) {
 				$this -> setShardByParentId($parentId, $relation);
 			}
+		} else {
+			$this -> setShardByDefault($relation);
 		}
 	}
 }

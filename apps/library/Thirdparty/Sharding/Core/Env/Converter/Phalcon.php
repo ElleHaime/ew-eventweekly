@@ -61,12 +61,12 @@ trait Phalcon
 				}
 			}
 		}		
-_U::dump('ready');		
+_U::dump('ready');
 	}
 	
 	
 	/**
-     * @Route("/sharding/convert", methods={"GET", "POST"})
+     * @Route("/sharding/conver", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
 	public function transferDataAction()
@@ -75,10 +75,16 @@ _U::dump('ready');
 
 		foreach ($this -> convertLoader -> config -> shardModels as $object => $data) {
 			
-			$relationScope = [];
+			$objRelationScope = [];
 			if ($data -> relations) {
 				foreach ($data -> relations as $relName => $relData) {
 					$objRelationScope[$relData -> namespace . '\\' . $relName] = $relData;
+				}
+			}
+			$objFileScope = [];
+			if ($data -> files) {
+				foreach ($data -> files as $relName => $relData) {
+					$objFileScope[$relName] = $relData;
 				}
 			}
 			
@@ -88,19 +94,39 @@ _U::dump('ready');
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
-			$items = $obj::find(['limit' => ['number' => 2, 'offset' => 6]]);
-//_U::dump($items -> toArray());			
+			$items = $obj::find(['limit' => ['number' => 4, 'offset' => 45]]);
+
 			foreach ($items as $e) {
 				$oldId = $e -> $objPrimary;
-_U::dump($e -> id, true);
-_U::dump($e -> location_id, true);				
+				
 				if (is_null($e -> $objCriteria) or empty($e -> $objCriteria) or $e -> $objCriteria === false) {
 					$e -> $objCriteria = 0;
 				}
 				
 				$e -> setShardByCriteria($e -> $objCriteria);
+			
 				if ($newObj = $e -> save()) {
-_U::dump('newId: ' . $newObj, true);					
+_U::dump('oldId: ' . $oldId, true);					
+_U::dump('newId: ' . $newObj, true);
+_U::dump('locationId: ' . $e -> location_id, true);
+_U::dump('event table: ' . $e -> destinationTable, true);
+
+					if (!empty($objFileScope)) {
+						foreach ($objFileScope as $fileRel => $fileData) {
+_U::dump('old images: ' . $fileData -> path . DIRECTORY_SEPARATOR . $oldId, true);							
+							if (is_dir($fileData -> path . DIRECTORY_SEPARATOR . $oldId)) {
+								$oldPathName = $fileData -> path . DIRECTORY_SEPARATOR . $oldId;
+								$newPathName = str_replace(DIRECTORY_SEPARATOR . $oldId, DIRECTORY_SEPARATOR . $newObj, $oldPathName);
+_U::dump('new images: ' . $newPathName, true);								
+								try {
+									rename($oldPathName, $newPathName);
+								} catch(\Exception $e) {
+									_U::dump('ooooooooooops, can\'t rename folder', true);									
+								}
+							}
+						}
+					} 
+					
 					$hasOneRelations = $e -> getModelsManager() -> getHasOne(new $objName);
 					if (!empty($hasOneRelations)) {
 						foreach ($hasOneRelations as $index => $rel) {
@@ -127,8 +153,10 @@ _U::dump($relModel, true);
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
-								$relations = $dest::find($relField . ' = ' . $e -> $objPrimary);
-
+_U::dump('table on find: ' . $dest -> destinationTable, true);						
+										
+								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
+_U::dump('relations: ' . $relations -> count(), true);
 								if ($relations) {
 									foreach ($relations as $relObj) {
 										$relObj -> $relField = $newObj;
@@ -137,7 +165,6 @@ _U::dump($relModel, true);
 _U::dump($relObj -> destinationDb, true);
 _U::dump($relObj -> destinationTable, true);
 _U::dump($relObj -> toArray(), true);										
-										
 										$relObj -> save();
 									}
 								}
@@ -164,8 +191,9 @@ _U::dump($relModel, true);
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
-								$relations = $dest::find($relField . ' = ' . $e -> $objPrimary);
-							
+_U::dump($relField . ' = "' . $e -> $objPrimary . '"', true);								
+								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
+_U::dump('relations: ' . $relations -> count(), true);							
 								if ($relations) {
 									foreach ($relations as $relObj) {
 										$relObj -> $relField = $newObj;
@@ -189,7 +217,8 @@ _U::dump('not shardable', true);
 							}
 						}
 					}
-				}	
+				}
+echo('<br><br><br>');					
 			}		
 		}
 		
