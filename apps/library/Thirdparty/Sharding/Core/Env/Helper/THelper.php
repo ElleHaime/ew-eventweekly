@@ -151,6 +151,16 @@ trait THelper
 	}
 	
 	
+	public function getAllShards()
+	{
+		$object = new \ReflectionClass(__CLASS__);
+		$entityName = $object -> getShortName();
+
+		if ($shardModel = $this -> app -> loadShardModel($entityName)) {
+			return $this -> app -> getAllShards($entityName);
+		}		
+	}
+	
 	/**
 	 * Check relations for shardable models
 	 *
@@ -178,9 +188,9 @@ trait THelper
 	}
 	
 	
-	public function unsetNeedShard()
+	public function unsetNeedShard($param = false)
 	{
-		self::$needTargetShard = false;
+		self::$needTargetShard = $param;
 	}
 	
 	

@@ -11,11 +11,11 @@ class EventForm extends Form
 	public function __construct($model = null)
 	{
 		if ($model === null){
-			$model = new \Objects\Event();
+			$model = new \Frontend\Models\Event();
 		}
 		parent::__construct($model);
 	}
-	
+
 	public function init()
 	{
 		$this -> addElement('hidden', 'id');		
@@ -46,7 +46,7 @@ class EventForm extends Form
         $this -> addElement('text', 'tickets_url', 'tickets_url', array('placeholder' => 'Link to tickets'));
 
 		$this -> addElement('radio', 'recurring', 'Recurring', 
-								array('options' => \Frontend\Models\Event::$eventRecurring)); 
+								array('options' => \Frontend\Models\Event::$eventRecurring));  
 		
 		$this -> addElement('text', 'location', 'Location',
 								array('placeholder' => 'Choose location', 'autocomplete' => 'off'));
@@ -60,18 +60,19 @@ class EventForm extends Form
 
 		$this -> addElement('text', 'venue', 'Venue',
 								array('placeholder' => 'Choose venue', 'autocomplete' => 'off'));
+		
 		$this -> addElement('hidden', 'venue_latitude');
 		$this -> addElement('hidden', 'venue_longitude');
 
 		$this -> addElement('check', 'event_status', 'Publish event immediately');
-        $this -> addElement('check', 'event_fb_status', 'Publish event to Facebook'/*, array('checked' => 'checked')*/);
+        $this -> addElement('check', 'event_fb_status', 'Publish event to Facebook');
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'Add description',
 									  'class' => 'resizable field-big'));
 
 		$this -> addElement('text', 'event_site', 'Event web site',
-								array('style' => 'display:none;'));
+								array('style' => 'display:none;'));  
 
 		$this -> addElement('date', 'start_date', 'Start date',
 								array('data-format' => 'dd/MM/yyyy',
@@ -86,10 +87,9 @@ class EventForm extends Form
 									  'placeholder' => 'End date',
                                       'autocomplete' => 'off'));
 
-
 		$this -> addElement('select', 'event_category', 'Suggest category', 
 								array('options' => \Frontend\Models\Category::find(),
-									  'using' => array('id', 'name')));
+									  'using' => array('id', 'name'))); 
 		
 		$this -> addElement('hidden', 'category');	
 

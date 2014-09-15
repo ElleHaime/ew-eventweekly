@@ -414,13 +414,15 @@ define('frontEventEditControl',
 
             self.__initCategoryList = function()
             {
-                var categories = $(self.settings.inpCategoryReal).val().split(',');
-
-                categories.forEach(function(cat) {
-                    if (cat == "") return;
-
-                    $(self.settings.inpCategory + " option[value='" + cat + "']").remove();
-                });
+            	if ($(self.settings.inpCategoryReal).val() != undefined) {
+	                var categories = $(self.settings.inpCategoryReal).val().split(',');
+	
+	                categories.forEach(function(cat) {
+	                    if (cat == "") return;
+	
+	                    $(self.settings.inpCategory + " option[value='" + cat + "']").remove();
+	                });
+            	}
             }
 
 			self.__addSite = function()

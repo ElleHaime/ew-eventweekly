@@ -44,6 +44,7 @@ class Map
 		
 		return;
 	}
+	
 
 	/**
 	 * Save new shard to the map table

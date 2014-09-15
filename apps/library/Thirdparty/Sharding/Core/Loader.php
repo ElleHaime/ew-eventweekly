@@ -136,7 +136,27 @@ class Loader
 		return $prefix;
 	}
 
+	
+	/**
+	 * Return all created shards for the entity
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function getAllShards($entity)
+	{
+		$shards = [];
+		
+		foreach ($this -> config -> shardModels -> $entity -> shards as $shard => $data) {
+			for($i = 1; $i <= $data -> tablesMax; $i++) {
+				$shards[] = $data -> baseTablePrefix . $i;
+			}
+		}
+		
+		return $shards;
+	}
 
+	
 	/**
 	 * Return primary key separator for the shardable objects
 	 *

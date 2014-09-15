@@ -46,7 +46,7 @@ class CrudController extends \Core\Controller
 			//$this -> setDependencyProperty($this -> obj -> getDependency());
 		} 
 		$form = $this -> loadForm();
-		
+
 		if ($this -> request -> isPost() && !$this -> dispatcher -> wasForwarded()) {
 			if ($form -> isValid($this -> request -> getPost())) {
 				$redirectOptions = $this -> processForm($form);

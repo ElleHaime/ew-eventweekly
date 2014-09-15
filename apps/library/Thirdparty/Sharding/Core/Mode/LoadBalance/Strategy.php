@@ -85,6 +85,7 @@ class Strategy extends StrategyAbstract
 		return;
 	}
 
+	
 	/**
 	 * Create new record to the mapping table
 	 * 

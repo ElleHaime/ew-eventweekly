@@ -238,7 +238,6 @@
         <div class="event-one-img">
             <div class="all-img clearfix">
                 {% if event.logo %}
-
                     <img
                             data-id="{{ event.id }}"
                             class='img-box img-logo'

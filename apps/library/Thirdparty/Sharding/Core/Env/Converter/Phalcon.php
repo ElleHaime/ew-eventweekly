@@ -106,18 +106,13 @@ _U::dump('ready');
 				$e -> setShardByCriteria($e -> $objCriteria);
 			
 				if ($newObj = $e -> save()) {
-_U::dump('oldId: ' . $oldId, true);					
-_U::dump('newId: ' . $newObj, true);
-_U::dump('locationId: ' . $e -> location_id, true);
-_U::dump('event table: ' . $e -> destinationTable, true);
 
 					if (!empty($objFileScope)) {
 						foreach ($objFileScope as $fileRel => $fileData) {
-_U::dump('old images: ' . $fileData -> path . DIRECTORY_SEPARATOR . $oldId, true);							
 							if (is_dir($fileData -> path . DIRECTORY_SEPARATOR . $oldId)) {
 								$oldPathName = $fileData -> path . DIRECTORY_SEPARATOR . $oldId;
 								$newPathName = str_replace(DIRECTORY_SEPARATOR . $oldId, DIRECTORY_SEPARATOR . $newObj, $oldPathName);
-_U::dump('new images: ' . $newPathName, true);								
+
 								try {
 									rename($oldPathName, $newPathName);
 								} catch(\Exception $e) {
@@ -149,27 +144,21 @@ _U::dump('new images: ' . $newPathName, true);
 							$relOption = $rel -> getOptions();
 							$relField = $rel -> getReferencedFields();
 							$relModel = $rel -> getReferencedModel();
-_U::dump($relModel, true);							
+							
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
-_U::dump('table on find: ' . $dest -> destinationTable, true);						
 										
 								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
-_U::dump('relations: ' . $relations -> count(), true);
 								if ($relations) {
 									foreach ($relations as $relObj) {
 										$relObj -> $relField = $newObj;
 										$relObj -> setConvertationMode(false);
 										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
-_U::dump($relObj -> destinationDb, true);
-_U::dump($relObj -> destinationTable, true);
-_U::dump($relObj -> toArray(), true);										
 										$relObj -> save();
 									}
 								}
 							} else {
-_U::dump('not shardable', true);								
 								$relations = $e -> $relOption['alias'];
 								if ($relations) {
 									foreach ($relations as $obj) {
@@ -187,26 +176,21 @@ _U::dump('not shardable', true);
 							$relOption = $rel -> getOptions();
 							$relModel = $rel -> getIntermediateModel();
 							$relField = $rel -> getIntermediateFields(); 
-_U::dump($relModel, true);
+
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
-_U::dump($relField . ' = "' . $e -> $objPrimary . '"', true);								
+
 								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
-_U::dump('relations: ' . $relations -> count(), true);							
 								if ($relations) {
 									foreach ($relations as $relObj) {
 										$relObj -> $relField = $newObj;
 										$relObj -> setConvertationMode(false);
 										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
-_U::dump($relObj -> destinationDb, true);
-_U::dump($relObj -> destinationTable, true);
-_U::dump($relObj -> toArray(), true);
 										$relObj -> save();
 									}
 								}
 							} else {
-_U::dump('not shardable', true);								
 								$relations = $relModel::find($relField . ' = ' . $e -> $objPrimary);
 								if ($relations) {
 									foreach ($relations as $obj) {
@@ -218,7 +202,6 @@ _U::dump('not shardable', true);
 						}
 					}
 				}
-echo('<br><br><br>');					
 			}		
 		}
 		

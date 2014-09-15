@@ -72,6 +72,29 @@ trait Phalcon
 
 		return $newObject;		
 	}
+	
+	
+	public function search($parameters = NULL)
+	{
+		$result = [];
+		
+		if(!self::$needTargetShard && !self::$convertationMode) {
+			$shards = $this -> getAllShards(); 
+			
+			foreach ($shards as $index => $shard) {
+				$this -> destinationTable = $shard;
+				$this -> destinationDb = $this -> app -> getMasterConnection();
+				$this -> setReadDestinationDb();				
+				$this -> setDestinationSource();
+				$this -> unsetNeedShard(true);
+				self::$targetShardCriteria = 1;
+				
+				$result = self::find($parameters);
+
+			}
+			_U::dump($result -> toArray());
+		}
+	}
 
 	
 	/**
@@ -83,6 +106,7 @@ trait Phalcon
 	 */
 	public static function find($parameters = NULL)
 	{
+	
 		if (!self::$targetShardCriteria && self::$needTargetShard && !self::$convertationMode) {
 			_U::dump('shard criteria must be setted');
 			/*throw new Exception('shard criteria must be setted');
@@ -90,15 +114,15 @@ trait Phalcon
 			
 		} elseif(!self::$needTargetShard && !self::$convertationMode) {
 			// search in all shards
-			
+			$result = [];
 		} else {
 			// fetch data from shard
 			$result = parent::find($parameters);
 		}
 		
 		return $result; 
-	} 
-	
+	}
+
 	
 	/**
 	 * Override Phalcon\Mvc\Model::findFirst() method.

@@ -34,4 +34,6 @@ abstract class StrategyAbstract
 	abstract public function selectShardByCriteria($arg);
 	
 	abstract public function selectShardById($arg);
+	
+	abstract public function selectAllShards();
 }

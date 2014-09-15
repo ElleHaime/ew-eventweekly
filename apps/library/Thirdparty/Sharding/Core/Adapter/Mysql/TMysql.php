@@ -134,9 +134,8 @@ trait TMysql
 		return $result;
 	}
 	
-	public function fetch()
+	public function fetchAll()
 	{
-
 	}
 	
 	

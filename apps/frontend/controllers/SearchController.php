@@ -95,6 +95,14 @@ class SearchController extends \Core\Controller
             }
             return $answer;
         };
+		
+		if ($elemExists('searchTitle')) {
+				$Event -> unsetNeedShard();
+				$Event -> search('name LIKE "%' . $postData['searchTitle'] . '%"');
+				
+				$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
+		}
+
 
         // if no location specify - set from user location
         if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
