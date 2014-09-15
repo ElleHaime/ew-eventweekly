@@ -259,7 +259,7 @@ class Event extends EventObject
        	}
        	if ($memberLike) {
        		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
-       	}
+       	} 
        	if ($eventTag || $applyPersonalization) {
        		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');

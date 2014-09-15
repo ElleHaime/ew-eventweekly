@@ -72,29 +72,6 @@ trait Phalcon
 
 		return $newObject;		
 	}
-	
-	
-	public function search($parameters = NULL)
-	{
-		$result = [];
-		
-		if(!self::$needTargetShard && !self::$convertationMode) {
-			$shards = $this -> getAllShards(); 
-			
-			foreach ($shards as $index => $shard) {
-				$this -> destinationTable = $shard;
-				$this -> destinationDb = $this -> app -> getMasterConnection();
-				$this -> setReadDestinationDb();				
-				$this -> setDestinationSource();
-				$this -> unsetNeedShard(true);
-				self::$targetShardCriteria = 1;
-				
-				$result = self::find($parameters);
-
-			}
-			_U::dump($result -> toArray());
-		}
-	}
 
 	
 	/**
@@ -112,9 +89,6 @@ trait Phalcon
 			/*throw new Exception('shard criteria must be setted');
 			return false;*/
 			
-		} elseif(!self::$needTargetShard && !self::$convertationMode) {
-			// search in all shards
-			$result = [];
 		} else {
 			// fetch data from shard
 			$result = parent::find($parameters);
@@ -143,32 +117,6 @@ trait Phalcon
 		}
 		
 		return $result; 
-	}
-	
-
-	/**
-	 * Override Phalcon\Mvc\Model update() method.
-	 * 
-	 * @access public
-	 * @param array $data
-	 * @param array $whitelist
-	 * @return boolean
-	 */
-	public function update($data = NULL, $whiteList = NULL)
-	{
-		_U::dump('ooops, what are you doing here?');
-	} 
-
-	
-	/**
-	 * Override Phalcon\Mvc\Model delete() method.
-	 * 
-	 * @access public
-	 * @return boolean
-	 */
-	public function delete()
-	{
-	
 	}
 
 	

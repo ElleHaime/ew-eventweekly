@@ -21,6 +21,7 @@ abstract class AdapterAbstract
 	protected $fields 		= [];
 	protected $queryExpr 	= '';
 	protected $fetchFormat	= 'OBJECT';
+	protected $fetchClass	= false;
 	
 	
 	public function __construct($data)

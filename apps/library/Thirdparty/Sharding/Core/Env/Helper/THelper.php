@@ -125,6 +125,24 @@ trait THelper
 			return false;
 		}
 	}
+	
+	
+	
+	
+	/**
+	 * Return all sharded criteria for entity
+	 *
+	 * @access public
+	 */
+	public function getShardedCriteria()
+	{
+		$this -> selectModeStrategy();
+
+		if ($this -> modeStrategy) {
+			$criteria = $this -> modeStrategy -> selectAllCriteria(); 
+		}
+	}
+	
 
 	
 	/**
@@ -149,17 +167,7 @@ trait THelper
 			$this -> modeStrategy -> setShardModel($shardModel);
 		}
 	}
-	
-	
-	public function getAllShards()
-	{
-		$object = new \ReflectionClass(__CLASS__);
-		$entityName = $object -> getShortName();
 
-		if ($shardModel = $this -> app -> loadShardModel($entityName)) {
-			return $this -> app -> getAllShards($entityName);
-		}		
-	}
 	
 	/**
 	 * Check relations for shardable models
@@ -186,7 +194,7 @@ trait THelper
 	
 		return false;
 	}
-	
+
 	
 	public function unsetNeedShard($param = false)
 	{

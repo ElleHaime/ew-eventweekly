@@ -45,6 +45,31 @@ class Map
 		return;
 	}
 	
+	
+	
+	/**
+	 * Search all criteria in map table
+	 *
+	 * @access public
+	 * @param string $param
+	 * @param int|string $value
+	 * @return Map object | false
+	 */
+	public function findCriteria()
+	{
+		$result = [];
+		
+		$records = $this -> connection -> setTable($this -> entity)
+									   -> setFetchClass('\Sharding\Core\Mode\Loadbalance\Map')
+									   -> fetch();
+	
+		if ($records) {
+			_U::dump($records);
+		}
+		return $result;
+	}
+	
+	
 
 	/**
 	 * Save new shard to the map table

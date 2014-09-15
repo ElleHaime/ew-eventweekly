@@ -97,9 +97,8 @@ class SearchController extends \Core\Controller
         };
 		
 		if ($elemExists('searchTitle')) {
-				$Event -> unsetNeedShard();
-				$Event -> search('name LIKE "%' . $postData['searchTitle'] . '%"');
-				
+				$criteria = $Event -> getShardedCriteria();
+_U::dump($criteria);								
 				$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
 		}
 

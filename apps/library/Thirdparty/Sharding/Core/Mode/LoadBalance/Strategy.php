@@ -84,6 +84,21 @@ class Strategy extends StrategyAbstract
 		
 		return;
 	}
+	
+
+	/**
+	 * Search all sharded criteria for current entity
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function selectAllCriteria()
+	{
+		$mapper = new Map($this -> app);
+		$mapper -> setEntity($this -> shardEntity);
+		$mapper -> useConnection($this -> app -> getMasterConnection());
+		$mapper -> findCriteria();
+	}
 
 	
 	/**

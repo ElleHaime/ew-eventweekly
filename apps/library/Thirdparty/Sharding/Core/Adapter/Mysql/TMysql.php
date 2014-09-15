@@ -88,6 +88,12 @@ trait TMysql
 		return $this;
 	}
 	
+	public function setFetchClass($class)
+	{
+		$this -> fetchClass = $class;
+		return $this;
+	}
+	
 	public function addCondition($condition)
 	{
 		$this -> conditions[] = $condition;
@@ -114,16 +120,16 @@ trait TMysql
 	
 	public function fetchOne()
 	{
-		$this -> queryExpr = 'SELECT ';
-		$this -> processFields();		
-		$this -> queryExpr .= ' FROM ' . $this -> queryTable;
-		$this -> processConditions();
-		
+		$this -> composeQuery();
+				
 		$fetch = $this -> connection -> query($this -> queryExpr);
 		if ($fetch -> rowCount() == 0) {
 			$result = false;
 		} else {
-			if ($this -> fetchFormat == 'OBJECT') {
+			if ($this -> fetchClass) {
+				$fetch -> setFetchMode(\PDO::FETCH_CLASS, $this -> fetchClass);
+				$result = $fetch -> fetch();
+			} elseif ($this -> fetchFormat == 'OBJECT') {
 				$result = $fetch -> fetch(\PDO::FETCH_LAZY);
 			} else {
 				$result = $fetch -> fetch(\PDO::FETCH_ASSOC);
@@ -134,8 +140,22 @@ trait TMysql
 		return $result;
 	}
 	
-	public function fetchAll()
+	public function fetch()
 	{
+		$this -> composeQuery();
+		
+		$fetch = $this -> connection -> query($this -> queryExpr);
+
+		if ($this -> fetchClass) {
+			$fetch -> setFetchMode(\PDO::FETCH_CLASS, $this -> fetchClass);
+			$result = $fetch -> fetchAll();
+		} else {
+			$result = $fetch -> fetchAll();
+		}
+
+		return $result;
+		
+		
 	}
 	
 	
@@ -181,6 +201,7 @@ trait TMysql
 		$this -> fields = [];
 		$this -> conditions = [];
 		$this -> queryExpr = '';
+		$this -> fetchClass = false;
 		
 		return;
 	}
@@ -215,5 +236,13 @@ trait TMysql
 		}
 		
 		return;
+	}
+	
+	private function composeQuery()
+	{
+		$this -> queryExpr = 'SELECT ';
+		$this -> processFields();
+		$this -> queryExpr .= ' FROM ' . $this -> queryTable;
+		$this -> processConditions();
 	}
 }
