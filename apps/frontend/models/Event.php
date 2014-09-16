@@ -369,5 +369,5 @@ class Event extends EventObject
         }
 
         return $result;
-    } 
+    }
 } 

@@ -141,6 +141,8 @@ trait THelper
 		if ($this -> modeStrategy) {
 			$criteria = $this -> modeStrategy -> selectAllCriteria(); 
 		}
+		
+		return $criteria;
 	}
 	
 

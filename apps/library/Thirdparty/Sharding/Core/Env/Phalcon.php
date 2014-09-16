@@ -83,12 +83,10 @@ trait Phalcon
 	 */
 	public static function find($parameters = NULL)
 	{
-	
-		if (!self::$targetShardCriteria && self::$needTargetShard && !self::$convertationMode) {
+		if (self::$targetShardCriteria === false && self::$needTargetShard && !self::$convertationMode) {
 			_U::dump('shard criteria must be setted');
 			/*throw new Exception('shard criteria must be setted');
 			return false;*/
-			
 		} else {
 			// fetch data from shard
 			$result = parent::find($parameters);
@@ -154,7 +152,7 @@ trait Phalcon
 	{
 		$this -> setSource($this -> destinationTable);
 	}
-
+	
 	
 	/**
 	 * Fucking shame, I'm sorry.

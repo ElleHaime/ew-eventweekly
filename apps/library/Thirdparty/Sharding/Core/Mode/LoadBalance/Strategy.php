@@ -94,10 +94,20 @@ class Strategy extends StrategyAbstract
 	 */
 	public function selectAllCriteria()
 	{
+		$result = [];
+		
 		$mapper = new Map($this -> app);
 		$mapper -> setEntity($this -> shardEntity);
 		$mapper -> useConnection($this -> app -> getMasterConnection());
-		$mapper -> findCriteria();
+		$criteria = $mapper -> findCriteria();
+
+		if ($criteria) {
+			foreach ($criteria as $rec) {
+				$result[] = $rec['criteria'];
+			}
+		}
+		
+		return $result;
 	}
 
 	

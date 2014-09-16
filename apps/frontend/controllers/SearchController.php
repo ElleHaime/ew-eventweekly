@@ -98,9 +98,21 @@ class SearchController extends \Core\Controller
 		
 		if ($elemExists('searchTitle')) {
 				$criteria = $Event -> getShardedCriteria();
-_U::dump($criteria);								
+				
+				foreach ($criteria as $cri) {
+					$Event -> setShardByCriteria($cri);
+_U::dump('shard: ' . $Event -> destinationTable, true);					
+					$result = $Event::find('event_status = 1');
+					if ($result) {
+						foreach ($result as $e) {
+							_U::dump($e -> id . ': '  . $e -> name, true);
+						}
+					}
+					echo '<br><br><br>';
+				}
+die();										
 				$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
-		}
+		} 
 
 
         // if no location specify - set from user location

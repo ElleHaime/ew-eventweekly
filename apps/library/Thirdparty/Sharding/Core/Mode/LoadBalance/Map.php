@@ -57,15 +57,9 @@ class Map
 	 */
 	public function findCriteria()
 	{
-		$result = [];
-		
-		$records = $this -> connection -> setTable($this -> entity)
-									   -> setFetchClass('\Sharding\Core\Mode\Loadbalance\Map')
-									   -> fetch();
-	
-		if ($records) {
-			_U::dump($records);
-		}
+		$result = $this -> connection -> setTable($this -> entity)
+									  -> fetch();
+
 		return $result;
 	}
 	

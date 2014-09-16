@@ -14,8 +14,7 @@
                         </div>
                     </div>
                     {% if list is defined %}
-                        {% for event in list %}
-
+                      {% for event in list %}
                             {% set disabled = '' %}
                             {% if likedEventsIds is defined %}
                                 {% for likedEventsId in likedEventsIds %}
@@ -35,7 +34,15 @@
                             {% else %}
                                 {% set catLight = event.category.getFirst().key %}
                             {% endif %}
-                            <div class="events-list  {{ catLight }}-category signleEventListElement" event-id="{{ event.id }}">
+                            <div class="events-list  {{ catLight }}-category signleEventListElement" 
+                            			event-id="{{ event.id }}" 
+                            			 {% if unlikedEventsIds is defined %}
+			                                {% for unlikedEventsId in unlikedEventsIds %}
+			                                    {% if unlikedEventsId == event.id %}
+			                                        style="display:none; visibility:hidden;"
+			                                    {% endif %}
+			                                {% endfor %}
+			                            {% endif %}>
                                 <div class="row-fluid ">
                                     <div class="span12">
                                         <div class="event-one clearfix">
@@ -137,6 +144,8 @@
                             </div>
                         {% else %}
                             <div class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
+                            
+                            
                         {% endfor %}
                     {% else %}
                         <div   class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
