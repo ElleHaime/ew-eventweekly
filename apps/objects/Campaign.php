@@ -22,7 +22,7 @@ class Campaign extends Model
 
 		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
 																	 	   'baseField' => 'alias'));
-		$this -> hasMany('id', '\Objects\Event', 'campaign_id', array('alias' => 'event'));
+		$this -> hasMany('id', '\Frontend\Models\Event', 'campaign_id', array('alias' => 'event'));
 		$this -> hasMany('id', '\Objects\CampaignContact', 'campaign_id', array('alias' => 'contact'));
 	}
 }

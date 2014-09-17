@@ -85,8 +85,6 @@ trait Phalcon
 	{
 		if (self::$targetShardCriteria === false && self::$needTargetShard && !self::$convertationMode) {
 			_U::dump('shard criteria must be setted');
-			/*throw new Exception('shard criteria must be setted');
-			return false;*/
 		} else {
 			// fetch data from shard
 			$result = parent::find($parameters);
@@ -152,6 +150,22 @@ trait Phalcon
 	{
 		$this -> setSource($this -> destinationTable);
 	}
+	
+	
+	/**
+	 * Set shard in models manager
+	 * Use Phalcon\Mvc\Model setSource()
+	 *
+	 * @access public
+	 */
+	public function getModelsManager()
+	{
+		$mngr = parent::getModelsManager();
+		$mngr -> __destruct();
+		$mngr -> setModelSource($this, $this -> destinationTable);
+		
+		return $mngr;
+	} 
 	
 	
 	/**

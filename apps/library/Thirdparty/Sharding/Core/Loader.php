@@ -148,8 +148,10 @@ class Loader
 		$shards = [];
 		
 		foreach ($this -> config -> shardModels -> $entity -> shards as $shard => $data) {
+			$conn = $shard;
 			for($i = 1; $i <= $data -> tablesMax; $i++) {
-				$shards[] = $data -> baseTablePrefix . $i;
+				$shards[] = ['connection' => $conn,
+							 'source' => $data -> baseTablePrefix . $i];
 			}
 		}
 		

@@ -109,6 +109,19 @@ class Strategy extends StrategyAbstract
 		
 		return $result;
 	}
+	
+	
+	/**
+	 * Search all available shards
+	 *
+	 * @access public
+	 * @return array
+	 */
+	public function selectAllShards()
+	{
+		return $this -> app -> getAllShards(ucfirst($this -> shardEntity));	
+	}
+	
 
 	
 	/**

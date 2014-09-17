@@ -63,6 +63,24 @@ class Map
 		return $result;
 	}
 	
+
+	
+	/**
+	 * Search distinct all shards in map table
+	 *
+	 * @access public
+	 * @param string $param
+	 * @param int|string $value
+	 * @return Map object | false
+	 */
+	public function findShards()
+	{
+		$result = $this -> connection -> setTable($this -> entity)
+									  -> fetch();
+_U::dump($result);
+		return $result;
+	}
+	
 	
 
 	/**

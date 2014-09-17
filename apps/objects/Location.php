@@ -28,7 +28,7 @@ class Location extends Model
 		parent::initialize();
 		
 		$this -> hasMany('id', '\Objects\Member', 'location_id', array('alias' => 'member'));
-		$this -> hasMany('id', '\Objects\Event', 'location_id', array('alias' => 'event'));
+		$this -> hasMany('id', '\Frontend\Models\Event', 'location_id', array('alias' => 'event'));
 		$this -> hasMany('id', '\Objects\Campaign', 'location_id', array('alias' => 'campaign'));
 		$this -> hasMany('id', '\Objects\Venue', 'location_id', array('alias' => 'venue'));
 	}

@@ -72,6 +72,7 @@ trait THelper
 		$this -> setDestinationSource();
 	}
 	
+
 	public function setShardByDefault($relation)
 	{
 		$this -> destinationTable = $relation -> baseTable;
@@ -96,14 +97,16 @@ trait THelper
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
+
 			$this -> setDestinationSource();
 		} else {
 			$this -> useDefaultConnection();
 		}
 		
 		$this -> setReadDestinationDb();
+		
+		return $this;
 	}
-
 
 	
 	/**
@@ -127,8 +130,6 @@ trait THelper
 	}
 	
 	
-	
-	
 	/**
 	 * Return all sharded criteria for entity
 	 *
@@ -144,8 +145,24 @@ trait THelper
 		
 		return $criteria;
 	}
-	
 
+	
+	/**
+	 * Return all available shards for entity
+	 *
+	 * @access public
+	 */
+	public function getAvailableShards()
+	{
+		$this -> selectModeStrategy();
+	
+		if ($this -> modeStrategy) {
+			$shards = $this -> modeStrategy -> selectAllShards();
+		} 
+_U::dump($shards);
+		return $shards;
+	}
+	
 	
 	/**
 	 * Select strategy mode (Loadbalance, Limitbatch) for 

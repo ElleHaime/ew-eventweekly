@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData, true);
+
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -95,14 +95,17 @@ class SearchController extends \Core\Controller
             }
             return $answer;
         };
-		
+
 		if ($elemExists('searchTitle')) {
-				$criteria = $Event -> getShardedCriteria();
-				
-				foreach ($criteria as $cri) {
+				$shards = $Event -> getAvailableShards();
+_U::dump($shards);
+				foreach ($shards as $cri) {
 					$Event -> setShardByCriteria($cri);
-_U::dump('shard: ' . $Event -> destinationTable, true);					
-					$result = $Event::find('event_status = 1');
+					$builder = $Event -> getModelsManager() -> createBuilder();
+					$builder -> from('Frontend\Models\Event');
+					$builder -> where('Frontend\Models\Event.event_status = 1 AND Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
+					$result = $builder -> getQuery() -> execute();
+					
 					if ($result) {
 						foreach ($result as $e) {
 							_U::dump($e -> id . ': '  . $e -> name, true);
@@ -112,8 +115,31 @@ _U::dump('shard: ' . $Event -> destinationTable, true);
 				}
 die();										
 				$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
-		} 
-
+		}
+		
+		
+/*		if ($elemExists('searchTitle')) {
+			$criteria = $Event -> getShardedCriteria();
+		
+			foreach ($criteria as $cri) {
+				$Event -> setShardByCriteria($cri);
+				$builder = $Event -> getModelsManager() -> createBuilder();
+				$builder -> from('Frontend\Models\Event');
+				$builder -> where('Frontend\Models\Event.event_status = 1 AND Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
+				$result = $builder -> getQuery() -> execute();
+					
+				if ($result) {
+					foreach ($result as $e) {
+						_U::dump($e -> id . ': '  . $e -> name, true);
+					}
+				}
+				echo '<br><br><br>';
+			}
+			die();
+			$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
+		}
+		
+*/
 
         // if no location specify - set from user location
         if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
