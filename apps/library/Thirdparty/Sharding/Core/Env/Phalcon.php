@@ -198,4 +198,25 @@ trait Phalcon
 			$this -> setShardByDefault($relation);
 		}
 	}
+	
+	
+	public function __get($property)
+	{
+		$this -> setShardById($this -> id);
+		$parts = explode('_', $this -> destinationTable);
+		$this -> destinationTable = implode('_' . $property . '_', $parts);
+		
+		return parent::__get($property);
+	}
+	
+	
+	public function __isset($property)
+	{
+		$this -> setShardById($this -> id);
+		$parts = explode('_', $this -> destinationTable);
+		$this -> destinationTable = implode('_' . $property . '_', $parts);
+		
+		return parent::__isset($property);
+	}
+	
 }

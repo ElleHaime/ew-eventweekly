@@ -10,29 +10,6 @@ namespace Core\Traits;
 use Core\Utils as _U;
 
 trait ModelConverter {
-	
-	/*public static function findFirst($parameters = NULL)
-	{
-		_U::dump(__DIR__);
-		_U::dump($parameters, true);
-		
-		$className = get_class();
-		$object = new $className;
-		$di = $object -> getDI();
-		
-		$query = new \Phalcon\Mvc\Model\Query('SELECT * FROM ' . $className . ' WHERE id = ' . $parameters, $di);
-		$result = $query -> execute();
-		_U::dump($result -> toArray());
-		
-		
-		$classInfo = new \ReflectionClass(get_class());
-		echo '<pre>';
-		//_U::dump($classInfo -> getProperties());
-		\Reflection::export($classInfo);
-		echo '</pre>';
-		die();    
-	} */
-	
     /**
      * Convert Phalcon data object to array
      *
@@ -55,26 +32,29 @@ trait ModelConverter {
                     $returnArr[$i][$key] = eval('return '.$code.';');
                 }
             }
-
+            
             $getRelations = function($relations) use (&$returnArr, $event, $i) {
                 foreach ($relations as $relation) {
                     $alias = $relation->getOptions()['alias'];
-                    $relResult = $event->getRelated($alias);
-                    if ($relResult instanceof Phalcon\Mvc\Model\Resultset) {
-                        foreach ($relResult as $model) {
-                            $returnArr[$i][$alias][] = $model->toArray();
-                        }
-                    }else {
-                        if (is_object($relResult)) {
-                            $returnArr[$i][$alias] = $relResult->toArray();
-                        }
-                    }
+					if ($alias != 'image') {                    
+	                    $relResult = $event->getRelated($alias);
+	                    if ($relResult instanceof Phalcon\Mvc\Model\Resultset) {
+	                        foreach ($relResult as $model) {
+	                            $returnArr[$i][$alias][] = $model->toArray();
+	                        }
+	                    }else {
+	                        if (is_object($relResult)) {
+	                            $returnArr[$i][$alias] = $relResult->toArray();
+	                        }
+	                    }
+					}
                 }
             };
             $getRelations($relations);
             $getRelations($relationsManyToMany);
             $i++;
         }
+
         return $returnArr;
     }
 

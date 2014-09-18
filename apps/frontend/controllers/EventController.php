@@ -182,19 +182,24 @@ class EventController extends \Core\Controllers\CrudController
     			Event::ORDER_ASC,
     			['page' => $page, 'limit' => 10],
     			false, [], false, false, true, true, true);
-    	
-    	$events = $result -> items;
-    	unset($result -> items);
-    	
+		$events = [];		
+		if (count($result) > 0) {
+			foreach ($result as $index => $data) {
+				foreach ($data -> items as $ev) {
+					$events[] = $ev;
+				}
+			}
+		}
+		unset($result);
+
     	if ($this->session->has('memberId')) {
     		$this->fetchMemberLikes();
     	}
     
     	if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
+    		$this->view->setVar('pagination', $events);
     	}
-    	
-    	//$this->view->setVar('urlParams', http_build_query($postData));
+
     	$this->view->setVar('urlParams', 'liked');
     	
     	$this->view->setvar('list', $events);
@@ -313,6 +318,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $cfg = $this->di->get('config');
         $logoFile = '';
+        
         if ($event->logo != '') {
             $logoFile = $cfg->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
         }
@@ -345,7 +351,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('categories', $categories->toArray());
 
         $this->view->setVar('link_back_to_list', true);
-
+        
         $posters = $flyers = $gallery = [];
         if (isset($event->image)) {
             foreach ($event -> image as $eventImage) {

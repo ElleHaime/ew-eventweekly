@@ -62,6 +62,7 @@ class SearchController extends \Core\Controller
 
         $result = array();
         $countResults = 0;
+        
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
@@ -96,51 +97,6 @@ class SearchController extends \Core\Controller
             return $answer;
         };
 
-		if ($elemExists('searchTitle')) {
-				$shards = $Event -> getAvailableShards();
-_U::dump($shards);
-				foreach ($shards as $cri) {
-					$Event -> setShardByCriteria($cri);
-					$builder = $Event -> getModelsManager() -> createBuilder();
-					$builder -> from('Frontend\Models\Event');
-					$builder -> where('Frontend\Models\Event.event_status = 1 AND Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
-					$result = $builder -> getQuery() -> execute();
-					
-					if ($result) {
-						foreach ($result as $e) {
-							_U::dump($e -> id . ': '  . $e -> name, true);
-						}
-					}
-					echo '<br><br><br>';
-				}
-die();										
-				$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
-		}
-		
-		
-/*		if ($elemExists('searchTitle')) {
-			$criteria = $Event -> getShardedCriteria();
-		
-			foreach ($criteria as $cri) {
-				$Event -> setShardByCriteria($cri);
-				$builder = $Event -> getModelsManager() -> createBuilder();
-				$builder -> from('Frontend\Models\Event');
-				$builder -> where('Frontend\Models\Event.event_status = 1 AND Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
-				$result = $builder -> getQuery() -> execute();
-					
-				if ($result) {
-					foreach ($result as $e) {
-						_U::dump($e -> id . ': '  . $e -> name, true);
-					}
-				}
-				echo '<br><br><br>';
-			}
-			die();
-			$pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
-		}
-		
-*/
-
         // if no location specify - set from user location
         if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
             $location = $this->session->get('location');
@@ -167,7 +123,7 @@ die();
             // add search condition by location
             if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
             	$Event->addCondition('Frontend\Models\Event.latitude = '.$postData['searchLocationLatCurrent'].' 
-            			AND Frontend\Models\Event.longitude = '.$postData['searchLocationLngCurrent']);
+            			AND Frontend\Models\Event.longitude = '.$postData['searchLocationLngCurrent']); 
             	
             } elseif ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') 
             	&& $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
@@ -176,18 +132,15 @@ die();
                     ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
                         $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
                 {
-                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
-                    		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
-                    		AND '.$postData['searchLocationLngMax']); 
-                	
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
                     $loc = new Location();
                     $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-/*                    if ($newLocation) {
-                    	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
-                    } */
+                    
+                    if ($newLocation) {
+                    	$Event -> setShardByCriteria($newLocation -> id);
+                    } 
 
                     $this->session->set('location', $newLocation);
 
@@ -323,10 +276,23 @@ die();
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
                         								   false, false, false, true, true, $needTags);
                     }
-                    $result = $fetchedData->items;
                     
-                    unset($fetchedData->items);
-                    $countResults = $fetchedData->total_items;
+                    $countResults = 0;
+
+                    if (count($fetchedData) > 0) {
+                    	if ($postData['searchType'] == 'in_list') {
+	                    	foreach ($fetchedData as $index => $data) {
+								foreach ($data -> items as $ev) {
+		                    		$result[] = $ev;
+								}
+								$countResults += $data -> items -> count();								
+	                    	}
+                    	} else {
+                    		$result = $fetchedData;
+                    		$countResults = $fetchedData -> count();
+                    	}
+                    }
+                    unset($fetchedData);
                 }
             }
 

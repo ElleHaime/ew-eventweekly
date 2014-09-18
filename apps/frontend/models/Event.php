@@ -245,129 +245,151 @@ class Event extends EventObject
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
     								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false, $categorySet = [])
     {
-        $builder = $this->getModelsManager()->createBuilder();
-
-        $builder->from('Frontend\Models\Event');
-        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
-	            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
-            
-       	if ($memberFriend) {
-       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
-       	}
-       	if ($memberGoing) {
-       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
-       	}
-       	if ($memberLike) {
-       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
-       	} 
-       	if ($eventTag || $applyPersonalization) {
-       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
-					 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
-       	}
-
-        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
-
-        if (!empty($this->conditions)) {
-            foreach ($this->conditions as $condition) {
-                $prevCondition = $builder->getWhere();
-
-                if (!empty($prevCondition)) {
-                    if ($condition['type'] === self::CONDITION_COMPLEX) {
-                        $builder->where($prevCondition.' AND '.$condition['condition']);
-                    }elseif ($condition['type'] === self::CONDITION_SIMPLE) {
-                        $builder->where($prevCondition.' '.$condition['condition']);
-                    }
-                }else {
-                    $builder->where($condition['condition']);
-                }
-            }
-        }
-
-        if ($applyPersonalization) {
-            $di = $this->getDi();
-            $session = $di->getShared('session');
-            $uid = $session->get('memberId');
-
-            $MemberFilter = new MemberFilter();
-            
-            if (empty($categorySet)) {
-            	$member_categories = $MemberFilter->getbyId($uid);
-            } else {
-            	$member_categories = $MemberFilter->compareById($uid, $categorySet);
-            }
-//_U::dump($member_categories);           
-            $tagCategories = array();
-            if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
-
-	            if (count($member_categories['category']['value']) > 0) {
-	                	$category = new Category();
-	                	$defaultCategories = $category -> getDefaultIdsAsString();
-	                	$extraCats = array_intersect($member_categories['category']['value'], explode(',', $defaultCategories));
-
-						if (!empty($extraCats)) {
-							if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-								$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
-							} else {
-								$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
-							}
-						} 
-	            }
-				
-				$prevCondition = $builder->getWhere();
-				if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-					if (!empty($extraCats)) {
-						$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
-					} else {
-						$builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-					}
+		$availableShards = $this -> getAvailableShards();
+		if ($this -> destinationTable === false) {
+			$shards = $availableShards;
+		} else {
+			foreach ($availableShards as $index => $shard) {
+				if ($shard['source'] == $this -> destinationTable) {
+					$shards[] = $shard;
 				}
-            }
-        }
+			}
+		}
+		$eventsTotal = [];
+		
+    	foreach ($shards as $cri) {
+    		$this -> setShard($cri);
+    		
+	        $builder = $this->getModelsManager()->createBuilder();
+	
+	        $builder->from('Frontend\Models\Event');
+	        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
+		            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
+	            
+	       	if ($memberFriend) {
+	       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
+	       	}
+	       	if ($memberGoing) {
+	       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
+	       	}
+	       	if ($memberLike) {
+	       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
+	       	} 
+	       	if ($eventTag || $applyPersonalization) {
+	       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
+						 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
+	       	}
+	
+	        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
+	
+	        if (!empty($this->conditions)) {
+	            foreach ($this->conditions as $condition) {
+	                $prevCondition = $builder->getWhere();
+	
+	                if (!empty($prevCondition)) {
+	                    if ($condition['type'] === self::CONDITION_COMPLEX) {
+	                        $builder->where($prevCondition.' AND '.$condition['condition']);
+	                    }elseif ($condition['type'] === self::CONDITION_SIMPLE) {
+	                        $builder->where($prevCondition.' '.$condition['condition']);
+	                    }
+	                }else {
+	                    $builder->where($condition['condition']);
+	                }
+	            }
+	        }
+	
+	        if ($applyPersonalization) {
+	            $di = $this->getDi();
+	            $session = $di->getShared('session');
+	            $uid = $session->get('memberId');
+	
+	            $MemberFilter = new MemberFilter();
+	            
+	            if (empty($categorySet)) {
+	            	$member_categories = $MemberFilter->getbyId($uid);
+	            } else {
+	            	$member_categories = $MemberFilter->compareById($uid, $categorySet);
+	            }
+           
+	            $tagCategories = array();
+	            if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
+	
+		            if (count($member_categories['category']['value']) > 0) {
+		                	$category = new Category();
+		                	$defaultCategories = $category -> getDefaultIdsAsString();
+		                	$extraCats = array_intersect($member_categories['category']['value'], explode(',', $defaultCategories));
+	
+							if (!empty($extraCats)) {
+								if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+									$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
+								} else {
+									$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
+								}
+							} 
+		            }
+					
+					$prevCondition = $builder->getWhere();
+					if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
+						if (!empty($extraCats)) {
+							$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
+						} else {
+							$builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
+						}
+					}
+	            }
+	        }
+	
+	        if (empty($this->order)) {
+	            if ($order === self::ORDER_DESC) {
+	                $builder->orderBy('Frontend\Models\Event.start_date DESC');
+	            } elseif ($order === self::ORDER_ASC) {
+	                $builder->orderBy('Frontend\Models\Event.start_date ASC');
+	            }
+	        }else {
+	            $builder->orderBy($this->order);
+	        }
+	        
+			if (!empty($limit)) {
+	        	$builder -> limit($limit['limit'], $limit['start']);
+	        }
+	        $builder->groupBy('Frontend\Models\Event.id');
 
-        if (empty($this->order)) {
-            if ($order === self::ORDER_DESC) {
-                $builder->orderBy('Frontend\Models\Event.start_date DESC');
-            }elseif ($order === self::ORDER_ASC) {
-                $builder->orderBy('Frontend\Models\Event.start_date ASC');
-            }
-        }else {
-            $builder->orderBy($this->order);
-        }
-        
-		if (!empty($limit)) {
-        	$builder -> limit($limit['limit'], $limit['start']);
-        }
-        $builder->groupBy('Frontend\Models\Event.id');
-        
-		/*$f = fopen('/var/www/EventWeekly/var/logs/bububu.txt', 'a+');
-		fwrite($f, $builder -> getPhql());
-		fwrite($f, "\n\r\n\r");
-		fclose($f);        */
-//_U::dump($builder -> getPhql());
+	        if (!empty($pagination)) {
+	            $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
+	                'builder' => $builder,
+	                'limit'=> $pagination['limit'],
+	                'page' => $pagination['page']
+	            ));
+	
+	            $totalRows = $builder->getQuery()->execute()->count();
+	            if ($totalRows > 0) {
+		            $result = $paginator->getPaginate();
+		            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
+		            $result->total_items = $totalRows;
+		            
+		            if ($fetchType === self::FETCH_ARRAY) {
+		                $result->items = $this->resultToArray($result->items);
+		                
+		                $eventsTotal = array_merge($eventsTotal, $result);
+		            } else {
+		            	$eventsTotal[] = $result;
+		            }
+	            } 
+	        } else {
+	            $result = $builder->getQuery()->execute();
+	            
+	            if ($result -> count() > 0) {
+	            	
+		            if ($fetchType === self::FETCH_ARRAY) {
+		                $result = $this->resultToArray($result);
+		                $eventsTotal = array_merge($eventsTotal, $result);
+		            } else {
+		            	$eventsTotal[] = $result;
+		            }
+	            }
+	        }
+    	}
 
-        if (!empty($pagination)) {
-            $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
-                'builder' => $builder,
-                'limit'=> $pagination['limit'],
-                'page' => $pagination['page']
-            ));
-
-            $result = $paginator->getPaginate();
-            $totalRows = $builder->getQuery()->execute()->count();
-            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
-            $result->total_items = $totalRows;
-            
-            if ($fetchType === self::FETCH_ARRAY) {
-                $result->items = $this->resultToArray($result->items);
-            }
-        } else {
-            $result = $builder->getQuery()->execute();
-
-            if ($fetchType === self::FETCH_ARRAY) {
-                $result = $this->resultToArray($result);
-            }
-        }
-
-        return $result;
+        return $eventsTotal;
     }
 } 

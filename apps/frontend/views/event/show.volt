@@ -156,23 +156,6 @@
                                                                 </div><!-- /.modal-content -->
                                                             </div><!-- /.modal-dialog -->
                                                         </div><!-- /.modal -->
-
-                                                        {#<div id="flyer-img" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">#}
-
-                                                                {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>#}
-                                                            {#<div class="modal-body">#}
-                                                                {#{% if eventPreview is defined %}#}
-                                                                    {#{% if eventPreviewFlyer is defined %}#}
-                                                                        {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyer }}" alt="" >#}
-                                                                    {#{% else %}#}
-                                                                        {#<img src="/upload/img/event/tmp/{{ flyer }}" alt="" >#}
-                                                                    {#{% endif %}#}
-                                                                {#{% else %}#}
-                                                                    {#<img src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}" alt="" >#}
-                                                                {#{% endif %}#}
-
-                                                            {#</div>#}
-                                                        {#</div>#}
                                                         {% set count = count + 1 %}
                                                     {% endif %}
                                                     <a href="#" class="btn-all-img">{{ count }}<span class="icon-all-img"></span></a>
@@ -255,13 +238,13 @@
                                             </button>
                                             <div id="friendsBlock"></div>
                                             <input type="button" value="Invite all" id="fb-invite-all" style="display: none"/>
-                                            {% if event.site|length %}
+                                            {#% if event.site|length %}
                                                 <div class="event-site clearfix">
                                                     {% for site in event.site %}
                                                         <p>web-site : <a href="val" target="_blank">{{ site.url }}</a></p>
                                                     {% endfor %}
                                                 </div>
-                                            {% endif %}
+                                            {% endif %#}
 
                                             <div class="event-list-category">
 
@@ -279,8 +262,6 @@
                                                         {% endfor %}
                                                     </div>
 
-                                                    {#<a href="#" class="show-all">show all tags</a>#}
-
                                                     {% if event.category.getFirst().key == 'other' %}
                                                         <span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>
                                                         <ul id="suggestCategoriesBlock"  class="select-category">
@@ -292,7 +273,6 @@
                                                 {% else %}
                                                     <span class="btn btn-block suggest-btn uncategorized_label" id="suggestCategoryBtn" >Suggest category</span>
 
-                                                    {#<span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>#}
                                                     <ul id="suggestCategoriesBlock"  class="select-category">
                                                         {% for index, node in categories %}
                                                             <li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>
@@ -310,146 +290,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                {#<div id="content_right">#}
-                                    {#<div id="content_right_inner">#}
-                                        {#<div id="content_center">#}
-                                            {#<div class="event-photo">#}
-                                                {#<img src="../img/big.jpg" alt="">#}
-                                            {#</div>#}
-                                            {#<div id="content-box" style="padding-right: 20px">#}
-                                                {#<h4 class="name-link">{{ event.name }}</h4>#}
-
-                                                {#<div class="date-list">#}
-                                                    {#{% if event.start_date_nice is defined  %}#}
-                                                        {#<i class="icon-time"></i>#}
-                                                        {#<span class="date-start">{{ event.start_date_nice }}</span>#}
-                                                        {#{% if event.start_time is defined %}#}
-                                                            {#start at#}
-                                                            {#<span class="date-time">{{ event.start_time }}</span> <span class="day-title"></span>#}
-                                                        {#{% endif %}#}
-                                                    {#{% endif %}#}
-                                                {#</div>#}
-                                                {#<div class="description-text">#}
-                                                    {#<p style="word-wrap: break-word;">{{ event.description|nl2br }}</p>#}
-
-                                                    {#{% if event.tickets_url != '' %}#}
-                                                       {#<a href="{{ event.tickets_url }}" target="_blank">You can buy tickets here</a>#}
-                                                    {#{% endif %}#}
-                                                {#</div>#}
-                                                {#<div class="btn-hide clearfix">#}
-
-                                                    {#{% if not (event.memberpart|length) %}#}
-                                                        {#<span>So, whats your plan?</span>#}
-                                                    {#{% endif %}#}
-                                                    {#<div class="event-site clearfix">#}
-                                                        {#{% if not (event.memberpart|length) %}#}
-                                                            {#<button class="btn" id="event-join">I`m going!</button>#}
-                                                            {#<button class="btn" id="event-maybe">I`m interested!</button>#}
-                                                            {#<button class="btn" id="event-decline">Don`t like</button>#}
-                                                        {#{% else %}#}
-                                                            {#{% if event.memberpart == 1 %}#}
-                                                                {#<button class="btn" id="event-join" disabled = true>I`m going!</button>#}
-                                                            {#{% endif %}#}
-
-                                                            {#{% if event.memberpart == 2 %}#}
-                                                                {#<button class="btn" id="event-maybe" disabled = true>I`m interested!</button>#}
-                                                            {#{% endif %}#}
-                                                        {#{% endif %}#}
-                                                    {#</div>#}
-                                                {#</div>#}
-                                            {#</div>#}
-                                        {#</div>#}
-
-                                        {#<div class="sidebar-box">#}
-
-
-                                            {#<div class="event-list-btn">#}
-                                                {#<div class=" clearfix">#}
-                                                    {#{% if event.venue.name is defined %}#}
-                                                        {#<div class=" place-address">#}
-                                                            {#<span>{{ event.venue.name|striptags }}</span>#}
-                                                        {#</div>#}
-                                                    {#{% else %}#}
-                                                        {#{% if event.location.alias is defined %}#}
-                                                            {#<div class=" place-address">#}
-                                                                {#<span>{{ event.location.alias|striptags }}</span>#}
-                                                            {#</div>#}
-                                                        {#{% endif %}#}
-                                                    {#{% endif %}#}
-
-                                                    {#<button class="btn btn-block btn_invite" type="button" id="fb-invite">#}
-                                                        {#<img alt="" src="/img/demo/btn-m.png">#}
-                                                        {#Invite friends#}
-                                                    {#</button>#}
-                                                    {#<div id="friendsBlock"></div>#}
-                                                    {#<input type="button" value="Invite All" id="fb-invite-all" style="display: none"/>#}
-                                                    {#{% if event.site|length %}#}
-                                                        {#<div class="event-site clearfix">#}
-                                                            {#{% for site in event.site %}#}
-                                                                {#<p>web-site : <a href="val" target="_blank">{{ site.url }}</a></p>#}
-                                                            {#{% endfor %}#}
-                                                        {#</div>#}
-                                                    {#{% endif %}#}
-
-                                                    {#<div class="event-list-category">#}
-
-                                                        {#{% if event.category|length %}#}
-
-                                                            {#{% for cat in event.category %}#}
-                                                                {#<span class=" category-title {{ cat.key }}-title {% if cat.key == 'other' %}uncategorized_label{% endif %}">{{ cat.name }}</span>#}
-                                                            {#{% endfor %}#}
-
-                                                            {#&#123;&#35;--------- comment tags#}
-
-                                                            {#<div class="sub_category clearfix">#}
-                                                               {#<div>#}
-                                                                   {#<a href="#"><span>pop rock</span></a>#}
-                                                               {#</div>#}
-                                                               {#<div>#}
-                                                                   {#<a href="#"><span>new album</span></a>#}
-                                                               {#</div>#}
-                                                               {#<div>#}
-                                                                   {#<a href="#"><span>event of the year 2014</span></a>#}
-                                                               {#</div>#}
-                                                            {#</div>#}
-                                                            {#<a href="#" class="show-all">show all tags</a>#}
-                                                            {#&#35;&#125;#}
-
-                                                            {#{% if event.category.getFirst().key == 'other' %}#}
-                                                                {#<span class="btn btn-block suggest-btn" id="suggestCategoryBtn"title="Suggest Category">Suggest Category</span>#}
-                                                                {#<ul id="suggestCategoriesBlock"  class="select-category">#}
-                                                                    {#{% for index, node in categories %}#}
-                                                                        {#<li><a data-catkey="{{ node['key'] }}" href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>#}
-                                                                    {#{% endfor %}#}
-                                                                {#</ul>#}
-                                                            {#{% endif %}#}
-                                                        {#{% else %}#}
-                                                            {#<span class="btn btn-block suggest-btn uncategorized_label" id="suggestCategoryBtn" >Suggest category</span>#}
-
-                                                            {#&#123;&#35;<span class="btn" id="suggestCategoryBtn" title="Suggest Category">?</span>&#35;&#125;#}
-                                                            {#<ul id="suggestCategoriesBlock"  class="select-category">#}
-                                                                {#{% for index, node in categories %}#}
-                                                                    {#<li><a href="/suggest-event-category/{{ event.id }}/{{ node['id'] }}" style="color: #ffffff; display: block">{{ node['name'] }}</a></li>#}
-                                                                {#{% endfor %}#}
-                                                            {#</ul>#}
-                                                        {#{% endif %}#}
-                                                    {#</div>#}
-
-                                                    {#{% if event.fb_uid is defined %}#}
-                                                        {#<div class="event-site clearfix">#}
-                                                            {#<a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">Facebook link</a>#}
-                                                        {#</div>#}
-                                                    {#{% endif %}#}
-
-                                                {#</div>#}
-                                            {#</div>#}
-                                        {#</div>#}
-                                    {#</div>#}
-                                {#</div>#}
-
-
-
-                                </div>
+                            </div>
                         </div>
 
                             {% include 'layouts/sharebar.volt' %}
@@ -464,7 +305,6 @@
                                         <div style="height: 20px"></div>
                                     {% else %}
                                         <fb:comments href="http://dev.eventweekly.com/{{ toSlugUri(event.name) }}-{{ event.id }}"></fb:comments>
-                                        {#<div id="fb-comments-block" class="fb-comments" data-href="http://dev.eventweekly.com/{{ toSlugUri(event.name) }}-{{ event.id }}" data-numposts="2" data-colorscheme="light"></div>#}
                                     {% endif %}
                                 </div>
                             </div>

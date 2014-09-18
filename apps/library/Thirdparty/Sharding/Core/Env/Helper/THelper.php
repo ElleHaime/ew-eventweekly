@@ -107,6 +107,36 @@ trait THelper
 		
 		return $this;
 	}
+	
+	
+	/**
+	 * Set shard
+	 *
+	 * @param array $criteria
+	 * @access public
+	 */
+	public function setShard($params)
+	{
+		self::$targetShardCriteria = true;
+
+		if (isset($params['conneciton']) && !empty($params['connection'])) {
+			$this -> destinationDb = $params['connection'];
+		} else {
+			$this -> destinationDb = $this -> app -> getMasterConnection();
+		}
+		if (isset($params['source']) && !empty($params['source'])) { 
+			$this -> destinationTable = $params['source'];
+			
+			$this -> setDestinationSource();
+			$this -> setReadDestinationDb();
+			$this -> setWriteDestinationDb();
+			
+			return $this;
+		} else {
+			return false;
+		}
+	}
+	
 
 	
 	/**
@@ -159,7 +189,7 @@ trait THelper
 		if ($this -> modeStrategy) {
 			$shards = $this -> modeStrategy -> selectAllShards();
 		} 
-_U::dump($shards);
+
 		return $shards;
 	}
 	

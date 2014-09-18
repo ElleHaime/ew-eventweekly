@@ -32,25 +32,26 @@ $config =
 				]
 			],
 			'relations' => [
-				'EventSite' => [
-					'namespace' => '\Frontend\Models',
-					'baseTable' => 'event_site',
-					'baseTablePrefix' => 'event_site_',
-				],
 				'EventImage' => [
 					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_image',
-					'baseTablePrefix' => 'event_image_'
+					'baseTablePrefix' => 'event_image_',
+					'relationType' => 'many',
+					'relationName' => 'image',
 				],
 				'EventTag' => [
 					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_tag',
 					'baseTablePrefix' => 'event_tag_',
+					'relationType' => 'manyToMany',
+					'relationName' => 'tag',
 				],
 				'EventCategory' => [
 					'namespace' => '\Frontend\Models',
 					'baseTable' => 'event_category',
 					'baseTablePrefix' => 'event_category_',
+					'relationType' => 'manyToMany',
+					'relationName' => 'category',
 				]
 			],
 			'files' => [

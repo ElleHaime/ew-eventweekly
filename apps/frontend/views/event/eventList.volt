@@ -14,7 +14,7 @@
                         </div>
                     </div>
                     {% if list is defined %}
-                      {% for event in list %}
+                      {% for index, event in list %}
                             {% set disabled = '' %}
                             {% if likedEventsIds is defined %}
                                 {% for likedEventsId in likedEventsIds %}
@@ -32,7 +32,11 @@
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
-                                {% set catLight = event.category.getFirst().key %}
+                            	{% if event.category is defined %}
+                                	{% set catLight = event.category.getFirst().key %}
+                                {% else %}
+                                	{% set catLight = "other" %}
+                                {% endif %}
                             {% endif %}
                             <div class="events-list  {{ catLight }}-category signleEventListElement" 
                             			event-id="{{ event.id }}" 
@@ -130,11 +134,11 @@
                                                         {{ eVenue }}
                                                     </span>
                                                     </div>
-                                                    {% if event.site.url is defined %}
+                                                    {#% if event.site.url is defined %}
                                                         <div class="event-site clearfix">
                                                             <p>web-site : <a href="{{ event.site.url }}">{{ event.site.url }}</a></p>
                                                         </div>
-                                                    {% endif %}
+                                                    {% endif %#}
                                                 {% endif %}
                                             </div>
                                         </div>

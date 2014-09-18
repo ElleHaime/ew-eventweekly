@@ -77,7 +77,6 @@ class Map
 	{
 		$result = $this -> connection -> setTable($this -> entity)
 									  -> fetch();
-_U::dump($result);
 		return $result;
 	}
 	
