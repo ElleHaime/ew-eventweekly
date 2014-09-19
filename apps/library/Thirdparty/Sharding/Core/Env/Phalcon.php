@@ -153,23 +153,63 @@ trait Phalcon
 	
 	
 	/**
-	 * Set shard in models manager
-	 * Use Phalcon\Mvc\Model setSource()
+	 * Set shard in models manager. 
+	 * For search in all shards  
+	 * Use Phalcon\Mvc\Model setModelSource()
 	 *
 	 * @access public
 	 */
 	public function getModelsManager()
 	{
 		$mngr = parent::getModelsManager();
+		
 		$mngr -> __destruct();
 		$mngr -> setModelSource($this, $this -> destinationTable);
 		
 		return $mngr;
-	} 
+	}
+
+	
+	/**
+	 * Override 'magic' Phalcon\Mvc\Model __get(). Return related records using 
+	 * the relation alias as a property 
+	 * If requested property is sharded relation, then return related records using
+	 * from shard table, if not -- from default table of the current proprty. 
+	 * 
+	 * @access public
+	 * @param string $property
+	 * @return false|object property   
+	 */
+	public function __get($property)
+	{
+		$this -> setShardById($this -> id);
+		$parts = explode('_', $this -> destinationTable);
+		$this -> destinationTable = implode('_' . $property . '_', $parts);
+		
+		return parent::__get($property);
+	}
+
+	
+	/**
+	 * Override 'magic' Phalcon\Mvc\Model __isset(). Check if a property is a valid 
+	 * relation
+	 *
+	 * @access public
+	 * @param string $property
+	 * @return boolean
+	 */
+	public function __isset($property)
+	{
+		$this -> setShardById($this -> id);
+		$parts = explode('_', $this -> destinationTable);
+		$this -> destinationTable = implode('_' . $property . '_', $parts);
+	
+		return parent::__isset($property);
+	}
 	
 	
 	/**
-	 * Fucking shame, I'm sorry.
+	 * Fucking shame, I'm sorry. For convertation to sharded structure only.
 	 * Here we fetch parent id for related model. 
 	 */
 	protected function setShardByParent($relation)
@@ -198,25 +238,4 @@ trait Phalcon
 			$this -> setShardByDefault($relation);
 		}
 	}
-	
-	
-	public function __get($property)
-	{
-		$this -> setShardById($this -> id);
-		$parts = explode('_', $this -> destinationTable);
-		$this -> destinationTable = implode('_' . $property . '_', $parts);
-		
-		return parent::__get($property);
-	}
-	
-	
-	public function __isset($property)
-	{
-		$this -> setShardById($this -> id);
-		$parts = explode('_', $this -> destinationTable);
-		$this -> destinationTable = implode('_' . $property . '_', $parts);
-		
-		return parent::__isset($property);
-	}
-	
 }

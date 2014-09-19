@@ -381,7 +381,7 @@ class Event extends EventObject
 	            if ($result -> count() > 0) {
 	            	
 		            if ($fetchType === self::FETCH_ARRAY) {
-		                $result = $this->resultToArray($result);
+		                $result = $this -> resultToArray($result);
 		                $eventsTotal = array_merge($eventsTotal, $result);
 		            } else {
 		            	$eventsTotal[] = $result;

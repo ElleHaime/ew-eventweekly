@@ -489,7 +489,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('categories', $category->getDefaultIdsAsString());
 
        	parent::editAction();
-
+       	
        	$posters = $flyers = $gallery = [];
         if (isset($this->obj->id)) {
             $eventImages = EventImageModel::find('event_id = ' . $id);
