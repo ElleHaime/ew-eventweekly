@@ -61,7 +61,7 @@ trait Phalcon
 				}
 			}
 		}		
-_U::dump('ready');
+die('ready');
 	}
 	
 	
@@ -116,7 +116,7 @@ _U::dump('ready');
 								try {
 									rename($oldPathName, $newPathName);
 								} catch(\Exception $e) {
-									_U::dump('ooooooooooops, can\'t rename folder', true);									
+									echo('ooooooooooops, can\'t rename folder ' . $oldPathName . '<br>');									
 								}
 							}
 						}
@@ -205,6 +205,6 @@ _U::dump('ready');
 			}		
 		}
 		
-_U::dump('this is the end');		
+die('this is the end');		
 	}
 }

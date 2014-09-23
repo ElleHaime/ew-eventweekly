@@ -711,12 +711,13 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-       
+_U::dump($event, true);
         $loc = new Location();
         $venue = new Venue();
         $coords = array();
         $venueId = false;
         $newEvent = array();
+        
         if (!empty($event['id'])) {
             $ev = Event::findFirst($event['id']);
         } else {
@@ -792,12 +793,11 @@ class EventController extends \Core\Controllers\CrudController
 
         $vn = false;
         if ($event['venue_latitude'] != '' || $event['venue_longitude'] != '') {
-            $vn = $venue->createOnChange($venueInfo);
+            $vn = $venue -> createOnChange($venueInfo);
         }
 
-
         if ($vn) {
-            $newEvent['venue_id'] = $vn->id;
+            $newEvent['venue_id'] = $vn -> id;
         } else {
             $newEvent['venue_id'] = '';
         }
@@ -828,13 +828,14 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
 
-        $ev->assign($newEvent);
-        
-        if ($ev->save()) {
-_U::dump(123);        	
+        $ev -> assign($newEvent);
+        $ev -> setShardByCriteria($newEvent['location_id']);
+
+        if ($ev -> save()) {
+_U::dump($ev -> toArray(), true);        	
             // create event dir if not exists
-            if (!is_dir($this->config->application->uploadDir . 'img/event/' . $ev->id)) {
-                mkdir($this->config->application->uploadDir . 'img/event/' . $ev->id);
+            if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
+                mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id);
             }
 
             // start prepare params for FB event
@@ -848,7 +849,6 @@ _U::dump(123);
             if ($newEvent['start_date'] !== $newEvent['end_date']) {
             	$fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
             }
-            
 
             if ($event['venue'] != '') {
                 $fbParams['location'] = $event['venue'];
@@ -896,7 +896,7 @@ _U::dump(123);
             }
 
             // process site
-            $eSites = EventSite::find('event_id = ' . $ev->id);
+            /*$eSites = EventSite::find('event_id = ' . $ev->id);
             if ($eSites) {
                 foreach ($eSites as $es) {
                     $es->delete();
@@ -912,7 +912,7 @@ _U::dump(123);
                         $eSites->save();
                     }
                 }
-            }
+            }*/
 
             // process categories
             $eCats = EventCategory::find('event_id = ' . $ev->id);
@@ -927,12 +927,12 @@ _U::dump(123);
                     if (!empty($value)) {
                         $eCats = new EventCategory();
                         $eCats->assign(array('event_id' => $ev->id,
-                            'category_id' => $value));
+                            				 'category_id' => $value));
                         $eCats->save();
                     }
                 }
             }
-
+_U::dump(123);
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
                 $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
@@ -966,9 +966,7 @@ _U::dump(123);
             if (empty($event['id'])) {
                 $this -> counters -> increaseUserCounter('userEventsCreated');
             }
-        } else {
-_U::dump(321);        	
-        } 
+        }  
 
         if (!empty($event['id'])) {
         	return ['id' => (int)$ev -> id, 'type' => 'update'];

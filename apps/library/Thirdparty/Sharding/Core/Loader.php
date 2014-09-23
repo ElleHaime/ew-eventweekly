@@ -88,7 +88,9 @@ class Loader
 		if ($this -> config -> masterConnection) {
 			$master = $this -> config -> masterConnection;
 		} else {
-			_U::dump('no master connections detected');
+			//_U::dump('no master connections detected');
+			throw new Exception('no master connections detected');
+			return false; 
 		}
 		
 		return $master;	
@@ -109,7 +111,6 @@ class Loader
 		if ($this -> config -> defaultConnection) {
 			$default = $this -> config -> defaultConnection;
 		} else {
-			_U::dump('no master connections detected, search in master', true);
 			$default = $this -> config -> masterConnection;
 		}
 		

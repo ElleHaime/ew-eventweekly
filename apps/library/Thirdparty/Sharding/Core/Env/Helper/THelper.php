@@ -262,6 +262,6 @@ trait THelper
 	 */	
 	public function testIsHere()
 	{
-		_U::dump('yep, your model supports sharding');
+		die('yep, your model supports sharding');
 	}
 }

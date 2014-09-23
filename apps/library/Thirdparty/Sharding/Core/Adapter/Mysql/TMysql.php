@@ -245,4 +245,16 @@ trait TMysql
 		$this -> queryExpr .= ' FROM ' . $this -> queryTable;
 		$this -> processConditions();
 	}
+	
+	
+	public function getShardTable()
+	{
+		return $this -> destinationTable;
+	}
+	
+	
+	public function getShardDb()
+	{
+		return $this -> destinationDb;
+	}
 }

@@ -141,7 +141,7 @@
                                                 </div>
 
                                             </div>
-                                            <div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
+                                            {#<div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
                                                 <input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
                                                 <p>Event web-sites :</p>
                                                 {% if event.site|length %}
@@ -153,7 +153,7 @@
                                                         </div>
                                                     {% endfor %}
                                                 {% endif %}
-                                            </div>
+                                            </div>#}
 
                                             {{ form.render('event_category') }}
 

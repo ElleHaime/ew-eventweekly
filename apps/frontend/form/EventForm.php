@@ -72,7 +72,7 @@ class EventForm extends Form
 									  'class' => 'resizable field-big'));
 
 		$this -> addElement('text', 'event_site', 'Event web site',
-								array('style' => 'display:none;'));   
+								array('style' => 'display:none;'));     
 
 		$this -> addElement('date', 'start_date', 'Start date',
 								array('data-format' => 'dd/MM/yyyy',

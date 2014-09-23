@@ -57,6 +57,7 @@ class Form extends \Phalcon\Forms\Form
 		} else {
 			$element = new $elementClass($name);
 		}
+
 		$element -> setLabel($label);
 		
 		if ($this -> _entity && isset($this -> _entity -> $name)){

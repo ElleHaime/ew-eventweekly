@@ -50,9 +50,9 @@ trait Phalcon
 	public function save($data = NULL, $whiteList = NULL)
 	{
 		if (self::$targetShardCriteria === false) {
-			_U::dump('shard criteria must be setted');
-			/*throw new Exception('shard criteria must be setted');
-			return false; */
+			//_U::dump('shard criteria must be setted');
+			throw new Exception('shard criteria must be setted');
+			return false; 
 		}
 
 		$reflection = new Model($this -> app);
@@ -69,8 +69,9 @@ trait Phalcon
 			}
 		}
 		$newObject = $reflection -> save($reflectionFields, $this -> destinationId);
-
-		return $newObject;		
+		$this -> id = $newObject;
+		
+		return $this;		
 	}
 
 	
@@ -84,7 +85,9 @@ trait Phalcon
 	public static function find($parameters = NULL)
 	{
 		if (self::$targetShardCriteria === false && self::$needTargetShard && !self::$convertationMode) {
-			_U::dump('shard criteria must be setted');
+			//_U::dump('shard criteria must be setted');
+			throw new Exception('shard criteria must be setted');
+			return false;
 		} else {
 			// fetch data from shard
 			$result = parent::find($parameters);
@@ -162,9 +165,11 @@ trait Phalcon
 	public function getModelsManager()
 	{
 		$mngr = parent::getModelsManager();
-		
-		$mngr -> __destruct();
-		$mngr -> setModelSource($this, $this -> destinationTable);
+
+		if (!is_null($this -> id)) {		
+			$mngr -> __destruct();
+			$mngr -> setModelSource($this, $this -> destinationTable);
+		}
 		
 		return $mngr;
 	}
@@ -182,9 +187,11 @@ trait Phalcon
 	 */
 	public function __get($property)
 	{
-		$this -> setShardById($this -> id);
-		$parts = explode('_', $this -> destinationTable);
-		$this -> destinationTable = implode('_' . $property . '_', $parts);
+		if (!is_null($this -> id)) {
+			$this -> setShardById($this -> id);
+			$parts = explode('_', $this -> destinationTable);
+			$this -> destinationTable = implode('_' . $property . '_', $parts);
+		} 
 		
 		return parent::__get($property);
 	}
@@ -200,9 +207,11 @@ trait Phalcon
 	 */
 	public function __isset($property)
 	{
-		$this -> setShardById($this -> id);
-		$parts = explode('_', $this -> destinationTable);
-		$this -> destinationTable = implode('_' . $property . '_', $parts);
+		if (!is_null($this -> id)) {
+			$this -> setShardById($this -> id);
+			$parts = explode('_', $this -> destinationTable);
+			$this -> destinationTable = implode('_' . $property . '_', $parts);
+		} 
 	
 		return parent::__isset($property);
 	}

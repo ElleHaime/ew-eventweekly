@@ -108,7 +108,6 @@ class MysqlWritable extends AdapterAbstractWritable
 					return true;
 				}
 			} catch(\PDOException $e) {
-_U::dump($e -> getMessage(), true);				
 				$this -> errors = $e -> getMessage();
 				$this -> clearQuery();
 				return false;
