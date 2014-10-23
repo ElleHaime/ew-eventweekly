@@ -94,7 +94,7 @@ trait Phalcon
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
-			$items = $obj::find(['limit' => ['number' => 5, 'offset' => 1]]);
+			$items = $obj::find();
 
 			foreach ($items as $e) {
 				$oldId = $e -> $objPrimary;
