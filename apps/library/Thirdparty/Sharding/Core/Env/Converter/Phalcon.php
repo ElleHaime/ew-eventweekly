@@ -61,7 +61,7 @@ trait Phalcon
 				}
 			}
 		}		
-die('ready');
+		die('ready');
 	}
 	
 	
@@ -74,7 +74,7 @@ die('ready');
 		$this -> convertLoader = new Loader(); 
 
 		foreach ($this -> convertLoader -> config -> shardModels as $object => $data) {
-			
+
 			$objRelationScope = [];
 			if ($data -> relations) {
 				foreach ($data -> relations as $relName => $relData) {
@@ -94,7 +94,7 @@ die('ready');
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
-			$items = $obj::find(['limit' => ['number' => 4, 'offset' => 45]]);
+			$items = $obj::find(['limit' => ['number' => 5, 'offset' => 1]]);
 
 			foreach ($items as $e) {
 				$oldId = $e -> $objPrimary;
@@ -111,7 +111,7 @@ die('ready');
 						foreach ($objFileScope as $fileRel => $fileData) {
 							if (is_dir($fileData -> path . DIRECTORY_SEPARATOR . $oldId)) {
 								$oldPathName = $fileData -> path . DIRECTORY_SEPARATOR . $oldId;
-								$newPathName = str_replace(DIRECTORY_SEPARATOR . $oldId, DIRECTORY_SEPARATOR . $newObj, $oldPathName);
+								$newPathName = str_replace(DIRECTORY_SEPARATOR . $oldId, DIRECTORY_SEPARATOR . $newObj -> id, $oldPathName);
 
 								try {
 									rename($oldPathName, $newPathName);
@@ -131,7 +131,7 @@ die('ready');
 								
 							if ($relations) {
 								foreach ($relations as $obj) {
-									$obj -> $relField = $newObj;
+									$obj -> $relField = $newObj -> id;
 									$obj -> update();
 								}
 							}
@@ -139,6 +139,7 @@ die('ready');
 					}
 					
 					$hasManyRelations = $e -> getModelsManager() -> getHasMany(new $objName);
+					
 					if (!empty($hasManyRelations)) {
 						foreach ($hasManyRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
@@ -148,13 +149,13 @@ die('ready');
 							if (array_key_exists($relModel, $objRelationScope)) {
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
-										
-								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
+																		
+								$relations = $dest::find($relField . ' = "' . $oldId . '"');
 								if ($relations) {
 									foreach ($relations as $relObj) {
-										$relObj -> $relField = $newObj;
+										$relObj -> $relField = $newObj -> id;
 										$relObj -> setConvertationMode(false);
-										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
+										$relObj -> setShardByParentId($newObj -> id, $objRelationScope[$relModel]);
 										$relObj -> save();
 									}
 								}
@@ -162,7 +163,7 @@ die('ready');
 								$relations = $e -> $relOption['alias'];
 								if ($relations) {
 									foreach ($relations as $obj) {
-										$obj -> $relField = $newObj;
+										$obj -> $relField = $newObj -> id;
 										$obj -> update();
 									}
 								}
@@ -171,6 +172,7 @@ die('ready');
 					} 
 	
 					$hasManyToManyRelations = $e -> getModelsManager() -> getHasManyToMany(new $objName);
+					
 					if (!empty($hasManyToManyRelations)) {
 						foreach ($hasManyToManyRelations as $index => $rel) {
 							$relOption = $rel -> getOptions();
@@ -181,20 +183,20 @@ die('ready');
 								$dest = new $relModel;
 								$dest -> setConvertationMode();
 
-								$relations = $dest::find($relField . ' = "' . $e -> $objPrimary . '"');
+								$relations = $dest::find($relField . ' = "' . $oldId . '"');
 								if ($relations) {
 									foreach ($relations as $relObj) {
-										$relObj -> $relField = $newObj;
+										$relObj -> $relField = $newObj -> id;
 										$relObj -> setConvertationMode(false);
-										$relObj -> setShardByParentId($newObj, $objRelationScope[$relModel]);
+										$relObj -> setShardByParentId($newObj -> id, $objRelationScope[$relModel]);
 										$relObj -> save();
 									}
 								}
 							} else {
-								$relations = $relModel::find($relField . ' = ' . $e -> $objPrimary);
+								$relations = $relModel::find($relField . ' = ' . $oldId);
 								if ($relations) {
 									foreach ($relations as $obj) {
-										$obj -> $relField = $newObj;
+										$obj -> $relField = $newObj -> id;
 										$obj -> update();
 									}
 								}
@@ -205,6 +207,6 @@ die('ready');
 			}		
 		}
 		
-die('this is the end');		
+		die('this is the end');		
 	}
 }

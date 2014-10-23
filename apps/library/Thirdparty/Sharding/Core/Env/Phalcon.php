@@ -50,8 +50,7 @@ trait Phalcon
 	public function save($data = NULL, $whiteList = NULL)
 	{
 		if (self::$targetShardCriteria === false) {
-			//_U::dump('shard criteria must be setted');
-			throw new Exception('shard criteria must be setted');
+			throw new \Exception('shard criteria must be setted');
 			return false; 
 		}
 
@@ -85,8 +84,7 @@ trait Phalcon
 	public static function find($parameters = NULL)
 	{
 		if (self::$targetShardCriteria === false && self::$needTargetShard && !self::$convertationMode) {
-			//_U::dump('shard criteria must be setted');
-			throw new Exception('shard criteria must be setted');
+			throw new \Exception('shard criteria must be setted');
 			return false;
 		} else {
 			// fetch data from shard
@@ -166,7 +164,7 @@ trait Phalcon
 	{
 		$mngr = parent::getModelsManager();
 
-		if (!is_null($this -> id)) {		
+		if (!is_null($this -> id) && !self::$convertationMode) {
 			$mngr -> __destruct();
 			$mngr -> setModelSource($this, $this -> destinationTable);
 		}
@@ -187,7 +185,7 @@ trait Phalcon
 	 */
 	public function __get($property)
 	{
-		if (!is_null($this -> id)) {
+		if (!is_null($this -> id) && !self::$convertationMode) {
 			$this -> setShardById($this -> id);
 			$parts = explode('_', $this -> destinationTable);
 			$this -> destinationTable = implode('_' . $property . '_', $parts);
@@ -207,7 +205,7 @@ trait Phalcon
 	 */
 	public function __isset($property)
 	{
-		if (!is_null($this -> id)) {
+		if (!is_null($this -> id) && !self::$convertationMode) {
 			$this -> setShardById($this -> id);
 			$parts = explode('_', $this -> destinationTable);
 			$this -> destinationTable = implode('_' . $property . '_', $parts);

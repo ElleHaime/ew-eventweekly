@@ -256,6 +256,18 @@ trait THelper
 		self::$convertationMode = $mode;
 	}
 	
+
+	public function getShardTable()
+	{
+		return $this -> destinationTable;	
+	}
+	
+	
+	public function getShardDb()
+	{
+		return $this -> destinationDb;
+	}
+	
 	
 	/**
 	 *  Just test, nothing else
