@@ -89,13 +89,18 @@ trait Phalcon
 			}
 			
 			$objName = $data -> namespace . '\\' . $object;
+			$objTableName = $data -> baseTable;
 			$objPrimary = $data -> primary;
 			$objCriteria = $data -> criteria;
 			$obj = new $objName;
 			
 			$obj -> setConvertationMode();
 			$items = $obj::find();
-
+			//$items = $obj -> getModelsManager() -> executeQuery('SELECT * FROM ' . $objName);
+			/*$conn = $obj -> getReadConnection();
+			$read = $conn -> query('SELECT * FROM ' . $objTableName);
+			$items = $read -> fetchAll(); */
+//_U::dump($items -> count());
 			foreach ($items as $e) {
 				$oldId = $e -> $objPrimary;
 				
