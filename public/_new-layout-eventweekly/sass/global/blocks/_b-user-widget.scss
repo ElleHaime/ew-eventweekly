@@ -1,0 +1,58 @@
+.b-user-widgets-container {
+	margin-left: -1.6%;
+
+}
+
+.b-user-widget {
+	float:left;
+	padding: 0 0 0 1.6%;
+
+	&__wrapper {
+		@include border-radius(2px);
+		padding: 20px;
+		background: #262626;	
+	}
+
+	&__title {
+		font-family: "Open Sans";
+		font-weight: 600;
+		font-size: 18px;
+		color: #ccc;
+		margin: 0 0 20px 0;
+		padding-bottom: 20px;
+		border-bottom: 1px solid #3D3D3D;
+	}
+
+	&__list {
+		&--invitations-list {
+			li {
+				&:before {
+					@extend .fa;
+					@extend .fa-hand-o-right;
+					color:#B36916;
+					font-size: 17px;
+					margin-right: 10px;
+				}
+			}
+		}
+
+		&--most-popular {
+			li {
+				&:before {
+					@extend .fa;
+					@extend .fa-star;
+					color:#B36916;
+					font-size: 17px;
+					margin-right: 10px;
+				}
+			}	
+		}
+
+		li {
+			margin-bottom: 15px;
+			font-size: 14px;
+		}
+	}
+
+
+}

@@ -1,0 +1,52 @@
+.page-event {
+
+
+	&__content {
+		@include border-radius(2px);
+		padding: 20px;
+		background: #404040;
+		font-family: "Open Sans";
+		font-size: 14px;
+	}
+
+	&__description {
+		p {
+			line-height: 25px;
+			margin-bottom: 25px;
+		}
+		
+	}
+
+	&__wrapper {
+		margin-bottom: 40px;
+	}
+
+	.b-gallery {
+		margin-bottom: 20px;
+	}
+
+	.upcoming-events {
+		@include border-radius(2px);
+		margin: 20px 0;
+		padding: 20px;
+		background: #404040;
+
+		&__title {
+			font-family: "Open Sans";
+			font-weight: 600;
+			font-size:18px;
+			color:#CCCCCC;
+			margin: 0;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #545454;
+		}
+	}
+
+	.layout__right {
+		padding: 0 0 0 1.6%;
+	}
+}
+
+
+@import 'blocks/short-info';
+@import 'blocks/widgets';

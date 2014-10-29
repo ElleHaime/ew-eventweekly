@@ -1,0 +1,581 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>EventWeekly</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+
+		<link rel="stylesheet" href="css/style.css" />
+		<!-- libraries -->
+		<link rel="stylesheet" href="libs/idangerous.swiper/idangerous.swiper.min.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap-theme.css" />
+
+
+	</head>
+	<body>
+
+	<!-- Header -->
+		<header id="header">
+
+			<div class="top-line">
+				<div class="container">
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">300 events</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">Lorem</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">Dolorsit</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__button">
+							<i class="fa fa-plus"></i> Add event
+						</a>
+					</div>
+
+					<div class="user-bar">
+						<div class="dropdown">
+							<!-- button -->
+							<a id="js-userBarDropDown" data-toggle="dropdown">
+								<img src="content/bigstock-Handsome-Young-Man-Smiling-Out-41158732.png" 
+								class="user-bar__avatar" alt="John Dou" />
+								<span class="user-bar__username">John Dou</span> <span class="caret"></span>
+							</a>
+							
+							<!-- dropdown -->
+							<ul class="dropdown-menu" role="menu" aria-labelledby="js-userBarDropDown">
+								<li>
+									<a role="menuitem"  tabindex="-1" href="#">Settings</a>
+								</li>
+								<li>
+									<a role="menuitem" tabindex="-1" href="#">Logout</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+
+			<div class="middle-bg">
+				<h1>
+					<a class="logo" href="/"><strong>Event</strong>Weekly</a>
+				</h1>
+			</div>
+
+			<div class="filters">
+				<div class="container">
+						<div class="filters-form">
+							<!-- search by event name -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-search"></i>
+								<input name="event_name" class="filters-form__input" placeholder="Event or venue...">
+							</div>
+							<!-- search by location -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-map-marker"></i>
+								<input name="event_location" class="filters-form__input" placeholder="Dublin">
+							</div>
+							<!-- events dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-glass"></i>
+										Events <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Event</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">Venues</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<!-- datetime dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" id="js-selectDateTime">
+								  	<i class="fa fa-calendar"></i>
+								  	22 Sep
+								  </a>
+								</div>
+							</div>
+							<!-- map dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-globe"></i>
+										Map <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Map</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">List</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="filters-form__item filters-form__divider"></div>
+
+							<div class="filters-form__item">
+								<button href="#" class="filters-form__button">Show results</button>
+							</div>
+
+						</div>
+
+				</div>
+			</div>
+
+		</header>
+
+		<section id="content" class="container page page-event col-2">
+
+			<!-- breadcrumbs -->
+			<!-- https://support.google.com/webmasters/answer/185417 -->
+			<nav class="breadcrumbs">
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/" itemprop="url" rel="index">
+						<span itemprop="title">Home</span>
+					</a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books" 
+					itemprop="url"><span itemprop="title">Books</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books/authors" 
+					itemprop="url"><span itemprop="title">Authors</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books/authors/stephen-king" 
+					itemprop="url"><span itemprop="title">Stephen King</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<strong>The Shining</strong>
+			</nav>
+
+			<h1 class="page__title">Mumford & Sons first time in Dublin</h1>
+
+			<div class="page-event__wrapper">
+				<div class="layout__left pure-u-3-8">
+					<div class="short-info">
+					<!-- pic -->
+						<div class="short-info__picture">
+							<img src="content/mumford_and_sons.jpg" alt="Mumford & Sons first time in Dublin">
+						</div>
+
+					<!-- category -->
+						<div class="short-info__item">
+							<i class="fa fa-microphone"></i> Music, Rock
+						</div>
+
+					<!-- date -->
+						<div class="short-info__item">
+							<i class="fa fa-calendar"></i> 
+							<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+						</div>
+
+					<!-- map -->
+						<div class="short-info__item">
+
+							<ul class="contact-info">
+								<li class="contact-info__item">
+									<i class="fa fa-map-marker"></i>
+									<div class="contact-info__text">
+										<p>Mauris et viverra turpis, eu facilisis lorem. 
+										Praesent dapibus, nunc ac et viverra turpis.</p>
+										<p>+363 (0) 856 7896, +363 (0) 856 7896</p>
+										
+									</div>
+								</li>
+								<li class="contact-info__item">
+									<i class="fa fa-envelope"></i>
+									<div class="contact-info__text">dolorsitamet@lorem.com</div>
+								</li>
+								<li class="contact-info__item">
+									<i class="fa fa-globe"></i>
+									<div class="contact-info__text"><a href="#">loremipsum.com</a></div>
+								</li>
+							</ul>
+							 
+
+							<div class="map">
+								<div class="map__picture">
+									<a href="#"><img src="content/Map.png" alt="Map"></a>
+								</div>
+								<div class="actions">
+									<a href="#" class="layout__left actions__link-view">View large map</a>
+									<a href="#" class="layout__right actions__link-report">Report wrong location</a>
+								</div>
+							</div>
+
+							<div class="clearfix"></div>					
+						</div>
+
+					<!-- location -->
+						<div class="short-info__item">
+							<p>EVENT HOST: Mauris et viverra turpis, eu facilisis lorem. Praesent dapibus, 
+							nunc et viverra.</p>
+							<p>+363 (0) 856 7896, +363 (0) 856 7896</p>
+							<p><a href="#">loremipsum.com</a></p>
+						</div>
+
+					<!-- actions buttons  -->
+						<div class="actions">
+							<div class="actions__button pure-u-1-2">
+								<a href="#" class="ew-button">
+									<i class="fa fa-arrow-circle-right"></i> Join
+								</a>
+							</div>
+							<div class="actions__button pure-u-1-2">
+								<a href="#" class="ew-button">
+									<i class="fa fa-thumbs-o-up"></i> Like
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="layout__right pure-u-5-8">
+
+					<div class="page-event__content">
+
+						<div class="b-gallery">
+			                <!-- slider navigation arrows -->
+			                <a class="b-gallery__arrow b-gallery__arrow--prev js-b-gallery-arrow-prev">
+			                	<i class="fa fa-chevron-left"></i>
+			                </a>
+			                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next">
+			                	<i class="fa fa-chevron-right"></i>
+			                </a>
+
+			                <!-- slides container -->
+							<div class="js-b-gallery-slider">
+								<div class="b-gallery__item js-b-gallery-slider-slide">
+									<img src="content/Copan-Stairs-Front-Bar.jpg" alt="Photo 1">
+								</div>
+								<div class="b-gallery__item js-b-gallery-slider-slide">
+									<img src="content/i7adlk.jpg" alt="Photo 2">
+								</div>
+								<div class="b-gallery__item js-b-gallery-slider-slide">
+									<img src="content/tumblr_ld9upkqHDq1qbz91u.png" alt="Photo 3">
+								</div>
+							</div>
+						</div>
+
+						<div class="page-event__description">
+							
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent venenatis neque lorem, 
+							eu tincidunt odio scelerisque a. Etiam at finibus ipsum, eget luctus ex. Nullam vel 
+							lacinia ipsum, sit amet pretium metus. Phasellus sollicitudin nulla nec enim feugiat 
+							finibus. Aliquam vestibulum elit erat, sed vehicula arcu hendrerit sed. Sed viverra 
+							fermentum lectus. Cras maximus nulla vel metus ornare, quis aliquam nisi scelerisque.</p>
+
+							<p>Nunc hendrerit aliquam purus. Donec vitae risus erat. Maecenas bibendum lorem sed ipsum 
+							vestibulum ultrices. Nunc egestas ligula nec nisi ornare, nec ullamcorper diam lobortis. 
+							Mauris rutrum a velit id commodo. In ullamcorper, urna quis aliquam semper, risus 
+							neque finibus urna, vel hendrerit erat ipsum vitae justo. Nunc in tincidunt libero, 
+							non rutrum orci. Aenean ultrices sagittis lacus ut ultrices. Cras dictum pretium suscipit. 
+							Vivamus sed sem eget elit euismod volutpat sit amet ac neque. Vestibulum sed odio erat. 
+							Quisque a eros vel nibh bibendum varius ac quis turpis. Sed scelerisque, nulla 
+							non pulvinar euismod, sapien tellus tempor turpis, sit amet vulputate 
+							ligula eros quis ligula.</p>
+
+							<p>Morbi volutpat ipsum ornare ligula aliquam, id dictum augue dictum. Phasellus 
+							feugiat nibh nisi, vitae scelerisque ante lacinia et. Suspendisse ut eleifend lectus. 
+							Integer ac est consequat, ultricies leo nec, molestie sapien. Pellentesque laoreet 
+							fringilla sapien eget viverra. In hac habitasse platea dictumst. Duis nec turpis 
+							sit amet risus lobortis laoreet.</p>
+
+							<p>Mauris tempor metus ante, vel sollicitudin nunc vulputate non. Ut viverra dolor diam, a 
+							convallis elit tempor ut. Duis at lacus pellentesque, volutpat nunc a, tristique urna. 
+							Proin vestibulum diam quis turpis pellentesque, sed molestie dui luctus. Vestibulum metus 
+							lacus, malesuada non aliquet at, vulputate eget metus. Vestibulum id nunc pretium, lobortis 
+							purus ac, tristique arcu. Aliquam id ipsum at enim placerat euismod eget a magna. Donec 
+							vulputate rhoncus ante sed mollis. Donec semper magna sit amet rutrum auctor. Class aptent 
+							taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
+
+							<p>Sed eget est sollicitudin, aliquet nisi in, pharetra enim. Vestibulum lobortis faucibus 
+							placerat. Suspendisse auctor risus nec augue maximus, in lacinia lectus dignissim. 
+							Proin feugiat maximus dolor, et bibendum velit sagittis nec. Cras eu purus dignissim, 
+							convallis enim feugiat, egestas mi. Nunc elementum id ante ac eleifend. Duis aliquam lacus 
+							in nisi euismod, nec elementum purus cursus. Suspendisse tincidunt risus vitae faucibus 
+							convallis.</p>
+
+							<p>Love 
+								<a href="https://www.facebook.com/groups/lovepeacemeditation/196452103887959/?notif_t=like">
+								https://www.facebook.com/groups/lovepeacemeditation/196452103887959/?notif_t=like
+								</a>
+								<br>
+								My Face for Peace 
+								<a href="https://www.facebook.com/MyFaceForPeace">
+								https://www.facebook.com/MyFaceForPeace
+								</a>
+								<br>
+								World Peace Is Possible 
+								<a href="https://www.facebook.com/laatpeac">https://www.facebook.com/laatpeac</a>
+								<br>
+								Global Coherence Initiative 
+								<a href="http://www.glcoherence.org/">http://www.glcoherence.org/</a>
+							</p>
+						</div>
+					</div>
+
+					<div class="upcoming-events">
+						<h3 class="upcoming-events__title">Upcoming Events</h3>
+						<!-- item -->
+						<div class="b-list-of-events-l__item">
+							<div class="b-list-of-events-l__picture pure-u-1-3">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+							</div>				
+							<div class="b-list-of-events-l__info pure-u-2-3">
+								<h2 class="b-list-of-events-l__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party</a>
+								</h2>
+
+								<div class="b-list-of-events-l__date">
+									<time datetime="2014-09-19">September 19, 2014</time>
+								</div>
+
+								<div class="b-list-of-events-l__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditation, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer across the world; Meditation helps to deepen
+									</p>
+								</div>
+
+								<div class="footer">
+									<div class="footer__item"><i class="fa fa-ticket"></i> Tickets: $100-$200</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-ticket"></i> Buy ticket</a>
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+
+						</div>
+						<!-- item end -->
+						<div class="clearfix"></div>
+
+
+
+						<!-- item -->
+						<div class="b-list-of-events-l__item">
+							<div class="b-list-of-events-l__picture pure-u-1-3">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+							</div>				
+							<div class="b-list-of-events-l__info pure-u-2-3">
+								<h2 class="b-list-of-events-l__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party</a>
+								</h2>
+
+								<div class="b-list-of-events-l__date">
+									<time datetime="2014-09-19">September 19, 2014</time>
+								</div>
+
+								<div class="b-list-of-events-l__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditation, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer across the world; Meditation helps to deepen
+									</p>
+								</div>
+
+								<div class="footer">
+									<div class="footer__item footer__item--non-active">
+										<i class="fa fa-ticket"></i> Free entry
+									</div>
+									<div class="footer__item footer__item--non-active">
+										<i class="fa fa-retweet"></i> Non-recurring event
+									</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-ticket"></i> Buy ticket</a>
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+
+						</div>
+						<!-- item end -->
+						<div class="clearfix"></div>
+
+
+					</div>
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="b-user-widgets-container">
+
+				<div class="b-user-widget pure-u-1-3">
+					<div class="b-user-widget__wrapper">
+						<h3 class="b-user-widget__title">2 events invitations</h3>
+						<div class="b-user-widget__text">
+							<ul class="b-user-widget__list b-user-widget__list--invitations-list">
+								<li><a href="#">International comedy club</a></li>
+								<li><a href="#">Oxygen</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="b-user-widget pure-u-1-3">
+					<div class="b-user-widget__wrapper">
+						<h3 class="b-user-widget__title">Most popular events from friends</h3>
+						<div class="b-user-widget__text">
+							<ul class="b-user-widget__list b-user-widget__list--most-popular">
+								<li><a href="#">International comedy club</a></li>
+								<li><a href="#">Oxygen</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="b-user-widget pure-u-1-3">
+					<div class="b-user-widget__wrapper">
+						<h3 class="b-user-widget__title">Most popular events from friends</h3>
+						<div class="b-user-widget__text">
+							<ul class="b-user-widget__list b-user-widget__list--most-popular">
+								<li><a href="#">International comedy club</a></li>
+								<li><a href="#">Oxygen</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+								<li><a href="#">Lorem ipsum dolor</a></li>
+								<li><a href="#">Sit amet dictum enim est</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+
+			</div>
+		</section>
+
+		<aside>
+			
+		</aside>
+			
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<div class="widgets">
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Follow us</h3>
+							<div class="widget__text">
+								<ul class="social">
+									<li class="social__item">
+										<a href="#"><i class="fa fa-twitter-square"></i>Twitter</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-facebook-square"></i>Facebook</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-rss-square"></i>RSS</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+					<!-- end .widgets -->
+				</div>
+			</footer>
+
+	<!-- libraries -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="libs/idangerous.swiper/idangerous.swiper.min.js"></script>
+	<script src="libs/bootstrap/bootstrap.js"></script>
+
+	<!-- js -->
+	<script src="src/pages/event.js"></script>
+
+
+	</body>
+</html>

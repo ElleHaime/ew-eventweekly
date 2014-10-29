@@ -1,0 +1,88 @@
+#header {
+
+	.top-line {
+		position: relative;
+		display: block;
+		margin: 0;
+		font-family: "Open Sans";
+		font-size: 14px;
+		font-weight: 300;
+		text-align: center;
+		background: #262626;
+
+		.container {
+			position: relative;
+		}
+
+		&__item {
+			display: inline-block;
+			color:#fff;
+			padding: 10px 15px;
+
+			strong {
+				font-weight: 600;
+				color:#F7931E;
+			}
+
+			&--divider {
+				border-left: 1px solid #7D7D7D;
+			}
+
+			&--text {
+				padding-left: 0;
+				padding-right: 0;
+			}
+
+		}
+
+		&__button{
+			@include border-radius(4px);
+			display: inline-block;
+			padding: 10px 15px;
+			color:#F7931E;
+			text-decoration: none;
+			border: 1px solid #A86313;
+
+			i {
+				margin-right: 8px;
+			}
+		}
+
+		&__link {
+			display: inline-block;
+			color: $color-link;
+		}
+	}
+
+
+
+	.middle-bg {
+		padding: 5px 0;
+		background: #F7931E url(../i/bg-header.png) bottom left;
+		text-align: center;
+		border: 4px solid #A85E05;
+		border-left: 0;
+		border-right: 0;
+	}
+
+		.logo {
+			font-family: "PF Agora Slab Pro Light";
+			font-size:50px;
+			font-weight: 300;
+			text-align: center;
+			text-decoration: none;
+			text-shadow: 2px 2px 0px #B56620;
+			color:#fff;
+
+			strong {
+				font-family: "PF Agora Slab Pro Medium";	
+				font-weight: 300;
+
+			}
+		}
+
+
+		@import 'header/filters';
+		@import 'header/user-bar';
+}
+

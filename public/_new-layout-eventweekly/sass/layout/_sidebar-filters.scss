@@ -1,0 +1,45 @@
+.sidebar-filters {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 390px;
+	height: 100%;
+	padding: 10px 0 30px;
+	background: #262626;
+	z-index: 100;	
+	overflow: scroll;
+}
+
+// Open/Close Link
+// 
+.ew-filter-link {
+	position: fixed;
+	top: 258px;
+	left: 0;
+	z-index: 100;
+	
+	&--is-open {
+		left: 390px;
+	}
+
+	a {
+		@include box-sizing('content-box');
+		display: inline-block;
+		padding: 13px 10px;
+		background: #A15F14;
+		text-align: center;
+		font-size: 0;
+		vertical-align: middle;
+
+		&:before {
+			@extend .fa;
+			@extend .fa-filter;		
+			font-size: 26px;	
+			color:#fff;
+		}
+
+	}
+}
+
+
+

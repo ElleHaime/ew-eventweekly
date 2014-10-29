@@ -1,0 +1,642 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>EventWeekly</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+
+		<link rel="stylesheet" href="css/style.css" />
+		<!-- libraries -->
+		<link rel="stylesheet" href="libs/idangerous.swiper/idangerous.swiper.min.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap-theme.css" />
+
+
+	</head>
+	<body>
+
+	<!-- Header -->
+		<header id="header">
+
+			<div class="top-line">
+				<div class="container">
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">300 events</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">Lorem</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__link">Dolorsit</a>
+					</div>
+
+					<div class="top-line__item">
+						<a href="#" class="top-line__button">
+							<i class="fa fa-plus"></i> Add event
+						</a>
+					</div>
+
+					<div class="user-bar">
+						<div class="dropdown">
+							<!-- button -->
+							<a id="js-userBarDropDown" data-toggle="dropdown">
+								<img src="content/bigstock-Handsome-Young-Man-Smiling-Out-41158732.png" 
+								class="user-bar__avatar" alt="John Dou" />
+								<span class="user-bar__username">John Dou</span> <span class="caret"></span>
+							</a>
+							
+							<!-- dropdown -->
+							<ul class="dropdown-menu" role="menu" aria-labelledby="js-userBarDropDown">
+								<li>
+									<a role="menuitem"  tabindex="-1" href="#">Settings</a>
+								</li>
+								<li>
+									<a role="menuitem" tabindex="-1" href="#">Logout</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+
+			<div class="middle-bg">
+				<h1>
+					<a class="logo" href="/"><strong>Event</strong>Weekly</a>
+				</h1>
+			</div>
+
+			<div class="filters">
+				<div class="container">
+						<div class="filters-form">
+							<!-- search by event name -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-search"></i>
+								<input name="event_name" class="filters-form__input" placeholder="Event or venue...">
+							</div>
+							<!-- search by location -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-map-marker"></i>
+								<input name="event_location" class="filters-form__input" placeholder="Dublin">
+							</div>
+							<!-- events dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-glass"></i>
+										Events <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Event</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">Venues</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<!-- datetime dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" id="js-selectDateTime">
+								  	<i class="fa fa-calendar"></i>
+								  	22 Sep
+								  </a>
+								</div>
+							</div>
+							<!-- map dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-globe"></i>
+										Map <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Map</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">List</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="filters-form__item filters-form__divider"></div>
+
+							<div class="filters-form__item">
+								<button href="#" class="filters-form__button">Show results</button>
+							</div>
+
+						</div>
+
+				</div>
+			</div>
+
+		</header>
+
+		<section id="content" class="container page page-search">
+
+			<!-- breadcrumbs -->
+			<!-- https://support.google.com/webmasters/answer/185417 -->
+			<nav class="breadcrumbs">
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/" itemprop="url" rel="index">
+						<span itemprop="title">Home</span>
+					</a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books" 
+					itemprop="url"><span itemprop="title">Books</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books/authors" 
+					itemprop="url"><span itemprop="title">Authors</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
+					<a href="http://www.example.com/books/authors/stephen-king" 
+					itemprop="url"><span itemprop="title">Stephen King</span></a>
+				</span>
+
+				<span class="breadcrumbs__divider">::</span>
+
+				<strong>The Shining</strong>
+			</nav>
+
+			<h1 class="page__title">Music events in Dublin</h1>
+			<div class="page__sort"></div>
+
+			<div class="page-search__wrapper">
+			<!-- start container with events -->
+				<div class="b-list-of-events-g">
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations.</p>
+								</div>
+
+
+								<div class="footer">
+									<div class="footer__item">
+										<i class="fa fa-ticket"></i> Tickets: $100-$200
+									</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" class="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" class="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer and prayer and prayer across the world; 
+									Meditation helps you to deepen prayer across the world...</p>
+								</div>
+
+
+								<div class="footer">
+								<!--  add class 'footer__item--non-active' if tickets for event for free -->
+									<div class="footer__item footer__item--non-active">
+										<i class="fa fa-ticket"></i> Free Entry
+									</div>
+									<div class="footer__item footer__item--non-active"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<!-- <a href="#" class="ew-button"><i class="fa fa-ticket"></i> Buy ticket</a> -->
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer and prayer and prayer across the world; 
+									Meditation helps you to deepen prayer across the world...</p>
+								</div>
+
+
+								<div class="footer">
+									<div class="footer__item">
+										<i class="fa fa-ticket"></i> Tickets: $100-$200
+									</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+					<!-- after each 3 items -->
+					<div class="clearfix"></div>
+
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer and prayer and prayer across the world; 
+									Meditation helps you to deepen prayer across the world...</p>
+								</div>
+
+
+								<div class="footer">
+									<div class="footer__item">
+										<i class="fa fa-ticket"></i> Tickets: $100-$200
+									</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" class="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" class="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer and prayer and prayer across the world; 
+									Meditation helps you to deepen prayer across the world...</p>
+								</div>
+
+
+								<div class="footer">
+								<!--  add class 'footer__item--non-active' if tickets for event for free -->
+									<div class="footer__item footer__item--non-active">
+										<i class="fa fa-ticket"></i> Free Entry
+									</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<!-- <a href="#" class="ew-button"><i class="fa fa-ticket"></i> Buy ticket</a> -->
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+					<!-- item -->
+					<div class="b-list-of-events-g__item pure-u-1-3">
+						<div class="b-list-of-events-g__wrapper">
+							<div class="b-list-of-events-g__picture">
+								<a href="#">
+									<img src="content/fb_572652532782607.jpg" alt="Big Late Fancy Ny Party">
+								</a>
+
+								<div class="like-buttons">
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Like"><i class="fa fa-thumbs-up"></i></a>
+									</div>
+
+									<div class="pure-u-1-2 like-buttons__item">
+										<a href="#" class="ew-button" title="Dislike"><i class="fa fa-thumbs-down"></i></a>
+									</div>
+								</div>
+							</div>
+
+							<div class="b-list-of-events-g__info">
+								<h2 class="b-list-of-events-g__title">
+									<a href="#">Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny Party Big Late Fancy Ny Party Big Late Fancy Ny Party
+									Big Late Fancy Ny PartyBig Late Fancy Ny Party </a>
+								</h2>
+								
+								<div class="b-list-of-events-g__date">
+									<time datetime="2014-09-21T22:00+00:00">21 september, 22:00</time>
+								</div>
+
+								<div class="b-list-of-events-g__category">
+									<i class="fa fa-music"></i>
+									Rockabilly, Dance, Rock
+								</div>
+
+								<div class="b-list-of-events-g__description">
+									<p>We are hosting a monthly Love, Harmony, World Peace Meditations, 
+									on the third of Saturday of each month, 24 hours of FULL DAY. 
+									Visualize and prayer and prayer and prayer across the world; 
+									Meditation helps you to deepen prayer across the world...</p>
+								</div>
+
+
+								<div class="footer">
+									<div class="footer__item">
+										<i class="fa fa-ticket"></i> Tickets: $100-$200
+									</div>
+									<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+								</div>
+
+								<div class="actions">
+									<a href="#" class="ew-button"><i class="fa fa-calendar"></i> Add to calendar</a>
+									<a href="#" class="ew-button"><i class="fa fa-share-alt"></i> Share</a>
+								</div>
+							</div>
+						</div>
+
+						<a class="b-list-of-events-g__link-detail" href="#">Read More →</a>
+					</div>
+
+
+					<!-- after each 3 items -->
+					<div class="clearfix"></div>
+
+
+				</div>
+
+			</div>
+
+		</section>
+
+
+			
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<div class="widgets">
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Follow us</h3>
+							<div class="widget__text">
+								<ul class="social">
+									<li class="social__item">
+										<a href="#"><i class="fa fa-twitter-square"></i>Twitter</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-facebook-square"></i>Facebook</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-rss-square"></i>RSS</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+					<!-- end .widgets -->
+				</div>
+			</footer>
+
+	<!-- libraries -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="libs/idangerous.swiper/idangerous.swiper.min.js"></script>
+	<script src="libs/bootstrap/bootstrap.js"></script>
+
+	<!-- js -->
+	<script src="src/pages/event.js"></script>
+
+
+	</body>
+</html>

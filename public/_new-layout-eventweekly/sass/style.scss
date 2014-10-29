@@ -1,0 +1,73 @@
+@charset 'UTF-8';
+@import 'compass/reset';
+@import 'compass/css3';
+@import 'vars';
+@import 'mixins';
+@import 'grids';
+@import "font-awesome-compass";
+@import "font-awesome";
+
+/* Basic */
+
+
+html, body {
+ 	position: relative;
+	min-height: 100%;
+}
+
+body {
+	background-color: #333;
+	background-image: url(../i/bg.png);
+	color:#E6E6E6;
+	font-size: 15px;
+}
+
+// img {
+// 	max-width: 100%;
+// }
+
+.container {
+	max-width: 1200px;
+	padding: 0 2%;
+	margin: 0 auto;
+}
+
+
+a {
+	color: $color-link;
+	text-decoration: underline;
+}
+
+p {
+	line-height: 25px;
+}
+
+
+@import 'base/base';
+@import 'layout/layout';
+@import 'layout/sidebar-filters';
+@import 'pages/main/main';
+@import 'pages/event/event';
+@import 'global/blocks/b-user-widget'; 
+@import 'global/blocks/b-gallery'; 
+@import 'global/blocks/b-list-of-events-l';
+@import 'global/blocks/b-list-of-events-g';
+@import 'global/blocks/breadcrumbs';
+@import 'global/blocks/b-filters';
+
+
+@import url('http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+
+@font-face {
+    font-family: "PF Agora Slab Pro Light";
+    font-style: normal;
+    font-weight: 300;
+    src: url('../fonts/pf-agora-slab-pro/PFAgoraSlabPro-Light.ttf');
+}
+
+@font-face {
+    font-family: "PF Agora Slab Pro Medium";
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/pf-agora-slab-pro/PFAgoraSlabPro-Medium.ttf');
+}

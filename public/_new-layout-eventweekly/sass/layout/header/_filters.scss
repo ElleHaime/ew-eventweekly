@@ -1,0 +1,98 @@
+.filters {
+	background: #4D4D4D;
+	height: 50px;
+	padding: 7px 0;
+	text-align: center;
+
+	.filters-form {
+		&__item {
+			display: inline-block;
+			margin-right: 7px;
+			vertical-align: middle;
+
+			&--input-with-icon {
+				position: relative;
+
+				i {
+					position: absolute;
+					color:#F7931E;
+					z-index: 20;
+					top: 3px;
+					left: 8px;
+					width: 25px;
+					font-size: 22px;
+					line-height: 30px;
+					text-align: center;
+				}
+
+				.filters-form__input {
+					padding-left: 40px;
+				}
+			}
+		}
+
+
+		&__dropdown {
+			@include border-radius(2px);
+			@include box-shadow(2px 2px 0px #424242);
+			display: inline-block;
+			padding: 10px 15px 9px 15px;
+			background: #808080;
+			color:#fff;
+			cursor: pointer;
+			font-family: "Open Sans";
+			font-size: 15px;
+			text-decoration: none;
+
+			i {
+				font-size: 16px;
+				margin-right: 9px;
+				color: #ccc;
+			}
+
+			.caret {
+				margin-left: 9px;
+				color: #ccc;	
+			}
+		}
+
+		&__input {
+			@include border-radius(2px);
+			font-family: "Open Sans";
+			font-size:15px;
+			border: 0;
+			outline: 0;
+			line-height: 25px;
+			padding: 6px 15px 5px 15px;
+			color:#808080;
+		}
+
+		&__button {
+			@include border-radius(2px);
+			@include box-shadow(2px 2px 0px #424242);
+			display: inline-block;
+			position: relative;
+			padding: 10px 15px;
+			background: #CC7718;
+			color:#fff;
+			cursor: pointer;
+			font-family: "Open Sans";
+			font-size: 15px;
+			text-decoration: none;
+
+			&:active {
+				top: 1px;
+			}
+		}
+
+		&__divider {
+			display: inline-block;
+			width: 1px;
+			height: 35px;
+			margin: 0 15px 0 10px;
+			text-align: center;
+			vertical-align: top;
+			background: #7D7D7D;
+		}
+	}
+}

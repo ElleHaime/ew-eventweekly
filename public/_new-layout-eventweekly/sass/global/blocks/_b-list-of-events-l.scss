@@ -1,0 +1,100 @@
+// LIST
+
+.b-list-of-events-l {
+	&__item {
+		float:left;
+		width: 100%;
+		padding: 20px 0;
+		border-bottom: 1px solid #545454;
+
+		.footer {
+			display: block;
+			color:#B3B3B3;
+			font-family: "Open Sans";
+			font-size: 14px;
+			margin: 20px 0 0 0;
+
+			&__item {
+				display: inline-block;	
+				margin-right: 30px;
+
+			    i {
+			    	margin-right: 6px;
+			    	color: #F7931E;
+			    }
+
+				&--non-active {
+					color: #737373;
+
+					i {
+						color: #737373;
+					}
+				}
+			}
+		}
+
+		.actions {
+			display: inline-block;
+			margin-top: 25px;
+			padding: 6px 0;
+
+			.ew-button {
+				padding: 6px 12px;
+				font-size: 13px;
+				margin-right: 10px;
+
+				i {
+					margin-right: 6px;
+				}
+			}
+		}
+	}
+
+	&__picture {
+		float:left;
+		padding-right: 22px;
+
+		img {
+			max-width: 100%;
+		}
+	}
+
+	&__info {
+		float:left;
+	}
+
+	&__title {
+		@include text-truncate;
+		display: inline-block;
+		margin: 0 0 15px 0;
+		font-family: "Open Sans";
+		font-size: 16px;
+		color: $color-link;
+		padding: 0 0 1px 0;
+
+		max-width: 70%;
+
+		a {
+			color: $color-link;
+			text-decoration: none;
+		}
+	}
+
+	&__date {
+		@include clearfix();
+		float: right;
+		width: 30%;
+		text-align: right;
+		padding: 2px 0;
+		color:#F7931E;
+		font-family: "Open Sans";
+		font-size: 12px;
+	}
+
+	&__description {
+		font-family: "Open Sans";
+		font-size: 14px;
+		color: $color-text;
+	}
+
+}

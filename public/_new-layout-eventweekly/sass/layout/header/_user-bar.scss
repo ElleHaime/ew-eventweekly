@@ -1,0 +1,29 @@
+.user-bar {
+	position: absolute;
+	right: 2.3%;
+	top: 11px;
+	font-family: "Open Sans";
+	font-size: 15px;
+	color: $color-link;
+	vertical-align: middle;
+
+	a {
+		display: block;
+		cursor: pointer;
+		text-decoration: none;
+	}
+
+	&__avatar {
+		@include border-radius(2px);
+		display: inline-block;
+		width: 34px;
+		height: 34px;
+		margin-right: 10px;
+		overflow: hidden;
+	}
+
+	.caret {
+		margin-left: 10px;
+	}
+
+}
