@@ -1,4 +1,68 @@
 #header {
+	position: relative;
+	width: 100%;
+	z-index: 101;
+
+
+
+		.user-menu {
+			&-button-open {
+				float: left;
+				text-decoration: none;
+				font-size: 0;
+				margin-top: 3px;
+				display: none;
+
+				&:before {
+					@extend .fa;
+					@extend .fa-navicon;
+					font-size: 32px;
+					color:#eee;
+				}
+
+				@include breakpoint(695px) {
+					display: block;
+				}
+			}
+
+			&-collapsed {
+				@include breakpoint(695px) {
+					position: relative;
+					margin-top: 10px;
+					display: none;
+
+					&.open {
+						display: block;
+					}
+
+					.top-line__item {
+						display: block;
+						text-align: left;
+						padding: 0px 0;
+						border-bottom: 1px solid #333;
+
+						&:last-child {
+							border: 0;
+							padding-bottom: 0;
+						}
+					}
+
+				 	.top-line__button {
+						margin: 15px 0;	
+					}
+
+					.top-line__link {
+						display: block;
+						padding: 15px 0;
+					}					
+				}
+
+
+
+			}
+		}
+
+
 
 	.top-line {
 		position: relative;
@@ -19,6 +83,7 @@
 			color:#fff;
 			padding: 10px 15px;
 
+
 			strong {
 				font-weight: 600;
 				color:#F7931E;
@@ -26,16 +91,28 @@
 
 			&--divider {
 				border-left: 1px solid #7D7D7D;
+				
+				@include breakpoint(695px) {
+					border: 0;
+				}
 			}
 
 			&--text {
 				padding-left: 0;
 				padding-right: 0;
+
+				@include breakpoint(695px) {
+					display: none;
+				}
 			}
 
+			// @include breakpoint(695px) {
+			// 	display: block;
+			// 	text-align: left;
+			// }
 		}
 
-		&__button{
+		&__button {
 			@include border-radius(4px);
 			display: inline-block;
 			padding: 10px 15px;
@@ -46,11 +123,16 @@
 			i {
 				margin-right: 8px;
 			}
+
 		}
 
 		&__link {
 			display: inline-block;
 			color: $color-link;
+		}
+
+		@include breakpoint(695px) {
+			padding: 10px 0;
 		}
 	}
 

@@ -26,4 +26,17 @@
 		margin-left: 10px;
 	}
 
+	.dropdown {
+		@include breakpoint(695px) {
+			display: inline-block;
+		}
+	}
+
+	@include breakpoint(695px) {
+		position: relative;
+		right: auto;
+		top: auto;
+		float: right;
+		
+	}
 }

@@ -42,11 +42,23 @@
 		}
 	}
 
-	.layout__right {
+	&__layout-left {
+		@include breakpoint(695px) {
+			width: 100%;
+			margin-bottom: 20px;
+		}
+	}
+
+	&__layout-right {
 		padding: 0 0 0 1.6%;
+
+		@include breakpoint(695px) {
+			width: 100%;
+			padding: 0;
+			overflow: hidden;
+		}
 	}
 }
 
 
 @import 'blocks/short-info';
-@import 'blocks/widgets';

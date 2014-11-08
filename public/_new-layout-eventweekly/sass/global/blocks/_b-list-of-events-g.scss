@@ -9,7 +9,7 @@
 		position: relative;
 		padding: 20px;
 		background: #404040;
-		height:340px;
+		height:360px;
 	}
 
 	&__item {
@@ -27,7 +27,8 @@
 
 			&__item {
 				display: inline-block;	
-				margin: 0 15px;
+				margin-right: 15px;
+				margin-bottom: 10px;
 					
 			    i {
 			    	margin-right: 6px;
@@ -50,11 +51,13 @@
 		.actions {
 			display: block;
 			text-align: center;
-			margin-top: 20px;
+			margin-top: 10px;
 			padding: 6px 0;
+			line-height: 100%;
 
 			.ew-button {
-				padding: 6px 10px;
+				display: inline-block;
+				padding: 8px 10px;
 				font-size: 13px;
 				margin: 0 2px;
 
@@ -127,6 +130,7 @@
 		color:#878787;
 		font-family: "Open Sans";
 		font-size: 12px;
+		line-height: 21px;
 
 		i {
 			font-size: 13px;
@@ -146,9 +150,6 @@
 		overflow: hidden;
 		height: 150px;
 		line-height: 20px;
-		display: -webkit-box;
-		-webkit-line-clamp: 7;
-		-webkit-box-orient: vertical;
 
 		p {
 

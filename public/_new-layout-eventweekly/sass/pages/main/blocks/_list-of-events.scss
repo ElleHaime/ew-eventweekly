@@ -2,11 +2,42 @@
 	position: relative;
 	padding: 0 0 45px 0;
 
+
+	&.col-3 {
+
+	}
+
 	&.col-4 {
+
+		
+		.list-of-events__item {
+
+			@include breakpoint(768px) {
+				width: 50%;
+				margin-bottom: 1.6%;
+			}
+
+
+			@include breakpoint(695px) {
+				width: 100%;
+				margin: 0 0 20px 0;
+			}
+		}
+		
 
 		.list-of-events__picture {
 			img {
 				height: 280px;
+
+				@include breakpoint(768px) {
+					height: 380px;
+				}
+
+				@include breakpoint(695px) {
+					width: 100%;
+					height: auto;
+				}
+				
 			}
 		}
 
@@ -15,10 +46,13 @@
 		}
 	}
 
+
 	.header {
 		float:left;
 		width: 100%;
 		margin-bottom: 30px;
+
+
 
 		&__title {
 			float:left;
@@ -27,6 +61,12 @@
 			font-weight: 300;
 			color: #ccc;
 			margin: 0;
+
+			@include breakpoint(695px) {
+				display: block;
+				float:none;
+				text-align: center;
+			}
 
 			.divider {
 				display: inline-block;
@@ -37,12 +77,28 @@
 				&:before  {
 					content: "|";
 				}
+
+				@include breakpoint(695px) {
+					display: none;
+				}
 			}
 
 			strong {
-				color:#F7931E;
+				color:#ccc;
 				font-weight: 600;
+
+				@include breakpoint(695px) {
+					display: block;
+					margin-bottom: 10px;
+					text-align: center;
+				}
 			}
+
+			@include breakpoint(768px) {
+				font-size: 22px;
+			}
+
+
 		}
 
 		&__link-show-more {
@@ -53,6 +109,14 @@
 			background: #292929;
 			color:#F7931E;
 			text-decoration: underline;
+
+			@include breakpoint(768px) {
+				font-size: 18px;
+			}
+
+			@include breakpoint(695px) {
+				display: none;
+			}
 		}
 
 	}
@@ -68,6 +132,11 @@
 		position: relative;
 		padding: 0 0 0 1.6%;
 		overflow: hidden;
+
+		@include breakpoint(695px) {
+			width: 100%;
+			margin: 0 0 20px 0;
+		}
 	}
 
 
@@ -78,6 +147,14 @@
 		img {
 			height: 380px;
 		}
+
+		@include breakpoint(695px) {
+			img {
+				width: 100%;
+				height: auto;
+			}
+			text-align: center;
+		}
 	}
 
 	&__info {
@@ -86,6 +163,10 @@
 		width: 100%;
 		padding: 20px 25px;
 		background-color: rgba(0, 0, 0, 0.7);
+		
+		@include breakpoint(695px) {
+			text-align: center;	
+		}
 	}
 
 	&__title {
@@ -95,12 +176,17 @@
 		color: #F7931E;
 		margin-bottom: 10px;
 		margin-top: 0;
+		// @include text-truncate;
 
 		a {
 			color: #F7931E;
 			text-decoration: none;
 		}
 
+		@include breakpoint(768px) {
+			font-size: 24px;
+
+		}
 	}
 
 	&__description {

@@ -1,6 +1,10 @@
 .b-filters {
 	&__wrapper {
-		padding: 30px;
+		padding: 26px 30px;
+
+		@include breakpoint(320px) {
+			padding: 20px;
+		}
 	}
 
 	&__buttons {
@@ -10,9 +14,10 @@
 		text-align: center;
 
 		.ew-button {
+			display: inline-block;
+			margin: 4px 3px;
 			padding: 8px 10px;
 			font-size: 13px;
-			margin: 0 3px;
 		}
 	}
 

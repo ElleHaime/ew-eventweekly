@@ -4,7 +4,7 @@
 	&__item {
 		float:left;
 		width: 100%;
-		padding: 20px 0;
+		padding: 20px 0 10px 0;
 		border-bottom: 1px solid #545454;
 
 		.footer {
@@ -17,7 +17,7 @@
 			&__item {
 				display: inline-block;	
 				margin-right: 30px;
-
+				margin-bottom: 10px;
 			    i {
 			    	margin-right: 6px;
 			    	color: #F7931E;
@@ -35,13 +35,15 @@
 
 		.actions {
 			display: inline-block;
-			margin-top: 25px;
-			padding: 6px 0;
+			margin-top: 15px;
+			line-height: 100%;
 
 			.ew-button {
+				display: inline-block;
 				padding: 6px 12px;
 				font-size: 13px;
 				margin-right: 10px;
+				margin-bottom: 10px;
 
 				i {
 					margin-right: 6px;
@@ -61,6 +63,8 @@
 
 	&__info {
 		float:left;
+
+
 	}
 
 	&__title {
@@ -78,6 +82,10 @@
 			color: $color-link;
 			text-decoration: none;
 		}
+
+		@include breakpoint(768px) {
+			margin-bottom: 10px;
+		}
 	}
 
 	&__date {
@@ -89,6 +97,13 @@
 		color:#F7931E;
 		font-family: "Open Sans";
 		font-size: 12px;
+
+		@include breakpoint(768px) {
+			float: none;
+			width: auto;
+			text-align: left;
+			margin-bottom: 10px;
+		}
 	}
 
 	&__description {

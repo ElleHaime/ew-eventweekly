@@ -1,16 +1,11 @@
 $(function() {
-    
-var dodchuk = {
-    firstname: "max",
-    lastname: "dodchuk",
-    position: "front-end developer",
 
-    sayMyName: function() {
-        return this.firstname + " " + this.lastname;
-    }
-}
-
-console.log(dodchuk.sayMyName());
+	var $userMenuButtonOpenTrigger = $(".js-user-menu-button-open-trigger"),
+		$userMenuCollapsed = $(".js-user-menu-collapsed");
 
 
+
+	$userMenuButtonOpenTrigger.on("click", function () {
+		$userMenuCollapsed.toggleClass("open");
+    });
 });
