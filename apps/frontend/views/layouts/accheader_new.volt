@@ -1,7 +1,6 @@
 <!-- Header -->
 		<header id="header">
 		
-		
 		{% if member.id is defined %}
 			<div class="top-line">
 				<div class="container">

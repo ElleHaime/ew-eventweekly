@@ -44,17 +44,14 @@
 {% if eventPreview is defined %}
     <div class="preview_overlay" style="height: 100%;width: 100%;z-index: 10000;top:0;left:0;position:fixed;"></div>
 {% endif %}
-<div class="overlay">
-</div>
 
 {% include 'layouts/stuff.volt' %}
 {% include 'layouts/accheader_new.volt' %}
 
 {% block content %}
+{% endblock %}
 
 {% include 'layouts/accfooter_new.volt' %}
-
-{% endblock %}
 
 </body>
 </html>
