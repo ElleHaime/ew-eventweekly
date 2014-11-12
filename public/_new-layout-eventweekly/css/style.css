@@ -304,8 +304,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url(/fonts/font-awesome/fontawesome-webfont.eot?1413826420);
-  src: url(/fonts/font-awesome/fontawesome-webfont.eot?&1413826420#iefix) format("embedded-opentype"), url(/fonts/font-awesome/fontawesome-webfont.woff?1413826421) format("woff"), url(/fonts/font-awesome/fontawesome-webfont.ttf?1413826421) format("truetype"), url(/fonts/font-awesome/fontawesome-webfont.svg?1413826421#fontawesomeregular) format("svg");
+  src: url(/_new-layout-eventweekly/fonts/font-awesome/fontawesome-webfont.eot?1413826420);
+  src: url(/_new-layout-eventweekly/fonts/font-awesome/fontawesome-webfont.eot?&1413826420#iefix) format("embedded-opentype"), url(/_new-layout-eventweekly/fonts/font-awesome/fontawesome-webfont.woff?1413826421) format("woff"), url(/_new-layout-eventweekly/fonts/font-awesome/fontawesome-webfont.ttf?1413826421) format("truetype"), url(/_new-layout-eventweekly/fonts/font-awesome/fontawesome-webfont.svg?1413826421#fontawesomeregular) format("svg");
   font-weight: normal;
   font-style: normal;
 }

@@ -97,7 +97,7 @@
 
 							<div class="map">
 								<div class="map__picture">
-									<a href="#"><img src="content/Map.png" alt="Map"></a>
+									<a href="#"><img src="_new-layout-eventweekly/content/Map.png" alt="Map"></a>
 								</div>
 								<div class="actions">
 									<a href="#" class="layout__left actions__link-view">View large map</a>
