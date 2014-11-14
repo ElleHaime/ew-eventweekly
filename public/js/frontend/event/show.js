@@ -1,20 +1,21 @@
 require([
 	'jquery',
 	'fb',
-	'frontListSuggestCategory',
 	'noty',
     'frontEventInviteFriend',
+    'eventSliderControl',
+    'frontEventLike',
+    'idangerous',
 	'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, fb, frontListSuggestCategory, noty, frontEventInviteFriend) {
+	function($, fb, noty, frontEventInviteFriend, eventSliderControl, frontEventLike) {
 		fb.init(); 
-		
-		frontListSuggestCategory.init();
-
         frontEventInviteFriend.init();
+        frontEventLike.init();
+        eventSliderControl.init();
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');

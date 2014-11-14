@@ -14,15 +14,18 @@ require.config({
 
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
+//		'jquery': 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'jTruncate': 'library/vendors/jquery.truncate',
 		'underscore': 'library/vendors/underscore',
 		'resizer': 'library/vendors/resizer',
-		'bootstrap': 'library/vendors/bootstrap.min',
+		//'bootstrap': 'library/vendors/bootstrap.min',
+		'bootstrap': 'library/vendors/bootstrap',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
 		'normalDatePicker': 'library/vendors/normalBootstrapDateTimepicker',
 		'niceDate': 'library/vendors/date',
+		'idangerous': '../_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min',
 
 		// maps
 		'gmap': 'library/maps/gmap',
@@ -48,6 +51,7 @@ require.config({
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
+        'eventSliderControl': 'frontend/event/controls/eventSliderControl',
         'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
         'profileRestorePasswordControl': 'frontend/profile/controls/profileRestorePasswordControl',
         'frontCounterUpdater': 'frontend/general/counterUpdater',
@@ -86,6 +90,10 @@ require.config({
         },
         'bootstrap' : {
             deps: ['jquery']
+        },
+        'idangerous' : {
+            deps: ['jquery'],
+            exports: 'idangerous'
         },
         'noty' : {
             deps: ['jquery'],

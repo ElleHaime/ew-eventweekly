@@ -9,8 +9,10 @@ define('frontEventLike',
                 userEventsLiked: '#userEventsLiked',
 
 		        likeUrl: '/event/like',
-		        likeBtn: '.eventLikeBtn',
-		        dislikeBtn: '.eventDislikeBtn',
+		        //likeBtn: '.eventLikeBtn',
+		        likeBtn: '#event-like-btn',
+		        //dislikeBtn: '.eventDislikeBtn',
+		        dislikeBtn: '#event-dislike-btn',
 		        eventElem: '.signleEventListElement'
 		    },
 
@@ -73,7 +75,14 @@ define('frontEventLike',
 		     */
 		    self.__responseHandler = function(data) {
 		        if (data.status == true) {
-		        	var like = $('button' + self.settings.likeBtn + '[data-id=' + data.event_id + ']');
+		        	if (data.member_like == 1) {
+		        		$(self.settings.likeBtn).hide();
+		        		$(self.settings.dislikeBtn).show();
+		        	} else {
+		        		$(self.settings.likeBtn).show();
+		        		$(self.settings.dislikeBtn).hide();
+		        	}
+		        	/*var like = $('button' + self.settings.likeBtn + '[data-id=' + data.event_id + ']');
 		        	var dislike = $('button' + self.settings.dislikeBtn + '[data-id=' + data.event_id + ']');
 		        	
 		        	if (data.member_like == 1) {
@@ -89,7 +98,7 @@ define('frontEventLike',
                         if (data.likeCounter != null) {
                             $(self.settings.userEventsLiked).text(data.userEventsLiked);
                         }
-		        	}
+		        	}*/
 		        } else {
 		        	if (data.error  == 'not_logged') {
                         noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able to like events',  type: 'warning'});

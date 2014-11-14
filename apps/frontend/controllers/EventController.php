@@ -281,8 +281,10 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
-		$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
-		$this -> view -> setVar('back_position_url_params', $previousUri);
+    	if (isset($_SERVER['HTTP_REFERER'])) {
+			$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+			$this -> view -> setVar('back_position_url_params', $previousUri);
+    	}
 		
     	if ($this -> session -> has('eventViewForwardedNew') && $this -> session -> get('eventViewForwardedNew') == 1) {
     		$this -> session -> set('eventViewForwardedNew', 0);
@@ -296,13 +298,17 @@ class EventController extends \Core\Controllers\CrudController
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
             foreach ($event->memberpart as $mpart) {
-                if ($mpart->member_id == $this->memberId) {
+                if ($mpart->member_id == $this -> session -> get('memberId')) {
                     $memberpart = $mpart->member_status;
                     break;
                 }
             }
         }
         $event->memberpart = $memberpart;
+        
+        if ($this->session->has('memberId')) {
+        	$this -> fetchMemberLikeForEvent($eventId);
+    	}
 
         $cfg = $this->di->get('config');
         $logoFile = '';
@@ -354,8 +360,8 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
         
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
+        $this->view->setVar('poster', !empty($posters) ? $posters : null);
+        $this->view->setVar('flyer', !empty($flyers) ? $flyers : null);
         $this->view->setVar('cover', isset($cover) ? $cover : null);
         $this->view->setVar('gallery', $gallery);
 
@@ -432,13 +438,20 @@ class EventController extends \Core\Controllers\CrudController
                     break;
             }
 
-            $eventMember = new EventMember();
+            if (!$eventMember = EventMember::findFirst(['event_id = ' . $data['event_id']])) {
+            	$eventMember = new EventMember();
+            }
             $eventMember->assign(array(
                 'member_id' => $member->id,
                 'event_id' => $data['event_id'],
                 'member_status' => $status
             ));
-            if ($eventMember->save()) {
+            if (is_null($eventMember -> id)) {
+            	$saveStatus = $eventMember->save();
+            } else {
+            	$saveStatus = $eventMember->update();
+            }
+            if ($saveStatus) {
                 $ret = ['status' => 'OK',
                         'event_member_status' => $data['answer']];
 

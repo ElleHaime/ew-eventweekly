@@ -296,22 +296,25 @@ define('fb',
                     noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
                     return false;
                 }
-
-				$(self.settings.btnEventGoing).hide();
-				$(self.settings.btnEventMaybe).hide();
-				$(self.settings.btnEventDecline).hide();
+                
+               	$(self.settings.btnEventGoing).hide();	
+               	$(self.settings.btnEventDecline).hide();	
 
 				var params = { 
 						answer: status, 
 						event_id : $('#current_event_id').attr('event') 
 				};
-//console.log(params);
+
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
-                    //console.log(data);
+					//console.log(data);
+					
 					if (data.status == 'OK') {
-						$('#event-' + data.event_member_status.toLowerCase()).show();
-						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);
+						if (data.event_member_status == self.eventStatuses.decline) {
+							$(self.settings.btnEventGoing).show();
+						} else {
+							$(self.settings.btnEventDecline).show();
+						}
 
                         self.__plusUserEventsGoing();
 
