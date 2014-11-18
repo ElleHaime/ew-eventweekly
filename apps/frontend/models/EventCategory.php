@@ -7,7 +7,7 @@ use Objects\Category as Categories;
 
 class EventCategory extends EventCategoryObject
 {
-	use \Sharding\Core\Env\Phalcon;
+//	use \Sharding\Core\Env\Phalcon;
 	
     public function countEvents()
     {

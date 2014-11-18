@@ -30,11 +30,11 @@ trait Phalcon
 	public function onConstruct()
 	{
 		$this -> app = new Loader();
-		
+
 		if ($relation = $this -> isShardRelation()) {
 			$this -> setShardByParent($relation);
-		} 
-				
+		}
+		
 		parent::onConstruct();
 	}
 

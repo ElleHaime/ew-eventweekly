@@ -6,5 +6,5 @@ use Objects\EventImage as EventImageObject;
 
 class EventImage extends EventImageObject
 {
-	use \Sharding\Core\Env\Phalcon;
+//	use \Sharding\Core\Env\Phalcon;
 }

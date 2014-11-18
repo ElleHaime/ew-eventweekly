@@ -6,5 +6,5 @@ use Objects\EventTag as EventTagObject;
 
 class EventTag extends EventTagObject
 {
-	use \Sharding\Core\Env\Phalcon;
+	//use \Sharding\Core\Env\Phalcon;
 }

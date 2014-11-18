@@ -18,6 +18,11 @@ trait TMysql
 		return $this;
 	}
 	
+	public function disconnect()
+	{
+		$this -> connection = null;
+	}
+	
 	public function tableExists($tblName)
 	{
 		$query = 'SELECT table_name FROM information_schema.tables WHERE table_schema = "' . $this -> database . '" AND table_name = "' . $tblName . '"';
@@ -121,7 +126,7 @@ trait TMysql
 	public function fetchOne()
 	{
 		$this -> composeQuery();
-				
+
 		$fetch = $this -> connection -> query($this -> queryExpr);
 		if ($fetch -> rowCount() == 0) {
 			$result = false;
@@ -136,7 +141,7 @@ trait TMysql
 			}
 		}
 		$this -> clearQuery();
-		
+
 		return $result;
 	}
 	
@@ -152,10 +157,9 @@ trait TMysql
 		} else {
 			$result = $fetch -> fetchAll();
 		}
-
+		$this -> clearQuery();
+		
 		return $result;
-		
-		
 	}
 	
 	

@@ -2,6 +2,8 @@
 
 namespace Sharding\Core\Adapter;
 
+use Core\Utils as _U;
+
 abstract class AdapterAbstract
 {
 	protected $connection;
@@ -32,7 +34,7 @@ abstract class AdapterAbstract
 		$this -> password = $data -> password;
 		$this -> database = $data -> database;
 		$this -> writable = $data -> writable; 
-		
+_U::dump('connected', true);		
 		$this -> connect();
 	}
 	
