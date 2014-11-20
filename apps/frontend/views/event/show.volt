@@ -40,6 +40,11 @@
 			</nav>
 
 			<h1 class="page__title">{{ event.name }}</h1>
+			{% if event.address is defined %}
+				<div style="display:none;visibility:hidden;" id="map_info" info="{{ event.address }}"></div>
+			{% else %}
+				<div style="display:none;visibility:hidden;" id="map_info" info="{{ event.name }}"></div>
+			{% endif %}
 
 			<div class="page-event__wrapper">
 				<div class="layout__left page-event__layout-left pure-u-3-8">
@@ -134,9 +139,7 @@
 			 
 							{% if event.latitude is defined %}
 								<div class="map">
-									<div class="map__picture">
-										<a href="#"><img src="_new-layout-eventweekly/content/Map.png" alt="Map"></a>
-									</div>
+									<div style="width:400px;height:249px" id="map_canvas" latitude="{{ event.latitude }}" longitude="{{ event.longitude }}"></div>
 								</div>
 							{% endif %}
 
@@ -189,7 +192,7 @@
 
 
 							<div class="actions__button pure-u-1-2" id='event-dislike-btn' data-status="0" data-id="{{ event.id }}" 
-								{% if (likedEventStatus is empty) and (likedEventStatus != 1) %}style="display:none;"{% endif %}>
+								{% if (likedEventStatus is not defined) or ((likedEventStatus is empty) and (likedEventStatus != 1)) %}style="display:none;"{% endif %}>
 								<a class="ew-button">
 									<i class="fa fa-thumbs-o-down"></i> Don't like
 								</a>

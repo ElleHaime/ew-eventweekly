@@ -23,12 +23,12 @@
 					
 					<div class="top-line__item top-line__item--text">Never miss <strong>events</strong> in Dublin!</div>
 					<div class="top-line__item">
-						<a href="#" class="top-line__button">
+						<a href="/signup" class="top-line__button">
 							<i class="fa fa-sign-in"></i> Sign Up today
 						</a>
 					</div>
 					<div class="top-line__item top-line__item--divider">
-						<a href="#" class="top-line__link">Sign In</a>
+						<a href="#" class="top-line__link" onclick="return false;">Sign In</a>
 					</div>
 
 				</div>

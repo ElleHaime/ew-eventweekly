@@ -163,8 +163,8 @@ require.config({
 
         require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){
             $('.tooltip-text').tooltip();
-            frontSearchPanel.init();
-            frontCounterUpdater.init();
+            //frontSearchPanel.init();
+            //frontCounterUpdater.init();
             frontTopPanel.init({
                 searchCityBlock: '.searchCityBlock'
             });

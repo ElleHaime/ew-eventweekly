@@ -1,6 +1,7 @@
 require([
 	'jquery',
 	'fb',
+	'googleMap',
 	'noty',
     'frontEventInviteFriend',
     'eventSliderControl',
@@ -10,8 +11,31 @@ require([
 	'domReady',
 	'underscore',
 	'jCookie'
-	], 
-	function($, fb, noty, frontEventInviteFriend, eventSliderControl, frontEventLike) {
+	],
+	function($, fb, googleMap, noty, frontEventInviteFriend, eventSliderControl, frontEventLike) {
+    	var eCoords = $('#map_canvas');
+    	var eAddress = $('#map_info');
+		
+		var map = new googleMap({
+		    mapCenter: {
+		        lat: eCoords.attr('latitude'),
+		        lng: eCoords.attr('longitude')
+		    },
+		    mapZoom: $('#isMobile').val() === '1' ? 17 : 15
+		});
+		var newLatLng = new google.maps.LatLng(eCoords.attr('latitude'), eCoords.attr('longitude'));
+		var infowindow = new google.maps.InfoWindow({
+		      content: eAddress.attr('info') 
+		});
+		
+		marker = new google.maps.Marker({
+            position: newLatLng,
+            map: map
+        });
+		google.maps.event.addListener(marker, 'click', function() {
+		    infowindow.open(map, marker);
+		}); 
+
 		fb.init(); 
         frontEventInviteFriend.init();
         frontEventLike.init();

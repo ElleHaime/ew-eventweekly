@@ -4,7 +4,7 @@ define('frontTopPanel',
 
 		function frontTopPanel($, utils, gmapEvents) {
 			var self = this;
-
+		
 			self.settings = {
 		        searchCityBtn: '.locationCity',
 		        advancedSearchBtn: '.advancedSearchBtn',
@@ -25,10 +25,12 @@ define('frontTopPanel',
 
 				btnHz: '#back-to',
 
-                emailLoginBtn: '#email-login'
+                emailLoginBtn: '#email-login',
+                //fbLoginBtn: '.fb-login-popup'
+                fbLoginBtn: '.top-line__link'
 		    },
 		    self.__city = null,
-		    
+	    
 		    self.init = function(options)
 		    {
 		    	// extends options
@@ -154,17 +156,9 @@ define('frontTopPanel',
                         "/member/login", "_blank",
                         "toolbar=yes, scrollbars=yes, resizable=yes, top=" + top + ", left=" + left + ", width=" + width + ", height=" + height
                     );
-                    /*popup.onbeforeunload = function(){
-                        popup.close();
-
-                        var ppVal = $('#popupRedirect').val();
-                        if (ppVal == 'reload') {
-                            location.reload();
-                        }
-                    }*/
                 }
 
-                $('body').on('click', '.fb-login-popup', showPopup);
+                $('body').on('click', self.settings.fbLoginBtn, showPopup);
             }
 		}; 
 		
