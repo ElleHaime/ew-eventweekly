@@ -9,7 +9,7 @@ trait TMysql
 	public function connect()
 	{
 		try {
-			$this -> connection = new \PDO('mysql:host=' . $this -> host . ';port=' . $this -> port . ';dbname=' . $this -> database . ';charset=utf8', $this -> user, $this -> password);
+			$this -> connection = new \PDO('mysql:host=' . $this -> host . ';port=' . $this -> port . ';dbname=' . $this -> database . ';charset=utf8', $this -> user, $this -> password, array(\PDO::ATTR_PERSISTENT => true));
 			$this -> connection -> setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		} catch(\PDOException $e) {
 			$this -> errors = $e -> getMessage();

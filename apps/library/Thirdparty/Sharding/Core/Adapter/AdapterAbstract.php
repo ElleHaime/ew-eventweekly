@@ -34,7 +34,7 @@ abstract class AdapterAbstract
 		$this -> password = $data -> password;
 		$this -> database = $data -> database;
 		$this -> writable = $data -> writable; 
-_U::dump('connected', true);		
+
 		$this -> connect();
 	}
 	
