@@ -126,7 +126,7 @@ trait TMysql
 	public function fetchOne()
 	{
 		$this -> composeQuery();
-
+		
 		$fetch = $this -> connection -> query($this -> queryExpr);
 		if ($fetch -> rowCount() == 0) {
 			$result = false;
@@ -209,6 +209,7 @@ trait TMysql
 		
 		return;
 	}
+	
 	
 	private function processFields()
 	{
