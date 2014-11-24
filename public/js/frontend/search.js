@@ -10,7 +10,6 @@ require([
 	], 
 	function($, fb, frontEventLike, noty) {
 		fb.init();
-		
 		frontEventLike.init();
 		
 		if ($('#splash_messages').length > 0) {

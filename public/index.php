@@ -2,6 +2,8 @@
 
 error_reporting(E_ALL);
 
+(new \Phalcon\Debug) -> listen();
+
 if (!defined('SEP')) {
 	define('SEP', DIRECTORY_SEPARATOR);
 }
