@@ -323,7 +323,7 @@ class SearchController extends \Core\Controller
         }
         $this->view->setVar('urlParams', $urlParams);
         
-        if ($postData['searchType'] == 'in_map') {
+        if (strtolower($postData['searchTypeResult']) == 'map') {
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);

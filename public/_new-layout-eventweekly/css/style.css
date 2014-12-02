@@ -3861,7 +3861,7 @@ table.default thead {
   text-overflow: ellipsis;
   word-wrap: break-word;
   overflow: hidden;
-  height: 150px;
+  height: 125px;
   line-height: 20px;
 }
 .b-list-of-events-g__description:before, .b-list-of-events-g__description:after {

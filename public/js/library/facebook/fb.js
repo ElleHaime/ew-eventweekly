@@ -23,7 +23,7 @@ define('fb',
 				btnEventGoing: '#event-join',
 				btnEventMaybe: '#event-maybe',
 				btnEventDecline: '#event-decline',
-				btnEventShare: '#event_share', 
+				btnEventShare: '.share-event',
 				errorBox: '#login_message',
 				status: true,
 
@@ -108,7 +108,7 @@ define('fb',
 				});
 
 				$(self.settings.btnEventShare).click(function(e) {
-					self.__shareEvent();
+					self.__shareEvent(this);
 				});
 			}
 			
@@ -272,16 +272,18 @@ define('fb',
 				return result;
 			}
 
-			self.__shareEvent = function()
+			self.__shareEvent = function(obj)
 			{
-                var image = $(self.settings.currentEventIdBox + ' img');
+                var image = window.location.host + $(obj).data('image-source');
+                var source = window.location.host + $(obj).data('event-source');
 
-		 		FB.ui({ picture: window.location.host + image.attr('src'),
+                FB.ui({ picture: image,
 		            	method: 'feed',
-		            	link: window.location.href,
+		            	link: source,
 		            	caption: 'I am attending event at Event Weekly!'
-		        }, function(response){});
+		        }, function(response){}); 
 			}
+
 
 			self.__inviteFriends = function()
 			{

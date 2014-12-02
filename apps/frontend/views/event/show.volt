@@ -61,7 +61,7 @@
 					<!-- category -->
 					{% if event.category|length %}
 						<div class="short-info__item">
-							<i class="fa fa-microphone"></i> 
+							<i class="fa fa-tag"></i> 
 								{% for cat in event.category %}
 									{{ cat.name }} 
 								{% endfor %}
