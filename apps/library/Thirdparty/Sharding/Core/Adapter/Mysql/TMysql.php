@@ -9,13 +9,18 @@ trait TMysql
 	public function connect()
 	{
 		try {
-			$this -> connection = new \PDO('mysql:host=' . $this -> host . ';port=' . $this -> port . ';dbname=' . $this -> database . ';charset=utf8', $this -> user, $this -> password);
+			$this -> connection = new \PDO('mysql:host=' . $this -> host . ';port=' . $this -> port . ';dbname=' . $this -> database . ';charset=utf8', $this -> user, $this -> password, array(\PDO::ATTR_PERSISTENT => true));
 			$this -> connection -> setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 		} catch(\PDOException $e) {
 			$this -> errors = $e -> getMessage();
 		}
 		
 		return $this;
+	}
+	
+	public function disconnect()
+	{
+		$this -> connection = null;
 	}
 	
 	public function tableExists($tblName)
@@ -121,7 +126,7 @@ trait TMysql
 	public function fetchOne()
 	{
 		$this -> composeQuery();
-				
+		
 		$fetch = $this -> connection -> query($this -> queryExpr);
 		if ($fetch -> rowCount() == 0) {
 			$result = false;
@@ -136,7 +141,7 @@ trait TMysql
 			}
 		}
 		$this -> clearQuery();
-		
+
 		return $result;
 	}
 	
@@ -152,10 +157,9 @@ trait TMysql
 		} else {
 			$result = $fetch -> fetchAll();
 		}
-
+		$this -> clearQuery();
+		
 		return $result;
-		
-		
 	}
 	
 	
@@ -205,6 +209,7 @@ trait TMysql
 		
 		return;
 	}
+	
 	
 	private function processFields()
 	{

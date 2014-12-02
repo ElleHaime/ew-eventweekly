@@ -377,7 +377,7 @@ class EventController extends \Core\Controllers\CrudController
         foreach ($event->tag as $Tag) {
             $eventTags[] = $Tag->name;
         }
-      
+
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
             'eventMetaData' => $event,

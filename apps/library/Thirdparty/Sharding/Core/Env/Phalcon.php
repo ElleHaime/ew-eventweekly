@@ -7,7 +7,8 @@ namespace Sharding\Core\Env;
 use Core\Utils as _U,
     Sharding\Core\Loader as Loader,
 	Sharding\Core\Model\Model as Model,
-	Sharding\Core\Env\Helper\THelper as Helper;
+	Sharding\Core\Env\Helper\THelper as Helper,
+	\Exception as Exception;
 
 	
 trait Phalcon
@@ -30,10 +31,12 @@ trait Phalcon
 	public function onConstruct()
 	{
 		$this -> app = new Loader();
-		
-		if ($relation = $this -> isShardRelation()) {
+
+		if ($relation = $this -> getRelationByObject()) {
 			$this -> setShardByParent($relation);
-		}
+		} 
+		
+		parent::onConstruct();
 	}
 
 	
@@ -48,7 +51,7 @@ trait Phalcon
 	public function save($data = NULL, $whiteList = NULL)
 	{
 		if (self::$targetShardCriteria === false) {
-			throw new \Exception('shard criteria must be setted');
+			throw new Exception('shard criteria must be setted');
 			return false; 
 		}
 
@@ -82,7 +85,7 @@ trait Phalcon
 	public static function find($parameters = NULL)
 	{
 		if (self::$targetShardCriteria === false && self::$needTargetShard && !self::$convertationMode) {
-			throw new \Exception('shard criteria must be setted');
+			throw new Exception('shard criteria must be setted');
 			return false;
 		} else {
 			// fetch data from shard
@@ -183,7 +186,7 @@ trait Phalcon
 	 */
 	public function __get($property)
 	{
-		if (!is_null($this -> id) && !self::$convertationMode) {
+		if (!is_null($this -> id) && !self::$convertationMode && $this -> getRelationByProperty($property)) {
 			$this -> setShardById($this -> id);
 			$parts = explode('_', $this -> destinationTable);
 			$this -> destinationTable = implode('_' . $property . '_', $parts);

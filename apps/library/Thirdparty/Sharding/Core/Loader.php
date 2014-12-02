@@ -10,10 +10,10 @@ use Core\Utils as _U,
 
 class Loader
 {
-	public $config;
-	public $serviceConfig;
-	public $connections;
-	public $shardModels;
+	public $config			= false;
+	public $serviceConfig	= false;
+	public $connections 	= [];
+	public $shardModels		= [];
 	
 	
 	public function __construct()
@@ -44,7 +44,7 @@ class Loader
 	protected function loadConnections()
 	{
 		$this -> connections = new \stdClass();
-		
+				
 		foreach ($this -> config -> connections as $conn => $data) 
 		{
 			$adapterName = ucfirst(strtolower($data -> adapter));

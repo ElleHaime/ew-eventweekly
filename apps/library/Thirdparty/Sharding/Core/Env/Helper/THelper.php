@@ -219,12 +219,12 @@ trait THelper
 
 	
 	/**
-	 * Check relations for shardable models
+	 * Check relations for shardable models by object
 	 *
 	 * @access public
 	 * @return boolean
 	 */
-	public function isShardRelation()
+	public function getRelationByObject()
 	{
 		$className = get_class($this);
 	
@@ -243,6 +243,36 @@ trait THelper
 	
 		return false;
 	}
+	
+	
+	/**
+	 * Check relations for shardable models by alias
+	 *
+	 * @access public
+	 * @return boolean
+	 */
+	public function getRelationByProperty($alias)
+	{
+		$className = get_class($this);
+	
+		foreach ($this -> app -> config -> shardModels as $model => $data) {
+			isset($data -> namespace) ? $fullBasePath = trim($data -> namespace, '\\') . '\\' . $model : $fullBasePath = $model;
+			
+			if (trim($className, '\\') == $fullBasePath) {
+				if (isset($data -> relations)) {
+					foreach ($data -> relations as $obj => $rel) {
+						if ($rel -> relationName == $alias) {
+							return true;
+						}
+					}
+				}
+			}
+			
+		}
+	
+		return false;
+	}
+	
 
 	
 	public function unsetNeedShard($param = false)
