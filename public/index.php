@@ -9,6 +9,9 @@ if (!defined('SEP')) {
 if (!defined('ROOT_APP')) {
 	define('ROOT_APP', dirname(dirname(__FILE__)) . SEP);
 }
+if (!defined('VENDOR_PATH')) {
+    define('VENDOR_PATH', dirname(dirname(__FILE__)).'/vendor');
+}
 if (!defined('ROOT_LIB')) {
 	define('ROOT_LIB', ROOT_APP . 'apps' . SEP . 'library' . SEP . 'Core' . SEP);
 }
@@ -21,7 +24,10 @@ if (!defined('DATABASE_CONFIG_SOURCE')) {
 if (!defined('FACEBOOK_CONFIG_SOURCE')) {
 	define('FACEBOOK_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'facebook.php');
 }
-
+if (!defined('SERVICE_CONFIG_SOURCE')) {
+    define('SERVICE_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'service.php');
+}
+require_once VENDOR_PATH."/autoload.php";
 require_once ROOT_LIB . 'Application.php';
 
 try {

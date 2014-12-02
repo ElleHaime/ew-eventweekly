@@ -256,7 +256,7 @@ class Event extends EventObject
 			}
 		}
 		$eventsTotal = [];
-		
+
     	foreach ($shards as $cri) {
     		$this -> setShard($cri);
     		
@@ -279,7 +279,7 @@ class Event extends EventObject
 	       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 						 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
 	       	}
-	
+
 	        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 	
 	        if (!empty($this->conditions)) {
@@ -297,7 +297,7 @@ class Event extends EventObject
 	                }
 	            }
 	        }
-	
+
 	        if ($applyPersonalization) {
 	            $di = $this->getDi();
 	            $session = $di->getShared('session');
@@ -338,7 +338,7 @@ class Event extends EventObject
 					}
 	            }
 	        }
-	
+
 	        if (empty($this->order)) {
 	            if ($order === self::ORDER_DESC) {
 	                $builder->orderBy('Frontend\Models\Event.start_date DESC');
@@ -360,13 +360,13 @@ class Event extends EventObject
 	                'limit'=> $pagination['limit'],
 	                'page' => $pagination['page']
 	            ));
-	
+
 	            $totalRows = $builder->getQuery()->execute()->count();
 	            if ($totalRows > 0) {
 		            $result = $paginator->getPaginate();
 		            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
 		            $result->total_items = $totalRows;
-		            
+
 		            if ($fetchType === self::FETCH_ARRAY) {
 		                $result->items = $this->resultToArray($result->items);
 		                
@@ -374,7 +374,7 @@ class Event extends EventObject
 		            } else {
 		            	$eventsTotal[] = $result;
 		            }
-	            } 
+	            }
 	        } else {
 	            $result = $builder->getQuery()->execute();
 	            

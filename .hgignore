@@ -16,3 +16,5 @@ public/upload
 ^\.pydevproject
 ^\.settings/org.eclipse.php.core.prefs
 apps/library/Thirdparty/Sharding/config.php
+composer.lock
+vendor/

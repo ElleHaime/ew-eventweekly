@@ -111,6 +111,14 @@ class SearchController extends \Core\Controller
 
         // if income data not empty
         if (!empty($postData)) {
+            echo "<pre>";
+            var_dump($postData);
+            $postData['searchLocationField'] = 1;
+            $postData = [];
+            $eventGrid = new \Frontend\Models\Search\Grid\Event($postData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+            $results = $eventGrid->getDataWithRenderValues();
+            var_dump($results);
+            die('sdfs');
             $this->view->setVar('userSearch', $postData);
 
             // add search condition by title

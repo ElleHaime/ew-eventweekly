@@ -33,9 +33,7 @@ trait Phalcon
 		
 		if ($relation = $this -> isShardRelation()) {
 			$this -> setShardByParent($relation);
-		} 
-				
-		parent::onConstruct();
+		}
 	}
 
 	

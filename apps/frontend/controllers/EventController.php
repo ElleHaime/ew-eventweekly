@@ -75,6 +75,7 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$loc = $this->session->get('location');
     	$event = new Event();
+
     	$request = $this -> request -> getQuery();
     	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
     		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);

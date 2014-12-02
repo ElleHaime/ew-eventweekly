@@ -17,6 +17,7 @@ class Application extends BaseApplication
 	private $_config 				= null;
 	private $_facebookConfig		= null;
 	private $_databaseConfig 		= null;
+    private $_elasticConfig 		= null;
 	private $_router 				= null;
 	protected $_loader				= null;
 	protected $_annotations			= null;
@@ -30,11 +31,13 @@ class Application extends BaseApplication
 		include_once(CONFIG_SOURCE);
 		include_once(DATABASE_CONFIG_SOURCE);
 		include_once(FACEBOOK_CONFIG_SOURCE);
+        include_once(SERVICE_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
 		$this -> _databaseConfigWrite = new Config($cfg_database_master);
 		$this -> _databaseConfigRead = new Config($cfg_database_slave);
 		$this -> _facebookConfig = new Config($cfg_facebook);
+        $this -> _elasticConfig = new Config($cfg_elastic);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
@@ -63,6 +66,7 @@ class Application extends BaseApplication
 		$this -> _initUrl($di);
 		$this -> _initCache($di);
 		$this -> _initModules($di);
+        $this -> _initElastic($di);
 
 		$di -> setShared('app', $this);
 	}
@@ -292,4 +296,16 @@ class Application extends BaseApplication
 
 		$di -> set('cacheData', $cache);
 	}
+
+    protected function _initElastic(\Phalcon\DI $di)
+    {
+        $params = $this -> _elasticConfig -> toArray();
+        $di->set('elastic', function() use ($params, $di) {
+            $config = [
+                'index' => $params['index'],
+                'connections' => $params['connections']
+            ];
+            return new \Engine\Search\Elasticsearch\Client($config);
+        });
+    }
 }
