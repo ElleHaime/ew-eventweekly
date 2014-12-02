@@ -5,47 +5,32 @@ define('eventSliderControl',
 		function eventSliderControl($, utils, idangerous) 
 		{
 			var self = this;
-			
-			self.settings = {
-				sliderContainer: '.js-b-gallery-slider',
-				sliderContainerClass: 'swiper-container',
-				sliderElem: '.js-b-gallery-slider-slide',
-				sliderElemClass: 'swiper-slide',
-				sliderArrowPrev: '.js-b-gallery-arrow-prev',
-				sliderArrowNext: '.js-b-gallery-arrow-next',
-			},
-			self.swipeGallery = null,
 
-			
-			self.init = function()
+			self.init = function(slidingOptions, controlOptions, swiperOptions)
 			{
-				$(self.settings.sliderContainer).addClass(self.settings.sliderContainerClass);
-			    $(self.settings.sliderElem)
-			        .addClass(self.settings.sliderElemClass)
+				self.settings = controlOptions;
+				
+				$(controlOptions.sliderContainer).addClass(controlOptions.sliderContainerClass);
+			    $(controlOptions.sliderElem)
+			        .addClass(controlOptions.sliderElemClass)
 			        .wrapAll("<div class='swiper-wrapper'></div>");
 
-			    self.swipeGallery = new Swiper(self.settings.sliderContainer, {
-			        calculateHeight: true,
-			        // cssWidthAndHeight: true,
-			        mousewheelControl: true,
-			        mousewheelControlForceToAxis: true,
-			        preventLinksPropagation: true,
-			        slidesPerView: 'auto'
-			    });
+			    swipeGallery = new Swiper(self.settings.sliderContainer, swiperOptions);
 			    
-				self.bindClicks();
+			    if (slidingOptions.sliderPagingType == 'arrow') {
+			    	self.bindArrowClicks(swipeGallery);
+			    } 
 			},
 			
-			
-			self.bindClicks = function()
+			self.bindArrowClicks = function(swipeGallery)
 			{
 			    $(self.settings.sliderArrowPrev).on('click', function(e){
-			        self.swipeGallery.swipePrev();
+			        swipeGallery.swipePrev();
 			        e.preventDefault();
 			    });
 
 			    $(self.settings.sliderArrowNext).on('click', function(e){
-			    	self.swipeGallery.swipeNext();
+			    	swipeGallery.swipeNext();
 			        e.preventDefault();
 			    }); 
 			}

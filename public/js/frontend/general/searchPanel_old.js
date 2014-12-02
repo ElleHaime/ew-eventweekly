@@ -10,18 +10,20 @@ define('frontSearchPanel',
         settings: {
             searchFormId: 'topSearchForm',
             searchForm: '#topSearchForm',
-            searchSubmit: '#searchSubmit',
+            switchStateBtnBlock: '.switch-btn',
+            searchCategoriesTypeBlock: '.searchCategoriesTypeBlock',
+            searchSubmitOnList: '#searchSubmitOnList',
+            searchSubmitOnMap: '#searchSubmitOnMap',
+            chooseCatBtn: '.searchChooseCatBtn',
+            categoriesBlock: '.hidden-categories',
             searchLocation: '#searchLocationField',
             searchLocationLatMin: '#searchLocationLatMin',
             searchLocationLngMin: '#searchLocationLngMin',
             searchLocationLatMax: '#searchLocationLatMax',
             searchLocationLngMax: '#searchLocationLngMax',
-            searchTypeResult: '#searchTypeResult',
-            searchTypeResultMenu: '#searchTypeResultMenu',
-            searchTypeResultCurrent: '#searchTypeResultCurrent',
-            startDatePicker: '#js-selectDateTime',
-            startDateField: '#searchPanel-startDate',
-            startDateInput: '#searchStartDate',
+            startDatePicker: '.startDatePicker',
+            endDatePicker: '.endDatePicker',
+            privatePresetUrl: '/member/get-private-preset',
             isLoggedUser: '#isLogged'
         },
 
@@ -62,6 +64,8 @@ define('frontSearchPanel',
             $this.settings = _.extend($this.settings, options);
 
             // Get search type
+            //$this.__state = $($this.settings.searchForm).find($this.settings.switchStateBtnBlock).find('.active').data('type');
+            $this.__checkSearchState();
             $this.__locationChosen = $($this.settings.searchLocation).data('locationChosen');
 
             // Bind click on form
@@ -82,8 +86,14 @@ define('frontSearchPanel',
             var body = $('body');
 
             body.on('submit', $this.settings.searchForm, $this.__submitHandler());
-            body.on('click', $this.settings.searchSubmit, $this.__submitBtnHandler());
-         
+
+            body.on('click', $this.settings.searchSubmitOnList, $this.__submitBtnHandler());
+            body.on('click', $this.settings.searchSubmitOnMap, $this.__submitBtnHandler());
+
+            body.on('click', $this.settings.chooseCatBtn, $this.__categoryClickHandler());
+
+            body.on('click', $this.settings.switchStateBtnBlock+' button', $this.__switchSearchTypeHandler());
+
             // add address autocomplete
             var list = utils.addressAutocomplete($($this.settings.searchLocation)[0]);
 
@@ -107,19 +117,16 @@ define('frontSearchPanel',
                 autoclose: true,
                 minView: 2
             });
-            
-            startDate.on('changeDate', function(e) {
-            	selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
-            	selDay = (0+(e.date.getDate()).toString()).slice(-2);
-            	
-            	selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
-            	$($this.settings.startDateField).html(selectedDate);
-            	$($this.settings.startDateInput).val(selectedDate);
-            	
+
+            var endDate = $($this.settings.endDatePicker).datetimepicker({
+                format: 'yyyy-mm-dd',
+                pickDate: false,
+                autoclose: true,
+                minView: 2
             });
             
-            $($this.settings.searchTypeResultMenu + ' li').click(function(e) {
-            	$this.__switchResultTypeHandler(this);
+            startDate.on('changeDate', function(e) {
+            	endDate.focus();
             });
         },
 
@@ -144,20 +151,26 @@ define('frontSearchPanel',
          */
         __submitBtnHandler: function() {
             var $this = this;
-            
             return function(event) {
                 event.preventDefault();
+
 
                 if (!_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
                     noty({text: 'You must chose location from list!', type: 'error'});
                     return false;
                 }
 
+
                 /**
                  * @type {jQuery}
                  */
                 var form = $($this.settings.searchForm);
                 var nativeForm = document.getElementById($this.settings.searchFormId);
+
+                // Check if at least one category chosen
+                if (form.find('input[type="checkbox"]:checked').length > 0) {
+                    $this.__formFilled = true;
+                }
 
                 // Check if at least one input field filled
                 var textInputs = form.find('input[type="text"]');
@@ -171,11 +184,11 @@ define('frontSearchPanel',
                 // If no option was chosen show notification or submit form
                 if ($this.__formFilled === false) {
                     noty({text: 'Please choose at least one option!', type: 'error'});
-                } else {
-                    if ($($this.settings.searchTypeResult).val().toLowerCase() == 'map') {
+                }else {
+                    if ($(this).val() == 'in_map') {
                         nativeForm.searchType.value = "in_map";
                         nativeForm.action = nativeForm.action+'/map';
-                    } else {
+                    }else {
                         nativeForm.action = nativeForm.action+'/list';
                     }
                     nativeForm.submit();
@@ -203,8 +216,18 @@ define('frontSearchPanel',
                 }
             }
         },
-
         
+        __checkSearchState: function() {
+            var $this = this;
+            
+            if($($this.settings.isLoggedUser).val() == 1) {
+            	 $this.__state = 'private';
+            	 $this.__switchPreset();
+            } else {
+            	$this.__state = 'global';
+            }
+        },
+
         __switchSearchTypeHandler: function() {
             var $this = this;
             
@@ -216,23 +239,6 @@ define('frontSearchPanel',
 
                 $this.__switchPreset();
             }
-        },
-        
-        
-        __switchResultTypeHandler: function(typeObj) {
-        	var $this = this;
-
-        	selectedType = $(typeObj).find('a').data('value');
-        	$($this.settings.searchTypeResult).val(selectedType);
-        	$($this.settings.searchTypeResultCurrent).html(selectedType);
-        	        	
-        	if (selectedType == 'Map') {
-            	$(typeObj).find('a').data('value', 'List');
-            	$(typeObj).find('a').text('List');
-        	} else {
-            	$(typeObj).find('a').data('value', 'Map');
-            	$(typeObj).find('a').text('Map');
-        	}
         },
         
         
@@ -326,6 +332,24 @@ define('frontSearchPanel',
             _.each($this.__globalCategories, function(elem) {
                 $(elem).trigger('click');
             });
+
+            $this.__switchSearchBtnVisible();
+        },
+
+        __switchSearchBtnVisible: function(showMapBtn) {
+            var $this = this, mapBtn = $($this.settings.searchSubmitOnMap);
+
+            if (($this.__state == 'private' && !mapBtn.is(":visible")) || showMapBtn === true) {
+                $($this.settings.searchSubmitOnList).attr('style', 'width: 49%');
+                mapBtn.removeAttr('style');
+            }else if ($this.__state == 'global' && mapBtn.is(":visible")) {
+                $($this.settings.searchSubmitOnList).attr('style', 'width: 100%');
+                mapBtn.attr('style', 'display: none;');
+            }
+        },
+        
+        __switchDatetimeCursor: function() {
+        	alert(123213213);
         },
         
         __setSearchLocation: function(latMin, lngMin, latMax, lngMax) {
@@ -339,6 +363,8 @@ define('frontSearchPanel',
 
             $($this.settings.searchLocation).attr('data-location-chosen', true);
             $this.__locationChosen = true;
+
+            $this.__switchSearchBtnVisible(true);
         },
         
         __setSearchLocationCity: function(city, country) {

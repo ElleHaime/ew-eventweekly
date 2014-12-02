@@ -65,7 +65,7 @@ class SearchController extends \Core\Controller
         $Event = new Event();
         $needTags = false;
         $postData = $this->request->getQuery();
-//_U::dump($postData, true);
+
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
@@ -131,18 +131,18 @@ class SearchController extends \Core\Controller
                     ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
                         $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
                 {
-                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
-                    		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
-                    		AND '.$postData['searchLocationLngMax']); 
-                	
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
                     $loc = new Location();
                     $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-/*                    if ($newLocation) {
+                    if ($newLocation) {
                     	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
-                    } */
+                    } else {
+                    	$Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
+                    		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
+                    		AND '.$postData['searchLocationLngMax']);
+                    }
 
                     $this->session->set('location', $newLocation);
 
@@ -195,8 +195,8 @@ class SearchController extends \Core\Controller
             $Event->addOrder('Frontend\Models\Event.start_date ASC');
 
             // search type
-            if ($elemExists('searchType')) {
-                if ($postData['searchType'] == 'in_map') {
+            if ($elemExists('searchTypeResult')) {
+                if (strtolower($postData['searchTypeResult']) == 'map') {
 
                 	if ($elemExists('searchTag')) {
 						$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34,67)');
@@ -278,6 +278,7 @@ class SearchController extends \Core\Controller
                         $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
                         								   false, false, false, true, true, $needTags);
                     }
+                  
                     $result = $fetchedData->items;
                     
                     unset($fetchedData->items);

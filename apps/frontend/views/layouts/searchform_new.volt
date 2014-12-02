@@ -12,7 +12,7 @@
 						        {% else %}
 						            {% set searchTitle = '' %}
 						        {% endif %}
-						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'Title', 'value': searchTitle}) }}
+						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'Event or venue...', 'value': searchTitle}) }}
 							</div>
 							
 							<!-- search by location -->
@@ -20,10 +20,12 @@
 								<i class="fa fa-map-marker"></i>
 								{% if userSearch is defined and userSearch['searchLocation'] is defined %}
 						            {% set searchLocation = userSearch['searchLocation'] %}
+						            {% set searchLocationPlaceholder = userSearch['searchLocation'] %}
 						        {% else %}
 						            {% set searchLocation = '' %}
+						            {% set searchLocationPlaceholder = 'Dublin' %}
 						        {% endif %}
-						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="Location. Current value is your location" value="{{ searchLocation }}"/>
+						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ searchLocation }}"/>
 						        
 				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
 						            {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}
@@ -68,9 +70,9 @@
 										<li>
 											<a role="menuitem"  tabindex="-1" href="#">Event</a>
 										</li>
-										<li>
+										<!-- li>
 											<a role="menuitem" tabindex="-1" href="#">Venues</a>
-										</li>
+										</li -->
 									</ul>
 								</div>
 							</div>
@@ -83,38 +85,47 @@
 								  	 {% if  userSearch is defined and userSearch['searchStartDate'] is defined %}
 						                {% set searchStartDate = userSearch['searchStartDate'] %}
 						            {% else %}
-						                {% set searchStartDate = '' %}
+						                {% set searchStartDate = date('Y-m-d') %}
 						            {% endif %}
-								  	22 Sep
+						            <span id="searchPanel-startDate" name="start_date">{{ searchStartDate }}</span>
+								  	{{ searchForm.render('searchStartDate', {'value': searchStartDate}) }}
 								  </a>
 								</div>
 							</div>
 							
 							<!-- map dropdown -->
 							<div class="filters-form__item">
+							 	{% if userSearch['searchTypeResult'] is defined %}
+						            {% set searchTypeResult = userSearch['searchTypeResult'] %}
+						        {% else %}
+						            {% set searchTypeResult = 'List' %}
+						        {% endif %}
 								<div class="dropdown">
 									<!-- button -->
 									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
 										<i class="fa fa-globe"></i>
-										List <span class="caret"></span>
+										<span id="searchTypeResultCurrent">{{ searchTypeResult }}</span>
+										<span class="caret"></span>
 									</a>
 									
 									<!-- dropdown -->
-									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
-										<li>
-											<a role="menuitem"  tabindex="-1" href="#">Map</a>
-										</li>
-										<li>
-											<a role="menuitem" tabindex="-1" href="#">List</a>
-										</li>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType" id="searchTypeResultMenu">
+										{% for index, type in searchTypes%}
+											{% if type != searchTypeResult %}
+												<li>
+													<a role="menuitem" tabindex="-1" data-value="{{ type }}">{{ type }}</a>
+												</li>
+											{% endif %}
+										{% endfor %}
 									</ul>
+									{{ searchForm.render('searchTypeResult', {'value': searchTypeResult }) }}
 								</div>
 							</div>
 
 							<div class="filters-form__item filters-form__divider"></div>
 
 							<div class="filters-form__item">
-								<button href="#" class="filters-form__button">Show results</button>
+								<button type="submit" id="searchSubmit" class="filters-form__button">Show results</button>
 							</div>
 
 						</div>

@@ -6,5 +6,4 @@ use Objects\EventImage as EventImageObject;
 
 class EventImage extends EventImageObject
 {
-
-}
+}	
