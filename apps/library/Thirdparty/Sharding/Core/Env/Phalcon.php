@@ -36,7 +36,7 @@ trait Phalcon
 			$this -> setShardByParent($relation);
 		} 
 		
-		parent::onConstruct();
+		//parent::onConstruct();
 	}
 
 	

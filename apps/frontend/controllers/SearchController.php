@@ -8,7 +8,8 @@ use Frontend\Form\SearchForm,
     Frontend\Models\Category,
     Frontend\Models\Location,
     Frontend\Models\Event,
-    Core\Utils as _U;
+    Core\Utils as _U,
+    Objects\Cron as Cron;
 
 /**
  * @RoutePrefix('/')
@@ -27,15 +28,15 @@ class SearchController extends \Core\Controller
     {
     	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
             $newTask = null;
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
+            $taskSetted = Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
             
             if ($taskSetted -> count() > 0) {
                 $tsk = $taskSetted -> getLast();
                 if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
-                    $newTask = new \Objects\Cron();
+                    $newTask = new Cron();
                 }
             } else {
-                $newTask = new \Objects\Cron();
+                $newTask = new Cron();
             }
 
             if ($newTask) {
@@ -111,6 +112,7 @@ class SearchController extends \Core\Controller
 
         // if income data not empty
         if (!empty($postData)) {
+        
             echo "<pre>";
             var_dump($postData);
             $postData['searchLocationField'] = 1;
@@ -119,6 +121,7 @@ class SearchController extends \Core\Controller
             $results = $eventGrid->getDataWithRenderValues();
             var_dump($results);
             die('sdfs');
+            
             $this->view->setVar('userSearch', $postData);
 
             // add search condition by title
