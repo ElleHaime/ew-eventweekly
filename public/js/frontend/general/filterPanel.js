@@ -8,40 +8,62 @@ define('frontFilterPanel',
 				boxCheckAll: '#check-all',
 				boxUncheckAll: '#uncheck-all',
 				boxDefaultChoise: '#default-choise',
-				isLogged: '#isLogged'
+				isLogged: '#isLogged',
+				overlayBlock: '#filter-panel-overlay',
+				filterPanel: '#filters',
+				categoryBox: '.userFilter-category',
+				categoryExpander: '.userFilter-category-expander',
+				tagBox: '.userFilter-tag',
+				tagBlock: '.userTag-subfilters'
 			},
 			panelState: null,
 			panelWidth: '390px',
+			expandClass: 'categories-accordion__arrow--is-expanded',
 
 			
 			init: function() {
 				this.__bindClicks();
 			},
 			
+			
 			__bindClicks: function() {
+				var $this = this;
+				
 				$(this.settings.btnSwitchPanel).click(function(e) {
-					this.__switchPanel();
+					$this.__switchPanel();
 				});
 				
 				$(this.settings.boxCheckAll).click(function(e) {
-					this.__checkOptions();
+					$this.__checkOptions();
 				});
 				
 				$(this.settings.boxCheckAll).click(function(e) {
-					this.__uncheckOptions();
+					$this.__uncheckOptions();
 				});
 				
 				$(this.settings.boxDefaultChoise).click(function(e) {
-					this.__applyPersonalize();
+					$this.__applyPersonalize();
 				});
 			},
 			
 			__switchPanel: function() {
-				
+				if (!this.panelState) {
+					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
+					$(this.settings.overlayBlock).show();
+					$(this.settings.filterPanel).show();
+					
+					this.panelState = 'active';
+				} else {
+					$(this.settings.btnSwitchPanel).css('left', '');
+					$(this.settings.overlayBlock).hide();
+					$(this.settings.filterPanel).hide();
+					
+					this.panelState = null;
+				}
 			},
 			
 			__applyPersonalize: function() {
-				if ()
+				
 			},
 			
 			__checkOptions: function() {

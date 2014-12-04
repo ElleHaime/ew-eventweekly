@@ -12,83 +12,40 @@
 
 				<div class="categories-accordion">
 
-				<!-- accordion item -->
-					<div class="categories-accordion__item">
-						<div class="categories-accordion__head">
-							<div class="categories-accordion__line"></div>
+				{% for filter, category in userFilters %}
 
-							<div class="form-checkbox">
-								<input type="checkbox" id="t1" checked> 
-								<label for="t1"><span><span></span></span>Music</label>
+					<!-- accordion item -->
+						<div class="categories-accordion__item">
+							<div class="categories-accordion__head">
+								<div class="categories-accordion__line"></div>
+	
+								<div class="form-checkbox">
+									<input type="checkbox" id="tag-{{ category['id']}}" class="userFilter-category" checked> 
+									<label for="t1"><span><span></span></span>{{ category['name'] }}</label>
+								</div>
+	
+								<a href="#" class="categories-accordion__arrow" id="blockfilter-{{ category['id'] }}">
+									<i class="icon"></i> Expand
+								</a>
 							</div>
-
-							<!-- add class 'categories-accordion__arrow--is-expanded' when accordion is open -->
-							<a href="#" class="categories-accordion__arrow 
-							categories-accordion__arrow--is-expanded">
-								<i class="icon"></i> Expand
-							</a>
+	
+							{% if category['tags'] is not empty %}
+							<!-- list of checkboxes -->
+									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-{{ category['id'] }}" style="display:none;">
+										{% for subfilter, tag in category['tags'] %}									
+											<div class="form-checkbox pure-u-1-2">
+												<input type="checkbox" id="tag-{{ tag['id']}}" data-category-id="{{ tag['category_id'] }}" class="userFilter-tag" checked> 
+												<label for="t1" title="{{ tag['name'] }}"><span><span></span></span>{{ tag['name']}}</label>
+											</div>
+										{% endfor %}
+									</div>
+							{% endif %}
 						</div>
-
-					<!-- list of checkboxes -->
-						<div class="categories-accordion__body">
-							<div class="form-checkbox pure-u-1-2">
-								<input type="checkbox" id="t1"> 
-								<label for="t1"><span><span></span></span>Music</label>
-							</div>
-
-							<div class="form-checkbox pure-u-1-2">
-								<input type="checkbox" id="t2"> 
-								<label for="t1"><span><span></span></span>Music</label>
-							</div>
-
-							<div class="form-checkbox  pure-u-1-2">
-								<input type="checkbox" id="t3"> 
-								<label for="t1"><span><span></span></span>Music VeryLOngText</label>
-							</div>
-
-						</div>
-					</div>
-
-
-
-				<!-- accordion item -->
-					<div class="categories-accordion__item">
-						<div class="categories-accordion__head">
-							<div class="categories-accordion__line"></div>
-
-							<div class="form-checkbox">
-								<input type="checkbox" id="t1"> 
-								<label for="t1"><span><span></span></span>Music</label>
-							</div>
-
-							<a href="#" class="categories-accordion__arrow">
-								<i class="icon"></i> Expand
-							</a>
-						</div>
-
-					<!-- list of checkboxes -->
-						<div class="categories-accordion__body is-hidden">
-							<div class="form-checkbox pure-u-1-2">
-								<input type="checkbox" id="t1"> 
-								<label for="t1"><span><span></span></span>Music</label>
-							</div>
-
-							<div class="form-checkbox pure-u-1-2">
-								<input type="checkbox" id="t2"> 
-								<label for="t1"><span><span></span></span>Music</label>
-							</div>
-
-							<div class="form-checkbox  pure-u-1-2">
-								<input type="checkbox" id="t3"> 
-								<label for="t1"><span><span></span></span>Music VeryLOngText</label>
-							</div>
-
-						</div>
-					</div>
-					
+						
+					{% endfor %}
 
 				</div>
 			</div>
 		</aside>
 		
-		<div class="overlay" style="display:none;"></div>
+		<div class="overlay" style="display:none;" id="filter-panel-overlay"></div>
