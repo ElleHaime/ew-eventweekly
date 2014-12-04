@@ -24,14 +24,14 @@
 									<label for="t1"><span><span></span></span>{{ category['name'] }}</label>
 								</div>
 	
-								<a href="#" class="categories-accordion__arrow" id="blockfilter-{{ category['id'] }}">
+								<a href="#" class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="blockfilter-{{ category['id'] }}">
 									<i class="icon"></i> Expand
 								</a>
 							</div>
 	
 							{% if category['tags'] is not empty %}
 							<!-- list of checkboxes -->
-									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-{{ category['id'] }}" style="display:none;">
+									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-{{ category['id'] }}">
 										{% for subfilter, tag in category['tags'] %}									
 											<div class="form-checkbox pure-u-1-2">
 												<input type="checkbox" id="tag-{{ tag['id']}}" data-category-id="{{ tag['category_id'] }}" class="userFilter-tag" checked> 
