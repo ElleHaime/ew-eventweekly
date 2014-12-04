@@ -42,6 +42,7 @@ require.config({
 		'signupControl': 'frontend/signup/signupControl',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
+		'frontFilterPanel': 'frontend/general/filterPanel',
 		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
 		'frontEventListControl': 'frontend/event/controls/eventListControl',
 		'frontEventInviteFriend': 'frontend/event/controls/eventInviteFriend',
@@ -161,12 +162,17 @@ require.config({
         
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){
-            $('.tooltip-text').tooltip();
-            frontSearchPanel.init();
-            frontTopPanel.init({
-                searchCityBlock: '.searchCityBlock'
-            });
-        });
+        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
+      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
+      		{
+	            $('.tooltip-text').tooltip();
+	            
+	            frontSearchPanel.init();
+	            frontFilterPanel.init();
+	            frontTopPanel.init({
+	                searchCityBlock: '.searchCityBlock'
+	            });
+        	}
+       );
     }	
 });

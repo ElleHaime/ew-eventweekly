@@ -1,3 +1,7 @@
+		<div class="ew-filter-link" id="swithFilterPanel">
+			<a href="#" class="Show Filter">Show Filter</a>	
+		</div>
+		
 		<aside id="filters" class="b-filters sidebar-filters" style="display:none">
 			<div class="b-filters__wrapper">
 				<div class="b-filters__buttons">
