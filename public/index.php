@@ -27,6 +27,12 @@ if (!defined('FACEBOOK_CONFIG_SOURCE')) {
 if (!defined('SERVICE_CONFIG_SOURCE')) {
     define('SERVICE_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'service.php');
 }
+if (!defined('SHARDING_CONFIG_SOURCE')) {
+    define('SHARDING_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'sharding.php');
+}
+if (!defined('SHARDING_SERVICE_CONFIG_SOURCE')) {
+    define('SHARDING_SERVICE_CONFIG_SOURCE', ROOT_APP . 'config' . SEP . 'shardingService.php');
+}
 require_once VENDOR_PATH."/autoload.php";
 require_once ROOT_LIB . 'Application.php';
 

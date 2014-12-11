@@ -16,16 +16,11 @@ class Loader
 	public $shardModels		= [];
 	
 	
-	public function __construct()
+	public function __construct($baseConfig, $serviceConfig)
 	{
-		$confpath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'config.php';
-		$config = include $confpath;
-		$this -> config = json_decode(json_encode($config), FALSE);
-		
-		$confpath = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'serviceConfig.php';
-		$config = include $confpath;
-		$this -> serviceConfig = json_decode(json_encode($config), FALSE);
-		
+		$this -> config = $baseConfig;
+		$this -> serviceConfig = $serviceConfig;
+
 		$this -> init();
 	}
 	

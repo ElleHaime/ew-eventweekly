@@ -37,39 +37,19 @@ trait THelper
 			$this -> modeStrategy -> selectShardById($shardId);
 				
 			self::$targetShardCriteria = $this -> modeStrategy -> getCriteria();
+			
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
+			$this -> setRelationShard();
 
 			$this -> setDestinationSource();
 		} else {
 			$this -> useDefaultConnection();
 		}
+		
 		$this -> setReadDestinationDb();
 		$this -> setWriteDestinationDb();
-	}
-	
-	
-	/**
-	 * Select destination shard by parfent shard id
-	 * for related tables
-	 *
-	 * @param int $objectId
-	 * @access public
-	 */
-	public function setShardByParentId($objectId, $relation)
-	{
-		$this -> setShardById($objectId);
-		
-		$parentDb = $this -> destinationDb;
-		$parentTable = $this -> destinationTable;
-		$parentTablePrefix = $this -> modeStrategy -> getShardModel() -> shards -> $parentDb -> baseTablePrefix;
-		$relationTablePrefix = $relation -> baseTablePrefix;
-		$relationTableName = str_replace($parentTablePrefix, $relationTablePrefix, $parentTable);
-		
-		$this -> destinationTable = $relationTableName;
-		
-		$this -> setDestinationSource();
 	}
 	
 
@@ -94,9 +74,11 @@ trait THelper
 	
 		if ($this -> modeStrategy) {
 			$this -> modeStrategy -> selectShardByCriteria(self::$targetShardCriteria);
+			
 			$this -> destinationId = $this -> modeStrategy -> getId();
 			$this -> destinationDb = $this -> modeStrategy -> getDbName();
 			$this -> destinationTable = $this -> modeStrategy -> getTableName();
+			$this -> setRelationShard();
 
 			$this -> setDestinationSource();
 		} else {
@@ -227,7 +209,7 @@ trait THelper
 	public function getRelationByObject()
 	{
 		$className = get_class($this);
-	
+		
 		foreach ($this -> app -> config -> shardModels as $model => $data) {
 			if (isset($data -> relations)) {
 				foreach ($data -> relations as $obj => $rel) {
@@ -267,12 +249,22 @@ trait THelper
 					}
 				}
 			}
-			
 		}
 	
 		return false;
 	}
 	
+	
+	protected function setRelationShard()
+	{
+		if ($relation = $this -> getRelationByObject()) {
+			$parts = explode('_', $this -> destinationTable);
+			$sep = $this -> app -> config -> shardIdSeparator;
+			$this -> destinationTable = implode($sep . $relation -> relationName . $sep, $parts);
+		} 
+		
+		return;
+	} 
 
 	
 	public function unsetNeedShard($param = false)

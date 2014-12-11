@@ -19,6 +19,8 @@ class Application extends BaseApplication
 	private $_databaseConfig 		= null;
     private $_elasticConfig 		= null;
 	private $_router 				= null;
+	private $_shardingConfig		= null;
+	private $_shardingServiceConfig	= null;
 	protected $_loader				= null;
 	protected $_annotations			= null;
 	public static $defModule		= 'frontend';
@@ -32,16 +34,22 @@ class Application extends BaseApplication
 		include_once(DATABASE_CONFIG_SOURCE);
 		include_once(FACEBOOK_CONFIG_SOURCE);
         include_once(SERVICE_CONFIG_SOURCE);
+        include_once(SHARDING_CONFIG_SOURCE);
+        include_once(SHARDING_SERVICE_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
 		$this -> _databaseConfigWrite = new Config($cfg_database_master);
 		$this -> _databaseConfigRead = new Config($cfg_database_slave);
 		$this -> _facebookConfig = new Config($cfg_facebook);
         $this -> _elasticConfig = new Config($cfg_elastic);
+        $this -> _shardingConfig = new Config($cfg_sharding);
+        $this -> _shardingServiceConfig = new Config($cfg_sharding_service);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
 		$di -> setShared('facebook_config', $this -> _facebookConfig);
+		$di -> setShared('shardingConfig', $this -> _shardingConfig);
+		$di -> setShared('shardingServiceConfig', $this -> _shardingServiceConfig);
 
 		if ($this -> _config -> application -> defaultModule) {
 			self::$defModule = $this -> _config -> application -> defaultModule;

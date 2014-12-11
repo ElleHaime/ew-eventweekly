@@ -30,13 +30,20 @@ trait Phalcon
 	
 	public function onConstruct()
 	{
-		$this -> app = new Loader();
-
+		if (!$config = $this -> getDi() -> get('shardingConfig')) {
+			throw new Exception('Sharding config not found');
+			return false; 
+		}
+		if (!$serviceConfig = $this -> getDi() -> get('shardingServiceConfig')) {
+			throw new Exception('Sharding service config not found');
+			return false; 
+		}
+		
+		$this -> app = new Loader($config, $serviceConfig);
+		
 		if ($relation = $this -> getRelationByObject()) {
 			$this -> setShardByParent($relation);
-		} 
-		
-		//parent::onConstruct();
+		}  
 	}
 
 	
@@ -188,8 +195,6 @@ trait Phalcon
 	{
 		if (!is_null($this -> id) && !self::$convertationMode && $this -> getRelationByProperty($property)) {
 			$this -> setShardById($this -> id);
-			$parts = explode('_', $this -> destinationTable);
-			$this -> destinationTable = implode('_' . $property . '_', $parts);
 		} 
 		
 		return parent::__get($property);
@@ -208,8 +213,6 @@ trait Phalcon
 	{
 		if (!is_null($this -> id) && !self::$convertationMode) {
 			$this -> setShardById($this -> id);
-			$parts = explode('_', $this -> destinationTable);
-			$this -> destinationTable = implode('_' . $property . '_', $parts);
 		} 
 	
 		return parent::__isset($property);
@@ -225,7 +228,7 @@ trait Phalcon
 		$trace = debug_backtrace();
 		$callsNum = count($trace);
 		$callArgs = false;
-			
+				
 		for ($i = 0; $i < $callsNum; $i++) {
 			if ($trace[$i]['function'] == 'getRelationRecords') {
 				$callArgs = $trace[$i]['args'];
@@ -235,12 +238,11 @@ trait Phalcon
 		
 		if ($callArgs) {		
 			$parent = $this -> relationOf;
-			
 			$parentPrimary = $this -> app -> config -> shardModels -> $parent -> primary;
 			$parentId = $callArgs[2] -> $parentPrimary;
 			
 			if ($parentId) {
-				$this -> setShardByParentId($parentId, $relation);
+				$this -> setShardById($parentId);
 			}
 		} else {
 			$this -> setShardByDefault($relation);

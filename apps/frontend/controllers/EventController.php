@@ -287,6 +287,9 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
+    	/*$e = new EventCategory();
+    	$e -> setShardById($eventId);
+_U::dump($e -> getShardTable());*/     	
     	if (isset($_SERVER['HTTP_REFERER'])) {
 			$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
     	} else {
@@ -305,6 +308,7 @@ class EventController extends \Core\Controllers\CrudController
     	$ev = new Event;
     	$ev -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
+//_U::dump($event -> image -> toArray());
 
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {
