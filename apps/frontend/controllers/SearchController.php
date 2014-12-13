@@ -198,12 +198,13 @@ class SearchController extends \Core\Controller
 						$queryData['searchTag'] = $filters['tag']['value']; 
 					}
 				}
-			} 
-_U::dump($queryData, true);                    
+			}
+            _U::dump($queryData, true);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			$results = $eventGrid->getDataWithRenderValues();
-var_dump($results);
-			die('qwe');
+            _U::dump($results['all_count'], true);
+            _U::dump($results, true);
+			die('die');
 			
 			$countResults = $results['all_count'];
                     

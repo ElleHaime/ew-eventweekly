@@ -62,31 +62,33 @@ class Event extends Grid
      */
     protected function _initColumns()
     {
+        $this->setStrictMode(false);
+
         $this->_columns = [
             'id' => new Column\Primary('Id'),
             'name' => new Column\Text('Name', 'name'),
-            'status' => new Column\Collection('Status', 'event_status', [1 => 'Active', 2 => 'Unpublished', 3 => 'Hidden']),
-            'member' => new Column\JoinOne("Member", "\Event\Model\Member"),
-            'campaign' => new Column\JoinOne("Campaign", "\Event\Model\Campaign"),
-            'location' => new Column\JoinOne("Location", "\Event\Model\Location"),
-            'venue' => new Column\JoinOne("Venue", "\Event\Model\Venue"),
+            //'status' => new Column\Collection('Status', 'event_status', [1 => 'Active', 2 => 'Unpublished', 3 => 'Hidden']),
+            //'member' => new Column\JoinOne("Member", "\Event\Model\Member"),
+            //'campaign' => new Column\JoinOne("Campaign", "\Event\Model\Campaign"),
+            //'location' => new Column\JoinOne("Location", "\Event\Model\Location"),
+            //'venue' => new Column\JoinOne("Venue", "\Event\Model\Venue"),
             //'category' => new Column\JoinOne("Category", "\Event\Model\Category"),
             'member' => new Column\Numeric("Member", "member_id"),
             'campaign' => new Column\Numeric("Campaign", "campaign_id"),
             'location' => new Column\Numeric("Location", "location_id"),
-            'venue' => new Column\Numeric("Venue", "venue_id"),
-            'fb_uid' => new Column\Text('Facebook uid', 'fb_uid'),
-            'fb_creator_uid' => new Column\Text('Facebook creator uid', 'fb_creator_uid'),
+            //'venue' => new Column\Numeric("Venue", "venue_id"),
+            //'fb_uid' => new Column\Text('Facebook uid', 'fb_uid'),
+            //'fb_creator_uid' => new Column\Text('Facebook creator uid', 'fb_creator_uid'),
             'description' => new Column\Text('Description', 'description', false),
-            'tickets_url' => new Column\Text('tickets_url', 'tickets_url'),
+            //'tickets_url' => new Column\Text('tickets_url', 'tickets_url'),
             'start_date' => new Column\Date('Start date', 'start_date'),
-            'end_date' => new Column\Date('End date', 'end_date'),
-            'recurring' => new Column\Text('recurring', 'recurring'),
-            'event_fb_status' => new Column\Text('event_fb_status', 'event_fb_status'),
-            'address' => new Column\Text('Address', 'address'),
-            'latitude' => new Column\Text('latitude', 'latitude'),
-            'longitude' => new Column\Text('longitude', 'longitude'),
-            'logo' => new Column\Text('Logo', 'logo')
+            //'end_date' => new Column\Date('End date', 'end_date'),
+            //'recurring' => new Column\Text('recurring', 'recurring'),
+            //'event_fb_status' => new Column\Text('event_fb_status', 'event_fb_status'),
+            //'address' => new Column\Text('Address', 'address'),
+            //'latitude' => new Column\Text('latitude', 'latitude'),
+            //'longitude' => new Column\Text('longitude', 'longitude'),
+            //'logo' => new Column\Text('Logo', 'logo')
         
         ];
     }
@@ -109,6 +111,7 @@ class Event extends Grid
             'searchLocationField' => new Field\Join("Location", "\Frontend\Models\Search\Model\Location"),
             'searchCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
             'searchTitle' => new Field\Name("Name"),
+            'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
             'searchStartDate' => new Field\Date('Event start', null, null, Criteria::CRITERIA_MORE),
             'searchEndDate' => new Field\Date('Event start', null, null, Criteria::CRITERIA_LESS)
