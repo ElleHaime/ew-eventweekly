@@ -73,9 +73,9 @@ class Event extends Grid
             //'location' => new Column\JoinOne("Location", "\Event\Model\Location"),
             //'venue' => new Column\JoinOne("Venue", "\Event\Model\Venue"),
             //'category' => new Column\JoinOne("Category", "\Event\Model\Category"),
-            'member' => new Column\Numeric("Member", "member_id"),
-            'campaign' => new Column\Numeric("Campaign", "campaign_id"),
-            'location' => new Column\Numeric("Location", "location_id"),
+            'member' => new Column\Text("Member", "member_id"),
+            'campaign' => new Column\Text("Campaign", "campaign_id"),
+            'location' => new Column\Text("Location", "location_id"),
             //'venue' => new Column\Numeric("Venue", "venue_id"),
             //'fb_uid' => new Column\Text('Facebook uid', 'fb_uid'),
             //'fb_creator_uid' => new Column\Text('Facebook creator uid', 'fb_creator_uid'),
@@ -113,8 +113,8 @@ class Event extends Grid
             'searchTitle' => new Field\Name("Name"),
             'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
-            'searchStartDate' => new Field\Date('Event start', null, null, Criteria::CRITERIA_MORE),
-            'searchEndDate' => new Field\Date('Event start', null, null, Criteria::CRITERIA_LESS)
+            'searchStartDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_MORE),
+            'searchEndDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_LESS)
         ], null, 'get');
 
         //$tag = $this->_filter->getFieldByKey('tag');
