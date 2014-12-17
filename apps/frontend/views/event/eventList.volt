@@ -33,7 +33,7 @@
                                 {% endfor %}
                             {% else %}
                             	{% if event.category is defined %}
-                                	{% set catLight = event.category.getFirst().key %}
+                                	{% set catLight = event.category[0]|lower %}
                                 {% else %}
                                 	{% set catLight = "other" %}
                                 {% endif %}
@@ -68,14 +68,17 @@
                                                             <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
                                                         {% endif %}
                                                     {% endif %}
-                                                    -
-                                                    {% if event.end_date != '0000-00-00' %}
-                                                        <i class="icon-time"></i>
-                                                        <span class="date-start">{{ dateToFormat(event.end_date, '%d %b %Y') }}</span>
-                                                        {% if dateToFormat(event.end_date, '%R') != '00:00' %}
-                                                            ends at
-                                                            <span class="date-time">{{ dateToFormat(event.end_date, '%R') }}</span>
-                                                        {% endif %}
+
+                                                    {% if event.end_date is defined %}
+                                                    	- 
+                                                    	{% if event.end_date != '0000-00-00' %}
+	                                                        <i class="icon-time"></i>
+	                                                        <span class="date-start">{{ dateToFormat(event.end_date, '%d %b %Y') }}</span>
+	                                                        {% if dateToFormat(event.end_date, '%R') != '00:00' %}
+	                                                            ends at
+	                                                            <span class="date-time">{{ dateToFormat(event.end_date, '%R') }}</span>
+	                                                        {% endif %}
+	                                                    {% endif %}
                                                     {% endif %}
                                                 </div>
                                                 <p>
@@ -113,17 +116,17 @@
                                                 {% else %}
                                                     {% set eVenue = 'Undefined place' %}
                                                     {% if event.venue.address is empty %}
-                                                        {% if event.location.city is empty %}
+                                                        {% if event.location is empty %}
                                                             {% if event.address is empty %}
                                                                 {% set eVenue = 'Undefined place' %}
                                                             {% else %}
                                                                 {% set eVenue = event.address %}
                                                             {% endif %}
                                                         {% else %}
-                                                            {% set eVenue = event.location.city %}
+                                                            {% set eVenue = event.location %}
                                                         {% endif %}
                                                     {% else %}
-                                                        {% if event.location.city is defined %}
+                                                        {% if event.location is defined %}
                                                             {% set eVenue = event.location.city~', '~event.venue.name~', '~event.venue.address %}
                                                         {% else %}
                                                             {% set eVenue = event.venue.name~' '~event.venue.address %}
@@ -165,13 +168,13 @@
                         <ul>
                         
                         	{% if searchResultList is defined %}
-	                            {% if pagination.current > 1 %}
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.first }}">First</a></li>
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.current-1 }}">Prev</a></li>
+	                            {% if pageCurrent > 1 %}
+	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page=1">First</a></li>
+	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination['prev'] }}">Prev</a></li>
 	                            {% endif %}
-	                            {% if pagination.current < pagination.total_pages %}
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.current+1 }}">Next</a></li>
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination.total_pages }}">Last</a></li>
+	                            {% if pageCurrent < pageTotal %}
+	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination['next'] }}">Next</a></li>
+	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pageTotal }}">Last</a></li>
 	                            {% endif %}
 	                        {% else %}
 	                        	{% if pagination.current > 1 %}

@@ -143,7 +143,7 @@ class SearchController extends \Core\Controller
             } 
 
             // add search condition by dates
-            if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
+       /*     if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
                 $queryData['searchStartDate'] = $postData['searchStartDate'];
                 
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
@@ -170,7 +170,7 @@ class SearchController extends \Core\Controller
             		
             		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	} 
-            }
+            } */
 
 			if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
 				$queryData['searchCategory'] = $postData['searchCategory'];
@@ -199,48 +199,57 @@ class SearchController extends \Core\Controller
 					}
 				}
 			}
-            _U::dump($queryData, true);
+
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-			$results = $eventGrid->getDataWithRenderValues();
-            _U::dump($results['all_count'], true);
-            _U::dump($results, true);
-			die('die');
-			
-			$countResults = $results['all_count'];
-                    
-            // search type
+			//$results = $eventGrid->getDataWithRenderValues();
+
+			// search type
             if ($elemExists('searchType')) {
                 if ($postData['searchType'] == 'in_map') {
-                    
+					$results = $eventGrid->getData();
+			
                     foreach($results['data'] as $id => $event) {
-                    	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
-                    		$result[$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
+                    	$result[$event -> id] = (array)$event;
+
+                    	if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
+                    		$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
                     	} else {
-                    		$result[$id]['logo'] = $this -> config -> application -> defaultLogo;
+                    		$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
                     	}
                     }
-                    
-                    $countResults = count($result);
-                    $result = json_encode($results['data'], JSON_UNESCAPED_UNICODE);
+
+                    $result = json_encode($result, JSON_UNESCAPED_UNICODE);
+//_U::dump($this -> view -> getVar('location') -> toArray());                    
                 } else {
                     $page = $this->request->getQuery('page');
                     if (empty($page)) {
-                        $page = 1;
+                    	$eventGrid->setPage(1);
+                    } else {
+                    	$eventGrid->setPage($page);
                     }
+                    $results = $eventGrid->getData();
+
+                    foreach($results['data'] as $key => $value) {
+                    	$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+                    }
+                    
+	                if ($results['all_page'] > 1) {
+			            $this -> view -> setVar('pagination', $results['array_pages']);
+			            $this -> view -> setVar('pageCurrent', $results['page_now']);
+			            $this -> view -> setVar('pageTotal', $results['all_page']);
+			        }
                 }
             }
-
+            $countResults = $results['all_count'];
         }
-
+//_U::dump($results);
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
         }
 
         $this->view->setVar('list', $result);
         $this->view->setVar('eventsTotal', $countResults);
-        if (isset($fetchedData)) {
-            $this->view->setVar('pagination', $fetchedData);
-        }
+        
         
         if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
         	if (isset($fetchedData) && ($fetchedData -> current == $fetchedData -> total_pages)) {

@@ -76,19 +76,19 @@ class Event extends Grid
             'member' => new Column\Numeric("Member", "member_id"),
             'campaign' => new Column\Numeric("Campaign", "campaign_id"),
             'location' => new Column\Numeric("Location", "location_id"),
-            //'venue' => new Column\Numeric("Venue", "venue_id"),
-            //'fb_uid' => new Column\Text('Facebook uid', 'fb_uid'),
-            //'fb_creator_uid' => new Column\Text('Facebook creator uid', 'fb_creator_uid'),
+            'venue' => new Column\Numeric("Venue", "venue_id"),
+            'fb_uid' => new Column\Text('Facebook uid', 'fb_uid'),
+            'fb_creator_uid' => new Column\Text('Facebook creator uid', 'fb_creator_uid'),
             'description' => new Column\Text('Description', 'description', false),
-            //'tickets_url' => new Column\Text('tickets_url', 'tickets_url'),
+            'tickets_url' => new Column\Text('tickets_url', 'tickets_url'),
             'start_date' => new Column\Date('Start date', 'start_date'),
-            //'end_date' => new Column\Date('End date', 'end_date'),
-            //'recurring' => new Column\Text('recurring', 'recurring'),
-            //'event_fb_status' => new Column\Text('event_fb_status', 'event_fb_status'),
-            //'address' => new Column\Text('Address', 'address'),
-            //'latitude' => new Column\Text('latitude', 'latitude'),
-            //'longitude' => new Column\Text('longitude', 'longitude'),
-            //'logo' => new Column\Text('Logo', 'logo')
+            'end_date' => new Column\Date('End date', 'end_date'),
+            'recurring' => new Column\Text('recurring', 'recurring'),
+            'event_fb_status' => new Column\Text('event_fb_status', 'event_fb_status'),
+            'address' => new Column\Text('Address', 'address'),
+            'latitude' => new Column\Text('latitude', 'latitude'),
+            'longitude' => new Column\Text('longitude', 'longitude'),
+            'logo' => new Column\Text('Logo', 'logo')
         
         ];
     }
