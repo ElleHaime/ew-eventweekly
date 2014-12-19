@@ -46,8 +46,8 @@ class MemberFilter extends MemberFilterObject
 
     	if (!empty($return)) {
 			$isPresetChanged = array_diff($return['category']['value'], $compareSet);
-			
-    		if (!empty($isPresetChanged)) {
+
+			if (!empty($isPresetChanged)) {
     			$categoryPreseted = $return['category']['value'];
     			$tagsPreseted = $return['tag']['value'];
     			

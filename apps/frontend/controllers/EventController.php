@@ -214,8 +214,20 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listJoinedAction()
     {
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
+    	$queryData = ['searchId' => '97_914'];
+
+		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$results = $eventGrid->getData();
+_U::dump($results);
+		/*$result = [];
+    	$queryData = ['searchEventMember' => $this -> session -> get('memberId'),
+    				  'searchEventMemberStatus' => 1,
+    				  'searchStartDate' => date('Y-m-d H:i:s', strtotime('today -1 minute'))];
+    	
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+    	
+    	
+/*    	$page = $this->request->getQuery('page');
     	if (empty($page)) {
     		$page = 1;
     	}
@@ -249,7 +261,7 @@ class EventController extends \Core\Controllers\CrudController
     	//$this->view->setVar('urlParams', http_build_query($postData));
     	$this->view->setVar('urlParams', 'joined');
     	
-    	$this->view->pick('event/eventList');
+    	$this->view->pick('event/eventList'); */
     }
     
     
@@ -259,25 +271,26 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listAction()
     {
-    	$event = new Event();
-    
-    	$event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
-    	//$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$events = $event->fetchEvents();
-    
-    	if ($events->count()) {
-    		$this->view->setVar('object', $events);
-    		$this->view->setVar('list', $events);
+    	$result = [];
+    	$queryData = ['searchMember' => (int)$this -> session -> get('memberId')];
+		   	
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$results = $eventGrid->getData();
+		
+		if ($results['all_count'] > 0) {
+			foreach($results['data'] as $key => $value) {
+				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+            }
+    		$this -> view -> setVar('object', $result);
+    		$this -> view -> setVar('list', $result);
     	}
+    	
+    	$this -> view -> setVar('listTitle', 'Created');
     
-    	$this->view->setVar('listTitle', 'Created');
+    	$this -> eventListCreatorFlag = true;
+    	$this -> view -> pick('event/eventList');
     
-    	$this->eventListCreatorFlag = true;
-    	$this->view->pick('event/eventList');
-    
-    	return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
+    	return array('eventListCreatorFlag' => $this -> eventListCreatorFlag);
     }
     
     
@@ -287,9 +300,6 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function showAction($slug, $eventId)
     {
-    	/*$e = new EventCategory();
-    	$e -> setShardById($eventId);
-_U::dump($e -> getShardTable());*/     	
     	if (isset($_SERVER['HTTP_REFERER'])) {
 			$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
     	} else {
@@ -308,7 +318,6 @@ _U::dump($e -> getShardTable());*/
     	$ev = new Event;
     	$ev -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
-//_U::dump($event -> image -> toArray());
 
         $memberpart = null;
         if ($this->session->has('member') && $event->memberpart->count() > 0) {

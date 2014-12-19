@@ -46,8 +46,9 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> counters -> setUserCounters();
 
         $member = $this->session->get('member');
+        
         $loc = $this->session->get('location');
-//_U::dump($loc -> city);
+
         if ($loc === null) {
             $locModel = new Location();
             $loc = $locModel->createOnChange();
@@ -100,14 +101,13 @@ class Controller extends \Phalcon\Mvc\Controller
                 
                 if (isset($this->view->member->network)) {
                     $this->view->setVar('acc_external', $this->view->member->network);
-                    $this->view->setVar('acc_external', $this->view->member->network);
-                    $this->view->setVar('acc_external', $this->view->member->network);
                 }
             }
 
             if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
                 $this->view->setVar('acc_external', $member->network);
             }
+           
         } else {
             $this->session->set('role', Acl::ROLE_GUEST);
         }

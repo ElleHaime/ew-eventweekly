@@ -143,7 +143,7 @@ class SearchController extends \Core\Controller
             } 
 
             // add search condition by dates
-       /*     if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
+            if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
                 $queryData['searchStartDate'] = $postData['searchStartDate'];
                 
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
@@ -170,15 +170,21 @@ class SearchController extends \Core\Controller
             		
             		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	} 
-            } */
+            } 
 
 			if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
 				$queryData['searchCategory'] = $postData['searchCategory'];
 						
-            } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-				// get personalization, combine with selected categories and apply
-				$filters = (new MemberFilter) -> getbyId($this -> session -> get('memberId'));
-				if ($filters) {
+            } elseif ($postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
+            	if ($elemExists('searchCategory')) {
+					// get personalization, combine with selected categories and apply
+					$filters = (new MemberFilter) -> compareById($this -> session -> get('memberId'), $postData['searchCategoriesType']);
+            	} else {
+	            	// get personalization and apply
+					$filters = (new MemberFilter) -> getbyId($this -> session -> get('memberId'));
+            	}
+            	 
+            	if ($filters) {
 					if (!empty($filters['category']['value'])) {
 						$queryData['searchCategory'] = $filters['category']['value']; 
 					}
@@ -186,22 +192,9 @@ class SearchController extends \Core\Controller
 						$queryData['searchTag'] = $filters['tag']['value']; 
 					}
 				}
-				
-			} elseif (!$elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-				// get personalization and apply
-				$filters = (new MemberFilter) -> getbyId($this -> session -> get('memberId'));
-				if ($filters) {
-					if (!empty($filters['category']['value'])) {
-						$queryData['searchCategory'] = $filters['category']['value']; 
-					}
-					if (!empty($filters['tag']['value'])) {
-						$queryData['searchTag'] = $filters['tag']['value']; 
-					}
-				}
-			}
+            } 
 
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-			//$results = $eventGrid->getDataWithRenderValues();
 
 			// search type
             if ($elemExists('searchType')) {
@@ -216,10 +209,10 @@ class SearchController extends \Core\Controller
                     	} else {
                     		$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
                     	}
+                    	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     }
 
                     $result = json_encode($result, JSON_UNESCAPED_UNICODE);
-//_U::dump($this -> view -> getVar('location') -> toArray());                    
                 } else {
                     $page = $this->request->getQuery('page');
                     if (empty($page)) {
@@ -242,6 +235,7 @@ class SearchController extends \Core\Controller
             }
             $countResults = $results['all_count'];
         }
+        
 //_U::dump($results);
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
@@ -280,7 +274,8 @@ class SearchController extends \Core\Controller
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
-            $this->view->pick('event/mapEvent');
+            //$this->view->pick('event/mapEvent');
+            $this->view->pick('event/map');
         } else {
         	$this->view->setVar('searchResultList', true);
             $this->view->pick('event/eventList');

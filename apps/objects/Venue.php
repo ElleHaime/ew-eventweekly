@@ -9,6 +9,8 @@ class Venue extends Model
 {
 	public $id;
 	public $fb_uid;
+	public $eb_uid;
+	public $eb_url;
 	public $location_id;
 	public $name;
 	public $address;	

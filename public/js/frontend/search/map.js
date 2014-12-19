@@ -14,19 +14,19 @@ require([
     'jCookie'
 ],
     function($, fb, frontEventLike, noty, gmap, eventsPointer) {
-        fb.init();
-
-        frontEventLike.init();
-
         var locationElem = $('#current_location');
+
         gmap.init({
             mapCenter: {
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')
             }
         });
-
         eventsPointer.init();
+
+        fb.init();
+
+        frontEventLike.init(); 
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');

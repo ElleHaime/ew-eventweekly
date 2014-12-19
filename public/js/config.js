@@ -150,7 +150,7 @@ require.config({
         } else {
         	moduleName = 'frontend' + fileName;
         };
-        
+
   		require([moduleName]);
 
         require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){

@@ -150,7 +150,7 @@ class Application extends BaseApplication
 	{
 		$this -> _annotations = new \Core\Annotations($di);
 		$this -> _annotations -> run();
-				
+			
 		$di -> set('annotations', $this -> _annotations);
 	}
 

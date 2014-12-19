@@ -81,11 +81,14 @@
 	                                                    {% endif %}
                                                     {% endif %}
                                                 </div>
+                                                
+                                                {% if event.description is defined %}
                                                 <p>
                                                     {{ event.description|striptags|escape|truncate(350) }}
                                                     <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">Read more</a>
                                                 </p>
-
+												{% endif %}
+												
                                                 {% if eventListCreatorFlag %}
                                                 {% else %}
                                                 <div class="plans-box clearfix">
@@ -115,7 +118,7 @@
                                                     </div>
                                                 {% else %}
                                                     {% set eVenue = 'Undefined place' %}
-                                                    {% if event.venue.address is empty %}
+                                                    {% if event.address is empty %}
                                                         {% if event.location is empty %}
                                                             {% if event.address is empty %}
                                                                 {% set eVenue = 'Undefined place' %}
@@ -126,11 +129,11 @@
                                                             {% set eVenue = event.location %}
                                                         {% endif %}
                                                     {% else %}
-                                                        {% if event.location is defined %}
-                                                            {% set eVenue = event.location.city~', '~event.venue.name~', '~event.venue.address %}
-                                                        {% else %}
-                                                            {% set eVenue = event.venue.name~' '~event.venue.address %}
-                                                        {% endif %}
+                                                    	{% if event.location != event.address %}
+                                                    		{% set eVenue = event.location~', '~event.address %}
+                                                    	{% else %}
+	                                                    	{% set eVenue = event.location %}
+	                                                    {% endif %}
                                                     {% endif %}
                                                     <div class=" place-address tooltip-text"  data-original-title="{{ eVenue }}" title="" rel="tooltip">
                                                     <span>
