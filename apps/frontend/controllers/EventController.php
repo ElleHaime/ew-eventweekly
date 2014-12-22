@@ -65,54 +65,37 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function eventlistAction()
     {
-    	$this->session->set('lastFetchedEvent', 0);
+    	$result = [];
+    	$queryData = ['searchStartDate' => date('Y-m-d H:i:s', strtotime('today -1 minute')),
+    				  'searchEndDate' => date('Y-m-d H:i:s', strtotime('today +3 days')),
+    				  'searchLocationField' => $this -> session -> get('location') -> id];
+		   	
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
     	
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
-    	}
-    	
-    	$loc = $this->session->get('location');
-    	$event = new Event();
-
-    	$request = $this -> request -> getQuery();
-    	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
-    		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);
-    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLngCurrent']);
-    	} else {
-	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
-	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
-    	}
-    	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-    	$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
-    	
-    	$event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
-    	$event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
-    	$event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
-    	
-    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent')); 
-    	$event-> addCondition('Frontend\Models\Event.event_status = 1');
-    	
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			['page' => $page, 'limit' => 10],
-    			$applyPersonalization, [], false, false, false, true, true);
-		$events = $result -> items;
-		unset($result -> items);
-		 
-		if (isset($events)) {
-			$this->view->setVar('pagination', $result);
+		$page = $this->request->getQuery('page');
+		if (empty($page)) {
+			$eventGrid->setPage(1);
+		} else {
+			$eventGrid->setPage($page);
 		}
+		$results = $eventGrid->getData();
 
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
+		foreach($results['data'] as $key => $value) {
+			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+		}
+		$countResults = $results['all_count'];
+		
+    	if ($results['all_page'] > 1) {
+            $this -> view -> setVar('pagination', $results['array_pages']);
+            $this -> view -> setVar('pageCurrent', $results['page_now']);
+            $this -> view -> setVar('pageTotal', $results['all_page']);
         }
-
+    	
+        if ($this->session->has('memberId')) {
+			$this->fetchMemberLikes();
+        }
 		$this->view->setVar('urlParams', 'list');
-		$this->view->setVar('list', $events);
+		$this->view->setVar('list', $result);
     	$this->view->pick('event/eventList');
     }
     
