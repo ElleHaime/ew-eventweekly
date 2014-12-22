@@ -263,22 +263,22 @@ class Event extends EventObject
 	        $builder = $this->getModelsManager()->createBuilder();
 	
 	        $builder->from('Frontend\Models\Event');
-	      /*  $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
+	        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
 		            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
 	            
 	       	if ($memberFriend) {
 	       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
-	       	} */
+	       	} 
 	       	if ($memberGoing) {
 	       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
 	       	}
 	       	if ($memberLike) {
 	       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
 	       	} 
-	       	/*if ($eventTag || $applyPersonalization) {
+	       	if ($eventTag || $applyPersonalization) {
 	       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 						 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
-	       	}*/ 
+	       	} 
 
 	        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 	
