@@ -33,7 +33,8 @@
                                 {% endfor %}
                             {% else %}
                             	{% if event.category is defined %}
-									{% set catLight = event.category[0]|lower %}
+									{% set catArray = event.category[0] %}
+                                	{% set catLight = catArray.key %} 
                                 {% else %}
                                 	{% set catLight = "other" %}
                                 {% endif %}
@@ -120,19 +121,15 @@
                                                     {% set eVenue = 'Undefined place' %}
                                                     {% if event.address is empty %}
                                                         {% if event.location is empty %}
-                                                            {% if event.address is empty %}
-                                                                {% set eVenue = 'Undefined place' %}
-                                                            {% else %}
-                                                                {% set eVenue = event.address %}
-                                                            {% endif %}
+                                                            {% set eVenue = 'Undefined place' %}
                                                         {% else %}
-                                                            {% set eVenue = event.location %}
+                                                            {% set eVenue = event.location.city %}
                                                         {% endif %}
                                                     {% else %}
-                                                    	{% if event.location != event.address %}
-                                                    		{% set eVenue = event.location~', '~event.address %}
+                                                    	{% if event.location.city != event.address %}
+                                                    		{% set eVenue = event.location.city~', '~event.address %}
                                                     	{% else %}
-	                                                    	{% set eVenue = event.location %}
+	                                                    	{% set eVenue = event.location.city %}
 	                                                    {% endif %}
                                                     {% endif %}
                                                     <div class=" place-address tooltip-text"  data-original-title="{{ eVenue }}" title="" rel="tooltip">

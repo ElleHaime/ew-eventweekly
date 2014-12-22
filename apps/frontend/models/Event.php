@@ -256,29 +256,29 @@ class Event extends EventObject
 			}
 		}
 		$eventsTotal = [];
-
+    
     	foreach ($shards as $cri) {
     		$this -> setShard($cri);
     		
 	        $builder = $this->getModelsManager()->createBuilder();
 	
 	        $builder->from('Frontend\Models\Event');
-	        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
+	      /*  $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
 		            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
 	            
 	       	if ($memberFriend) {
 	       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
-	       	}
+	       	} */
 	       	if ($memberGoing) {
 	       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
 	       	}
 	       	if ($memberLike) {
 	       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
 	       	} 
-	       	if ($eventTag || $applyPersonalization) {
+	       	/*if ($eventTag || $applyPersonalization) {
 	       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
 						 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
-	       	}
+	       	}*/ 
 
 	        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
 	
@@ -362,6 +362,7 @@ class Event extends EventObject
 	            ));
 
 	            $totalRows = $builder->getQuery()->execute()->count();
+            
 	            if ($totalRows > 0) {
 		            $result = $paginator->getPaginate();
 		            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
@@ -375,16 +376,16 @@ class Event extends EventObject
 		            	$eventsTotal[] = $result;
 		            }
 	            }
+	            
 	        } else {
 	            $result = $builder->getQuery()->execute();
-	            
 	            if ($result -> count() > 0) {
-	            	
 		            if ($fetchType === self::FETCH_ARRAY) {
 		                $result = $this -> resultToArray($result);
 		                $eventsTotal = array_merge($eventsTotal, $result);
 		            } else {
-		            	$eventsTotal[] = $result;
+		            	//$eventsTotal[] = $result;
+		            	$eventsTotal[] = json_decode(json_encode($this -> resultToArray($result), JSON_UNESCAPED_UNICODE), FALSE);
 		            }
 	            }
 	        }
