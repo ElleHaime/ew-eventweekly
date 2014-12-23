@@ -6,6 +6,7 @@ use Core\Model;
 
 class Campaign extends Model
 {
+   	
 	public $id;
 	public $member_id;
 	public $name;

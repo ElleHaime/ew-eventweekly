@@ -116,7 +116,9 @@ class SearchController extends \Core\Controller
         	// if no location specify - set from user location
         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
         	{
-            	$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+        		if ($elemExists('searchTitle', false)) {
+            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+	        	}
             	
         	} else {
         		
@@ -161,7 +163,7 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'" | ';
                 
             } else {
-            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory')) {
+            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory') && !elemExists('searchTitle')) {
             		$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
             		$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
             		

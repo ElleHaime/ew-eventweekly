@@ -74,9 +74,9 @@ class EventController extends \Core\Controllers\CrudController
     	
 		$page = $this->request->getQuery('page');
 		if (empty($page)) {
-			$eventGrid->setPage(1);
+			$eventGrid -> setPage(1);
 		} else {
-			$eventGrid->setPage($page);
+			$eventGrid -> setPage($page);
 		}
 		$results = $eventGrid->getData();
 
@@ -98,6 +98,7 @@ class EventController extends \Core\Controllers\CrudController
 		$this->view->setVar('list', $result);
     	$this->view->pick('event/eventList');
     }
+    
     
     /**
      * @Route("/event/friends", methods={"GET", "POST"})
