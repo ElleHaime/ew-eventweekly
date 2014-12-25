@@ -3,6 +3,7 @@ config/facebook.php
 config/rabbitmq.php
 config/sharding.php
 config/shardingService.php
+config/service.php
 .htaccess
 .idea
 .buildpath
