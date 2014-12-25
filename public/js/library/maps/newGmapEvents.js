@@ -14,7 +14,8 @@ define('newGmapEvents',
                 requestInterval: 2000,
                 eventsUrl: '/event/test-get',
                 eventsCounter: '#events_count',
-                searchCityBtn: '.locationCity'
+                searchCityBtn: '.locationCity',
+                searchPage: 1
             };
 
             var interval = null;
@@ -74,18 +75,15 @@ define('newGmapEvents',
              * @private
              */
             var responseHandler = function(data) {
-                if (debug) {
-                	//console.log(data);
-                }
+               	//console.log(data);
 
                 $(settings.searchCityBtn).find('span').text(__newCity);
 
                 if (data.status == true && !_.isUndefined(data.events)) {
-
                     if (_.isNull(Map)) {
                         redirectToMap(data);
                     }
-
+                    
                     function processLargeArray(array) {
                         // set this to whatever number of items you can process at once
                         var chunk = 50;
@@ -96,7 +94,6 @@ define('newGmapEvents',
                             while (cnt-- && i < len) {
                                 // process array[index] here
                                 var event = array[i];
-
                                 var InfoWindow = new googleInfoWindow(event);
 
                                 if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
@@ -140,7 +137,7 @@ define('newGmapEvents',
 
                             if (i < array.length) {
                                 setTimeout(doChunk, 0);
-                            }else {
+                            } else {
                                 // change events counter
 
 
@@ -165,13 +162,19 @@ define('newGmapEvents',
                     if (data.stop == true) {
                         Map.setCenter(new google.maps.LatLng(__newLat, __newLng));
                         $(settings.eventsCounter).html(0);
+                        settings.searchPage = 1;
                         noty({text: 'No event in this area!', type: 'warning'});
                     }
                 }
 
                 if (data.stop == true) {
                     //console.log('interval cleared');
+                	settings.searchPage = 1;
                     clearInterval(interval);
+                } else {
+                	if (!_.isUndefined(data.nextPage)) {
+                		settings.searchPage = data.nextPage;
+                	}
                 }
             };
 
@@ -186,7 +189,8 @@ define('newGmapEvents',
              */
             var request = function(lat, lng, city) {
                 var url = settings.eventsUrl;
-
+                url = url + '/' + settings.searchPage;
+                
                 if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
                     url = url + '/' + lat + '/' + lng;
                 }
@@ -218,13 +222,16 @@ define('newGmapEvents',
 
                var makeRequest = function() {
                     var url = settings.eventsUrl;
+                    url = url + '/' + settings.searchPage;
+                    
                     if (!_.isUndefined(lat) && !_.isUndefined(lng)) {
                         url = url + '/' + lat + '/' + lng;
                     }
                     if (!_.isUndefined(city)) {
                         url = url + '/' + city;
                     }
-
+                    console.log(url);
+                    
                     $.when($.ajax({
                         url: url,
                         type: 'GET',

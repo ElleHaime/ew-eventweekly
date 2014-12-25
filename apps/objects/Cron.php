@@ -7,6 +7,8 @@ use Core\Model,
 
 class Cron extends \Core\Model
 {
+	const FB_USER_TASK = 'extract_facebook_events';
+	
 	public $id;
 	public $name;
 	public $description;
@@ -14,9 +16,4 @@ class Cron extends \Core\Model
 	public $member_id;
 	public $parameters;
 	public $state;
-	
-	public function initialize()
-	{
-		parent::initialize();
-	}
 }

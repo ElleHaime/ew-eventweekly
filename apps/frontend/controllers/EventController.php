@@ -3,6 +3,7 @@
 namespace Frontend\Controllers;
 
 use Core\Utils as _U,
+	Core\Utils\DateTime as _UDT,
     Frontend\Models\Location,
     Frontend\Models\Venue as Venue,
     Frontend\Models\MemberNetwork,
@@ -10,6 +11,7 @@ use Core\Utils as _U,
     Frontend\Models\EventCategory as EventCategory,
     Frontend\Models\Event as Event,
     Frontend\Models\EventSite,
+    Frontend\Models\Cron as Cron,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
     Frontend\Models\EventMemberCounter,
@@ -19,7 +21,8 @@ use Core\Utils as _U,
     Core\Utils\SlugUri as SUri,
     Frontend\Models\EventImage as EventImageModel,
 	Thirdparty\Facebook\Extractor,
-	Categoryzator\Core\Inflector;
+	Categoryzator\Core\Inflector,
+	\Frontend\Models\Search\Grid\Event as EventGrid;
 
 /**
  * @RouteRule(useCrud = true)
@@ -69,7 +72,7 @@ class EventController extends \Core\Controllers\CrudController
     	$queryData = ['searchStartDate' => date('Y-m-d H:i:s', strtotime('today -1 minute')),
     				  'searchEndDate' => date('Y-m-d H:i:s', strtotime('today +3 days')),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
-		   	
+//_U::dump($queryData);		   	
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
     	
 		$page = $this->request->getQuery('page');
@@ -707,7 +710,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-_U::dump($event, true);
+
         $loc = new Location();
         $venue = new Venue();
         $coords = array();
@@ -928,7 +931,7 @@ _U::dump($ev -> toArray(), true);
                     }
                 }
             }
-_U::dump(123);
+
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
                 $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
@@ -1201,139 +1204,68 @@ _U::dump(123);
         $this->view->pick('event/show');
     }
 
-
-    public function resetLocation($lat = null, $lng = null, $city = null)
-    {
-        $loc = $this->session->get('location');
-        $newLocation = new Location();
-        $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-
-        if ($newLocation->id != $loc->id) {
-            if (!empty($city)) {
-                $newLocation->city = $city;
-                $newLocation->alias = $city;
-            }
-
-            $this->session->set('location', $newLocation);
-            $this->session->set('lastFetchedEvent', 0);
-            $loc = $this->session->get('location');
-        }
-
-        return $loc;
-    }
     
 
     /**
      * @Route("/event/test-get", methods={'GET'})
-     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
-     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
+     * @Route("/event/test-get/{page:[0-9]+}", methods={"GET"})
+     * @Route("/event/test-get/{page:[0-9]+}/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET"})
+     * @Route("/event/test-get/{page:[0-9]+}/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = true, $applyPersonalization = false)
+    public function testGetAction($page = 1, $lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = true, $applyPersonalization = false)
     {
-        $Event = new Event();
-        $loc = $this->session->get('location');
+    	$queryData = [];
 
-        if (!empty($lat) && !empty($lng)) {
-            $loc = $this->resetLocation($lat, $lng, $city);
+    	if (!empty($lat) && !empty($lng) && !empty($city)) {
+            $location = (new Location()) -> resetLocation($lat, $lng, $city);
         } else {
-            $loc = $this->session->get('location');
-        }
-        
-        $startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-        $endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
-        if ($withLocation) {
-        	$lat = ($loc->latitudeMin + $loc->latitudeMax) / 2;
-            $lng = ($loc->longitudeMin + $loc->longitudeMax) / 2;
-            
-            $loc = new Location();
-            $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-            if ($newLocation) {
-            	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
-            }
-            
-        	
-/*            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax); */
-            
-            $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);            
-            
-        } else {
-        	
-			$Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);        
-        }
-        
-        $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
-        $Event->addCondition('Frontend\Models\Event.event_status = 1');
-        
-        $events = $Event->fetchEvents(Event::FETCH_ARRAY,
-        							  Event::ORDER_ASC, 
-        							  array(), 
-        							  $applyPersonalization,
-        							  array('start' => $this -> session -> get('lastFetchedEvent'), 'limit' => $this -> config -> application -> limitFetchEvents));
-
-        if (count($events) ==  $this -> config -> application -> limitFetchEvents) {
-            $this->session->set('lastFetchedEvent', (int)$this -> session -> get('lastFetchedEvent') + (int)$this -> config -> application -> limitFetchEvents);
-            $res['status'] = true;
-            $res['stop'] = false;
-            $res['events'] = $events;
-        } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
-        	$res['stop'] = true;
-        	$res['status'] = true;
-        	$res['events'] = $events;
-        } else {
-        	$res['status'] = 'ERROR';
-        	$res['message'] = 'no events';
-        }
-  
-        foreach($res['events'] as $id => $event) {
-        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
-        		$res['events'][$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
-        	} else {
-        		$res['events'][$id]['logo'] = $this -> config -> application -> defaultLogo;
-        	}
-        }
-
-        if ($needGrab === false) {
-			return $events;
+            $location = $this -> session -> get('location');
         }
       
-        $this->sendAjax($res);
+    	if ($withLocation) {
+    		$queryData['searchLocationField'] = $location -> id;
+    	}
+    	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+    	$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+	
+    	$eventGrid = new EventGrid($queryData, $this -> getDi(), null, ['adapter' => 'dbMaster']);
+		$eventGrid -> setPage($page);
+		$results = $eventGrid -> getData();
 
-        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
-            $newTask = false;
+		if ($results['all_count'] > 0) {
+			foreach($results['data'] as $id => $event) {
+				$eComposed = (array)$event;
 
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
-            if ($taskSetted -> count() > 0) {
-                $tsk = $taskSetted -> getLast();
-                if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
-                    $newTask = new \Objects\Cron();
-                }
-            } else {
-                $newTask = new \Objects\Cron();
-            }
-
-            if ($newTask) {
-                $params = ['user_token' => $this -> session -> get('user_token'),
-                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
-                           'member_id' => $this -> session -> get('memberId')];
-                $task = ['name' => 'extract_facebook_events',
-                         'parameters' => serialize($params),
-                         'state' => 0,
-                         'member_id' => $this -> session -> get('memberId'),
-                         'hash' => time()];
+				if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
+					$eComposed['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
+				} else {
+					$eComposed['logo'] = $this -> config -> application -> defaultLogo;
+				}
+                $eComposed['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                 
-                $newTask -> assign($task);
-                $newTask -> save();
-            }
+                $result[] = $eComposed;
+			}
+			
+			$res = ['events' => $result,
+					'status' => true];
+
+			if ($results['page_now'] < $results['all_page']) {
+				$res['stop'] = false;
+				$res['nextPage'] = $results['array_pages']['next'];
+			} else {
+				$res['stop'] = true;
+			}
+        } else {
+			$res = ['status' => 'ERROR',
+					'message' => 'no events'];
+        }
+
+		if ($needGrab === false) {
+			return $events;
+        } else {
+        	$this -> sendAjax($res);
+			(new Cron()) -> createUserTask();
         }
     }
 
