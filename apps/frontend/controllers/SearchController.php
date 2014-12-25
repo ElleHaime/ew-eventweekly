@@ -175,8 +175,9 @@ class SearchController extends \Core\Controller
 			// search type
             if ($elemExists('searchType')) {
                 if ($postData['searchType'] == 'in_map') {
+                	$eventGrid->setLimit(100);
 					$results = $eventGrid->getData();
-			
+
                     foreach($results['data'] as $id => $event) {
                     	$result[$event -> id] = (array)$event;
 
@@ -212,7 +213,7 @@ class SearchController extends \Core\Controller
             $countResults = $results['all_count'];
         }
         
-//_U::dump($results);
+
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
         }
