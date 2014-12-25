@@ -180,13 +180,13 @@
 	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pageTotal }}">Last</a></li>
 	                            {% endif %}
 	                        {% else %}
-	                        	{% if pagination.current > 1 %}
-	                                <li><a href="{{ urlParams }}&page={{ pagination.first }}">First</a></li>
-	                                <li><a href="{{ urlParams }}&page={{ pagination.current-1 }}">Prev</a></li>
+	                        	{% if pageCurrent > 1 %}
+	                                <li><a href="{{ urlParams }}&page=1">First</a></li>
+	                                <li><a href="{{ urlParams }}&page={{ pagination['prev'] }}">Prev</a></li>
 	                            {% endif %}
-	                            {% if pagination.current < pagination.total_pages %}
-	                                <li><a href="{{ urlParams }}&page={{ pagination.current+1 }}">Next</a></li>
-	                                <li><a href="{{ urlParams }}&page={{ pagination.total_pages }}">Last</a></li>
+	                            {% if pageCurrent < pageTotal %}
+	                                <li><a href="{{ urlParams }}&page={{ pagination['next'] }}">Next</a></li>
+	                                <li><a href="{{ urlParams }}&page={{ pageTotal }}">Last</a></li>
 	                            {% endif %}
 	                        {% endif %}
 	                        

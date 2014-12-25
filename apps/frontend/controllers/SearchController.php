@@ -10,7 +10,7 @@ use Frontend\Form\SearchForm,
     Frontend\Models\Location,
     Frontend\Models\Event,
     Core\Utils as _U,
-    Objects\Cron as Cron;
+    Frontend\Models\Cron as Cron;
 
 /**
  * @RoutePrefix('/')
@@ -137,7 +137,7 @@ class SearchController extends \Core\Controller
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'" | ';
                 
             } else {
-            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory') && !elemExists('searchTitle')) {
+            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory') && !$elemExists('searchTitle')) {
             		$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
             		$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
             		
