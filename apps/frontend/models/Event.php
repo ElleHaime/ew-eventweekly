@@ -221,21 +221,6 @@ class Event extends EventObject
     	return $this;
     }
     
-    
-    /**
-     * Set result format
-     */
-    public function setResultFormat($format)
-    {
-    	if ($format == self::FETCH_ARRAY) {
-    		$this->fetchType = self::FETCH_ARRAY;
-    	} else {
-    		$this->fetchType = self::FETCH_OBJECT;
-    	}
-    
-    	return $this;
-    }
-    
     public function setLogo($event, $logo) 
     {
     	$event -> logo = $logo;

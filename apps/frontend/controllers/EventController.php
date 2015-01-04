@@ -31,6 +31,7 @@ class EventController extends \Core\Controllers\CrudController
 {
 
     use \Core\Traits\TCMember;
+    use \Core\Traits\Facebook;
     use \Sharding\Core\Env\Converter\Phalcon;
 
     protected $friendsUid = array();
@@ -40,16 +41,7 @@ class EventController extends \Core\Controllers\CrudController
     protected $pagesUid = array();
     protected $actualQuery = false;
 
-
-    public function initialize()
-    {
-        parent::initialize();
-
-        if (!$this->session->has('lastFetchedEvent')) {
-            $this->session->set('lastFetchedEvent', 0);
-        }
-    }
-
+    
     /**
      * @Route("/map", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
@@ -69,10 +61,10 @@ class EventController extends \Core\Controllers\CrudController
     public function eventlistAction()
     {
     	$result = [];
-    	$queryData = ['searchStartDate' => date('Y-m-d H:i:s', strtotime('today -1 minute')),
-    				  'searchEndDate' => date('Y-m-d H:i:s', strtotime('today +3 days')),
+    	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
+    				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
-//_U::dump($queryData);		   	
+
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
     	
 		$page = $this->request->getQuery('page');
@@ -120,32 +112,13 @@ class EventController extends \Core\Controllers\CrudController
     	$event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
     	$event->addCondition('Frontend\Models\Event.event_status = 1');
     	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$event->addCondition('Frontend\Models\Event.start_date > "' .  _UDT::getDefaultStartDate() . '"');
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			//['page' => $page, 'limit' => 10],
-    			[],
-    			false, [], true, false, false, true, true);
-    	if (count($result) > 0) {
-    		$events = $result[0];
-    		$this->view->setvar('list', $events);    		
-		}
-    	/*$events = $result -> items;
-    	unset($result -> items);
-    	
-    	if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}*/
-    	///$this->view->setVar('urlParams', http_build_query($postData));
-    	$this->view->setVar('urlParams', 'friends');
-    	
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
-        }
-
-    	$this->view->setvar('listName', 'Friend\'s events');
-    	$this->view->setVar('listTitle', 'Friend\'s events');
-    	$this->view->pick('event/eventUserList');
+						    			Event::ORDER_ASC,
+						    			//['page' => $page, 'limit' => 10],
+						    			[],
+						    			false, [], true, false, false, true, true);
+    	$this -> showListResults($result, 'friends', 'friends', 'Friend\'s events');
     }
     
     
@@ -155,51 +128,26 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
-    	$postData = $this->request->getQuery();
     	$page = $this->request->getQuery('page');
     	if (empty($page)) {
     		$page = 1;
     	}
     	$event = new Event();
     
-    	$this->view->setvar('listName', 'Liked Events');
+    	//$this->view->setvar('listName', 'Liked Events');
     
     	$event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
     	$event->addCondition('Frontend\Models\EventLike.status = 1');
     	$event->addCondition('Frontend\Models\Event.event_status = 1');
     	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.end_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$event->addCondition('Frontend\Models\Event.end_date > "' .  _UDT::getDefaultStartDate() . '"');
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
     			Event::ORDER_ASC,
     			//['page' => $page, 'limit' => 10],
     			[],
     			false, [], false, false, true, true, true);
     			
-		/*$events = [];		
-		if (count($result) > 0) {
-			foreach ($result as $index => $data) {
-				foreach ($data -> items as $ev) {
-					$events[] = $ev;
-				}
-			}
-		}
-		unset($result);*/
-		if (count($result) > 0) {
-    		$events = $result[0];
-    		$this->view->setvar('list', $events);    		
-		}
-
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    	}
-    
-/*    	if (isset($events)) {
-    		$this->view->setVar('pagination', $events);
-    	}*/
-
-    	$this->view->setVar('urlParams', 'liked');
-    	$this->view->setVar('listTitle', 'Liked');
-    	$this->view->pick('event/eventUserList');
+		$this -> showListResults($result, 'liked', 'liked', 'liked Events');
     }
     
     /**
@@ -218,35 +166,13 @@ class EventController extends \Core\Controllers\CrudController
     	$event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
     	$event->addCondition('Frontend\Models\EventMember.member_status = 1');
     	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.end_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
+    	$event->addCondition('Frontend\Models\Event.end_date > "' .  _UDT::getDefaultStartDate() . '"');
     	$result = $event->fetchEvents(Event::FETCH_OBJECT,
 						    			Event::ORDER_ASC,
 						    			//['page' => $page, 'limit' => 10],
 						    			[],
 						    			false, [], false, true, false, true, true);
-//		$events = $result -> items;
-//		unset($result -> items);
-		if (count($result) > 0) {
-    		$events = $result[0];
-    		$this->view->setVar('list', $events);
-		}
-						    			
-//_U::dump($events[0]);		    	
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    	}
-    
-    	$this->view->setvar('list_type', 'join');
-
-    	/*if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}*/
-
-    	$this->view->setVar('listTitle', 'Where I am going');
-    	//$this->view->setVar('urlParams', http_build_query($postData));
-    	$this->view->setVar('urlParams', 'joined');
-    	
-    	$this->view->pick('event/eventUserList'); 
+		$this -> showListResults($result, 'joined', 'join', 'Where I am going');						    			
     }
     
     
@@ -276,6 +202,33 @@ class EventController extends \Core\Controllers\CrudController
     	$this -> view -> pick('event/eventList');
     
     	return array('eventListCreatorFlag' => $this -> eventListCreatorFlag);
+    }
+    
+    
+    protected function showListResults($result = [], $urlParams = '', $listType = 'liked', $listTitle = 'Events')
+    {
+//		$events = $result -> items;
+//		unset($result -> items);
+		if (count($result) > 0) {
+    		$events = $result[0];
+    		$this -> view -> setVar('list', $events);
+		}
+						    			
+    	if ($this -> session -> has('memberId')) {
+    		$this -> fetchMemberLikes();
+    	}
+    
+    	$this->view->setvar('list_type', $listType);
+
+    	/*if (isset($events)) {
+    		$this->view->setVar('pagination', $result);
+    	}*/
+
+    	$this->view->setVar('listTitle', $listTitle);
+    	//$this->view->setVar('urlParams', http_build_query($postData));
+    	$this->view->setVar('urlParams', $urlParams);
+    	
+    	$this->view->pick('event/eventUserList'); 
     }
     
     
@@ -344,32 +297,12 @@ class EventController extends \Core\Controllers\CrudController
         	}
         }
         
+		(new EventImageModel()) -> setViewImages($event -> id);        
+        
         $this->view->setVar('logo', $logo);
         $this->view->setVar('event', $event);
-        $categories = Category::find();
-        $this->view->setVar('categories', $categories->toArray());
-
+        $this->view->setVar('categories', Category::find() -> toArray());
         $this->view->setVar('link_back_to_list', true);
-        
-        $posters = $flyers = $gallery = [];
-        if (isset($event->image)) {
-            foreach ($event -> image as $eventImage) {
-                if ($eventImage -> type == 'poster') {
-                    $posters[] = $eventImage;
-                } else if ($eventImage -> type == 'flyer') {
-                    $flyers[] = $eventImage;
-                } else if ($eventImage -> type == 'gallery') {
-                    $gallery[] = $eventImage;
-                } else if ($eventImage -> type == 'cover') {
-                    $cover = $eventImage;
-                } 
-            }
-        }
-        
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
-        $this->view->setVar('cover', isset($cover) ? $cover : null);
-        $this->view->setVar('gallery', $gallery);
 
         $eventTags = [];
         foreach ($event->tag as $Tag) {
@@ -401,9 +334,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
         } else {
-            $CategoryEvent = new EventCategory();
-
-            if ($CategoryEvent->save(array(
+            if ((new EventCategory())->save(array(
                 'event_id' => $eventId,
                 'category_id' => $categoryId
             ))
@@ -483,35 +414,18 @@ class EventController extends \Core\Controllers\CrudController
     			$this -> view -> setVar('flashMsgType', 'warning');
     		}
     	}
-    	
-        $category = new Category();
-        $this->view->setVar('categories', $category->getDefaultIdsAsString());
 
        	parent::editAction();
-       	
-       	$posters = $flyers = $gallery = [];
         if (isset($this->obj->id)) {
-            $eventImages = EventImageModel::find('event_id = ' . $id);
-
-            foreach ($eventImages as $eventImage) {
-                if ($eventImage->type == 'poster') {
-                    $posters[] = $eventImage;
-                } else if ($eventImage->type == 'flyer') {
-                    $flyers[] = $eventImage;
-                } else if ($eventImage->type == 'gallery') {
-                    $gallery[] = $eventImage;
-                }
-            }
+            (new EventImageModel()) -> setViewImages($id);
         }
-
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
-        $this->view->setVar('gallery', $gallery);
+        $this -> view -> setVar('categories', (new Category()) -> getDefaultIdsAsString());
         
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
     }
+    
     
     public function setEditExtraRelations()
     {
@@ -544,8 +458,7 @@ class EventController extends \Core\Controllers\CrudController
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
 
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncDeleted((int)$data['id']);
+                (new EventMemberCounter()) -> syncDeleted((int)$data['id']);
             }
         }
 
@@ -617,9 +530,7 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 $result = array_merge($res, array('status' => 'OK'));
-                
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncPublished((int)$data['id']);
+                (new EventMemberCounter()) -> syncPublished((int)$data['id']);
             }
         }
 
@@ -641,8 +552,7 @@ class EventController extends \Core\Controllers\CrudController
                 /* delete sites, event members, send mails etc */
                 $result = array_merge($res, array('status' => 'OK'));
                 
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncUnpublished((int)$data['id']);
+                (new EventMemberCounter()) -> syncUnpublished((int)$data['id']);
             }
         }
 
@@ -667,41 +577,6 @@ class EventController extends \Core\Controllers\CrudController
         return $result;
     }
 
-    public function saveEventAtFacebook($url, $fbParams)
-    {
-        $http = $this->di->get('http');
-        $httpClient = $http::getProvider();
-
-        $httpClient->setBaseUri('https://graph.facebook.com/');
-        $response = $httpClient->post($url, $fbParams);
-        $result = $response->body;
-
-        $id = null;
-        if ($result) {
-            $result = json_decode($result, true);
-
-            if (!isset($result['error'])) {
-                $id = $result['id'];
-            }
-        }
-
-        return $id;
-    }
-    
-    public function checkFacebookExpiration()
-    {
-    	$http = $this->di->get('http');
-    	$httpClient = $http::getProvider();
-    	
-    	$httpClient->setBaseUri('https://graph.facebook.com/');
-    	$response = $httpClient->get('me?access_token=' . $this->session->get('user_token'));
-
-    	if($response -> header -> statusCode == 200 && $response -> header -> statusMessage == 'OK') {
-    		return true;
-    	} else {
-    		return false;
-		}
-    }
 
     /**
      * @Route("/event/eventsave", methods={"POST"})
@@ -718,10 +593,12 @@ class EventController extends \Core\Controllers\CrudController
         $newEvent = array();
         
         if (!empty($event['id'])) {
-            $ev = Event::findFirst($event['id']);
+        	$e = new Event();
+        	$e -> setShardById($event['id']);
+            $ev = $e::findFirst($event['id']);
         } else {
             $ev = new Event();
-            if (isset($this -> session -> get('member') -> network)) {
+            if ($this -> session -> get('member') -> network) {
                 $newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
             }
             $newEvent['member_id'] = $this -> session -> get('memberId');
@@ -795,11 +672,7 @@ class EventController extends \Core\Controllers\CrudController
             $vn = $venue -> createOnChange($venueInfo);
         }
 
-        if ($vn) {
-            $newEvent['venue_id'] = $vn -> id;
-        } else {
-            $newEvent['venue_id'] = '';
-        }
+        $vn ? $newEvent['venue_id'] = $vn -> id : $newEvent['venue_id'] = ''; 
 
         // process address
         $newEvent['address'] = $event['address'];
@@ -829,9 +702,10 @@ class EventController extends \Core\Controllers\CrudController
 
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
-
+_U::dump($ev -> getShardTable(), true);
         if ($ev -> save()) {
-_U::dump($ev -> toArray(), true);        	
+_U::dump($ev -> toArray(), true); 
+        	
             // create event dir if not exists
             if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
                 mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id);
@@ -883,14 +757,14 @@ _U::dump($ev -> toArray(), true);
             if ($newEvent['event_fb_status'] == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
                 // add/edit event to facebook
                 if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
-                    $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+                    $fbEventId = $this->sendToFacebook('me/events', $fbParams);
 
                     if (!is_null($fbEventId)) {
                         $ev->fb_uid = $fbEventId;
                         $ev->save();
                     }
                 } else {
-                    $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
+                    $this->sendToFacebook('/' . $ev->fb_uid, $fbParams);
                 }
             }
 
@@ -914,8 +788,10 @@ _U::dump($ev -> toArray(), true);
             }*/
 
             // process categories
-            $eCats = EventCategory::find('event_id = ' . $ev->id);
+            $eventCategories = (new EventCategory()) -> setShardById($ev->id);
+            $eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
             if ($eCats) {
+            	_U::dump($eCats -> toArray(), true);
                 foreach ($eCats as $ec) {
                     $ec->delete();
                 }
@@ -924,7 +800,7 @@ _U::dump($ev -> toArray(), true);
                 $aCats = explode(',', $event['category']);
                 foreach ($aCats as $key => $value) {
                     if (!empty($value)) {
-                        $eCats = new EventCategory();
+                        $eCats = (new EventCategory()) -> setShardById($ev -> id);
                         $eCats->assign(array('event_id' => $ev->id,
                             				 'category_id' => $value));
                         $eCats->save();
@@ -934,7 +810,8 @@ _U::dump($ev -> toArray(), true);
 
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
-                $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
+            	$img = (new EventImageModel()) -> setShardById($ev -> id); 
+                $eventPoster = $img::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
 
                 $filename = $this->uploadImageFile(
                     empty($eventPoster) ? '' : $eventPoster->image,
@@ -945,12 +822,11 @@ _U::dump($ev -> toArray(), true);
                 if ($eventPoster) {
                     $eventPoster->image = $filename;
                 } else {
-                    $eventPoster = new EventImageModel();
+                    $eventPoster = (new EventImageModel()) -> setShardById($ev -> id);
                     $eventPoster->event_id = $ev->id;
                     $eventPoster->image = $filename;
                     $eventPoster->type = $imageType;
                 }
-
                 $eventPoster->save();
             };
 
@@ -978,14 +854,16 @@ _U::dump($ev -> toArray(), true);
     public function loadRedirect($params = [])
     {
     	if (!empty($params) && $params['type'] == 'update') {
-    		$ev = Event::findFirst((int)$params['id']);
+    		$event = (new Event()) -> setShardById($params['id']);
+    		$ev = $event::findFirst($params['id']);
     		$name = SUri::slug($ev -> name);
     		$this -> session -> set('eventViewForwardedUp', 1);
     		
     		$this -> response -> redirect('/' . $name . '-' . $ev -> id);
     		
     	} elseif(!empty($params) && $params['type'] == 'new') {
-    		$ev = Event::findFirst((int)$params['id']);
+    		$event = (new Event()) -> setShardById($params['id']);
+    		$ev = $event::findFirst($params['id']);
     		$name = SUri::slug($ev -> name);
     		$this -> session -> set('eventViewForwardedNew', 1);
     		
@@ -1030,68 +908,6 @@ _U::dump($ev -> toArray(), true);
         return $filename;
     }
 
-    /**
-     * @Route("/event/import-categories", methods={"GET", "POST"})
-     * @Acl(roles={'guest'});
-     */
-    /*public function importCategoriesAction()
-    {
-        $Parser = new \Categoryzator\Core\Parser();
-        $categories = $Parser->getCategories();
-
-        // categories
-        if (!empty($categories)) {
-            foreach ($categories as $categoryKey => $children) {
-                $Category = new Category();
-
-                $Category->key = strtolower($categoryKey);
-                $Category->name = ucfirst($categoryKey);
-                $Category->parent_id = 0;
-
-                if ($categoryKey === 'other') {
-                    $Category->is_default = 1;
-                }
-
-                $Category->save();
-            }
-
-            // tags (subcategories)
-            foreach ($categories as $categoryKey => $children) {
-                $parent = Category::findFirst('key = "'.$categoryKey.'"');
-                if (!empty($children)) {
-                    unset($children[0]);
-                    foreach ($children as $key => $cat) {
-                        $Tag = new \Frontend\Models\Tag();
-                        $Tag->category_id = $parent->id;
-
-                        if (is_string($cat)) {
-                            $catk = strtolower(str_replace(' ', '_', $cat));
-                            $Tag->key = $catk;
-                            $Tag->name = ucfirst($cat);
-                        } elseif (is_array($cat)) {
-                            $keyk = strtolower(str_replace(' ', '_', $key));
-                            $Tag->key = $keyk;
-                            $Tag->name = ucfirst($key);
-
-                            // keywords
-                            $keywords = [];
-                            foreach ($cat as $index => $keyword) {
-                                $keywords[$index] = new \Frontend\Models\Keyword();
-                                $keywords[$index]->key = $keyword;
-                            }
-
-                            $Tag->tag_keyword = $keywords;
-
-                        }
-
-                        $Tag->save();
-                    }
-                }
-            }
-        }
-
-        exit('DONE');
-    }*/
 
 
     /**
@@ -1101,7 +917,7 @@ _U::dump($ev -> toArray(), true);
     public function eventPreviewAction()
     {
         $post = $this->request->getPost();
-//_U::dump($post);
+		//_U::dump($post);
         $uploadedFiles = $this->request->getUploadedFiles();
 
         if (!empty($uploadedFiles)) {

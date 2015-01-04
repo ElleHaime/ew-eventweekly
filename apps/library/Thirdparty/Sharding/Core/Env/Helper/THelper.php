@@ -50,6 +50,8 @@ trait THelper
 		
 		$this -> setReadDestinationDb();
 		$this -> setWriteDestinationDb();
+		
+		return $this;
 	}
 	
 
