@@ -1,12 +1,15 @@
 config/database.php
 config/facebook.php
 config/rabbitmq.php
+config/sharding.php
+config/shardingService.php
 .htaccess
 .idea
 .buildpath
 htpasswd
 public/.htaccess
 public/upload
+vendor/*
 ^var/compiled/(?!empty$)
 ^var/logs/(?!empty$)
 ^var/cache/data/(?!empty$)

@@ -60,8 +60,9 @@ class IndexController extends \Core\Controller
         	$this -> view -> setVar('featuredEvents', $resultFe);
         	
         	// get trending events
-			if($trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
-												'order' => 'rank DESC'])) {
+			$trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
+												'order' => 'rank DESC']);
+			if (!is_null($trendingEvents -> count)) {
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}
