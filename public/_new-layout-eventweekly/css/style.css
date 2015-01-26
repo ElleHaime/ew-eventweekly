@@ -2945,6 +2945,7 @@ table.default thead {
   background: #1A1A1A;
   border-top: 2px solid #A86514;
   z-index: 101;
+  clear: both;
 }
 #footer .widgets {
   margin-left: -1.6%;
