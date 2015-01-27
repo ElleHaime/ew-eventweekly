@@ -268,14 +268,14 @@ class SearchController extends \Core\Controller
 							$needTags = true;
 						}
 
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10],
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 9],
                         								   false, [], false, false, false, true, true, $needTags);
 
                     } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 9], true, [],
                         								   false, false, false, true, true, $needTags, $postData['searchCategory']);
                     } else {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
+                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 9], false, [],
                         								   false, false, false, true, true, $needTags);
                     }
                   
@@ -293,12 +293,13 @@ class SearchController extends \Core\Controller
         }
 
         $this->view->setVar('list', $result);
-        $this->view->setVar('eventsTotal', $countResults);
+        $this->view->setVar('eventsTotal', $countResults); //echo $countResults;die;
         if (isset($fetchedData)) {
             $this->view->setVar('pagination', $fetchedData);
         }
-        
+
         if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
+
         	if (isset($fetchedData) && ($fetchedData -> current == $fetchedData -> total_pages)) {
 	        	unset($postData['searchLocationLatCurrent']);
 	        	unset($postData['searchLocationLngCurrent']);
@@ -328,9 +329,17 @@ class SearchController extends \Core\Controller
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
             $this->view->pick('event/mapEvent');
-        } else {
-        	$this->view->setVar('searchResultList', true);
-            $this->view->pick('event/eventList');
+        } else {  
+            if ($page >1 ) {
+                $this->view->setVar('searchResultList', true);
+                $this->view->pick('event/eventListPart');
+            }
+            else {
+                $this->view->setVar('searchResultList', true);
+                $this->view->setVar('totalPagesJs', $fetchedData -> total_pages);
+                //echo $fetchedData -> total_pages;die;
+                $this->view->pick('event/eventList');
+            }
         }
     }
 

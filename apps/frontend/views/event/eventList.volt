@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<div class="page">
+<div class="page" >
 	<div class="page__wrapper">
-		<section id="content" class="container page-search">
+		<section id="content" class="container page-search" >
 
 			<h1 class="page__title">{{ listTitle|default('Event list') }}</h1>
 			<div class="page__sort"></div>
@@ -16,7 +16,6 @@
 					<div class="b-list-of-events-g">
 
 						{% for event in list %}
-
 							<!-- item -->
 							<div class="b-list-of-events-g__item pure-u-1-3 event-list-event" data-event-id={{ event.id}}>
 								<div class="b-list-of-events-g__wrapper">
@@ -27,7 +26,7 @@
 
 										<div class="like-buttons">  
 											<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
-												<a href="#" class="ew-button" title="Like" >
+												<a href="/" class="ew-button" title="Like" >
 													<i class="fa fa-thumbs-up"></i>
 												</a>
 											</div>
@@ -70,7 +69,7 @@
 												{{ event.location.city }}, {{ event.location.country }}
 											</div>
 										{% endif %}
-										<div class="b-list-of-events-g__description">
+										<div class="b-list-of-events-g__description" id="555">
 											<p>{{ event.description|striptags|escape|truncate(250) }}</p>
 										</div>
 
@@ -113,11 +112,82 @@
 						{% endfor %}							
 							
 					</div>
+
 				{% endif %}
-														
+					
+
+
 				</div>
 		</section>
+
+		
+		
+
+
 		{% include 'layouts/accfilter_new.volt' %}
 	</div>
+	<div class="clearfix"></div>
+		<div id="load_more">
+			<a class="ew-button" >
+				<i class="fa fa-angle-double-down" ></i> Load more
+			</a>
+		</div>
+	<div class="clearfix"></div>
 </div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>
+(function(){
+
+    var i = 1;
+    var url = window.location.href;
+    var nextPageUrl = '';
+    $("#load_more").hide();
+    var totalPagesJs = 0;
+    totalPagesJs += <?php echo $totalPagesJs; ?>;
+    
+	if ( totalPagesJs>1 ) {
+    	$("#load_more").show();
+    }
+
+    $(document).ready(function(){
+
+        $("#load_more").click(function(){
+		    $(".page")
+		        .css({
+		        	'opacity' : 0.4,
+		        	'background-color': 'black',
+		    	});
+
+
+
+            i++;
+
+			if ( i>=totalPagesJs ) {
+    			$("#load_more").hide();
+    		}
+
+
+    		
+            nextPageUrl = url + '&page=' + i;
+            $.ajax({url:nextPageUrl,success:function(result){
+                $(".page__wrapper").html(result);
+                $(".page")
+			        .css({
+			        	'opacity' : 1,
+			        	'background-color': 'transparent',
+			    	});
+            }});
+            //alert(nextPageUrl);
+        });
+
+    });
+
+})();
+
+
+
+</script>
+
 {% endblock %}
