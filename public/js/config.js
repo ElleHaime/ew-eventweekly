@@ -15,12 +15,10 @@ require.config({
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
         'lazyload': 'library/vendors/lazyload',
-//		'jquery': 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'jTruncate': 'library/vendors/jquery.truncate',
 		'underscore': 'library/vendors/underscore',
 		'resizer': 'library/vendors/resizer',
-		//'bootstrap': 'library/vendors/bootstrap.min',
 		'bootstrap': 'library/vendors/bootstrap',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
@@ -40,6 +38,7 @@ require.config({
 		'noti': 'frontend/general/noti',
 		'noty': 'library/vendors/noty/js/noty/packaged/jquery.noty.packaged',
 		'frontEventLike': 'frontend/general/eventLike',
+		'lazyLoader': 'frontend/general/lazyLoader',
 		'signupControl': 'frontend/signup/signupControl',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
@@ -73,6 +72,10 @@ require.config({
 	shim: {
 		'underscore': {
             exports: '_'
+        },
+        'lazyload': {
+        	deps: ['jquery'],
+        	exports: 'lazyload'
         },
         'datetimepicker': {
         	deps: ['jquery'],

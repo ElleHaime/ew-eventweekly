@@ -7,18 +7,17 @@ require([
     'fb',
     'frontEventLike',
     'noty',
+    'lazyLoader',//new  !! eventList.volt has <scriptjquery    
     'utils',
     'domReady',
     'underscore',
-    'jCookie',
-    'lazyload'//new  !! eventList.volt has <scriptjquery 
+    'jCookie'
 ],
-    function($, fb, frontEventLike, noty) {
+    function($, fb, frontEventLike, noty, lazyLoader) {
 
         fb.init();
-
         frontEventLike.init();
-
+        lazyLoader.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');
@@ -31,7 +30,7 @@ require([
         **********************
         */
 
-
+/*
 
 
 
@@ -97,7 +96,7 @@ require([
                     });
             }});
 
-        });
+        });*/
 
     }
 );

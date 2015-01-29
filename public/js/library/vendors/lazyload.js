@@ -13,7 +13,8 @@
  *
  */
 
-(function($, window, document, undefined) {
+//(function($, window, document, undefined) {
+(function($) {	
     var $window = $(window);
 
     $.fn.lazyload = function(options) {
@@ -239,4 +240,5 @@
         "left-of-fold"   : function(a) { return !$.rightoffold(a, {threshold : 0}); }
     });
 
-})(jQuery, window, document);
+//})(jQuery, window, document);
+})(jQuery);

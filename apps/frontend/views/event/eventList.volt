@@ -134,65 +134,7 @@
 </div>
 
 <div id="totalPagesJs" style="display: none;">
-    <?php echo $totalPagesJs; ?>
+    {{ totalPagesJs }}
 </div>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-
-<script>
-// (function(){
-
-// 	$("img.lazy").lazyload();
-	
-//     var i = 1;
-//     var url = window.location.href;
-//     var nextPageUrl = '';
-//     $("#load_more").hide();
-//     var totalPagesJs = 0;
-//     totalPagesJs += <?php echo $totalPagesJs; ?>;
-    
-// 	if ( totalPagesJs>1 ) {
-//     	$("#load_more").show();
-//     }
-
-//     $(document).ready(function(){
-
-//         $("#load_more").click(function(){
-// 		    $(".page")
-// 		        .css({
-// 		        	'opacity' : 0.4,
-// 		        	'background-color': 'black',
-// 		    	});
-
-
-
-//             i++;
-
-// 			if ( i>=totalPagesJs ) {
-//     			$("#load_more").hide();
-//     		}
-
-
-    		
-//             nextPageUrl = url + '&page=' + i;
-//             $.ajax({url:nextPageUrl,success:function(result){
-//                 $(".page__wrapper").html(result);
-//                 $(".page")
-// 			        .css({
-// 			        	'opacity' : 1,
-// 			        	'background-color': 'transparent',
-// 			    	});
-//             }});
-//             //alert(nextPageUrl);
-//         });
-
-//     });
-
-// })();
-
-
-
-</script>
 
 {% endblock %}
