@@ -1,10 +1,6 @@
-{% extends "layouts/base_new.volt" %}
-
-{% block content %}
-
-<div class="page" >
+<div class="page" style="padding:0;">
 	<div class="page__wrapper">
-		<section id="content" class="container page-search" >
+		<section id="content" class="container page-search">
 
 			<h1 class="page__title">{{ listTitle|default('Event list') }}</h1>
 			<div class="page__sort"></div>
@@ -21,7 +17,7 @@
 								<div class="b-list-of-events-g__wrapper">
 									<div class="b-list-of-events-g__picture">
 										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
 										</a>
 
 										<div class="like-buttons">  
@@ -113,86 +109,13 @@
 							
 					</div>
 
+					
 				{% endif %}
+					
 
-		<img src="../img/preloader.gif" alt="" id='preloader' style="display: none;">				
 
 				</div>
 		</section>
-
-
-
 		{% include 'layouts/accfilter_new.volt' %}
 	</div>
-	<div class="clearfix"></div>
-		<div id="load_more">
-			<a class="ew-button" >
-				<i class="fa fa-angle-double-down" ></i> Load more
-			</a>
-		</div>
-	<div class="clearfix"></div>
 </div>
-
-<div id="totalPagesJs" style="display: none;">
-    <?php echo $totalPagesJs; ?>
-</div>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-
-
-<script>
-// (function(){
-
-// 	$("img.lazy").lazyload();
-	
-//     var i = 1;
-//     var url = window.location.href;
-//     var nextPageUrl = '';
-//     $("#load_more").hide();
-//     var totalPagesJs = 0;
-//     totalPagesJs += <?php echo $totalPagesJs; ?>;
-    
-// 	if ( totalPagesJs>1 ) {
-//     	$("#load_more").show();
-//     }
-
-//     $(document).ready(function(){
-
-//         $("#load_more").click(function(){
-// 		    $(".page")
-// 		        .css({
-// 		        	'opacity' : 0.4,
-// 		        	'background-color': 'black',
-// 		    	});
-
-
-
-//             i++;
-
-// 			if ( i>=totalPagesJs ) {
-//     			$("#load_more").hide();
-//     		}
-
-
-    		
-//             nextPageUrl = url + '&page=' + i;
-//             $.ajax({url:nextPageUrl,success:function(result){
-//                 $(".page__wrapper").html(result);
-//                 $(".page")
-// 			        .css({
-// 			        	'opacity' : 1,
-// 			        	'background-color': 'transparent',
-// 			    	});
-//             }});
-//             //alert(nextPageUrl);
-//         });
-
-//     });
-
-// })();
-
-
-
-</script>
-
-{% endblock %}

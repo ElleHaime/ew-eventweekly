@@ -1,6 +1,6 @@
 require.config({
 	baseUrl: '/js',
-   // urlArgs: "bust=" + (new Date()).getTime(),
+    urlArgs: "bust=" + (new Date()).getTime(),
 	paths: {
 		// plugins
 		'async': 'requirePlugins/async',
@@ -14,6 +14,7 @@ require.config({
 
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
+        'lazyload': 'library/vendors/lazyload',
 //		'jquery': 'http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'jTruncate': 'library/vendors/jquery.truncate',
