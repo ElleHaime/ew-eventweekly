@@ -189,7 +189,7 @@
                         </a>
 
                         <div class="location-search clearfix advancedSearchBlock">
-                            {% include 'layouts/searchform.volt' %}
+                            {% include 'layouts/searchform_new.volt' %}
                         </div>
                     </div>
                 </div>

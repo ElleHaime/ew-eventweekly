@@ -1,4 +1,4 @@
-a:3:{i:0;s:11651:"<!DOCTYPE html>
+a:3:{i:0;s:15018:"<!DOCTYPE html>
 <html>
 <head>
     <title>EventWeekly</title>
@@ -112,15 +112,92 @@ a:3:{i:0;s:11651:"<!DOCTYPE html>
 		<?php if (isset($member->id)) { ?>
 			<div class="top-line">
 				<div class="container">
-					
-					<div class="top-line__item top-line__item--text">Never miss <strong>events</strong> in Dublin!</div>
-					<div class="top-line__item">
-						<a href="#" class="top-line__button">
-							<i class="fa fa-sign-in"></i> Sign Up today
-						</a>
+
+					<div class="user-bar">
+						<div class="dropdown">
+							<!-- button -->
+							<a id="js-userBarDropDown" data-toggle="dropdown">
+								<img 
+									<?php if ($member->logo != '') { ?>
+                                        src="<?php echo $member->logo; ?>"
+                                    <?php } else { ?>
+                                        src='/img/demo/h_back_1.jpg'
+                                    <?php } ?> 
+								class="user-bar__avatar" alt="Member logo" />
+
+								<span class="user-bar__username">
+									<?php if ($this->length($member->name)) { ?>
+                                        <?php echo $member->name; ?>
+                                    <?php } else { ?>
+                                        <?php echo $member->email; ?>
+                                    <?php } ?>
+								</span> 
+								<span class="caret"></span>
+							</a>
+							
+							<!-- dropdown -->
+							<ul class="dropdown-menu" role="menu" aria-labelledby="js-userBarDropDown">
+								
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/profile">Profile settings</a>
+                                </li>
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/campaign/list">Manage campaigns</a>
+                                </li>
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/event/list">
+										<span class="btn-count" id="userEventsCreated"><?php echo $userEventsCreated; ?></span>
+                                        <span class="btn-text">My events</span>
+                                	</a>
+                                </li>
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/event/joined">
+										<span class="btn-count" id="userEventsGoing"><?php echo $userEventsGoing; ?></span>
+                                        <span class="btn-text">Events I’m attending</span>
+                                	</a>
+                                </li>
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/event/liked">
+										<span class="btn-count" id="userEventsLiked"><?php echo $userEventsLiked; ?></span>
+                                        <span class="btn-text">Events I like</span>
+                                	</a>
+                                </li>
+                                <li>
+                                	<a role="menuitem" tabindex="-1" href="/event/friends">
+										<span class="btn-count" id="userFriendsGoing"><?php echo $userFriendsGoing; ?></span>
+                                        <span class="btn-text">Friends’ events</span>
+                                	</a>
+                                </li>
+
+								<li>
+									<a role="menuitem" tabindex="-1" href="/logout">Logout</a>
+								</li>
+							</ul>
+						</div>
 					</div>
-					<div class="top-line__item top-line__item--divider">
-						<a href="#" class="top-line__link">Sign In</a>
+
+					<a href="#" class="user-menu-button-open js-user-menu-button-open-trigger">Open Menu</a>
+
+					<div class="clearfix"></div>
+
+					<div class="user-menu-collapsed js-user-menu-collapsed">
+						<div class="top-line__item">
+							<a href="#" class="top-line__link">300 events</a>
+						</div>
+
+						<div class="top-line__item">
+							<a href="#" class="top-line__link">Lorem</a>
+						</div>
+
+						<div class="top-line__item">
+							<a href="#" class="top-line__link">Dolorsit</a>
+						</div>
+
+						<div class="top-line__item">
+							<a href="#" class="top-line__button" onclick="location.href='/event/edit'">
+								<i class="fa fa-plus"></i> Add event
+							</a>
+						</div>
 					</div>
 
 				</div>
@@ -290,7 +367,7 @@ a:3:{i:0;s:11651:"<!DOCTYPE html>
 		</header>
 
 ";s:7:"content";a:1:{i:0;a:4:{s:4:"type";i:357;s:5:"value";s:1:"
-";s:4:"file";s:62:"/var/www/EventWeekly/apps/frontend/views/layouts/base_new.volt";s:4:"line";i:52;}}i:1;s:2071:"
+";s:4:"file";s:74:"/media/Data/Projects/EventWeekly/apps/frontend/views/layouts/base_new.volt";s:4:"line";i:52;}}i:1;s:2071:"
 
 		<!-- Footer -->
 			<footer id="footer">

@@ -12,7 +12,7 @@
 
 				<div class="categories-accordion">
 
-				<?php $v17434829398458005311iterator = $userFilters; $v17434829398458005311incr = 0; $v17434829398458005311loop = new stdClass(); $v17434829398458005311loop->length = count($v17434829398458005311iterator); $v17434829398458005311loop->index = 1; $v17434829398458005311loop->index0 = 1; $v17434829398458005311loop->revindex = $v17434829398458005311loop->length; $v17434829398458005311loop->revindex0 = $v17434829398458005311loop->length - 1; ?><?php foreach ($v17434829398458005311iterator as $filter => $category) { ?><?php $v17434829398458005311loop->first = ($v17434829398458005311incr == 0); $v17434829398458005311loop->index = $v17434829398458005311incr + 1; $v17434829398458005311loop->index0 = $v17434829398458005311incr; $v17434829398458005311loop->revindex = $v17434829398458005311loop->length - $v17434829398458005311incr; $v17434829398458005311loop->revindex0 = $v17434829398458005311loop->length - ($v17434829398458005311incr + 1); $v17434829398458005311loop->last = ($v17434829398458005311incr == ($v17434829398458005311loop->length - 1)); ?>
+				<?php $v99498419612432958321iterator = $userFilters; $v99498419612432958321incr = 0; $v99498419612432958321loop = new stdClass(); $v99498419612432958321loop->length = count($v99498419612432958321iterator); $v99498419612432958321loop->index = 1; $v99498419612432958321loop->index0 = 1; $v99498419612432958321loop->revindex = $v99498419612432958321loop->length; $v99498419612432958321loop->revindex0 = $v99498419612432958321loop->length - 1; ?><?php foreach ($v99498419612432958321iterator as $filter => $category) { ?><?php $v99498419612432958321loop->first = ($v99498419612432958321incr == 0); $v99498419612432958321loop->index = $v99498419612432958321incr + 1; $v99498419612432958321loop->index0 = $v99498419612432958321incr; $v99498419612432958321loop->revindex = $v99498419612432958321loop->length - $v99498419612432958321incr; $v99498419612432958321loop->revindex0 = $v99498419612432958321loop->length - ($v99498419612432958321incr + 1); $v99498419612432958321loop->last = ($v99498419612432958321incr == ($v99498419612432958321loop->length - 1)); ?>
 
 					<!-- accordion item -->
 						<div class="categories-accordion__item">
@@ -32,17 +32,17 @@
 							<?php if ($category['tags'] == !$empty) { ?>
 							<!-- list of checkboxes -->
 									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-<?php echo $category['id']; ?>">
-										<?php $v17434829398458005312iterator = $category['tags']; $v17434829398458005312incr = 0; $v17434829398458005312loop = new stdClass(); $v17434829398458005312loop->length = count($v17434829398458005312iterator); $v17434829398458005312loop->index = 1; $v17434829398458005312loop->index0 = 1; $v17434829398458005312loop->revindex = $v17434829398458005312loop->length; $v17434829398458005312loop->revindex0 = $v17434829398458005312loop->length - 1; ?><?php foreach ($v17434829398458005312iterator as $subfilter => $tag) { ?><?php $v17434829398458005312loop->first = ($v17434829398458005312incr == 0); $v17434829398458005312loop->index = $v17434829398458005312incr + 1; $v17434829398458005312loop->index0 = $v17434829398458005312incr; $v17434829398458005312loop->revindex = $v17434829398458005312loop->length - $v17434829398458005312incr; $v17434829398458005312loop->revindex0 = $v17434829398458005312loop->length - ($v17434829398458005312incr + 1); $v17434829398458005312loop->last = ($v17434829398458005312incr == ($v17434829398458005312loop->length - 1)); ?>									
+										<?php $v99498419612432958322iterator = $category['tags']; $v99498419612432958322incr = 0; $v99498419612432958322loop = new stdClass(); $v99498419612432958322loop->length = count($v99498419612432958322iterator); $v99498419612432958322loop->index = 1; $v99498419612432958322loop->index0 = 1; $v99498419612432958322loop->revindex = $v99498419612432958322loop->length; $v99498419612432958322loop->revindex0 = $v99498419612432958322loop->length - 1; ?><?php foreach ($v99498419612432958322iterator as $subfilter => $tag) { ?><?php $v99498419612432958322loop->first = ($v99498419612432958322incr == 0); $v99498419612432958322loop->index = $v99498419612432958322incr + 1; $v99498419612432958322loop->index0 = $v99498419612432958322incr; $v99498419612432958322loop->revindex = $v99498419612432958322loop->length - $v99498419612432958322incr; $v99498419612432958322loop->revindex0 = $v99498419612432958322loop->length - ($v99498419612432958322incr + 1); $v99498419612432958322loop->last = ($v99498419612432958322incr == ($v99498419612432958322loop->length - 1)); ?>									
 											<div class="form-checkbox pure-u-1-2">
 												<input type="checkbox" id="tag-<?php echo $tag['id']; ?>" data-category-id="<?php echo $tag['category_id']; ?>" class="userFilter-tag" checked> 
 												<label for="t1" title="<?php echo $tag['name']; ?>"><span><span></span></span><?php echo $tag['name']; ?></label>
 											</div>
-										<?php $v17434829398458005312incr++; } ?>
+										<?php $v99498419612432958322incr++; } ?>
 									</div>
 							<?php } ?>
 						</div>
 						
-					<?php $v17434829398458005311incr++; } ?>
+					<?php $v99498419612432958321incr++; } ?>
 
 				</div>
 			</div>
