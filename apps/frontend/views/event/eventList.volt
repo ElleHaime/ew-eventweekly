@@ -136,5 +136,5 @@
 <div id="totalPagesJs" style="display: none;">
     {{ totalPagesJs }}
 </div>
-
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 {% endblock %}
