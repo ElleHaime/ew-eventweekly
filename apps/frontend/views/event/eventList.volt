@@ -115,7 +115,7 @@
 
 				{% endif %}
 
-		<img src="../img/preloader.gif" alt="" id='preloader' style="display: none;">				
+						
 
 				</div>
 		</section>
@@ -125,12 +125,14 @@
 		{% include 'layouts/accfilter_new.volt' %}
 	</div>
 	<div class="clearfix"></div>
-		<div id="load_more">
+		<div id="load_more" style="display:none;">
 			<a class="ew-button" >
 				<i class="fa fa-angle-double-down" ></i> Load more
 			</a>
 		</div>
 	<div class="clearfix"></div>
+
+	<img src="../img/preloader.gif" alt="" id='preloader' style="display: none;">
 </div>
 
 <div id="totalPagesJs" style="display: none;">

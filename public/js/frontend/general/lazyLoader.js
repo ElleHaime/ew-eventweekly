@@ -35,6 +35,8 @@ define('lazyLoader',
 
         		// initialize clicks
         		self.__bindClicks();
+
+
         	},
 
         	self.__bindClicks = function() 
@@ -81,6 +83,10 @@ define('lazyLoader',
                         .css({
                             'opacity' : 1,
                             'background-color': 'transparent',
+                        });
+                    $(self.settings.preloader)
+                        .css({
+                            'display': 'none',
                         });
                 }});
         	}
