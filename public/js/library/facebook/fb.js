@@ -62,6 +62,7 @@ define('fb',
 			{
                 FB.init({
                     appId: window.fbAppId,
+                    version: window.fbAppVersion,
                     status: self.settings.status
                 });
                 
