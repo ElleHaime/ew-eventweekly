@@ -108,7 +108,6 @@
 <?php } ?>
 <!-- Header -->
 		<header id="header">
-		
 		<?php if (isset($member->id)) { ?>
 			<div class="top-line">
 				<div class="container">
@@ -213,9 +212,10 @@
 						</a>
 					</div>
 					<div class="top-line__item top-line__item--divider">
-						<a href="#" class="top-line__link" onclick="return false;">Sign In</a>
+						<a href="#" class="top-line__link"  onclick="return false;">Sign In</a>
 					</div>
-
+					
+                    
 				</div>
 			</div>
 		<?php } ?>

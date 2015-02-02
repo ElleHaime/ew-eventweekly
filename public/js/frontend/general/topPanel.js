@@ -59,8 +59,8 @@ define('frontTopPanel',
             self.__popupLogin = function()
             {
                 var showPopup = function(){
-                    var width = 600;
-                    var height = 550;
+                    var width = 550;
+                    var height = 750;
                     var left = (screen.width/2) - (width/2);
                     var top = (screen.height/2) - (height/2);
 

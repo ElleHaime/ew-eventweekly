@@ -1,4 +1,4 @@
-a:3:{i:0;s:15018:"<!DOCTYPE html>
+a:3:{i:0;s:15042:"<!DOCTYPE html>
 <html>
 <head>
     <title>EventWeekly</title>
@@ -108,7 +108,6 @@ a:3:{i:0;s:15018:"<!DOCTYPE html>
 <?php } ?>
 <!-- Header -->
 		<header id="header">
-		
 		<?php if (isset($member->id)) { ?>
 			<div class="top-line">
 				<div class="container">
@@ -213,9 +212,10 @@ a:3:{i:0;s:15018:"<!DOCTYPE html>
 						</a>
 					</div>
 					<div class="top-line__item top-line__item--divider">
-						<a href="#" class="top-line__link" onclick="return false;">Sign In</a>
+						<a href="#" class="top-line__link"  onclick="return false;">Sign In</a>
 					</div>
-
+					
+                    
 				</div>
 			</div>
 		<?php } ?>
