@@ -1,5 +1,5 @@
 define('fb',
-	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/all.js'],
+	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/sdk.js'],
 	function($, utils, noty) {
 
 		function fb($, utils, noty)
@@ -35,14 +35,7 @@ define('fb',
 				maybe: 'MAYBE',
 				decline: 'DECLINE'
 			};
-			self.userData = [
-				'first_name',
-				'last_name', 
-				'email', 
-				'current_location', 
-				'current_address', 
-				'pic_big'
-			];
+			self.userData = {};
 			self.accessToken = '';
 			self.accessUid = '';
 			self.relocateAfterLogin = true;
@@ -124,16 +117,10 @@ define('fb',
 
 			self.__register = function(data)
 			{
-				params = { uid: self.accessUid,
-                           token: self.accessToken,
-                           address: data.current_address,
-                           location: data.current_location,
-                           email: data.email,
-                           logo: data.pic_big,
-                           first_name: data.first_name,
-                           last_name: data.last_name,
-                           username: data.first_name + ' ' + data.last_name };
-			
+				params = self.userData;
+				params.uid = self.accessUid;
+				params.token = self.accessToken;
+
                 $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
@@ -142,7 +129,7 @@ define('fb',
                 		$(self.settings.errorBox).html('Facebook return empty result :(');
 		                $(self.settings.errorBox).show();
                 	}
-                }); 
+                });  
 			}
 			
 			self.__getLoginResponse = function(response)
@@ -164,28 +151,51 @@ define('fb',
 			{
 				authParams = { uid: self.accessUid, 
          			   		   access_token: self.accessToken };
-				
+
 		        $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
-		         			var userData = self.userData.join(',');
-		         			FB.api({
-					                method: 'fql.query',
-				               		query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
-					               	function(facebookData) {
-					               		if (!facebookData) {
-					               			alert('Can\'t get your info from FB acc');
-					               			return false;
-					               		}
-					               		
-					               		self.__register(facebookData[0]);
-					               	}); 
+		         			FB.api('/me', 	function(facebookData) {
+				               		if (!facebookData) {
+				               			alert('Can\'t get your info from FB acc');
+				               			return false;
+				               		}
+				               		self.userData.user_name = facebookData.name;
+				               		if (facebookData.first_name) {
+				               			self.userData.first_name = facebookData.first_name;
+				               		}
+				               		if (facebookData.last_name) {
+				               			self.userData.last_name = facebookData.last_name;
+				               		}
+				               		if (facebookData.email) {
+				                    	self.userData.email = facebookData.email;	
+				                    }
+				        			if (facebookData.location.id) {
+				        				self.userData.locationId = facebookData.location.id;
+				        			}
+				               		FB.api('/me/picture', function(response) {
+           								if (response) {
+           									self.userData.logo = response.data.url;
+           								}
+           								if (self.userData.locationId) {
+           									FB.api('/' + self.userData.locationId, function(response) {
+           										if (response) {
+           											self.userData.locationLat = response.location.latitude; 
+           											self.userData.locationLng = response.location.longitude;
+           										}
+           										self.__register(facebookData);
+           									});
+           								} else {
+           									self.__register(facebookData);
+           								}
+           							});
+				               	}); 
 		         		} else {
 		         			alert('I can\'t authorize you, sorry, bro');
 		         		}  
-		        }); 
+		        });  
 			}
-			
+
 			self.__checkPermissions = function()
 			{
 				FB.api(
