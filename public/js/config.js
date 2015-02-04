@@ -143,6 +143,7 @@ require.config({
 
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
+        window.fbAppVersion = document.getElementById('fbAppVersion').value;
         
         var moduleName, fileName = '',
         	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,

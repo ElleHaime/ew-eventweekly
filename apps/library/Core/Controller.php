@@ -133,6 +133,8 @@ class Controller extends \Phalcon\Mvc\Controller
         } else {
             $this->view->setVar('isMobile', '0');
         }
+        isset($this -> getDI() -> get('facebook_config') -> facebook -> version) ? $fbAppVersion = $this -> getDI() -> get('facebook_config') -> facebook -> version : $fbAppVersion = 'v2.0'; 
+        $this -> view -> setVar('fbAppVersion', $this -> getDI() -> get('facebook_config') -> facebook -> version);
     }
 
 

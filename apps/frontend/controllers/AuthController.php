@@ -8,6 +8,7 @@ use Frontend\Form\SignupForm,
     Frontend\Form\RestoreForm,
     Frontend\Form\ResetForm,
     Frontend\Models\Member,
+    Frontend\Models\Location,
     Frontend\Models\EventMemberCounter,
     Frontend\Models\MemberNetwork,
     Frontend\Events\MemberListener,
@@ -160,50 +161,49 @@ class AuthController extends \Core\Controller
     public function fbregisterAction()
     {
         $userData =  $this -> request -> getPost();
+        isset($this -> getDI() -> get('facebook_config') -> facebook -> version) ? $fbVesrion = $this -> getDI() -> get('facebook_config') -> facebook -> version : $fbVersion = 'v2.2';
         $res = [];
         
         if (!$this -> session -> has('member')) {
-        	$checkMember = Member::findFirst('email = "' . $userData['email'] . '"');
-        	if ($checkMember && $checkMember -> network) {
-        		$memberNetwork = MemberNetwork::findFirst('member_id = ' . $checkMember -> id);
-        		if ($memberNetwork) {
-        			$memberNetwork -> account_uid = $userData['uid'];
-        			$memberNetwork -> update();
-        			
-        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-        		}
-        	}
+       		$memberNetwork = MemberNetwork::findFirst('account_id = "' .  $userData['uid'] . '"');
+       		if ($memberNetwork) {
+       			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+       			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+       		}
         }
         
         if (!$this -> session -> has('member')) {
             $member = new Member();
-
             $locationByIp = $this->session->get('location');
-            if (isset($userData['location']) && !empty($userData['location']) && $locationByIp) {
-                $locationByFb = $userData['location'];
+            if (isset($userData['locationLat']) && isset($userData['locationLng']) && $locationByIp) {
+                $locationByFb = (new Location()) -> createOnChange(['latitude' => $userData['locationLat'], 'longitude' => $userData['locationLng']]);
 
-                if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) 
-                        || (strtolower($locationByFb['city']) != strtolower($locationByIp->city))) 
-                {
-                    $this->session->set('location_conflict', true);
-                    $this->session->set('location_conflict_profile_flag', true);
+                if ($locationByIp -> id != $locationByFb -> id) { 
+                    $this -> session -> set('location_conflict', true);
+                    $this -> session -> set('location_conflict_profile_flag', true);
                 }
             }
 
-            $memberLocation = $locationByIp;
-
             $member -> assign(array(
-                    'pass' => $this->security->hash(rand(0, 500) . '+' . microtime()), //md5(rand(0, 500) . '+' . microtime()),
-                    'email' => $userData['email'],
+                    'pass' => $this -> security -> hash(rand(0, 500) . '+' . microtime()), //md5(rand(0, 500) . '+' . microtime()),
                     'role' => Acl::ROLE_MEMBER,
-                    'location_id' => $memberLocation -> id,
-                    'name' => $userData['first_name'] . ' ' . $userData['last_name'],
+                    'location_id' => $locationByIp -> id,
                     'auth_type' => 'facebook',
-                    'address' => $userData['address'],
                     'logo' => $userData['logo']
                 ));
-
+            if (isset($userData['email'])) {
+            	$member -> assign(['email' => $userData['email']]);
+            }
+            if (isset($userData['first_name'])) {
+            	if (isset($userData['last_name'])) { 
+            		$member -> assign(['name' => $userData['first_name'] . ' ' . $userData['last_name']]);
+            	} else {
+            		$member -> assign(['name' => $userData['first_name']]);
+            	}
+            } else {
+            	$member -> assign(['name' => $userData['user_name']]);
+            }
+            
             if ($member -> save()) {
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
@@ -216,16 +216,16 @@ class AuthController extends \Core\Controller
                 $memberCounter -> save();
                 
                 $memberNetwork = new MemberNetwork();
-                if ($userData['username'] == '' || empty($userData['username'])) {
+                if ($userData['user_name'] == '' || empty($userData['user_name'])) {
                 	if ($userData['email']) {
-                		$userData['username'] = $userData['email'];
+                		$userData['user_name'] = $userData['email'];
                 	}
                 }
                 $memberNetwork -> assign(array(
                         'member_id' => $member -> id,
                         'network_id' => 1,
                         'account_uid' => $userData['uid'],
-                        'account_id' => $userData['username']
+                        'account_id' => $userData['user_name']
                     ));
 
                 if ($memberNetwork -> save()) {
