@@ -1,4 +1,4 @@
-a:3:{i:0;s:15042:"<!DOCTYPE html>
+a:3:{i:0;s:15174:"<!DOCTYPE html>
 <html>
 <head>
     <title>EventWeekly</title>
@@ -101,6 +101,10 @@ a:3:{i:0;s:15042:"<!DOCTYPE html>
 
 <?php if (isset($fbAppId)) { ?>
     <input id="fbAppId" type="hidden" value="<?php echo $fbAppId; ?>" />
+<?php } ?>
+
+<?php if (isset($fbAppVersion)) { ?>
+    <input id="fbAppVersion" type="hidden" value="<?php echo $fbAppVersion; ?>" />
 <?php } ?>
 
 <?php if (isset($fbAppSecret)) { ?>
