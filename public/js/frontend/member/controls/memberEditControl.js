@@ -185,6 +185,7 @@ define('frontMemberEditControl',
                 });
 
                 $(self.settings.marker).click(function(){
+                    alert('aaaaaa');
                     $(this).toggleClass(self.settings.disabledMarker);
 
                     var clickedId = $(this).attr('data-id');
@@ -393,6 +394,7 @@ define('frontMemberEditControl',
 
             self.__clearTags = function(element)
             {
+                alert('ololo');
                 var tagsToClear = $(element).find('.marker:not(.disabled-marker)');
 
                 var tagIds = null;

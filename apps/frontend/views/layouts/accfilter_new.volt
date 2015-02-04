@@ -5,9 +5,9 @@
 		<aside id="filters" class="b-filters sidebar-filters" style="display:none">
 			<div class="b-filters__wrapper">
 				<div class="b-filters__buttons">
-					<a href="#" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
-					<a href="#" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
-					<a href="#" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
+					<a href="#" id="check-all" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
+					<a href="#" id="uncheck-all" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
+					<a href="#" id="default-choise" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
 				</div>
 
 				<div class="categories-accordion">
@@ -31,7 +31,7 @@
 	
 							{% if category['tags'] is not empty %}
 							<!-- list of checkboxes -->
-									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-{{ category['id'] }}">
+									<div class="categories-accordion__body userTag-subfilters" id="subfilter-{{ category['id'] }}">
 										{% for subfilter, tag in category['tags'] %}									
 											<div class="form-checkbox pure-u-1-2">
 												<input type="checkbox" id="tag-{{ tag['id']}}" data-category-id="{{ tag['category_id'] }}" class="userFilter-tag" checked> 

@@ -67,7 +67,7 @@ define('frontFilterPanel',
 			},
 			
 			__checkOptions: function() {
-				
+				alert('ololo');
 			},
 			
 			__uncheckOptions: function() {

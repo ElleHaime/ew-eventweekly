@@ -495,9 +495,9 @@
 		<aside id="filters" class="b-filters sidebar-filters" style="display:none">
 			<div class="b-filters__wrapper">
 				<div class="b-filters__buttons">
-					<a href="#" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
-					<a href="#" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
-					<a href="#" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
+					<a href="#" id="check-all" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
+					<a href="#" id="uncheck-all" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
+					<a href="#" id="default-choise" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
 				</div>
 
 				<div class="categories-accordion">
@@ -521,7 +521,7 @@
 	
 							<?php if ($category['tags'] == !$empty) { ?>
 							<!-- list of checkboxes -->
-									<div class="categories-accordion__body" class="userTag-subfilters" id="subfilter-<?php echo $category['id']; ?>">
+									<div class="categories-accordion__body userTag-subfilters" id="subfilter-<?php echo $category['id']; ?>">
 										<?php $v99498419612432958322iterator = $category['tags']; $v99498419612432958322incr = 0; $v99498419612432958322loop = new stdClass(); $v99498419612432958322loop->length = count($v99498419612432958322iterator); $v99498419612432958322loop->index = 1; $v99498419612432958322loop->index0 = 1; $v99498419612432958322loop->revindex = $v99498419612432958322loop->length; $v99498419612432958322loop->revindex0 = $v99498419612432958322loop->length - 1; ?><?php foreach ($v99498419612432958322iterator as $subfilter => $tag) { ?><?php $v99498419612432958322loop->first = ($v99498419612432958322incr == 0); $v99498419612432958322loop->index = $v99498419612432958322incr + 1; $v99498419612432958322loop->index0 = $v99498419612432958322incr; $v99498419612432958322loop->revindex = $v99498419612432958322loop->length - $v99498419612432958322incr; $v99498419612432958322loop->revindex0 = $v99498419612432958322loop->length - ($v99498419612432958322incr + 1); $v99498419612432958322loop->last = ($v99498419612432958322incr == ($v99498419612432958322loop->length - 1)); ?>									
 											<div class="form-checkbox pure-u-1-2">
 												<input type="checkbox" id="tag-<?php echo $tag['id']; ?>" data-category-id="<?php echo $tag['category_id']; ?>" class="userFilter-tag" checked> 

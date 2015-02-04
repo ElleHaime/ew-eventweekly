@@ -190,23 +190,931 @@ a#loginBtn {
     border-bottom: 1px solid #565B63;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*login--------------------------*/
+
+/*profile--------------------------*/
+#profile_page #content {
+    overflow: hidden;
+    padding: 0;
+    margin-bottom: 75px;
+}
+
+#profile_page #profile_left {
+    width: 300px;
+    float: left;
+    margin-right: 20px;
+}
+
+#profile_page .profile-img {
+    margin-bottom: 10px;
+    background: #404040;
+}
+
+#profile_page .profile-img .btn-file{
+    width: 300px;
+    height: 300px;
+    padding:0;
+    border:0;
+}
+
+#profile_page .profile-img .btn-file .profile-img-box {
+    width: 300px;
+    height: 300px;
+}
+
+#profile_page .profile-img .btn-file .profile-img-box #img-box {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+}
+
+#profile_page #profile_right {
+    width: 880px;
+    width: calc(100% - 300px - 20px);
+    background: #404040;
+    padding: 15px;
+    float: left;"
+}
+
+#profile_page #profile_form {
+    background: #404040;
+    padding: 20px;
+    font-family: "Open Sans";
+    color: #F7931E;
+    border-bottom: 2px solid #545454;
+}
+
+#profile_page .profile_bottom {
+    background: #404040;
+    padding: 20px;
+    font-family: "Open Sans";
+    text-align: center;
+    border-bottom: 2px solid #545454;
+}
+
+#profile_page .profile_bottom:last-child {
+    border-bottom: none;
+}
+
+#profile_page #profile_form label {
+    font-weight: 500;   
+}
+
+#profile_page #profile_form .control-group {
+    padding-top: 10px;
+}
+
+#profile_page #content .input-registration-control {
+    height: 33px;
+    background: #4d4d4d;
+    border: 1px solid #5c5c5c;
+}
+#profile_page #content #save_button_div {
+    text-align: center;
+    padding-top: 25px;
+    padding-bottom: 10px;
+}
+
+#profile_page #content #facebook_sync_button_div {
+    margin-bottom: 10px;
+}
+
+#profile_page #content #deleteMemberAcc {
+    cursor: pointer;
+}
+
+
+/*profile--------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*supppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp*/
+
+/** -----------------------------------------------------hide box----------------------------------------------------***/
+//.hide-box {
+    background: #e6e6e6;
+    padding: 10px 22px;
+    margin: 10px 0;
+}
+
+.hide-box label {
+    color:#333333;
+    font-size: 12px;
+    font-weight: bold;
+    float: left;
+    padding-right: 10px;
+    padding-top: 10px;
+    width: 80px;
+    display: block;
+}
+/** -----------------------------------------------------end hide box----------------------------------------------------***/
+
+
+
+
+.category-list h5 , .range h5 , .switch-box h5 {
+    color:#000000;
+    font: 300 14px "Open Sans";
+}
+
+.category-list .table-box-row > div {
+    color:#454545;
+    font: 400 16px "Open Sans";
+}
+
+.category-list .table-box-row:hover  {
+    background: #edf0f1;
+    color:#454545;
+}
+/*------------------------------------------category css----------------------------------------------------------*/
+.activity .event-site , .type-marker .event-site{
+    padding-left: 90px;
+}
+.activity .event-category ,  .type-marker  .event-category   {
+    float: left;
+    margin-right: 10px;
+}
+
+.settings-box-one {
+    margin-bottom: 10px;
+}
+
+.culture-color, .ent-color{
+    background: #9556be;
+}
+
+.arrow-culture, .ent-color {
+    border-color: rgba(0, 0, 0, 0) #9556be rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .culture-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-culture {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.business-color {
+    background: #0071BC;
+}
+.arrow-business {
+    border-color: rgba(0, 0, 0, 0) #0071BC rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .business-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-business {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.theater-color {
+    background: #93278F;
+}
+.arrow-theater {
+    border-color: rgba(0, 0, 0, 0) #93278F rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .theater-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-theater {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.social-color {
+    background: #ED1E79;
+}
+.arrow-social {
+    border-color: rgba(0, 0, 0, 0) #ED1E79 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .social-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-social {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.special-color {
+    background: #7db894;
+}
+.arrow-special {
+    border-color: rgba(0, 0, 0, 0) #7db894 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .special-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-special {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.music-color
+{
+    background: #ebc500;
+}
+.arrow-music {
+    border-color: rgba(0, 0, 0, 0) #ebc500 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .music-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-music {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.sport-color {
+    background: #FBB03B;
+}
+.arrow-sport {
+    border-color: rgba(0, 0, 0, 0) #FBB03B rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .sport-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-sport {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+.custom-color {
+    background: #f7931e;
+}
+.arrow-custom {
+    border-color: rgba(0, 0, 0, 0) #f7931e rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .custom-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-custom {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.outdoor-color {
+    background: #8cc63f;
+}
+.arrow-outdoor {
+    border-color: rgba(0, 0, 0, 0) #8cc63f rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .outdoor-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-outdoor {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.events-list.family-category .sub_category div  {
+    border:1px solid #7c7ec8;
+}
+.events-list.family-category .sub_category span {
+    color:#7c7ec8;
+}
+.events-list.family-category .sub_category div:hover {
+    background: #7c7ec8;
+
+}
+
+.events-list.family-category .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.family-category .category-title,  .event-list-category .family-title {
+    color:#7c7ec8;
+}
+
+.family-color {
+    background: #7c7ec8;
+}
+.arrow-family {
+    border-color: rgba(0, 0, 0, 0) #7c7ec8 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .family-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker .arrow-family {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.night-lifes-color {
+    background: #333333;
+}
+.arrow-night-lifes {
+    border-color: rgba(0, 0, 0, 0) #333333 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .night-lifes-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-night-lifes {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+
+.shopping-color {
+    background: #93278F;
+}
+.arrow-shopping {
+    border-color: rgba(0, 0, 0, 0) #93278F rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .shopping-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-shopping {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+.art-color {
+    background: #419e81;
+}
+.arrow-art {
+    border-color: rgba(0, 0, 0, 0) #419e81 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .art-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-art {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.other-color {
+    background: #999999;
+}
+.arrow-other {
+    border-color: rgba(0, 0, 0, 0) #999999 rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+.disabled-marker .other-color  {
+    background: #ffffff;
+    color:#333333;
+}
+.disabled-marker  .arrow-other {
+    border-color: rgba(0, 0, 0, 0) #ffffff rgba(0, 0, 0, 0) rgba(0, 0, 0, 0)
+}
+
+/*------music-----*/
+.events-list.music-category, .music-category  .events-img-box img  {
+    border-left:14px solid #ebc500;
+}
+
+.music-category .date-events-map {
+    border-right:3px solid #ebc500;
+}
+.events-map .music-category:hover {
+    background:#E99D00 ;
+}
+.events-map .music-category:hover span {
+    color:#ffffff;
+}
+.events-map .music-category:hover  .date-events-map
+{
+    border-right:1px solid #EBC500;
+}
+
+
+/*------theater-----*/
+.events-list.theater-category , .theater-category  .events-img-box img {
+    border-left:14px solid #93278F;
+}
+
+.theater-category .date-events-map {
+    border-right:3px solid #93278F;
+}
+
+.events-map .theater-category:hover {
+    background: #93278F ;
+}
+.events-map .theater-category:hover span {
+    color:#ffffff;
+}
+.events-map .theater-category:hover  .date-events-map
+{
+    border-right:1px solid #A84EA5;
+}
+
+
+/*------sport-----*/
+.events-list.sport-category, .sport-category  .events-img-box img  {
+    border-left:14px solid #dc7f00;
+}
+
+.sport-category .date-events-map {
+    border-right:3px solid #dc7f00;
+}
+.events-map .sport-category:hover {
+    background: #C65500 ;
+}
+.events-map .sport-category:hover span {
+    color:#ffffff;
+}
+.events-map .sport-category:hover  .date-events-map
+{
+    border-right:1px solid #DC7F00;
+}
+
+/*------outdoor-----*/
+.events-list.outdoor-category , .outdoor-category  .events-img-box img {
+    border-left:14px solid #5acd5c;
+}
+.outdoor-category .date-events-map {
+    border-right:3px solid #5acd5c;
+}
+
+.events-map .outdoor-category:hover {
+    background: #4CAF51 ;
+}
+.events-map .outdoor-category:hover span {
+    color:#ffffff;
+}
+.events-map .outdoor-category:hover  .date-events-map
+{
+    border-right:1px solid #5acd5c;
+}
+
+/*------shopping-----*/
+.events-list.shopping-category  , .shopping-category  .events-img-box img {
+    border-left:14px solid #db4d30;
+}
+.shopping-category .date-events-map {
+    border-right:3px solid #db4d30;
+}
+.events-map .shopping-category:hover {
+    background: #db4d30 ;
+}
+.events-map .shopping-category:hover span {
+    color:#ffffff;
+}
+.events-map .shopping-category:hover  .date-events-map
+{
+  border-right:1px solid #db4d30;
+}
+
+
+
+/*------business-----*/
+.events-list.business-category, .business-category  .events-img-box img  {
+    border-left:14px solid #4f96e4
+}
+
+.business-category .date-events-map {
+    border-right:3px solid #4f96e4;
+}
+
+.events-map .business-category:hover {
+    background: #0071BC ;
+}
+.events-map .business-category:hover span {
+    color:#ffffff;
+}
+.events-map .business-category:hover  .date-events-map
+{
+    border-right:1px solid #4f96e4;
+}
+
+/*------art-----*/
+.events-list.art-category, .art-category  .events-img-box img {
+    border-left:14px solid  #4fbc97;
+}
+.art-category .date-events-map {
+    border-right:3px solid #4fbc97;
+}
+
+.events-map .art-category:hover {
+    background: #419E81 ;
+}
+.events-map .art-category:hover span {
+    color:#ffffff;
+}
+.events-map .art-category:hover  .date-events-map
+{
+    border-right:1px solid #4fbc97;
+}
+
+/*------night-lifes-----*/
+.events-list.night-lifes-category, .night-lifes-category  .events-img-box img {
+    border-left:14px solid  #384961;
+}
+.night-lifes-category .date-events-map {
+    border-right:3px solid #384961;
+}
+
+
+.events-map .night-lifes-category:hover {
+    background: #384961 ;
+}
+.events-map .night-lifes-category:hover span {
+    color:#ffffff;
+}
+.events-map .night-lifes-category:hover  .date-events-map
+{
+    border-right:1px solid #384961;
+}
+
+/*------other-----*/
+.events-list.other-category , .other-category  .events-img-box img {
+    border-left:14px solid  #97A5A5;
+}
+.other-category .date-events-map {
+    border-right:3px solid #97A5A5;
+}
+
+.events-map .other-category:hover {
+    background: #808C8D ;
+}
+.events-map .other-category:hover span {
+    color:#ffffff;
+}
+.events-map .other-category:hover  .date-events-map
+{
+    border-right:1px solid #97A5A5;
+}
+ 
+/*------culture-----*/
+.events-list.culture-category, .culture-category  .events-img-box img  {
+    border-left:14px solid  #9556be;
+}
+.culture-category .date-events-map {
+    border-right:3px solid #9556be;
+}
+.events-map .culture-category:hover {
+    background: #8942B6 ;
+}
+.events-map .culture-category:hover span {
+    color:#ffffff;
+}
+.events-map .culture-category:hover  .date-events-map
+{
+    border-right:1px solid #9556be;
+}
+
+/*------social-----*/
+.events-list.social-category , .social-category  .events-img-box img  {
+    border-left:14px solid  #ED1E79;
+}
+
+.social-category .date-events-map {
+    border-right:3px solid #ED1E79;
+}
+
+.events-map .social-category:hover {
+    background: #ED1E79 ;
+}
+.events-map .social-category:hover span {
+    color:#ffffff;
+}
+.events-map .social-category:hover  .date-events-map
+{
+    border-right:1px solid #ED1E79;
+}
+/*------special-----*/
+.events-list.special-category, .special-category  .events-img-box img {
+    border-left:14px solid  #7db894;
+}
+.special-category .date-events-map {
+    border-right:3px solid #7db894;
+}
+
+.events-map .special-category:hover {
+    background: #7DB894 ;
+}
+.events-map .special-category:hover span {
+    color:#ffffff;
+}
+.events-map .special-category:hover  .date-events-map
+{
+    border-right:1px solid #97C9AB;
+}
+
+
+.events-list.family-category , .family-category  .events-img-box img {
+    border-left:14px solid  #7c7ec8;
+}
+.family-category .date-events-map{
+    border-right:3px solid #7c7ec8;
+}
+.events-map .family-category:hover {
+    background: #7C7EC8 ;
+}
+.events-map .family-category:hover span {
+    color:#ffffff;
+}
+.events-map .family-category:hover  .date-events-map
+{
+    border-right:1px solid #9B9CDB;
+}
+
+
+.sub_category  {
+    margin-top: 10px;
+}
+.sub_category span {
+    font-size: 11px;
+    transform:skew(8deg,0);
+    -ms-transform:skew(8deg,0);
+    -moz-transform:skew(8deg,0);
+    -webkit-transform:skew(8deg,0);
+    -o-transform:skew(8deg,0);
+    display: block;
+}
+
+.sub_category a:hover {
+    text-decoration: none;
+}
+.sub_category div   {
+    transform:skew(-8deg,0);
+    padding: 3px 10px;
+    -ms-transform:skew(-8deg,0);
+    -moz-transform:skew(-8deg,0);
+    -webkit-transform:skew(-8deg,0);
+    -o-transform:skew(-8deg,0);
+    float: left ;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.event-list-category .category-title, .event-list-category  .category-title {
+    font-size: 18px;
+}
+
+.events-list.music-category .sub_category div  {
+    border:1px solid #e9c900;
+}
+.events-list.music-category .sub_category span {
+    color:#e9c900;
+}
+.events-list.music-category    .sub_category div:hover {
+    background: #e9c900;
+}
+
+.events-list.music-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.music-category  .category-title, .music-title {
+    color:#e9c900;
+}
+
+
+.events-list.theater-category .sub_category div  {
+    border:1px solid #93278F;
+}
+.events-list.theater-category .sub_category span {
+    color:#93278F;
+}
+.events-list.theater-category    .sub_category div:hover {
+    background: #93278F;
+
+}
+
+.events-list.theatre-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.theatre-category  .category-title,  .event-list-category .theater-title {
+    color:#93278F;
+}
+
+
+
+.events-list.social-category .sub_category div  {
+    border:1px solid #ED1E79;
+}
+.events-list.social-category .sub_category span {
+    color:#ED1E79;
+}
+.events-list.social-category    .sub_category div:hover {
+    background: #ED1E79;
+
+}
+
+.events-list.social-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.social-category  .category-title,  .event-list-category .social-title {
+    color:#ED1E79;
+}
+
+.events-list.special-category .sub_category div  {
+    border:1px solid #7db894;
+}
+.events-list.special-category .sub_category span {
+    color:#7db894;
+}
+.events-list.special-category    .sub_category div:hover {
+    background: #7db894;
+}
+
+.events-list.special-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.special-category  .category-title,  .event-list-category .special-title {
+    color:#7db894;
+}
+
+.events-list.ent-category .sub_category div  {
+    border:1px solid #9556be;
+}
+.events-list.ent-category .sub_category span {
+    color:#9556be;
+}
+.events-list.ent-category    .sub_category div:hover {
+    background: #9556be;
+}
+.events-list.ent-category  .category-title, .event-list-category .culture-title {
+    color:#9556be;
+}
+
+.events-list.ent-category     .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.music-category  .category-title , .event-list-category .music-title {
+    color:#e9c900;
+}
+
+.events-list.sport-category .sub_category div  {
+    border:1px solid #dc7f00;
+}
+.events-list.sport-category .sub_category span {
+    color:#dc7f00;
+}
+.events-list.sport-category   .sub_category div:hover {
+    background: #dc7f00;
+}
+.events-list.sport-category  .category-title, .sport-title {
+    color:#dc7f00;
+}
+
+.events-list.sport-category     .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.outdoors-category .sub_category div  {
+    border:1px solid #5acd5c;
+}
+.events-list.outdoors-category .sub_category span {
+    color:#5acd5c;
+}
+.events-list.outdoors-category  .sub_category div:hover {
+    background: #5acd5c;
+}
+.events-list.outdoors-category  .category-title, .outdoors-title {
+    color:#5acd5c;
+}
+
+.events-list.outdoors-category    .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.shopping-category   .sub_category div  {
+    border:1px solid #db4d30;
+}
+.events-list.shopping-category  .sub_category span {
+    color:#db4d30;
+}
+.events-list.shopping-category    .sub_category div:hover {
+    background: #db4d30;
+}
+.events-list.shopping-category    .category-title , .shopping-title {
+    color:#db4d30;
+}
+
+.events-list.shopping-category     .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.business-category  .sub_category div  {
+    border:1px solid #0071BC;
+}
+.events-list.business-category  .sub_category span {
+    color:#0071BC;
+}
+.events-list.business-category  .sub_category div:hover {
+    background: #0071BC;
+}
+.events-list.business-category    .category-title, .business-title {
+    color:#0071BC;
+}
+
+
+.events-list.business-category     .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+
+.events-list.art-category  .sub_category div  {
+    border:1px solid #4fbc97;
+}
+.events-list.art-category .sub_category span {
+    color:#4fbc97;
+}
+.events-list.art-category .sub_category div:hover {
+    background: #4fbc97;
+}
+.events-list.art-category   .category-title, .art-title {
+    color:#4fbc97;
+}
+
+.events-list.art-category     .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+
+.events-list.night-lifes-category  .sub_category div  {
+    border:1px solid #384961;
+}
+.events-list.night-lifes-category  .sub_category span {
+    color:#384961;
+}
+.events-list.night-lifes-category .sub_category div:hover {
+    background: #384961;
+}
+.events-list.night-lifes-category   .category-title, .night-lifes-title {
+    color:#384961;
+}
+
+.events-list.night-lifes-category   .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+.events-list.other-category  .sub_category div  {
+    border:1px solid #97a5a5;
+}
+.events-list.other-category  .sub_category span {
+    color:#97a5a5;
+}
+.events-list.other-category .sub_category div:hover {
+    background: #97a5a5;
+}
+.events-list.other-category   .category-title, .other-title {
+    color:#97a5a5;
+}
+
+.events-list.other-category   .sub_category div:hover a span  {
+    color:#ffffff;
+}
+
+
+/*------------------------------------------add settings css----------------------------------------------------------*/
+
+/*suuuuuuuuppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
