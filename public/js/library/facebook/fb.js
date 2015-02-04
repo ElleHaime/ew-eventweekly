@@ -156,6 +156,8 @@ define('fb',
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
 		         			FB.api('/me', 	function(facebookData) {
+console.log(facebookData);
+
 				               		if (!facebookData) {
 				               			alert('Can\'t get your info from FB acc');
 				               			return false;
@@ -170,7 +172,7 @@ define('fb',
 				               		if (facebookData.email) {
 				                    	self.userData.email = facebookData.email;	
 				                    }
-				        			if (facebookData.location.id) {
+				        			if (facebookData.location) {
 				        				self.userData.locationId = facebookData.location.id;
 				        			}
 				               		FB.api('/me/picture', function(response) {
