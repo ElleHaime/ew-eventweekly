@@ -103,6 +103,10 @@
     <input id="fbAppId" type="hidden" value="<?php echo $fbAppId; ?>" />
 <?php } ?>
 
+<?php if (isset($fbAppVersion)) { ?>
+    <input id="fbAppVersion" type="hidden" value="<?php echo $fbAppVersion; ?>" />
+<?php } ?>
+
 <?php if (isset($fbAppSecret)) { ?>
     <input id="fbAppSecret" type="hidden" value="<?php echo $fbAppSecret; ?>" />
 <?php } ?>

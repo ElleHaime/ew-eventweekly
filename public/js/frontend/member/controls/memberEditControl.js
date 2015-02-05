@@ -43,6 +43,7 @@ define('frontMemberEditControl',
                 settingsBoxCheckbox: '.settings-box-one .checkbox',
                 activeCheckbox: '.settings-box-one .checkbox',
                 fieldId: '.fieldId',
+                buttonCheckbox: '.checkbox',
 
                 filters: '#filters',
                 saveFilterBtn: '#saveFilter',
@@ -113,9 +114,14 @@ define('frontMemberEditControl',
                     $(self.settings.filters).submit();
                 });
 
-                $(self.settings.activeCheckbox).click(function(){
-                    self.__clearTags($(this).parent());
-                });
+                /*
+                **********************
+                * =deprecated in new design
+                **********************
+                */
+                // $(self.settings.activeCheckbox).click(function(){
+                //     self.__clearTags($(this).parent());
+                // });
 
                 $(self.settings.settingsBoxCheckbox).click(function () {
                     $(this).parent().toggleClass('active-box');
@@ -185,17 +191,20 @@ define('frontMemberEditControl',
                 });
 
                 $(self.settings.marker).click(function(){
-                    alert('aaaaaa');
+                    var input = $(this).find("input");
+                    
                     $(this).toggleClass(self.settings.disabledMarker);
-
+                    
                     var clickedId = $(this).attr('data-id');
 
                     var tagIds = $(self.settings.inpTagIds).val().split(',');
 
                     if (jQuery.inArray(clickedId, tagIds) == -1) {
                         tagIds.push(clickedId);
+                        input.prop("checked",false);
                     } else {
                         tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
                     }
 
                     $(self.settings.inpTagIds).val(tagIds.join());
@@ -406,6 +415,42 @@ define('frontMemberEditControl',
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
             }
+
+
+            /*
+            **********************
+            * =select all by clicking on category name, in new design
+            **********************
+            */
+            $(self.settings.buttonCheckbox).click(function(){
+                // var divs = $(this).parent().find('div.event-category');
+                var divs = $(this).parent().find('.marker:not(.disabled-marker)');
+                if (divs.length == 0) { 
+                    divs = $(this).parent().find('div.event-category');
+                };
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).toggleClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                    if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                        input.prop("checked",false);
+                    } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                    }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
+               
+            });
+
+
 
             self.__request = function(method, url, params)
             {

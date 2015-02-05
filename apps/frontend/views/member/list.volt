@@ -184,17 +184,23 @@
 
                                                 <div class="settings-box-one {% if checked %}active-box{% endif %}">
                                                     <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
+                                                    
 
-                                                    <label class="checkbox">
+
+                                                <div class="categories-accordion__item">
+
+                                                    <div class="checkbox" style="cursor:pointer;">
+                                                        
                                                         <span class="check-span {{ node['key'] }}-color"><i class=" icon-ok icon-white"></i></span>
                                                         {{ node['name'] }}    <!-- name of category -->
-                                                    </label>
+                                                    </div>
 
 
 
                                                     <div class="hide-box">
                                                         <div class="activity clearfix">
                                                             <div class="event-site clearfix" style="padding: 0px">
+                                                                
                                                                 {% for tag in tags %}
                                                                     {% if node['id'] == tag['category_id'] %}
 
@@ -208,7 +214,7 @@
                                                                         {% endif %}
 
                                                                         <div class="event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
-                                                                            
+                                                                            <input type="checkbox" id="checkbox_tag" {% if checked %}checked{% endif %} >
                                                                             <span class="color-type {{ node['key'] }}-color">{{ tag['name'] }}</span>
                                                                             <span class="arrow arrow-{{ node['key'] }}"></span> 
                                                                         </div>
@@ -217,6 +223,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
 
 
 
@@ -224,7 +231,8 @@
                                             {% endfor %}
                                         </form>
                                         <div class="profile-btn">
-                                             <button id="saveFilter" class="btn " >Save</button>
+                                             
+                                             <button id="saveFilter" class="ew-button"><i class="fa fa-save"></i>Save</button>
                                         </div>
 
                                         <!-- div class=" row-fluid add-settings-box clearfix">
