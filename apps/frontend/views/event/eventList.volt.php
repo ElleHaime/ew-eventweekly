@@ -475,9 +475,9 @@
 							
 							<!-- item -->
 							
-							<?php if ($v99498419612432958321loop->index == 3) { ?>
+							<!-- <?php if ($v99498419612432958321loop->index == 3) { ?>
 								<div class="clearfix"></div>
-							<?php } ?>
+							<?php } ?> -->
 							
 						<?php $v99498419612432958321incr++; } ?>							
 							

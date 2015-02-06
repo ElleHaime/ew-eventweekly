@@ -105,9 +105,9 @@
 							
 							<!-- item -->
 							
-							{% if loop.index == 3 %}
+							<!-- {% if loop.index == 3 %}
 								<div class="clearfix"></div>
-							{% endif %}
+							{% endif %} -->
 							
 						{% endfor %}							
 							
