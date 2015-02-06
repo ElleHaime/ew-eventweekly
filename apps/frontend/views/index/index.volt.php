@@ -201,6 +201,7 @@
 								<i class="fa fa-plus"></i> Add event
 							</a>
 						</div>
+						<div class="clearfix"></div>
 					</div>
 
 				</div>

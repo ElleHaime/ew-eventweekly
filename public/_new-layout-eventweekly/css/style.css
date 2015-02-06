@@ -390,7 +390,7 @@ input#sites,
 }
 
 input#location,
-input#address,
+#add_event_left input#address,
 input#venue {
     width: 350px;
     -webkit-border-radius: 2px;
@@ -3238,6 +3238,10 @@ table.default thead {
   line-height: 30px;
   text-align: center;
 }
+
+
+
+
 #header .filters .filters-form__item--input-with-icon .filters-form__input {
   padding-left: 40px;
   width: 100%;
@@ -3335,6 +3339,7 @@ table.default thead {
 }
 #header .user-bar {
   position: absolute;
+  
   right: 2.3%;
   top: 11px;
   font-family: "Open Sans";
@@ -3342,6 +3347,19 @@ table.default thead {
   color: #F7931E;
   vertical-align: middle;
 }
+/*
+**********************
+* =header new fix long username bug
+**********************
+*/
+@media only screen and (max-width: 965px) {
+    #header .user-bar {
+    position: relative;
+  }
+}
+
+
+
 #header .user-bar a {
   display: block;
   cursor: pointer;
