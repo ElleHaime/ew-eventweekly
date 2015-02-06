@@ -139,7 +139,7 @@
 			 
 							{% if event.latitude is defined %}
 								<div class="map">
-									<div style="width:400px;height:249px" id="map_canvas" latitude="{{ event.latitude }}" longitude="{{ event.longitude }}"></div>
+									<div style="height:249px" id="map_canvas" latitude="{{ event.latitude }}" longitude="{{ event.longitude }}"></div>
 								</div>
 							{% endif %}
 
