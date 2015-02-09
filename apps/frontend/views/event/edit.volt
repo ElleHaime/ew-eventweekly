@@ -1,6 +1,8 @@
 {% extends "layouts/base_new.volt" %}
 
 {% block content %}
+
+
     <div class="page">
     <section id="content" class="container page-search" >
 
@@ -230,12 +232,12 @@
                                         </div>
                                         <div class="btn-add_group clearfix">
                                             <button class="ew-button " type="button" id="btn-cancel">Cancel</button>
-                                            <button class="" type="button" id="btn-preview" href="#previewEvent" role="button" data-toggle="modal" disabled>Preview</button>
+                                            <button class="btn" type="button" id="btn-preview" href="#previewEvent" role="button" data-toggle="modal">Preview</button>
                                             <button class="ew-button " type="submit" id="btn-submit">Save</button>
                                         </div>
                                     </div>
                                 </div>
-
+<div class="add_event_images">
 <div class="add-img-box clearfix">
     <div class="add-img">
         <div class="event-one-img">
@@ -243,15 +245,17 @@
                 {% if event.logo %}
 
                     <img
+                            id="img_posters"
                             data-id="{{ event.id }}"
                             class='img-box img-logo'
                             src="/upload/img/event/{{ event.id }}/{{ event.logo }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-logo' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-logo' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
                 <input type="hidden" name="event_logo" value="{{ event.logo }}"/>
@@ -259,7 +263,7 @@
 
             {{ form.render('logo') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('logo') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-logo-upload') }}
@@ -271,24 +275,26 @@
                 {% if poster is defined %}
 
                     <img
+                            id="img_posters"
                             data-id="{{ poster.id }}"
                             class='img-box img-poster'
                             src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <input type="hidden" name="event_poster" value="{{ poster.image }}"/>
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>
 
             {{ form.render('poster') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('poster') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-poster-upload') }}
@@ -300,29 +306,39 @@
                 {% if flyer is defined %}
 
                     <img
+                            id="img_posters"
                             data-id="{{ flyer.id }}"
                             class='img-box img-flyer'
                             src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <input type="hidden" name="event_flyer" value="{{ flyer.image }}"/>
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>
 
             {{ form.render('flyer') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('flyer') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-flyer-upload') }}
     </div>
 </div>
+</div>
+
+
+
+
+
+
+
 
                             </div>
                             <div class="padd_30"></div>

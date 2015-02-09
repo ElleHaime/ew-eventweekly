@@ -30,6 +30,8 @@
 		{% endif %}
 	{% endif %}
 
+    {{ stylesheet_link('/css/normalBootstrapDateTimepicker.min.css') }}
+
     {{ stylesheet_link('/_new-layout-eventweekly/css/style.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/bootstrap/bootstrap.css') }}
