@@ -30,6 +30,8 @@
 		<?php } ?>
 	<?php } ?>
 
+    <?php echo $this->tag->stylesheetLink('/css/normalBootstrapDateTimepicker.min.css'); ?>
+
     <?php echo $this->tag->stylesheetLink('/_new-layout-eventweekly/css/style.css'); ?>
     <?php echo $this->tag->stylesheetLink('/_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min.css'); ?>
     <?php echo $this->tag->stylesheetLink('/_new-layout-eventweekly/libs/bootstrap/bootstrap.css'); ?>

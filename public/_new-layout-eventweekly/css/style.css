@@ -368,6 +368,10 @@ a#loginBtn {
 * =add event ------------------------------------------------->
 **********************
 */
+#myModalLabel {
+    color: #D6801A;
+}
+
 .datetimepicker.datetimepicker-dropdown-bottom-right.dropdown-menu {
     color: #333;
     
