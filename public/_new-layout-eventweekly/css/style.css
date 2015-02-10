@@ -361,7 +361,45 @@ a#loginBtn {
 
 /*profile--------------------------*/
 
+/*
+**********************
+* =restore ------------------------------------------------------>
+**********************
+*/
 
+
+#form_restore {
+width: 500px;
+max-width: 98%;
+margin: auto;
+text-align: center;
+background: #404040;
+font-family: "Open Sans";
+color: #F7931E;
+font-size: 18px;
+-webkit-border-radius: 2px;
+-moz-border-radius: 2px;
+-ms-border-radius: 2px;
+-o-border-radius: 2px;
+border-radius: 2px;
+padding: 20px;
+}
+
+#restore_password_label {
+    padding-bottom: 20px;
+}
+
+#password_restored {
+font-size: 21px;
+text-align: center;
+margin-top: 50px;
+}
+
+/*
+**********************
+* =restore -------------------------------------------------------<
+**********************
+*/
 
 /*
 **********************

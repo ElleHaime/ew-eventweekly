@@ -45,7 +45,7 @@
 
                         <div class="control-group">
                             <div class="controls">
-                                <button type="button" class="btn btn-block" id="submit_signup">Sign Up</button>
+                                <button type="button" class="btn btn-block" id="submit_signup"><i class="fa fa-sign-in"></i>Sign Up</button>
                             </div>
                         </div>
                     
