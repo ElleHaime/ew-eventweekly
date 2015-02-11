@@ -38,10 +38,10 @@ define('fb',
 			self.userData = {};
 			self.accessToken = '';
 			self.accessUid = '';
+			self.accessType = 'login';
 			self.relocateAfterLogin = true;
 
 			self.shareImg = '/img/logo200.png';
-			//self.firstPage = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
 			self.firstPage = '/map';
 			self.demoPage = '/search/map?searchTitle=&searchLocationField=Dublin%2C+Ireland&searchLocationLatMin=51.4221955&searchLocationLngMin=-10.6694501&searchLocationLatMax=55.3884899&searchLocationLngMax=-5.99471&searchLocationType=country&&searchStartDate=&searchEndDate=&searchCategory%5B%5D=2&searchTag=racing&searchCategoriesType=global&searchType=in_map';
 			self.reDemo = /.*\/motologin$/;
@@ -150,48 +150,52 @@ define('fb',
 			self.__getLoginData = function()
 			{
 				authParams = { uid: self.accessUid, 
-         			   		   access_token: self.accessToken };
+         			   		   access_token: self.accessToken,
+         			   		   access_type: self.accessType };
 
 		        $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
-		         			FB.api('/me', 	function(facebookData) {
-console.log(facebookData);
-
-				               		if (!facebookData) {
-				               			alert('Can\'t get your info from FB acc');
-				               			return false;
-				               		}
-				               		self.userData.user_name = facebookData.name;
-				               		if (facebookData.first_name) {
-				               			self.userData.first_name = facebookData.first_name;
-				               		}
-				               		if (facebookData.last_name) {
-				               			self.userData.last_name = facebookData.last_name;
-				               		}
-				               		if (facebookData.email) {
-				                    	self.userData.email = facebookData.email;	
-				                    }
-				        			if (facebookData.location) {
-				        				self.userData.locationId = facebookData.location.id;
-				        			}
-				               		FB.api('/me/picture', function(response) {
-           								if (response) {
-           									self.userData.logo = response.data.url;
-           								}
-           								if (self.userData.locationId) {
-           									FB.api('/' + self.userData.locationId, function(response) {
-           										if (response) {
-           											self.userData.locationLat = response.location.latitude; 
-           											self.userData.locationLng = response.location.longitude;
-           										}
-           										self.__register(facebookData);
-           									});
-           								} else {
-           									self.__register(facebookData);
-           								}
-           							});
-				               	}); 
+		         			if (self.accessType == 'login') {
+			         			FB.api('/me', 	function(facebookData) {
+					               		if (!facebookData) {
+					               			alert('Can\'t get your info from FB acc');
+					               			return false;
+					               		}
+					               		self.userData.user_name = facebookData.name;
+					               		if (facebookData.first_name) {
+					               			self.userData.first_name = facebookData.first_name;
+					               		}
+					               		if (facebookData.last_name) {
+					               			self.userData.last_name = facebookData.last_name;
+					               		}
+					               		if (facebookData.email) {
+					                    	self.userData.email = facebookData.email;	
+					                    }
+					        			if (facebookData.location) {
+					        				self.userData.locationId = facebookData.location.id;
+					        			}
+					               		FB.api('/me/picture', function(response) {
+	           								if (response) {
+	           									self.userData.logo = response.data.url;
+	           								}
+	           								if (self.userData.locationId) {
+	           									FB.api('/' + self.userData.locationId, function(response) {
+	           										if (response) {
+	           											self.userData.locationLat = response.location.latitude; 
+	           											self.userData.locationLng = response.location.longitude;
+	           										}
+	           										self.__register(facebookData);
+	           									});
+	           								} else {
+	           									self.__register(facebookData);
+	           								}
+	           							});
+					               	});
+		         			} else if(self.accessType = 'sync') {
+		         				syncResponse = {'status': data.status};
+		         				return syncResponse;
+		         			}
 		         		} else {
 		         			alert('I can\'t authorize you, sorry, bro');
 		         		}  
@@ -250,7 +254,11 @@ console.log(facebookData);
 	                                	}
 	                    				window.close();
 	                    			} else {
-	                    				window.location.href = self.firstPage;
+	                    				if (self.relocateAfterLogin == true) {
+	                    					window.location.href = self.firstPage;
+	                    				} else {
+	                    					return;
+	                    				}
 	                    			}
 	                    		}
 	                    	} else {
@@ -278,7 +286,7 @@ console.log(facebookData);
 								 result = 'not_logged';
 							 }
 						} else {
-							result = 'error';
+							result = response.status;
 						}
 					});
 				}

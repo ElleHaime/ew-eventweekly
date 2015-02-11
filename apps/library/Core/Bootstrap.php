@@ -68,7 +68,7 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 							$volt = new Volt($view, $di);
 							$volt -> setOptions((array)$config -> application -> views);
 							if ($config -> application -> debug) {
-								$volt -> setOptions(array('compileAlways' => true));
+							//	$volt -> setOptions(array('compileAlways' => true));
 							}
 
                             $that->initViewFilters($volt);

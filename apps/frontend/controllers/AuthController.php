@@ -8,6 +8,7 @@ use Frontend\Form\SignupForm,
     Frontend\Form\RestoreForm,
     Frontend\Form\ResetForm,
     Frontend\Models\Member,
+    Frontend\Models\Cron,
     Frontend\Models\Location,
     Frontend\Models\EventMemberCounter,
     Frontend\Models\MemberNetwork,
@@ -127,23 +128,26 @@ class AuthController extends \Core\Controller
      */
     public function fbloginAction()
     {
+    	$uid = $this -> request -> getPost('uid', 'string');
         $access_token = $this -> request -> getPost('access_token', 'string');
-        $uid = $this -> request -> getPost('uid', 'string');
+        $access_type = $this -> request -> getPost('access_type', 'string');
 
         if (!empty($access_token)) {
-          	$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
-          
-            if ($memberNetwork) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-                $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-            } 
-           
-            $this -> session -> set('user_token', $access_token);
-            $this -> session -> set('user_fb_uid', $uid);
-            $this -> session -> set('role', Acl::ROLE_MEMBER);
-
-            $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this); 
-
+        	$this -> session -> set('user_token', $access_token);
+        	$this -> session -> set('user_fb_uid', $uid);
+        	
+        	if ($access_type == 'sync') {
+				(new Cron()) -> createUserTask();				 
+        	} else {
+        		$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
+        		 
+        		if ($memberNetwork) {
+        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+        		}
+        		$this -> session -> set('role', Acl::ROLE_MEMBER);
+        		$this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+        	}
             $res['status'] = 'OK';
             $res['message'] = $access_token;
             echo json_encode($res);
@@ -170,7 +174,10 @@ class AuthController extends \Core\Controller
        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
        		}
+        } elseif ($this -> session -> has('member') && !isset($this -> session -> get('member') -> network)) {
+        	(new MemberNetwork()) -> addMemberNetwork($this -> session -> get('memberId'), $userData['uid'], $userData['user_name']);
         }
+        
         
         if (!$this -> session -> has('member')) {
             $member = new Member();
@@ -204,46 +211,31 @@ class AuthController extends \Core\Controller
             	$member -> assign(['name' => $userData['user_name']]);
             }
             
+            if ($userData['user_name'] == '' || empty($userData['user_name'])) {
+            	if ($userData['email']) {
+            		$userData['user_name'] = $userData['email'];
+            	}
+            }
+            
             if ($member -> save()) {
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
-                $memberCounter = new EventMemberCounter();
-                $memberCounter -> assign(['member_id' => $member -> id,
-				               			  'userEventsLiked' => 0,
-				               			  'userEventsGoing' => 0,
-				               			  'userFriendsGoing' => 0,
-				               			  'userEventsCreated' => 0]);
-                $memberCounter -> save();
+                (new EventMemberCounter()) -> addMemberCounters($member -> id);
+                (new MemberNetwork()) -> addMemberNetwork($member, $userData['uid'], $userData['user_name']);
                 
-                $memberNetwork = new MemberNetwork();
-                if ($userData['user_name'] == '' || empty($userData['user_name'])) {
-                	if ($userData['email']) {
-                		$userData['user_name'] = $userData['email'];
-                	}
-                }
-                $memberNetwork -> assign(array(
-                        'member_id' => $member -> id,
-                        'network_id' => 1,
-                        'account_uid' => $userData['uid'],
-                        'account_id' => $userData['user_name']
-                    ));
-
-                if ($memberNetwork -> save()) {
-                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
                     		'member' => $member,
                     		'uid' => $userData['uid'],
-                    		'token' => $userData['token']
-                    ));
-
-                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-                } 
+                    		'token' => $userData['token']));
+				$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
             }
         }
 
         $res['status'] = 'OK';
         echo json_encode($res);
     }
+    
     
     /**
      * @Route("/auth/fbauthresponse{request}", methods={"GET", "POST"})
