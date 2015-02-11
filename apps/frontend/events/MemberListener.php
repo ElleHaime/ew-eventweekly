@@ -20,6 +20,7 @@ class MemberListener {
 
     private $subject = null;
 
+    
     /**
      * Delete latitude and longitude from cookie after user login
      *
@@ -33,6 +34,7 @@ class MemberListener {
         $this->subject->cookies->get('lastCity')->delete();
     }
 
+    
     /**
      * Writer user params in session
      *
@@ -45,12 +47,6 @@ class MemberListener {
         // remove search global preset from session
         $this->subject->session->remove('userSearch');
 
-        /*$location = $this->subject->session->get('location');
-        if ($params != false && $location->id != $params->location_id) {
-            $location = Location::findFirst('id = ' . $params->location_id);
-            $this->subject->session->set('location', $location);
-        }*/
-
         if ($params) {
             $this->subject->session->set('member', $params);
             $this->subject->session->set('role', $params->role);
@@ -58,7 +54,7 @@ class MemberListener {
             $this->subject->session->set('lastFetched', 0);
         }
     }
-
+    
 
     /**
      * Writer custom, liked, following event counts in session
