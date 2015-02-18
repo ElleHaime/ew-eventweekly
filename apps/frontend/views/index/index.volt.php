@@ -539,9 +539,9 @@
 		</section>
 
 
-		<div class="ew-filter-link">
+		<!-- <div class="ew-filter-link">
 			<a href="#" class="Show Filter">Show Filter</a>	
-		</div>
+		</div> -->
 
 
 		<!-- Footer -->

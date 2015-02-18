@@ -122,8 +122,11 @@
 
 
 
-		{% include 'layouts/accfilter_new.volt' %}
+
 	</div>
+	
+			{% include 'layouts/accfilter_new.volt' %}
+
 	<div class="clearfix"></div>
 		<div id="load_more" style="display:none;">
 			<a class="ew-button" >

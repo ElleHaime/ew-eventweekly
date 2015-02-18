@@ -171,14 +171,29 @@ define('frontMemberEditControl',
                     self.__loadImage(e);
                 });
 
+
+
+
+                /*
+                **********************
+                * =select filters
+                **********************
+                */
+
                 $(self.settings.marker).click(function(){
                     var input = $(this).find("input");
+
+                    //alert('piu');
 
                     $(this).toggleClass(self.settings.disabledMarker);
                     
                     var clickedId = $(this).attr('data-id');
 
                     var tagIds = $(self.settings.inpTagIds).val().split(',');
+                    //console.log(tagIds);
+                    
+                    
+
 
                     if (jQuery.inArray(clickedId, tagIds) == -1) {
                         tagIds.push(clickedId);
@@ -189,8 +204,14 @@ define('frontMemberEditControl',
                     }
 
                     $(self.settings.inpTagIds).val(tagIds.join());
+                    console.log( $(self.settings.inpTagIds).val() );
                 });
                 
+
+
+
+
+
                 $(self.settings.syncFbAccBtn).click(function(){
                 	self.__syncFb();
                 });

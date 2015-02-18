@@ -2,7 +2,9 @@
 
 namespace Frontend\Controllers;
 
-use Frontend\Form\SearchForm,
+use Frontend\Models\MemberFilter, //<---for new filters
+    Frontend\Models\Tag,          //<---for new filters
+    Frontend\Form\SearchForm,
     Frontend\Models\Event as EventModel,
     Phalcon\Mvc\Model\Resultset,
     Frontend\Models\Category,
@@ -75,6 +77,15 @@ class SearchController extends \Core\Controller
         if (empty($postData)) {
             $postData = $this->session->get('userSearch');
         }
+
+/*
+**********************
+* =new --------------------------------
+**********************
+*/
+//var_dump($postData);die;
+//-------------------------------------
+
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -323,6 +334,59 @@ class SearchController extends \Core\Controller
         	$urlParams = str_replace(['in_list'], ['in_map'], $urlParams);
         }
         $this->view->setVar('urlParams', $urlParams);
+
+
+
+
+
+        /*
+        **********************
+        * =tagids, copied from MemberController listAction to acces user defined tags
+        **********************
+        */
+        if ($this -> session -> has('passwordChanged') && $this -> session -> get('passwordChanged') === true) {
+            $this -> session -> set('passwordChanged', false);
+            $this -> view -> setVar('passwordChanged', true);
+        } 
+        
+        $member = '\Frontend\Models\Member';
+        //var_dump($member);
+         $list = $member::findFirst($this -> session -> get('memberId'));
+        // if (!$list -> location) {
+        //     $list -> location = $this -> session -> get('location');
+        // }
+        //$memberForm = new MemberForm($list);
+        
+        if ($this -> session -> has('eventsTotal')) {
+            $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+        }
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($list->id);
+
+        $tagIds = '';
+        if ( isset($member_categories['tag']['value']) ) {
+            $tagIds = implode(',', $member_categories['tag']['value']);
+        }
+
+        $this->view->setVars(array(
+                'member', $list,
+                'categories' => Category::find()->toArray(),
+                'tags' => Tag::find()->toArray(),
+                'tagIds' => $tagIds,
+                'member_categories' => $member_categories
+            ));
+        //var_dump($tagIds); die();
+        /*
+        **********************
+        * =tagids
+        **********************
+        */
+
+
+
+
+
+
         
         if (strtolower($postData['searchTypeResult']) == 'map') {
         	$this->view->setVar('link_to_list', true);

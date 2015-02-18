@@ -37,7 +37,7 @@ define('frontFilterPanel',
 					$this.__checkOptions();
 				});
 				
-				$(this.settings.boxCheckAll).click(function(e) {
+				$(this.settings.boxUncheckAll).click(function(e) {
 					$this.__uncheckOptions();
 				});
 				
@@ -63,23 +63,23 @@ define('frontFilterPanel',
 			},
 			
 			__applyPersonalize: function() {
-				
+				alert('__applyPersonalize');
 			},
 			
 			__checkOptions: function() {
-				alert('ololo');
+				alert('__checkOptions');
 			},
 			
 			__uncheckOptions: function() {
-				
+				alert('__uncheckOptions');
 			},
 			
 			__getAllOptions: function() {
-				
+				alert('__getAllOptions');
 			},
 			
 			__toggleCategory: function() {
-				
+				alert('__toggleCategory');
 			}
 		}
 	}

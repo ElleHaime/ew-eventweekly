@@ -167,6 +167,9 @@
                                     </form>
 
                                     <div class="settings-box">
+
+
+                                        <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
                                         <form action="/member/save-filters" method="post">
                                             {% if member_categories['category']['id'] is defined %}
                                                 {#<input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>#}
@@ -212,6 +215,7 @@
                                                                                 {% endif %}
                                                                             {% endfor %}
                                                                         {% endif %}
+                                                                        tag[id]= {{tag['id']}} = <!-- debug -->
 
                                                                         <div class="event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
                                                                             <input type="checkbox" id="checkbox_tag" {% if checked %}checked{% endif %} >
@@ -230,6 +234,7 @@
                                                 </div>
                                             {% endfor %}
                                         </form>
+                                        <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
                                         <div class="profile-btn">
                                              
                                              <button id="saveFilter" class="ew-button"><i class="fa fa-save"></i>Save</button>

@@ -3145,6 +3145,11 @@ input[type="button"]:active,
   top: 1px;
 }
 
+111.form-checkbox {
+    float: left;
+    width: 150px;
+}
+
 .form-checkbox input[type="checkbox"]:not(old) {
   width: 16px;
   height: 18px;
@@ -3176,7 +3181,7 @@ input[type="button"]:active,
   margin-top: -4px;
   vertical-align: middle;
 }
-.form-checkbox input[type="checkbox"]:not(old):checked + label > span:before {
+.form-checkbox input[type="checkbox"]:checked:not(old) + label > span:before {
   content: '✓';
   display: block;
   color: #F7931E;

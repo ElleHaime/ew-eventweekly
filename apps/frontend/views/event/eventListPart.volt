@@ -116,6 +116,6 @@
 
 				</div>
 		</section>
-		{% include 'layouts/accfilter_new.volt' %}
+		
 	</div>
 </div>

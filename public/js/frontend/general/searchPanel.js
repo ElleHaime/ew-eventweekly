@@ -146,6 +146,7 @@ define('frontSearchPanel',
             var $this = this;
             
             return function(event) {
+
                 event.preventDefault();
 
                 if (!_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
@@ -167,6 +168,11 @@ define('frontSearchPanel',
                         return false;
                     }
                 });
+
+                /* uiuiuiuiuiuiuiui */alert(nativeForm);
+                $.each ( $('#form2 input').serializeArray(), function ( i, obj ) {
+                  $('<input type="hidden">').prop( obj ).appendTo( nativeForm );
+                } );
 
                 // If no option was chosen show notification or submit form
                 if ($this.__formFilled === false) {

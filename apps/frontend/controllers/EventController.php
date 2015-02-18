@@ -3,6 +3,8 @@
 namespace Frontend\Controllers;
 
 use Core\Utils as _U,
+    Frontend\Models\MemberFilter, //<---for new filters
+    Frontend\Models\Tag,          //<---for new filters
     Frontend\Models\Location,
     Frontend\Models\Venue as Venue,
     Frontend\Models\MemberNetwork,
@@ -109,6 +111,55 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
+
+
+
+
+        /*
+        **********************
+        * =tagids copied from MemberController listAction
+        **********************
+        */
+        if ($this -> session -> has('passwordChanged') && $this -> session -> get('passwordChanged') === true) {
+            $this -> session -> set('passwordChanged', false);
+            $this -> view -> setVar('passwordChanged', true);
+        } 
+        
+        $member = '\Frontend\Models\Member';
+        $list = $member::findFirst($this -> session -> get('memberId'));
+        if (!$list -> location) {
+            $list -> location = $this -> session -> get('location');
+        }
+        //$memberForm = new MemberForm($list);
+        //var_dump($member);
+        if ($this -> session -> has('eventsTotal')) {
+            $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+        }
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($list->id);
+
+        $tagIds = '';
+        if ( isset($member_categories['tag']['value']) ) {
+            $tagIds = implode(',', $member_categories['tag']['value']);
+        }
+
+        $this->view->setVars(array(
+                'member', $list,
+                'categories' => Category::find()->toArray(),
+                'tags' => Tag::find()->toArray(),
+                'tagIds' => $tagIds,
+                'member_categories' => $member_categories
+            ));
+        //var_dump($tagIds); die();
+        /*
+        **********************
+        * =tagids
+        **********************
+        */
+
+
+
+
 
 		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $events);
