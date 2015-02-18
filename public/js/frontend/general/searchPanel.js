@@ -169,7 +169,7 @@ define('frontSearchPanel',
                     }
                 });
 
-                /* uiuiuiuiuiuiuiui */alert(nativeForm);
+                /* sent data from form2(filters) */
                 $.each ( $('#form2 input').serializeArray(), function ( i, obj ) {
                   $('<input type="hidden">').prop( obj ).appendTo( nativeForm );
                 } );

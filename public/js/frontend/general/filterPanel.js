@@ -64,14 +64,51 @@ define('frontFilterPanel',
 			
 			__applyPersonalize: function() {
 				alert('__applyPersonalize');
+				var personalTags = $('#tagIds').val();
+            	console.log(personalTags);
+
+            	if (personalTags=='') {
+            		alert('login to use personalize!');
+            		return true;
+            	}
+
+            	
+
+				$('.userFilter-tag').each(function() { //loop through each checkbox
+					var tagNumber = this.id.replace( /[^\d.]/g, '' );
+					this.checked = true;
+					if (personalTags.indexOf(","+tagNumber+",") >= 0) {
+						this.checked = false;		
+					}
+
+
+                	//this.checked = false;  //select all checkboxes with class "userFilter-tag"               
+            	});
+
 			},
 			
 			__checkOptions: function() {
 				alert('__checkOptions');
+				$('.userFilter-tag').each(function() { //loop through each checkbox
+                	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
+            	});
+            	$('.userFilter-category').each(function() { //loop through each checkbox
+                this.checked = true;  //select all checkboxes with class "userFilter-category"               
+            	});
+            	
+            
 			},
+
+
 			
 			__uncheckOptions: function() {
 				alert('__uncheckOptions');
+				$('.userFilter-tag').each(function() { //loop through each checkbox
+                	this.checked = false;  //select all checkboxes with class "userFilter-tag"               
+            	});
+            	$('.userFilter-category').each(function() { //loop through each checkbox
+                	this.checked = false;  //select all checkboxes with class "userFilter-category"               
+            	});
 			},
 			
 			__getAllOptions: function() {

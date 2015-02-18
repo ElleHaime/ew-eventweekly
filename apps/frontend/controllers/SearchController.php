@@ -366,6 +366,7 @@ class SearchController extends \Core\Controller
         $tagIds = '';
         if ( isset($member_categories['tag']['value']) ) {
             $tagIds = implode(',', $member_categories['tag']['value']);
+            $tagIds = '0,' . $tagIds . ',0';
         }
 
         $this->view->setVars(array(
