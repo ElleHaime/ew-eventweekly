@@ -13,9 +13,9 @@
 		<aside id="filters" class="b-filters sidebar-filters" style="display:none">
 			<div class="b-filters__wrapper">
 				<div class="b-filters__buttons">
-					<a href="#" id="check-all" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
-					<a href="#" id="uncheck-all" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
-					<a href="#" id="default-choise" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
+					<a id="check-all" class="ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
+					<a id="uncheck-all" class="ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
+					<a id="default-choise" class="ew-button"><i class="fa fa-star-o"></i> Default</a>
 				</div>
 
 
@@ -37,33 +37,13 @@
 									<!-- cattag -->
 									<label for="t1"><span><span></span></span>{{ category['name'] }}</label>
 								</div>
+
+								<?php //var_dump($category);die; ?>
 	
-								<a href="#" class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="blockfilter-{{ category['id'] }}">
+								<a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="blockfilter-{{ category['id'] }}">
 									<i class="icon"></i> Expand
 								</a>
 							</div>
-	
-							<!-- {% if category['tags'] is not empty %}
-							
-									<div class="categories-accordion__body userTag-subfilters" id="subfilter-{{ category['id'] }}">
-										{% for subfilter, tag in category['tags'] %}	tag[id]= {{tag['id']}} =								
-											<div class="form-checkbox pure-u-1-2">
-												<input type="checkbox" id="tag-{{ tag['id']}}" data-category-id="{{ tag['category_id'] }}" class="userFilter-tag" checked> 
-												<label for="t1" title="{{ tag['name'] }}"><span><span></span></span>{{ tag['name']}}</label>
-											</div>
-										{% endfor %}
-									</div>
-							{% endif %} -->
-
-							
-
-
-
-
-
-
-
-
 
 
 							{% for name, value in _GET %}
