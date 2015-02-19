@@ -44,6 +44,9 @@ define('frontFilterPanel',
 				$(this.settings.boxDefaultChoise).click(function(e) {
 					$this.__applyPersonalize();
 				});
+				$('.userFilter-category').click(function(e) {
+					$this.__getAllOptions(e);
+				});
 			},
 			
 			__switchPanel: function() {
@@ -111,8 +114,12 @@ define('frontFilterPanel',
             	});
 			},
 			
-			__getAllOptions: function() {
-				alert('__getAllOptions');
+			__getAllOptions: function(e) {
+				$(e.target).closest('.categories-accordion__item').find('.userFilter-tag').each(function() { //loop through each checkbox
+                	this.checked = false;  //select all checkboxes with class "userFilter-category"               
+            	});
+				console.log(this);
+
 			},
 			
 			__toggleCategory: function() {
