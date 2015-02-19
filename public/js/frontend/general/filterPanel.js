@@ -14,7 +14,9 @@ define('frontFilterPanel',
 				categoryBox: '.userFilter-category',
 				categoryExpander: '.userFilter-category-expander',
 				tagBox: '.userFilter-tag',
-				tagBlock: '.userTag-subfilters'
+				tagBlock: '.userTag-subfilters',
+				categoryBtn: '.userFilter-category',
+				toggleBtn: '.categories-accordion__arrow'
 			},
 			panelState: null,
 			panelWidth: '390px',
@@ -44,9 +46,13 @@ define('frontFilterPanel',
 				$(this.settings.boxDefaultChoise).click(function(e) {
 					$this.__applyPersonalize();
 				});
-				$('.userFilter-category').click(function(e) {
+				$(this.settings.categoryBtn).click(function(e) {
 					$this.__getAllOptions(e);
 				});
+				$(this.settings.toggleBtn).click(function(e) {
+					$this.__toggleCategory(e);
+				});
+
 			},
 			
 			__switchPanel: function() {
@@ -66,12 +72,11 @@ define('frontFilterPanel',
 			},
 			
 			__applyPersonalize: function() {
-				alert('__applyPersonalize');
 				var personalTags = $('#tagIds').val();
             	console.log(personalTags);
 
             	if (personalTags=='') {
-            		alert('login to use personalize!');
+            		noty({text: 'Please login and set pesonal tags first!', type: 'error'});
             		return true;
             	}
 
@@ -91,7 +96,6 @@ define('frontFilterPanel',
 			},
 			
 			__checkOptions: function() {
-				alert('__checkOptions');
 				$('.userFilter-tag').each(function() { //loop through each checkbox
                 	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
             	});
@@ -105,7 +109,6 @@ define('frontFilterPanel',
 
 			
 			__uncheckOptions: function() {
-				alert('__uncheckOptions');
 				$('.userFilter-tag').each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-tag"               
             	});
@@ -115,15 +118,22 @@ define('frontFilterPanel',
 			},
 			
 			__getAllOptions: function(e) {
-				$(e.target).closest('.categories-accordion__item').find('.userFilter-tag').each(function() { //loop through each checkbox
-                	this.checked = false;  //select all checkboxes with class "userFilter-category"               
-            	});
-				console.log(this);
+				var accordionItem = $(e.target).closest('.categories-accordion__item');
+				if( e.target.checked ) {
+					accordionItem.find('.userFilter-tag').each(function() { //loop through each checkbox
+	                	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
+	            	});
+	            } else {
+	            	accordionItem.find('.userFilter-tag').each(function() { //loop through each checkbox
+	                	this.checked = false;  //deselect all checkboxes with class "userFilter-tag"               
+	            	});
+	            }
 
 			},
 			
-			__toggleCategory: function() {
-				alert('__toggleCategory');
+			__toggleCategory: function(e) {
+				var accordionItem = $(e.target).closest('.categories-accordion__item');
+				accordionItem.find('.userTag-subfilters').toggle();
 			}
 		}
 	}
