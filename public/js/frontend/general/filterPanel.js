@@ -160,7 +160,7 @@ define('frontFilterPanel',
 			
 			/*
 			**********************
-			* =check/uncheck category checkboxes
+			* =check/uncheck checkboxes in category
 			**********************
 			*/
 			__getAllOptions: function(e) {
