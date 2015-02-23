@@ -492,7 +492,7 @@
 				</div>
 		</section>
 
-
+<div class="page__wrapper_ajax_search"></div>
 
 
 	</div>

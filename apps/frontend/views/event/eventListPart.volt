@@ -1,8 +1,8 @@
-<div class="page" style="padding:0;">
+<!-- <div class="page" style="padding:0;"> -->
 	<div class="page__wrapper">
 		<section id="content" class="container page-search">
 
-			<h1 class="page__title">{{ listTitle|default('Event list') }}</h1>
+			<!-- <h1 class="page__title">{{ listTitle|default('Event list') }}</h1> -->
 			<div class="page__sort"></div>
 
 				<div class="page-search__wrapper">
@@ -118,4 +118,5 @@
 		</section>
 		
 	</div>
-</div>
+	<div class="page__wrapper_ajax_search"></div>
+<!-- </div> -->

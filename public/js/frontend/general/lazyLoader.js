@@ -9,7 +9,7 @@ define('lazyLoader',
         	self.settings = 
             {
                 loadMoreButton: '#load_more',
-                divToUpdate: '.page__wrapper',
+                divToUpdate: '.page__wrapper_ajax_search',
                 divToOverlay: '.page',
                 preloader: '#preloader',
                 pageNumber: 1,
@@ -56,8 +56,9 @@ define('lazyLoader',
                 //overlay before request done
                 $(self.settings.divToOverlay)
                     .css({
+                        'opacity' : 1,
                         'opacity' : 0.4,
-                        'background-color': 'black',
+                        //'background-color': 'black',
                     });
                 $(self.settings.preloader)
                     .css({
@@ -78,11 +79,11 @@ define('lazyLoader',
                 
                 nextPageUrl = self.settings.url + '&page=' + self.settings.pageNumber;
                 $.ajax({url:nextPageUrl,success:function(result){
-                    $(self.settings.divToUpdate).html(result);
+                    $(self.settings.divToUpdate).last().html(result);
                     $(self.settings.divToOverlay)
                         .css({
                             'opacity' : 1,
-                            'background-color': 'transparent',
+                            //'background-color': 'transparent',
                         });
                     $(self.settings.preloader)
                         .css({
