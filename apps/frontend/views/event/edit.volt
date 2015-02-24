@@ -365,13 +365,13 @@
     <!-- Modal -->
 
         <div class="modal fade" id="previewEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+            <div class="modal-dialog" style="width:90%; height:100%;">
+                <div class="modal-content" style="height:100%;">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h3 id="myModalLabel" >Event Preview</h3>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="height:80%;">
                         <iframe name="eventPreview_iframe" src="http://dev.eventweekly.com" style="width: 100%; height: 100%;"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
