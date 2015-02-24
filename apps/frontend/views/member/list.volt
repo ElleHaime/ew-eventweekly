@@ -35,7 +35,7 @@
                                             <div class="profile-info clearfix">
 
                                                 <div class="control-group">
-                                                    <label for="name" >Name:</label>
+                                                    <label for="name" >Name*:</label>
 
                                                     <div class="controls" >
                                                         <input type="text" id="name" name="name" class="input-registration-control">
@@ -146,6 +146,7 @@
                                         {% endif %}
                                         {% for index, node in categories %}
                                             <label for="cat{{ index }}">
+
                                                 {% set checked = false %}
                                                 {% if member_categories['category'] is defined %}
                                                     {% for indx, id in member_categories['category']['value'] %}
@@ -154,6 +155,12 @@
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% endif %}
+
+
+                                                
+
+
+
                                                 <input type="checkbox" name="category[]" id="cat{{ index }}" value="{{ node['id'] }}" {% if checked %}checked{% endif %}/> - {{ node['name'] }}
                                             </label>
                                         {% endfor %}
@@ -191,18 +198,21 @@
 
 
                                                 <div class="categories-accordion__item">
-
-                                                    <div class="checkbox" style="cursor:pointer;">
-                                                        
-                                                        <span class="check-span {{ node['key'] }}-color"><i class=" icon-ok icon-white"></i></span>
-                                                        {{ node['name'] }}    <!-- name of category -->
+                                      
+<div class="checkbox">
+                                                    <div class="1form-checkbox 1pure-u-1-2">
+                                                        <input type="checkbox" class="checkbox" id="tag-{{ node['name'] }}" style="display:none;">
+                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}"
+    ><span><span></span></span>{{ node['name'] }}</label>    <!-- name of category -->
                                                     </div>
+</div>
+
 
 
 
                                                     <div class="hide-box">
                                                         <div class="activity clearfix">
-                                                            <div class="event-site clearfix" style="padding: 0px">
+                                                            <div class="event-site clearfix">
                                                                 
                                                                 {% for tag in tags %}
                                                                     {% if node['id'] == tag['category_id'] %}
@@ -215,13 +225,22 @@
                                                                                 {% endif %}
                                                                             {% endfor %}
                                                                         {% endif %}
-                                                                        tag[id]= {{tag['id']}} = <!-- debug -->
+                                                                        
 
-                                                                        <div class="event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
-                                                                            <input type="checkbox" id="checkbox_tag" {% if checked %}checked{% endif %} >
-                                                                            <span class="color-type {{ node['key'] }}-color">{{ tag['name'] }}</span>
-                                                                            <span class="arrow arrow-{{ node['key'] }}"></span> 
-                                                                        </div>
+    <div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
+        <input type="checkbox" name="tag-{{ tag['name']}}" {% if checked %}checked{% endif %} >
+        <label for="tag-{{ tag['name']}}" title="{{ tag['name'] }}"
+    style="overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90%;
+  padding: 2px 0;"><span><span></span></span>{{ tag['name'] }}</label>
+ 
+    </div>
+
+
+    
+
                                                                     {% endif %}
                                                                 {% endfor %}
                                                             </div>
@@ -233,20 +252,13 @@
 
                                                 </div>
                                             {% endfor %}
-                                        </form>
-                                        <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
-                                        <div class="profile-btn">
-                                             
-                                             <button id="saveFilter" class="ew-button"><i class="fa fa-save"></i>Save</button>
-                                        </div>
-
-                                        <!-- div class=" row-fluid add-settings-box clearfix">
-                                            <div class="span11"><p><i class="icon-plus"></i> Or add your interests manually: rock, queen, zombie walk, golf
-                                                    party etc.</p></div>
-                                            <div class="span1">
-                                                <button class="btn btn-block"> Add</button>
+                                            </form>
+                                            <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
+                                            <div class="profile-btn">
+                                                 
+                                                 <button id="saveFilter" class="ew-button"><i class="fa fa-save"></i>Save</button>
                                             </div>
-                                        </div -->
+
                                     </div>
                                 </div>
 

@@ -194,6 +194,17 @@ a#loginBtn {
 /*login--------------------------*/
 
 /*profile--------------------------*/
+#profile_page .catNamen {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 90%;
+  padding: 2px 0;
+  font-size: 21px;
+  color: #F7931E;
+  position: relative;
+  left: 5px;
+}
 #profile_page #content {
     overflow: hidden;
     padding: 0;
@@ -286,7 +297,7 @@ a#loginBtn {
 }
 
 #profile_page #content .event-category {
-    width: 170px;
+    width: 165px;
     height: 30px;
     float: left;
     
@@ -318,8 +329,8 @@ a#loginBtn {
 }
 
 #profile_page #content .event-site {
-    margin-bottom: 50px;
-
+    margin-bottom: 20px;
+    padding-left: 20px;
 }
 
 #profile_page #content .profile-img {

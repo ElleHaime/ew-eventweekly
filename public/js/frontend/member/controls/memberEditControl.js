@@ -20,7 +20,7 @@ define('frontMemberEditControl',
                 settingsBoxCheckbox: '.settings-box-one .checkbox',
                 activeCheckbox: '.settings-box-one .checkbox',
                 fieldId: '.fieldId',
-                buttonCheckbox: '.checkbox',
+                categoryNameCheckbox: '.catNamen',
 
                 filters: '#filters',
                 saveFilterBtn: '#saveFilter',
@@ -307,7 +307,7 @@ define('frontMemberEditControl',
 
             self.__clearTags = function(element)
             {
-                alert('ololo');
+
                 var tagsToClear = $(element).find('.marker:not(.disabled-marker)');
 
                 var tagIds = null;
@@ -326,11 +326,11 @@ define('frontMemberEditControl',
             * =select all by clicking on category name, in new design
             **********************
             */
-            $(self.settings.buttonCheckbox).click(function(){
-                // var divs = $(this).parent().find('div.event-category');
-                var divs = $(this).parent().find('.marker:not(.disabled-marker)');
+            $(self.settings.categoryNameCheckbox).click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
                 if (divs.length == 0) { 
-                    divs = $(this).parent().find('div.event-category');
+                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
                 };
                 divs.each(function( ) {
                     var input = $(this).find("input");
@@ -347,11 +347,11 @@ define('frontMemberEditControl',
                     } else {
                         tagIds.splice( tagIds.indexOf(clickedId), 1);
                         input.prop("checked",true);
+                        //category.prop("checked",true);
                     }
 
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
-               
             });
 
 
