@@ -10,7 +10,16 @@ class AboutController extends \Core\Controller
 	 */
 	public function indexAction()
 	{
-		//echo 'ololo';die;
+		
+	}
+
+	/**
+	 * @Route("/contact", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});   	 
+	 */
+	public function contactAction()
+	{
+		
 	}
 
 }

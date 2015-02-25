@@ -202,6 +202,10 @@ events on map
   width: 150px;
   height: 200px;
 }
+.contact_page {
+  font-size: 20px;
+  font-weight: normal;
+}
 /*about page D*/
 
 html {
