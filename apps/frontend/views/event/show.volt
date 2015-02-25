@@ -6,38 +6,7 @@
 
 			<!-- breadcrumbs -->
 			<!-- https://support.google.com/webmasters/answer/185417 -->
-			<nav class="breadcrumbs">
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="http://www.example.com/" itemprop="url" rel="index">
-						<span itemprop="title">Home</span>
-					</a>
-				</span>
-
-				<span class="breadcrumbs__divider">::</span>
-
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="http://www.example.com/books" 
-					itemprop="url"><span itemprop="title">Books</span></a>
-				</span>
-
-				<span class="breadcrumbs__divider">::</span>
-
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="http://www.example.com/books/authors" 
-					itemprop="url"><span itemprop="title">Authors</span></a>
-				</span>
-
-				<span class="breadcrumbs__divider">::</span>
-
-				<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-					<a href="http://www.example.com/books/authors/stephen-king" 
-					itemprop="url"><span itemprop="title">Stephen King</span></a>
-				</span>
-
-				<span class="breadcrumbs__divider">::</span>
-
-				<strong>The Shining</strong>
-			</nav>
+			
 
 			<h1 class="page__title">{{ event.name }}</h1>
 			{% if event.address is defined %}

@@ -179,7 +179,7 @@ define('frontSearchPanel',
                     noty({text: 'Please choose at least one option!', type: 'error'});
                 } else {
                     if ($($this.settings.searchTypeResult).val().toLowerCase() == 'map') {
-                        nativeForm.searchType.value = "in_map";
+                        //nativeForm.searchType.value = "in_map";
                         nativeForm.action = nativeForm.action+'/map';
                     } else {
                         nativeForm.action = nativeForm.action+'/list';
