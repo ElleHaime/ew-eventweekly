@@ -21,6 +21,168 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
+
+/*
+events on map
+*/
+
+
+
+
+
+.info-win{
+         height: 120px;
+         color: rgb(77, 77, 77);
+     }
+
+/*------music-----*/
+ .events-list.music-category, .music-category  .events-img-box img  {
+      border-left:14px solid #ebc500;
+  }
+
+  
+  /*------theater-----*/
+ .events-list.theater-category , .theater-category  .events-img-box img {
+      border-left:14px solid #93278F;
+  }
+
+  
+  /*------sport-----*/
+ .events-list.sport-category, .sport-category  .events-img-box img  {
+      border-left:14px solid #dc7f00;
+  }
+
+  
+  /*------outdoor-----*/
+ .events-list.outdoor-category , .outdoor-category  .events-img-box img {
+      border-left:14px solid #5acd5c;
+  }
+
+  
+  /*------shopping-----*/
+ .events-list.shopping-category  , .shopping-category  .events-img-box img {
+      border-left:14px solid #db4d30;
+  }
+  
+  /*------business-----*/
+ .events-list.business-category, .business-category  .events-img-box img  {
+      border-left:14px solid #4f96e4
+  }
+
+  
+  /*------art-----*/
+ .events-list.art-category, .art-category  .events-img-box img {
+      border-left:14px solid  #4fbc97;
+  }
+  
+  /*------night-lifes-----*/
+ .events-list.night-lifes-category, .night-lifes-category  .events-img-box img {
+      border-left:14px solid  #384961;
+  }
+
+  
+  /*------other-----*/
+ .events-list.other-category , .other-category  .events-img-box img {
+      border-left:14px solid  #97A5A5;
+  }
+  /*------culture-----*/
+ .events-list.culture-category, .culture-category  .events-img-box img  {
+      border-left:14px solid  #9556be;
+  }
+  
+  /*------social-----*/
+ .events-list.social-category , .social-category  .events-img-box img  {
+      border-left:14px solid  #ED1E79;
+  }
+
+  }
+  /*------special-----*/
+ .events-list.special-category, .special-category  .events-img-box img {
+      border-left:14px solid  #7db894;
+  }
+
+  
+  
+ .events-list.family-category , .family-category  .events-img-box img {
+     border-left:14px solid  #7c7ec8;
+  }
+
+  /*-------markers style---*/
+  
+ .events-img-box {
+      width: 110px;
+      float: left;
+      margin: 0 12px 10px 0;
+  }
+ .events-img-box img  {
+      width: 96px;
+      height: 86px;
+}
+
+/*-------markers style---*/
+
+.events-img-box {
+    width: 110px;
+    float: left;
+    margin: 0 12px 10px 0;
+}
+.events-img-box img  {
+    width: 96px;
+    height: 86px;
+    margin-bottom: 5px;
+}
+.events-date-box {
+    background: #e6e6e6;
+    color:#4d4d4d;
+    font-size: 14px;
+    clear: both;
+    padding: 6px 0;
+}
+.events-date-box  i {
+    margin-top: 3px;
+    vertical-align: top;
+}
+.events-descriptions-box {
+    text-align: left;
+    font: 400 13px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif!important;
+}
+.events-descriptions-box h4 {
+    font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif!important;
+}
+.events-descriptions-box h4 > span {
+    color:#bbbbbb;
+    font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif!important;
+}
+.events-descriptions-box h4 > a  {
+    font: 400 14px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif!important;
+}
+.events-descriptions-box a {
+    color:#0088CC;
+    font: 400 13px/18px "Open Sans", Arial, Tahoma, Verdana, sans-serif!important;
+}
+.events-descriptions-box > div > a
+{
+    display: inline-block;
+    margin-top: 6px;
+}
+
+.events-descriptions-box a:hover ,.events-descriptions-box a:active , .events-descriptions-box a:focus {
+    color: #005580;
+}
+
+.venue-name {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+
+
+
+/* events on map------------------------------*/
+
+
+
 html {
   line-height: 1;
   height: 100%;
