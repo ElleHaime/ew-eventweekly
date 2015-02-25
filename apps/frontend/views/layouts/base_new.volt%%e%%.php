@@ -1,4 +1,4 @@
-a:3:{i:0;s:15267:"<!DOCTYPE html>
+a:3:{i:0;s:15740:"<!DOCTYPE html>
 <html>
 <head>
     <title>EventWeekly</title>
@@ -187,16 +187,26 @@ a:3:{i:0;s:15267:"<!DOCTYPE html>
 
 					<div class="user-menu-collapsed js-user-menu-collapsed">
 						<div class="top-line__item">
-							<a href="#" class="top-line__link">300 events</a>
+							<p class="top-line__link">
+							<?php if (isset($eventsTotal)) { ?>
+							<span class="location-count"
+	                              data-placement="bottom" 
+	                              title=""
+	                              id="events_count"
+	                              data-original-title="All events <?php echo $eventsTotal; ?>"><?php echo $eventsTotal; ?>
+                        	</span>
+							<?php } else { ?>
+							<span class="location-count"
+	                              data-placement="bottom" 
+	                              title=""
+	                              id="events_count"
+	                              data-original-title="0">0</span>
+							<?php } ?>
+							 events
+							</p>
 						</div>
 
-						<div class="top-line__item">
-							<a href="#" class="top-line__link">Lorem</a>
-						</div>
-
-						<div class="top-line__item">
-							<a href="#" class="top-line__link">Dolorsit</a>
-						</div>
+						 
 
 						<div class="top-line__item">
 							<a href="#" class="top-line__button" onclick="location.href='/event/edit'">
