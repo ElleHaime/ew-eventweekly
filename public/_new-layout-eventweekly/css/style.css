@@ -175,13 +175,34 @@ events on map
   font-weight: bold;
 }
 
-
-
-
-
 /* events on map------------------------------*/
 
+/*about page U*/
+.about_page p {
+  font-size: 16px;
+}
 
+.about_page .about_image_div{
+  float: left;
+  margin-right: 15px;
+  margin-top: 50px;
+}
+
+.about_page .about_image_div2{
+  max-width: 100%;
+  margin-top: 120px;
+  margin-bottom: 20px;
+}
+
+.about_page .about_image_description {
+  margin-top: 150px;
+}
+
+.about_page .about_image_div img {
+  width: 150px;
+  height: 200px;
+}
+/*about page D*/
 
 html {
   line-height: 1;
@@ -3726,12 +3747,25 @@ table.default thead {
 #footer {
   position: relative;
   width: 100%;
-  padding: 50px 0;
+  padding: 20px 0;
   background: #1A1A1A;
   border-top: 2px solid #A86514;
   z-index: 101;
   clear: both;
 }
+/*new footer*/
+#footer .footer_item{
+  width: 50%;
+  float: left;
+  padding-left: 15px;
+  font-size: 18px;
+}
+#footer .footer_item_left{
+  text-align: right;
+  padding-right: 15px;
+}
+/*new footer*/
+
 #footer .widgets {
   margin-left: -1.6%;
 }

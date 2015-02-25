@@ -60,6 +60,8 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_to_list', true);
     }
 
+
+
     
     /**
      * @Route("/list", methods={"GET", "POST"})

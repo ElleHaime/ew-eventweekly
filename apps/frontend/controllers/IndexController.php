@@ -113,5 +113,6 @@ class IndexController extends \Core\Controller
     	$this -> view -> pick('index/denied');
     }
 
+    
 }
 
