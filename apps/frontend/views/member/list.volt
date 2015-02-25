@@ -35,10 +35,10 @@
                                             <div class="profile-info clearfix">
 
                                                 <div class="control-group">
-                                                    <label for="name" >Name*:</label>
+                                                    <label for="name" >Name<span style="color: white;">*</span>:</label>
 
                                                     <div class="controls" >
-                                                        <input type="text" id="name" name="name" class="input-registration-control">
+                                                        <input type="text" id="name" name="name" class="input-registration-control" {% if member.name %} value="{{member.name}}" {% endif %}>
                                                     </div>
                                                 </div>
 

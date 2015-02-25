@@ -373,7 +373,7 @@ a:3:{i:0;s:15267:"<!DOCTYPE html>
 		</header>
 
 ";s:7:"content";a:1:{i:0;a:4:{s:4:"type";i:357;s:5:"value";s:1:"
-";s:4:"file";s:74:"/media/Data/projects/EventWeekly/apps/frontend/views/layouts/base_new.volt";s:4:"line";i:54;}}i:1;s:2071:"
+";s:4:"file";s:74:"/media/Data/Projects/EventWeekly/apps/frontend/views/layouts/base_new.volt";s:4:"line";i:54;}}i:1;s:2071:"
 
 		<!-- Footer -->
 			<footer id="footer">

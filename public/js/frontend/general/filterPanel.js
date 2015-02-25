@@ -20,7 +20,7 @@ define('frontFilterPanel',
 				filtersWrapper: '.b-filters__wrapper'
 			},
 			panelState: null,
-			panelWidth: '390px',
+			panelWidth: '350px',
 			expandClass: 'categories-accordion__arrow--is-expanded',
 
 			
@@ -83,6 +83,7 @@ define('frontFilterPanel',
 			__switchPanel: function() {
 				if (!this.panelState) {
 					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
+					$(this.settings.btnSwitchPanel).css('z-index', "1000");
 					$(this.settings.overlayBlock).show();
 					$(this.settings.filterPanel).show();
 					
