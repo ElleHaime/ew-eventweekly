@@ -187,7 +187,7 @@
 
 					<div class="user-menu-collapsed js-user-menu-collapsed">
 						<div class="top-line__item">
-							<p class="1top-line__link" >
+							<p class="top-line__counter" >
 							<?php if (isset($eventsTotal)) { ?>
 							<span class="location-count"
 	                              data-placement="bottom" 

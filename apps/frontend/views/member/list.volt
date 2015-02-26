@@ -134,8 +134,21 @@
                     <div class="categories-accordion">
 
                         <div class="categories-accordion__item">
+
+
+
+                            
+
+
+
                             <div class="categories-accordion__head">
+                            
+                            <!-- <div class="toggle_category_profile_page">
                                 <div class="categories-accordion__line"></div>
+                                <a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="blockfilter-{{ category['id'] }}">
+                                    <i class="icon"></i> Expand
+                                </a>
+                            </div> -->
 
                                 <div class="row-fluid">
                                     <div class="span12">
@@ -198,10 +211,19 @@
 
 
                                                 <div class="categories-accordion__item">
+
+                            <div class="toggle_category_profile_page">
+                                <div class="categories-accordion__line"></div>
+                                <a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="toggle_category_button">
+                                    <i class="icon"></i> Expand
+                                </a>
+                            </div>
+
+
                                       
 <div class="checkbox">
-                                                    <div class="1form-checkbox 1pure-u-1-2">
-                                                        <input type="checkbox" class="checkbox" id="tag-{{ node['name'] }}" style="display:none;">
+                                                    <div class="form-checkbox pure-u-1-2">
+                                                        <input type="checkbox" class="checkbox_category" id="tag-{{ node['name'] }}" style="display:none;">
                                                         <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}"
     ><span><span></span></span>{{ node['name'] }}</label>    <!-- name of category -->
                                                     </div>
@@ -228,8 +250,8 @@
                                                                         
 
     <div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
-        <input type="checkbox" name="tag-{{ tag['name']}}" {% if checked %}checked{% endif %} >
-        <label for="tag-{{ tag['name']}}" title="{{ tag['name'] }}"
+        <input type="checkbox" class="userFilter-tag" name="tag-{{ tag['id']}}" {% if checked %}checked{% endif %} >
+        <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}"
     style="overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

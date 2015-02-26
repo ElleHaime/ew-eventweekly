@@ -383,6 +383,63 @@ a#loginBtn {
 /*login--------------------------*/
 
 /*profile--------------------------*/
+#profile_page .toggle_category_profile_page {
+  position: relative;
+  top: 16px;
+}
+#profile_page .categories-accordion__line {
+  width: 100%;
+  height: 1px;
+  background: #666666;
+  position: relative;
+  top: 10px;
+  z-index: 50;
+}
+#profile_page .categories-accordion__arrow {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  float: right;
+  position: relative;
+  width: 19px;
+  height: 19px;
+  border: 1px solid #666666;
+  color: #666666;
+  text-align: center;
+  background: #404040;
+  overflow: hidden;
+  z-index: 60;
+  margin-top: 1px;
+  cursor: pointer;
+}
+#profile_page .categories-accordion__arrow .icon {
+  vertical-align: top;
+  padding-top: 0;
+  padding-right: 1px;
+}
+#profile_page .categories-accordion__arrow .icon:before {
+  content: "";
+}
+#profile_page .categories-accordion__arrow--is-expanded .icon {
+  padding-top: 1px;
+  padding-right: 0;
+}
+#profile_page .categories-accordion__arrow--is-expanded .icon:before {
+  content: "";
+}
+#profile_page .categories-accordion__arrow--is-expanded .icon {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+
 #profile_page .catNamen {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -392,7 +449,13 @@ a#loginBtn {
   font-size: 21px;
   color: #F7931E;
   position: relative;
-  left: 5px;
+  left: 20px;
+  z-index: 100;
+  background: #404040;
+  padding-right: 10px;
+}
+
+
 }
 #profile_page #content {
     overflow: hidden;
@@ -486,7 +549,7 @@ a#loginBtn {
 }
 
 #profile_page #content .event-category {
-    width: 165px;
+    width: 150px;
     height: 30px;
     float: left;
     
@@ -552,6 +615,9 @@ a#loginBtn {
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     border-radius: 4px;
+}
+#profile_page #profile_right {
+  margin-bottom: 50px;
 }
 
 #profile_page #content .profile-btn {

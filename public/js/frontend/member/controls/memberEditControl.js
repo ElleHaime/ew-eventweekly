@@ -63,6 +63,10 @@ define('frontMemberEditControl',
                 if ($(self.settings.passwordWasChanged).val() == 1) {
                 	noty({text: 'Your password successfully changed', type: 'success'});
                 }
+
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+                
             }
 
             self.__bindClicks = function()
@@ -103,6 +107,15 @@ define('frontMemberEditControl',
                 // $(self.settings.activeCheckbox).click(function(){
                 //     self.__clearTags($(this).parent());
                 // });
+
+                /*
+                **********************
+                * =show/hide category
+                **********************
+                */
+                $('.categories-accordion__arrow').click(function () {
+                    $(this).closest('.categories-accordion__item').find('.event-site').toggle();
+                });
 
                 $(self.settings.settingsBoxCheckbox).click(function () {
                     $(this).parent().toggleClass('active-box');
@@ -183,8 +196,6 @@ define('frontMemberEditControl',
                 $(self.settings.marker).click(function(){
                     var input = $(this).find("input");
 
-                    //alert('piu');
-
                     $(this).toggleClass(self.settings.disabledMarker);
                     
                     var clickedId = $(this).attr('data-id');
@@ -204,7 +215,10 @@ define('frontMemberEditControl',
                     }
 
                     $(self.settings.inpTagIds).val(tagIds.join());
-                    console.log( $(self.settings.inpTagIds).val() );
+
+
+                    //check checkboxes near category names
+                    self.__setCategoriesChecked();
                 });
                 
 
@@ -215,9 +229,64 @@ define('frontMemberEditControl',
                 $(self.settings.syncFbAccBtn).click(function(){
                 	self.__syncFb();
                 });
+
+
+
+
+                /*
+            **********************
+            * =select all by clicking on category name, in new design
+            **********************
+            */
+            $('.checkbox_category').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
+                if (divs.length == 0) { 
+                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
+                };
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).toggleClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                    if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                        input.prop("checked",false);
+                    } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                        //category.prop("checked",true);
+                    }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
+
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
+
+
             }
             
-            
+
+            //category checkboxes
+            self.__setCategoriesChecked = function(){
+                $('#profile_right').find('.catNamen').each(function() { 
+                    var isChecked = false;
+                    $(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
+                        if(this.checked) isChecked = true;
+                    });
+                    $(this).prev('input').prop('checked', isChecked);       
+                });
+            }
+
+
+
              self.__syncFb = function()
              {
             	 $.when(fb.__checkLoginStatus()).then(function(status) {
@@ -321,38 +390,7 @@ define('frontMemberEditControl',
             }
 
 
-            /*
-            **********************
-            * =select all by clicking on category name, in new design
-            **********************
-            */
-            $(self.settings.categoryNameCheckbox).click(function(){
-                //var category = $(this).closest('form-checkbox').find("input");
-                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
-                if (divs.length == 0) { 
-                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
-                };
-                divs.each(function( ) {
-                    var input = $(this).find("input");
-                
-                    $(this).toggleClass(self.settings.disabledMarker);
-                    
-                    var clickedId = $(this).attr('data-id');
 
-                    var tagIds = $(self.settings.inpTagIds).val().split(',');
-
-                    if (jQuery.inArray(clickedId, tagIds) == -1) {
-                        tagIds.push(clickedId);
-                        input.prop("checked",false);
-                    } else {
-                        tagIds.splice( tagIds.indexOf(clickedId), 1);
-                        input.prop("checked",true);
-                        //category.prop("checked",true);
-                    }
-
-                    $(self.settings.inpTagIds).val(tagIds.join());
-                });
-            });
 
 
 
