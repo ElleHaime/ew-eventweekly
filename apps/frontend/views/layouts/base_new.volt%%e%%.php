@@ -1,4 +1,4 @@
-a:3:{i:0;s:15740:"<!DOCTYPE html>
+a:3:{i:0;s:15750:"<!DOCTYPE html>
 <html>
 <head>
     <title>EventWeekly</title>
@@ -187,7 +187,7 @@ a:3:{i:0;s:15740:"<!DOCTYPE html>
 
 					<div class="user-menu-collapsed js-user-menu-collapsed">
 						<div class="top-line__item">
-							<p class="top-line__link">
+							<p class="top-line__counter" >
 							<?php if (isset($eventsTotal)) { ?>
 							<span class="location-count"
 	                              data-placement="bottom" 
@@ -200,7 +200,7 @@ a:3:{i:0;s:15740:"<!DOCTYPE html>
 	                              data-placement="bottom" 
 	                              title=""
 	                              id="events_count"
-	                              data-original-title="0">0</span>
+	                              data-original-title="0">Go find</span>
 							<?php } ?>
 							 events
 							</p>

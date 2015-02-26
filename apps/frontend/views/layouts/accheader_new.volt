@@ -73,7 +73,7 @@
 
 					<div class="user-menu-collapsed js-user-menu-collapsed">
 						<div class="top-line__item">
-							<p class="top-line__link">
+							<p class="top-line__counter" >
 							{% if eventsTotal is defined %}
 							<span class="location-count"
 	                              data-placement="bottom" 
@@ -86,7 +86,7 @@
 	                              data-placement="bottom" 
 	                              title=""
 	                              id="events_count"
-	                              data-original-title="0">0</span>
+	                              data-original-title="0">Go find</span>
 							{% endif %}
 							 events
 							</p>
