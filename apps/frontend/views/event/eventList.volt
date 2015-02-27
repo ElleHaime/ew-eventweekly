@@ -25,6 +25,7 @@
 										</a>
 
 										<div class="like-buttons">  
+										
 											<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
 												<a href="/" class="ew-button" title="Like" >
 													<i class="fa fa-thumbs-up"></i>

@@ -102,13 +102,13 @@ define('frontEventLike',
 			        	
 			        	if (data.member_like == 1) {
 	                        like.blur();
-	                        alert('liked');
-	                        //like.prop('disabled', true);
-			        		//dislike.prop('disabled', false);
+	                        //alert('liked');
+	                        like.prop('disabled', true);
+			        		dislike.prop('disabled', false);
 	
 	                        $(self.settings.userEventsLiked).text(data.userEventsLiked)
 			        	} else {
-			        		alert('disliked');
+			        		//alert('disliked');
 			        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
 	
 	                        if (data.likeCounter != null) {
