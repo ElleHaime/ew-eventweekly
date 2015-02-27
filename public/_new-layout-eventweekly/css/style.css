@@ -383,6 +383,9 @@ a#loginBtn {
 /*login--------------------------*/
 
 /*profile--------------------------*/
+@media only screen and (max-width: 768px) {
+  //
+}
 #profile_page .toggle_category_profile_page {
   position: relative;
   top: 16px;
@@ -618,12 +621,20 @@ a#loginBtn {
 }
 #profile_page #profile_right {
   margin-bottom: 50px;
+  min-width: 350px;
 }
 
 #profile_page #content .profile-btn {
     text-align: center;
 }
 
+#profile_page #content .profile_bottom:last-child {
+    margin-bottom: 20px;
+}
+
+#profile_page .b-filters__buttons {
+    width: 100%;
+}
 
 /*profile--------------------------*/
 
@@ -632,6 +643,7 @@ a#loginBtn {
 * =restore ------------------------------------------------------>
 **********************
 */
+
 
 
 #form_restore {

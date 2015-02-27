@@ -271,6 +271,79 @@ define('frontMemberEditControl',
             });
 
 
+                /*
+            **********************
+            * =select all
+            **********************
+            */
+            $('.check_all').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+                
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).addClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');console.log(clickedId);
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                    // if (jQuery.inArray(clickedId, tagIds) == -1) {
+                    //     tagIds.push(clickedId);
+                    //     input.prop("checked",false);
+                    // } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                        //category.prop("checked",true);
+                    // }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
+
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
+
+
+                /*
+            **********************
+            * =unselect all
+            **********************
+            */
+            $('.uncheck_all').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+                
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).addClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');console.log(clickedId);
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                     if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                        input.prop("checked",false);
+                     } 
+                    //else {
+                        // tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        // input.prop("checked",true);
+                        //category.prop("checked",true);
+                    // }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+                });
+
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
+
+
             }
             
 

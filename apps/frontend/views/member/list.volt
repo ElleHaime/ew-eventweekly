@@ -133,6 +133,10 @@
                 <div id="profile_right" >
                     <div class="categories-accordion">
 
+                <div class="b-filters__buttons">
+                    <a class="check_all ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
+                    <a class="uncheck_all ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
+                </div>
                         <div class="categories-accordion__item">
 
 
