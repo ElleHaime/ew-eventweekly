@@ -1,5 +1,5 @@
 <!-- new -->
-<input id="tagIds" name="tagIds" type="hidden" value="{{ tagIds }}" />
+<input id="tagIds" name="tagIds" type="hidden" value=",{{ tagIds }}," />
 <?php 
 //var_dump($_GET);die;
 ?>

@@ -508,7 +508,7 @@
 	</div>
 	
 			<!-- new -->
-<input id="tagIds" name="tagIds" type="hidden" value="<?php echo $tagIds; ?>" />
+<input id="tagIds" name="tagIds" type="hidden" value=",<?php echo $tagIds; ?>," />
 <?php 
 //var_dump($_GET);die;
 ?>

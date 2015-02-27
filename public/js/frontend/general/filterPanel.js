@@ -120,7 +120,7 @@ define('frontFilterPanel',
             	}
 
 				$('.userFilter-tag').each(function() { //loop through each checkbox
-					var tagNumber = this.id.replace( /[^\d.]/g, '' );
+					var tagNumber = this.id.replace( /[^\d.]/g, '' );console.log(tagNumber);
 					this.checked = true;
 					if (personalTags.indexOf(","+tagNumber+",") >= 0) {
 						this.checked = false;		
