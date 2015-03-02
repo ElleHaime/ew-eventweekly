@@ -56,6 +56,10 @@
     <input id="fbAppId" type="hidden" value="{{ fbAppId }}" />
 {% endif %}
 
+{% if fbAppVersion is defined %}
+    <input id="fbAppVersion" type="hidden" value="{{ fbAppVersion }}" />
+{% endif %}
+
 {% if fbAppSecret is defined %}
     <input id="fbAppSecret" type="hidden" value="{{ fbAppSecret }}" />
 {% endif %}

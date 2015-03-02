@@ -227,6 +227,22 @@ class Event extends EventObject
     }
     
     
+    public function getCover()
+    {
+    	$this -> cover = false;
+    	
+    	if (isset($this -> image)) {
+			foreach ($this -> image as $eventImage) {
+				if ($eventImage -> type == 'cover') {
+					$this -> cover = $eventImage;
+	            }
+	        }
+		} 
+		
+		return $this;
+	}
+    
+    
     public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
     								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false, $categorySet = [])
     {

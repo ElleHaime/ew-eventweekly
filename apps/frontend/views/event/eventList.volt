@@ -1,199 +1,142 @@
-{% extends "layouts/base.volt" %}
+{% extends "layouts/base_new.volt" %}
 
 {% block content %}
 
-    <div class="container" id="content_noBorder">
-        <div class="padd_30"></div>
+<div class="page" >
+	<div class="page__wrapper">
+		<section id="content" class="container page-search" >
 
-        <div class="row-fluid">
-            <div class="span12">
-                <div class="active-events">
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <h3 class="title-page">{{ listTitle|default('Event list') }}</h3>
-                        </div>
-                    </div>
-                    {% if list is defined %}
-                      {% for index, event in list %}
-                            {% set disabled = '' %}
-                            {% if likedEventsIds is defined %}
-                                {% for likedEventsId in likedEventsIds %}
-                                    {% if likedEventsId == event.id %}
-                                        {% set disabled = 'disabled' %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
+			<h1 class="page__title">{{ listTitle|default('Event list') }}</h1>
+			<div class="page__sort"></div>
 
-                            {% set catLight = 'other' %}
-                            {% if primaryCategory is defined %}
-                                {% for index, node in event.category %}
-                                    {% if node.id == primaryCategory %}
-                                        {% set catLight = node.key %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                            	{% if event.category is defined %}
-									{% set catLight = event.category[0]|lower %}
-                                {% else %}
-                                	{% set catLight = "other" %}
-                                {% endif %}
-                            {% endif %}
-                            <div class="events-list  {{ catLight }}-category signleEventListElement" 
-                            			event-id="{{ event.id }}" 
-                            			 {% if unlikedEventsIds is defined %}
-			                                {% for unlikedEventsId in unlikedEventsIds %}
-			                                    {% if unlikedEventsId == event.id %}
-			                                        style="display:none; visibility:hidden;"
-			                                    {% endif %}
-			                                {% endfor %}
-			                            {% endif %}>
-                                <div class="row-fluid ">
-                                    <div class="span12">
-                                        <div class="event-one clearfix">
-                                            <div class="event-one-img">
-                                                <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-                                                    <img src="{{ checkLogo(event) }}">
-                                                </a>
-                                            </div>
+				<div class="page-search__wrapper">
+				{% if list is defined %}
+					
+				<!-- start container with events -->
+					<div class="b-list-of-events-g">
 
-                                            <div class="event-one-text">
-                                                <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}" class="name-link">{{ event.name|striptags|escape|truncate(160) }}</a> 
+						{% for event in list %}
+							<!-- item -->
+							<div class="b-list-of-events-g__item pure-u-1-3 event-list-event" data-event-id={{ event.id}}>
+								<div class="b-list-of-events-g__wrapper">
+									<div class="b-list-of-events-g__picture">
+										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+										</a>
 
-                                                <div class="date-list">
-                                                    {% if event.start_date != '0000-00-00' %}
-                                                        <i class="icon-time"></i>
-                                                        <span class="date-start">{{ dateToFormat(event.start_date, '%d %b %Y') }}</span>
-                                                        {% if dateToFormat(event.start_date, '%R') != '00:00' %}
-                                                            starts at
-                                                            <span class="date-time">{{ dateToFormat(event.start_date, '%R') }}</span>
-                                                        {% endif %}
-                                                    {% endif %}
+										<div class="like-buttons">  
+										
+											<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
+												<a href="/" class="ew-button" title="Like" >
+													<i class="fa fa-thumbs-up"></i>
+												</a>
+											</div>
+											<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
+												<a href="#" class="ew-button" title="Dislike">
+													<i class="fa fa-thumbs-down"></i>
+												</a>
+											</div>
+										</div>
+									</div>
 
-                                                    {% if event.end_date is defined %}
-                                                    	- 
-                                                    	{% if event.end_date != '0000-00-00' %}
-	                                                        <i class="icon-time"></i>
-	                                                        <span class="date-start">{{ dateToFormat(event.end_date, '%d %b %Y') }}</span>
-	                                                        {% if dateToFormat(event.end_date, '%R') != '00:00' %}
-	                                                            ends at
-	                                                            <span class="date-time">{{ dateToFormat(event.end_date, '%R') }}</span>
-	                                                        {% endif %}
-	                                                    {% endif %}
-                                                    {% endif %}
-                                                </div>
-                                                
-                                                {% if event.description is defined %}
-                                                <p>
-                                                    {{ event.description|striptags|escape|truncate(350) }}
-                                                    <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">Read more</a>
-                                                </p>
-												{% endif %}
-												
-                                                {% if eventListCreatorFlag %}
-                                                {% else %}
-                                                <div class="plans-box clearfix">
-                                                    <button class="btn eventLikeBtn" data-status="1" data-id="{{ event.id }}" {{ disabled }}>Like{% if disabled == 'disabled' %}d{% endif %}</button>
-                                                    <button class="btn eventDislikeBtn" data-status="0" data-id="{{ event.id }}">Don't like</button>
-                                                </div>
-                                                {% endif %}
+									<div class="b-list-of-events-g__info">
+										<h2 class="b-list-of-events-g__title">
+											<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">{{ event.name }}</a>
+										</h2>
+										
+										<div class="b-list-of-events-g__date">
+											{% if event.start_date != '0000-00-00' %}
+                                                {{ dateToFormat(event.start_date, '%d %b %Y') }}
+                                                {% if event.end_date != '0000-00-00' %}
+                                                 	- {{ dateToFormat(event.end_date, '%d %b %Y') }}
+                                                 {% endif %}
+                                            {% endif %}
+										</div>
+										{% if event.category|length %}
+											<div class="b-list-of-events-g__category">
+												<i class="fa fa-tag"></i>
+												{% for cat in event.category %}
+													{{ cat.name }}
+													{% if !loop.last %}, {% endif %}
+												{% endfor %}
+											</div>
+										{% endif %}
+										{% if event.location.city is defined %}
+											<div class="b-list-of-events-g__category">
+												<i class="fa fa-map-marker"></i>
+												{{ event.location.city }}, {{ event.location.country }}
+											</div>
+										{% endif %}
+										<div class="b-list-of-events-g__description" id="555">
+											<p>{{ event.description|striptags|escape|truncate(250) }}</p>
+										</div>
 
-                                            <div class="event-list-btn clearfix">
-                                                {% if eventListCreatorFlag %}
-                                                    <div class="status-btn clearfix">
-                                                        {% if event.event_status == 1 %}
-                                                            <button class="btn btn-block unpublishEvent" id="{{ event.id }}">
-                                                                <span class="btn-text">Unpublish</span>
-                                                            </button>
-                                                        {% else %}
-                                                            <button class="btn btn-block publishEvent" id="{{ event.id }}">
-                                                                <span class="btn-text">Publish</span>
-                                                            </button>
-                                                        {% endif %}
-                                                        <button class="btn btn-block editEvent" id="{{ event.id }}">
-                                                            <span class="btn-text">Edit</span>
-                                                        </button>
-                                                        <button class="btn btn-block deleteEvent" id="{{ event.id }}">
-                                                            <span class="btn-text">Archive</span>
-                                                        </button>
-                                                    </div>
-                                                {% else %}
-                                                    {% set eVenue = 'Undefined place' %}
-                                                    {% if event.address is empty %}
-                                                        {% if event.location is empty %}
-                                                            {% if event.address is empty %}
-                                                                {% set eVenue = 'Undefined place' %}
-                                                            {% else %}
-                                                                {% set eVenue = event.address %}
-                                                            {% endif %}
-                                                        {% else %}
-                                                            {% set eVenue = event.location %}
-                                                        {% endif %}
-                                                    {% else %}
-                                                    	{% if event.location != event.address %}
-                                                    		{% set eVenue = event.location~', '~event.address %}
-                                                    	{% else %}
-	                                                    	{% set eVenue = event.location %}
-	                                                    {% endif %}
-                                                    {% endif %}
-                                                    <div class=" place-address tooltip-text"  data-original-title="{{ eVenue }}" title="" rel="tooltip">
-                                                    <span>
-                                                        {{ eVenue }}
-                                                    </span>
-                                                    </div>
-                                                    {#% if event.site.url is defined %}
-                                                        <div class="event-site clearfix">
-                                                            <p>web-site : <a href="{{ event.site.url }}">{{ event.site.url }}</a></p>
-                                                        </div>
-                                                    {% endif %#}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
-                            
-                            
-                        {% endfor %}
-                    {% else %}
-                        <div   class="no-list"><i>{{ noListResult|default('No events found') }}</i></div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+										<div class="footer">
+											<div class="footer__item">
+												<i class="fa fa-ticket"></i> Tickets: $100-$200
+											</div>
+											{% if event.recurring == 7 %}
+												<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
+											{% elseif event.recurring == 1 %}
+												<div class="footer__item"><i class="fa fa-retweet"></i> Daily event</div>
+											{% elseif event.recurring == 30 %}
+												<div class="footer__item"><i class="fa fa-retweet"></i> Monthly event</div>
+											{% endif %}
+										</div>
 
-        {% if pagination is defined %}
-            <div class="row-fluid">
-                <div class="span12">
-                    <div class="pagination pull-right">
-                        <ul>
-                        
-                        	{% if searchResultList is defined %}
-	                            {% if pageCurrent > 1 %}
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page=1">First</a></li>
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination['prev'] }}">Prev</a></li>
-	                            {% endif %}
-	                            {% if pageCurrent < pageTotal %}
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pagination['next'] }}">Next</a></li>
-	                                <li><a href="/search/list?{{ urlParamsPaginate }}&page={{ pageTotal }}">Last</a></li>
-	                            {% endif %}
-	                        {% else %}
-	                        	{% if pageCurrent > 1 %}
-	                                <li><a href="{{ urlParams }}&page=1">First</a></li>
-	                                <li><a href="{{ urlParams }}&page={{ pagination['prev'] }}">Prev</a></li>
-	                            {% endif %}
-	                            {% if pageCurrent < pageTotal %}
-	                                <li><a href="{{ urlParams }}&page={{ pagination['next'] }}">Next</a></li>
-	                                <li><a href="{{ urlParams }}&page={{ pageTotal }}">Last</a></li>
-	                            {% endif %}
-	                        {% endif %}
-	                        
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
+										<div class="actions">
+											<a class="ew-button">
+												<i class="fa fa-calendar"></i> Add to calendar
+											</a>
+											<a class="ew-button share-event" 
+											   style="cursor:pointer;" 
+											   data-event-source="/{{ toSlugUri(event.name) }}-{{ event.id }}"
+											   data-image-source="{{ checkLogo(event) }}"><i class="fa fa-share-alt"></i> Share
+											</a>
+										</div>
+									</div>
+								</div>
+
+								<a class="b-list-of-events-g__link-detail" href="/{{ toSlugUri(event.name) }}-{{ event.id }}">Read More →</a>
+							</div>
+							
+							<!-- item -->
+							
+							<!-- {% if loop.index == 3 %}
+								<div class="clearfix"></div>
+							{% endif %} -->
+							
+						{% endfor %}							
+							
+					</div>
+
+				{% endif %}
+
+						
+
+				</div>
+		</section>
+
+<div class="page__wrapper_ajax_search"></div>
+
+
+	</div>
+	
+			{% include 'layouts/accfilter_new.volt' %}
+
+	<div class="clearfix"></div>
+		<div id="load_more" style="display:none;">
+			<a class="ew-button" >
+				<i class="fa fa-angle-double-down" ></i> Load more
+			</a>
+		</div>
+	<div class="clearfix"></div>
+
+	<img src="../img/preloader.gif" alt="" id='preloader' style="display: none;">
+</div>
+
+<div id="totalPagesJs" style="display: none;">
+    {{ totalPagesJs }}
+</div>
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 {% endblock %}

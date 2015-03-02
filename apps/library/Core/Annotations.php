@@ -74,7 +74,7 @@ class Annotations extends Plugin
 											}
 										break; 
 								}
-							}
+							}//var_dump($this -> routes);die;
 						}
 					}
 				}				

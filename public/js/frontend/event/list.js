@@ -11,7 +11,7 @@ require([
 	], 
 	function($, fb, frontEventListControl, datetimepicker, utils, noty) {
 		fb.init();
-		frontEventListControl.init();
+		//frontEventListControl.init();
 		
 		if ($('#splash_messages').length > 0) {
 			var fMessage = $('#splash_messages');

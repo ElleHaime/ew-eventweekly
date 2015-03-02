@@ -8,6 +8,7 @@ use Core\Utils as _U,
     Frontend\Models\Member,
     Frontend\Models\Location,
     Frontend\Models\Tag,
+    Frontend\Models\Cron,
     Frontend\Form\ChangePassForm,
     Frontend\Form\MemberForm,
     Frontend\Form\LoginForm,
@@ -63,6 +64,8 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->view->memberForm = $memberForm;
+
+        //var_dump($tagIds); die();
 	}
 
 
@@ -428,115 +431,22 @@ class MemberController extends \Core\Controllers\CrudController
         $this->view->pick('member/login');
     }
 
+    
     /**
-     * @Route("/member/link-fb", methods={'post'})
+     * @Route("/member/task-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
-    public function linkToFBAccountAction()
+    public function addCronTaskAction()
     {
-        $response = [
-            'errors' => false
-        ];
+    	$response['error'] == '';
+    	
+    	if ((new Cron()) -> createUserTask()) {
+    		$response['status'] = 'OK';
+    	} else {
+    		$response['error'] = 'ooops';
+    	}
 
-        $userData = $this->request->getPost();
-
-        if ($this->session->has('member')) {
-            $member = $this->session->get('member');
-
-            $memberNetwork = new MemberNetwork();
-
-            empty($userData['username']) ? $username = $member -> email : $username = $userData['username'];
-            
-            $memberNetwork -> assign(array(
-                'member_id' => $member->id,
-                'network_id' => 1,
-                'account_uid' => $userData['uid'],
-                'account_id' => $username
-            ));
-
-            if ($memberNetwork -> save()) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-						                    'member' => $member,
-						                    'uid' => $userData['uid'],
-						                    'token' => $userData['token']));
-
-                $this -> session -> set('user_fb_uid', $userData['uid']);
-                $this -> session -> set('user_token', $userData['token']);
-                $this -> session -> set('acc_synced', true);
-                $this -> view -> setVar('acc_external', $memberNetwork);
-            } else {
-            	$response['errors'] = true;	
-            }
-        }
-
-        echo json_encode($response);
-    }
-
-    /**
-     * @Route("/member/sync-fb", methods={'post'})
-     * @Acl(roles={'member'});
-     */
-    public function syncToFBAccountAction()
-    {
-        $response = [
-            'errors' => false
-        ];
-
-        $userData = $this->request->getPost();
-
-        if ($this->session->has('member')) {
-            $member = $this->session->get('member');
-
-            $memberNetwork = MemberNetwork::findFirst('member_id = ' . $member->id . ' AND account_uid = ' . $userData['uid']);
-
-            if ($memberNetwork->id) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-                    'member' => $member,
-                    'uid' => $userData['uid'],
-                    'token' => $userData['token']
-                ));
-
-                $this -> session -> set('user_fb_uid', $userData['uid']);
-                $this->session->set('user_token', $userData['token']);
-                $this->session->set('acc_synced', true);
-                $this->view->setVar('acc_external', $memberNetwork);
-                
-                if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
-                	$newTask = false;
-                
-                	$taskSetted = \Objects\Cron::find(array('member_id = ' . $member -> id  . ' and name =  "extract_facebook_events"'));
-                	if ($taskSetted -> count() > 0) {
-                		 $tsk = $taskSetted -> getLast();
-                		if (time()-($tsk -> hash) > 300) {
-                			$newTask = new \Objects\Cron();
-                		}
-                	} else {
-                		$newTask = new \Objects\Cron();
-                	}
-                
-                	if ($newTask) {
-                		$params = ['user_token' => $this -> session -> get('user_token'),
-			                		'user_fb_uid' => $this -> session -> get('user_fb_uid'),
-			                		'member_id' => $this -> session -> get('memberId')];
-                		
-                		$task = ['name' => 'extract_facebook_events',
-			                		'parameters' => serialize($params),
-			                		'state' => 0,
-			                		'member_id' => $this -> session -> get('memberId'),
-			                		'hash' => time()];
-                
-                		$newTask -> assign($task);
-                		$newTask -> save();
-                	}
-                }
-            } else {
-                $response = [ 'errors' => true ];
-            }
-        }
-
-        echo json_encode($response);
+    	echo json_encode($response); 
     }
     
     

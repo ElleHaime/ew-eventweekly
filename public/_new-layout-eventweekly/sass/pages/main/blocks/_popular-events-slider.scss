@@ -1,0 +1,129 @@
+.b-popular-events-slider {
+	&__slide {
+		position: relative;
+		width: 100%;
+		height: auto;
+		max-height: 400px;
+		overflow: hidden;
+
+	}
+
+	&__dots {
+		display: block;
+		margin: 20px 0;
+		text-align: center;
+
+		span {
+			@include border-radius(50%);
+			display: inline-block;
+			width: 9px;
+			height: 5px;
+			padding: 5px;
+			margin: 0 3px;
+			background: #666666;
+			border: 3px solid #595959;
+			cursor: pointer;
+
+			&.swiper-active-switch {
+				background: #C27417;
+			}
+
+		}
+	}
+}
+
+
+.b-slide {
+	position: relative;
+
+
+	&__picture {
+		position: relative;
+
+		img {
+			width: 100%;
+			max-width: 100%;
+		}
+	}
+
+	&__info {
+		position: absolute;
+		bottom: 20%;
+		padding: 20px 25px;
+		background-color: rgba(0, 0, 0, 0.7);
+
+		@include breakpoint(695px) {
+			bottom: 0;
+			width: 100%;
+			text-align: center;
+		}
+	}
+
+	&__title {
+		font-family: "Open Sans";
+		font-size: 42px;
+		font-weight: 300;
+		color: #F7931E;
+		margin-bottom: 20px;
+
+		a {
+			color: #F7931E;
+			text-decoration: none;
+		}
+
+		@include breakpoint(695px) {
+			font-size: 24px;
+			margin: 10px 0;
+			// @include text-truncate;
+		}
+	}
+
+	&__description {
+		margin-bottom: 20px;
+		font-family: "Open Sans";
+		font-size: 16px;
+		font-weight: 300;
+		color: #E6E6E6;
+
+
+		p {
+			margin: 0 0 10px 0;
+		}
+
+		@include breakpoint(695px) {
+			font-family: "Open Sans";
+			font-size: 12px;
+			font-weight: 300;
+			color: #E6E6E6;
+			margin: 0;
+		}
+	}
+
+	&__button-detail {
+	    @include border-radius(2px);
+	    display: inline-block;
+	    position: relative;
+	    padding: 10px 15px;
+	    cursor: pointer;
+	    font-family: "Open Sans";
+	    font-size: 16px;
+	    background: $color-btn;
+	    color: #fff;
+	    outline: 0;
+	    border: 0;
+	    text-decoration: none;
+	    text-align: center;
+	    
+	    i {
+	    	margin-right: 5px;
+	    }
+
+	    &:active {
+	    	top:1px;
+	    }
+
+		@include breakpoint(695px) {
+			display: none;
+		}
+	}
+}

@@ -1,93 +1,173 @@
-{% extends "layouts/base.volt" %}
+{% extends "layouts/base_new.volt" %}
 
 {% block content %}
+			<section id="content" class="container page page-main">
 
-<div class="content-bg">
-    <div class="big-top">
-        <div class="square red">
-            <span>Never<br/> miss<br/> an event!</span>
-        </div>
-        <div class="square white">
-            <span>Get<br/> personalised<br/> listings</span>
-        </div>
-        <div class="square blue">
-            <span>Invite<br/> your friends<br/> to events</span>
-        </div>
-    </div>
+			 {% if featuredEvents is defined %}
+			 	{% if featuredEvents[0] is defined %}
+					<div class="b-popular-events-slider">
+						<div class="js-main-popular-events-slider">
+							{% for index, event in featuredEvents[0] %}
+								<!-- start slider item -->
+								<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
+		
+									<div class="b-slide__picture">
+										{% if event.cover is defined %}
+											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}">
+										{% else %}
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+										{% endif%}
+									</div>
+									
+									<div class="b-slide__info">
+										<h2 class="b-slide__title">
+											<a href="#">{{ event.name }}</a>
+										</h2>
+		
+										<div class="b-slide__description">
+											<p>
+												{% if event.start_date != '0000-00-00' %}
+													<time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.start_date, '%d %b %Y') }}
+													{% if dateToFormat(event.start_date, '%R') != '00:00' %}, {{ dateToFormat(event.start_date, '%R') }}{% endif %}</time>
+												{% endif %}
+												{% if event.venue.name is defined %}
+													- {{ event.venue.name|striptags }}
+												{% endif %}
+											</p>
+										</div>
+										
+										<a href="#" class="b-slide__button-detail">Details →</a>
+		
+									</div>
+		
+								</div>
+								<!-- end slider item -->
+							{% endfor %}						
+						</div>
+	
+						<!-- swiper dots -->
+						<div class="b-popular-events-slider__dots js-main-popular-events-slider-dots"></div>
+	
+					</div>
+				</div>
+			  {% endif %}
 
-	{% if isMobile == 1 %}
-    <div class="facebook-button facebook-button_small">
-        <div class="container-box">
-            <div class="text-label"><span>Login</span> <br/>through facebook:</div>
-            <div class="button">
-                <a href="#" onclick="return false;" id="fb-login">facebook</a>
-            </div>
-            <div class="tip clear">
-                <i class="fb-lock"></i>
-                <p>We respect your privacy and will not post any information without your permission to your social network accounts. </p>
-            </div>
-        </div>
-    </div>
-    {% endif %}
+			  {% if featuredEvents[1] is defined %}
+				<div class="list-of-events col-3 container">
+	
+					<div class="header">
+						<h2 class="header__title">
+							<strong>What’s on in Dublin</strong>
+							<span class="divider"></span> 
+							<a href="#">Featured events</a>
+						</h2>
+	
+						<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+					</div>
+	
+					<div class="clearfix"></div>
+	
+					<div class="list-of-events__container featured" id="list-of-events-featured">
+						<a class="b-gallery__arrow b-gallery__arrow--prev js-b-gallery-arrow-prev" id="list-of-events-featured-prev">
+		                	<i class="fa fa-chevron-left"></i>
+		                </a>
+		                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next" id="list-of-events-featured-next">
+		                	<i class="fa fa-chevron-right"></i>
+		                </a>
+					{% for index, event in featuredEvents[1] %}
+						<!-- item start -->
+							<div class="list-of-events__item pure-u-1-3">
+								<div class="list-of-events__picture">
+									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+								</div>				
+		
+								<div class="list-of-events__info">
+									<h3 class="list-of-events__title">
+										<a href="#">{{ event.name }}</a>
+									</h3>
+		
+									<div class="list-of-events__description">
+										<p>
+											{% if event.start_date != '0000-00-00' %}
+												<time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.start_date, '%d %b %Y') }}
+												{% if dateToFormat(event.start_date, '%R') != '00:00' %}, {{ dateToFormat(event.start_date, '%R') }}{% endif %}</time>
+											{% endif %}
+											{% if event.venue.name is defined %}
+												- {{ event.venue.name|striptags }}
+											{% endif %}
+										</p>
+									</div>
+								</div>
+							</div>
+						<!-- item end -->
+					{% endfor %}
+					</div>
+					<div class="clearfix"></div>
+	
+				</div>
+			{% endif %}
+		  {% endif %}
 
-    <div class="how-it-works container-box">
-        <h2>How does it work ?</h2>
 
-        <div class="column">
-            <div class="number">1</div>
-            <div class="text">
-                <p>Login with facebook and personalise event listings. </p>
-            </div>
-        </div>
-        <div class="column">
-            <div class="number">2</div>
-            <div class="text">
-                <p>Find world wide and local events relevant to your tastes. </p>
-            </div>
-        </div>
-        <div class="column">
-            <div class="number">3</div>
-            <div class="text">
-                <p>Create events, post to facebook and invite all your friends. </p>
-            </div>
-        </div>
-    </div>
+		  {% if trendingEvents is defined %}
+			<div class="list-of-events col-4 container">
 
-	{% if isMobile == 0 %}
-    <div class="facebook-button">
-        <div class="container-box">
-            <div class="text-label"><span>Login</span> <br/>with facebook:</div>
-            <div class="button clearfix">
-                <a style="cursor:pointer;" class="btn-facebook" onclick="return false;" id="fb-login">facebook</a>
-            </div>
-            <div class="tip clear">
-                <i class="fb-lock"></i>
-                <p>We respect your privacy and will not post  information without your permission to your social network accounts. </p>
-            </div>
-        </div>
-    </div>
-    {% endif %}
+				<div class="header">
+					<h2 class="header__title">
+						<strong>What’s on in Dublin</strong>
+						<span class="divider"></span> 
+						<a href="#">Trending events</a> 
+					</h2>
 
-    <footer>
-        <div class="container-box">
-            <h2>No facebook? Ok, try:</h2>
+					<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+				</div>
 
-            <div class="login-variants clearfix">
-                <div class="line-box clearfix">
-                    {#<div class="twitter icon"><a href="#" class="color-blue">twiiter</a></div>#}
-                    {#<div class="gplus icon"><a href="#" class="color-red">google+</a></div>#}
-                    <div class="link email"><a id="email-login" class="fb-login-popup" onclick="return false;" href="/login">E-mail</a></div>
-                    <div class="label-or"><span>or</span></div>
-                </div>
-                <div class="line-box">
+				<div class="clearfix"></div>
 
-                    <div class="link register-later"><a href="/map">Register later</a></div>
-                </div>
-                {#<div class="link read-more"><a href="#">Read more about Event Weekly</a></div>#}
-            </div>
-            <div class="clear"></div>
-        </div>
-    </footer>
-</div>
+				<div class="list-of-events__container trending" id="list-of-events-trending">
+					<a class="b-gallery__arrow b-gallery__arrow--prev js-b-gallery-arrow-prev" id="list-of-events-trending-prev">
+	                	<i class="fa fa-chevron-left"></i>
+	                </a>
+	                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next" id="list-of-events-trending-next">
+	                	<i class="fa fa-chevron-right"></i>
+	                </a>
+	                
+	                {% for index, event in trendingEvents %}
+						<!-- item start -->
+							<div class="list-of-events__item pure-u-1-4">
+								<div class="list-of-events__picture">
+									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+								</div>				
+		
+								<div class="list-of-events__info">
+									<h3 class="list-of-events__title">
+										<a href="#">{{ event.name }}</a>
+									</h3>
+		
+									<div class="list-of-events__description">
+										<p>
+											{% if event.start_date != '0000-00-00' %}
+												<time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.start_date, '%d %b %Y') }}
+												{% if dateToFormat(event.start_date, '%R') != '00:00' %}, {{ dateToFormat(event.start_date, '%R') }}{% endif %}</time>
+											{% endif %}
+											{% if event.venue.name is defined %}
+												- {{ event.venue.name|striptags }}
+											{% endif %}
+										</p>
+									</div>
+								</div>
+							</div>
+						<!-- item end -->
+					{% endfor %}
+				</div>
+			{% endif %}
 
+			<div class="clearfix"></div>
+
+		</section>
+
+
+		<!-- <div class="ew-filter-link">
+			<a href="#" class="Show Filter">Show Filter</a>	
+		</div> -->
 {% endblock %}

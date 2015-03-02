@@ -116,7 +116,7 @@ class Application extends BaseApplication
 			$this -> _loader -> register();
 
             // Loader fo GeoIp MaxMind
-            ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce::getLoader();
+            ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce::getLoader(); 
 
 			$di -> set('loader', $this -> _loader);
 		}
@@ -150,7 +150,7 @@ class Application extends BaseApplication
 	{
 		$this -> _annotations = new \Core\Annotations($di);
 		$this -> _annotations -> run();
-			
+
 		$di -> set('annotations', $this -> _annotations);
 	}
 
@@ -171,7 +171,6 @@ class Application extends BaseApplication
 				$this -> _router -> add($link, $route);
 			}
 		}
-		 
 		$di -> set('router', $this -> _router);
 	}
 	
@@ -202,6 +201,7 @@ class Application extends BaseApplication
 	
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
+		
 		if (!$di -> has('dbSlave')) {
 
 			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigRead -> adapter;
@@ -253,7 +253,6 @@ class Application extends BaseApplication
 		}
 
 		if (!$di -> has('dbMaster')) {
-
 			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigWrite -> adapter;
 			$config = $this -> _databaseConfigWrite;
 			
@@ -283,7 +282,6 @@ class Application extends BaseApplication
 					);
 
                     $connection->setEventsManager($eventsManager);
-
 					return $connection;
 				} 
 			);

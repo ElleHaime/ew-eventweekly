@@ -1,0 +1,21 @@
+.page-search {
+	@include breakpoint(950px) {
+		.b-list-of-events-g__item {
+			width: 50%;
+		}
+	}
+
+	@include breakpoint(695px) {
+		.b-list-of-events-g__item {
+			width: 100%;
+		}
+
+		.b-list-of-events-g__wrapper, .b-list-of-events-g__description {
+			height: auto;
+		}
+
+		 .b-list-of-events-g__description {
+		 	overflow: visible;
+		 }
+	}
+}

@@ -1,0 +1,16 @@
+@include breakpoint(695px) {
+
+	/*
+		bootstrap dropdown
+	 */
+	.dropdown  {
+
+		.dropdown-menu {
+			min-width: 100%;
+		}
+
+		.dropdown-menu li a {
+			padding: 8px 20px;
+		}
+	}
+}

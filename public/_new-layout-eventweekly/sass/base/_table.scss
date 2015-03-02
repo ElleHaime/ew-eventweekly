@@ -1,0 +1,43 @@
+/* Table */
+
+.table-wrapper {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+table {
+	width: 100%;
+
+	&.default {
+		width: 100%;
+	
+		tbody {
+			tr {
+				border-bottom: solid 1px $color-border;
+				
+				&:nth-child(2n - 1) {
+					background: $color-border-bg;
+				}
+			}
+		}
+		
+		td {
+			padding: 0.5em 1em 0.5em 1em;
+		}
+		
+		th {
+			font-size: 0.8em;
+			font-weight: 700;
+			letter-spacing: 0.125em;
+			line-height: 1.75em;
+			padding: 0.5em 1em 0.5em 1em;
+			text-align: left;
+			text-transform: uppercase;
+		}
+	
+		thead {
+			border-bottom: solid 1px $color-border;
+		}
+	}
+}
+	

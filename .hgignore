@@ -10,6 +10,7 @@ config/service.php
 htpasswd
 public/.htaccess
 public/upload
+vendor/*
 ^var/compiled/(?!empty$)
 ^var/logs/(?!empty$)
 ^var/cache/data/(?!empty$)

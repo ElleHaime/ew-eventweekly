@@ -165,7 +165,7 @@
                               data-placement="bottom" 
                               title=""
                               id="events_count"
-                              data-original-title="0">0</span>
+                              data-original-title="0">Go find</span>
                     {% endif %} 
                     <div class="location-place location-place_country">
                         <a href="#" class="location-city locationCity">
@@ -189,7 +189,7 @@
                         </a>
 
                         <div class="location-search clearfix advancedSearchBlock">
-                            {% include 'layouts/searchform.volt' %}
+                            {% include 'layouts/searchform_new.volt' %}
                         </div>
                     </div>
                 </div>

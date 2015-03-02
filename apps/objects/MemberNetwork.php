@@ -9,6 +9,8 @@ use Core\Model,
 
 class MemberNetwork extends Model
 {
+	const FACEBOOK		= 1;
+	
 	public $id;
 	public $member_id;
 	public $network_id;

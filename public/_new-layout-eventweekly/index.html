@@ -1,0 +1,428 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>EventWeekly</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+
+		<link rel="stylesheet" href="css/style.css" />
+		<!-- libraries -->
+		<link rel="stylesheet" href="libs/idangerous.swiper/idangerous.swiper.min.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap.css" />
+		<link rel="stylesheet" href="libs/bootstrap/bootstrap-theme.css" />
+
+	</head>
+	<body>
+
+	<!-- Header -->
+		<header id="header">
+			<div class="top-line">
+				<div class="container">
+					
+					<div class="top-line__item top-line__item--text">Never miss <strong>events</strong> in Dublin!</div>
+					<div class="top-line__item">
+						<a href="#" class="top-line__button">
+							<i class="fa fa-sign-in"></i> Sign Up today
+						</a>
+					</div>
+					<div class="top-line__item top-line__item--divider">
+						<a href="#" class="top-line__link">Sign In</a>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="middle-bg">
+				<h1>
+					<a class="logo" href="/"><strong>Event</strong>Weekly</a>
+				</h1>
+			</div>
+
+			<div class="filters">
+				<div class="container">
+						<div class="filters-form">
+							<!-- search by event name -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-search"></i>
+								<input name="event_name" class="filters-form__input" placeholder="Event or venue...">
+							</div>
+							<!-- search by location -->
+							<div class="filters-form__item filters-form__item--input-with-icon">
+								<i class="fa fa-map-marker"></i>
+								<input name="event_location" class="filters-form__input" placeholder="Dublin">
+							</div>
+							<!-- events dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-glass"></i>
+										Events <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Event</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">Venues</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<!-- datetime dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" id="js-selectDateTime">
+								  	<i class="fa fa-calendar"></i>
+								  	22 Sep
+								  </a>
+								</div>
+							</div>
+							<!-- map dropdown -->
+							<div class="filters-form__item">
+								<div class="dropdown">
+									<!-- button -->
+									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
+										<i class="fa fa-globe"></i>
+										List <span class="caret"></span>
+									</a>
+									
+									<!-- dropdown -->
+									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
+										<li>
+											<a role="menuitem"  tabindex="-1" href="#">Map</a>
+										</li>
+										<li>
+											<a role="menuitem" tabindex="-1" href="#">List</a>
+										</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="filters-form__item filters-form__divider"></div>
+
+							<div class="filters-form__item">
+								<button href="#" class="filters-form__button">Show results</button>
+							</div>
+
+						</div>
+
+				</div>
+			</div>
+
+		</header>
+
+		<section id="content" class="container page page-main">
+
+				<div class="b-popular-events-slider">
+					<div class="js-main-popular-events-slider">
+
+					<!-- start slider item -->
+						<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
+
+							<div class="b-slide__picture">
+								<img src="content/Mumford-Sons-4.jpg" alt="Mumford & Sons">
+							</div>
+							
+							<div class="b-slide__info">
+								<h2 class="b-slide__title">
+									<a href="#">Mumford & Sons Mumford & Sons Mumford & Sons</a>
+								</h2>
+
+								<div class="b-slide__description">
+									<p>20.10.2014 - Lorem Concert hall</p>
+								</div>
+								
+								<a href="#" class="b-slide__button-detail">Details →</a>
+
+							</div>
+
+						</div>
+						<!-- end slider item -->
+
+					<!-- start slider item -->
+						<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
+
+							<div class="b-slide__picture">
+								<img src="content/Mumford-Sons-4.jpg">
+							</div>
+							
+							<div class="b-slide__info">
+								<h2 class="b-slide__title">
+									<a href="#">Mumford & Sons</a>
+								</h2>
+
+								<div class="b-slide__description">
+									<p>20.10.2014 - Lorem Concert hall</p>
+								</div>
+								
+								<a href="#" class="b-slide__button-detail">Details →</a>
+
+							</div>
+
+						</div>
+						<!-- end slider item -->
+
+					</div>
+
+					<!-- swiper dots -->
+					<div class="b-popular-events-slider__dots js-main-popular-events-slider-dots"></div>
+
+				</div>
+			</div>
+
+
+
+			<div class="list-of-events col-3 container">
+
+				<div class="header">
+					<h2 class="header__title">
+						<strong>What’s on in Dublin</strong>
+						<span class="divider"></span> 
+						<a href="#">Featured events</a>
+					</h2>
+
+					<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+				</div>
+
+				<div class="clearfix"></div>
+
+				<div class="list-of-events__container">
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-3">
+						<div class="list-of-events__picture">
+							<img src="content/Imelda-May-Mayhem-Video-Version.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Imelda May Imelda May Imelda May</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-3">
+						<div class="list-of-events__picture">
+							<img src="content/mumford_and_sons.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Mumford & Sons</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-3">
+						<div class="list-of-events__picture">
+							<img src="content/franzferd.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Franz Ferdinand</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+				</div>
+				<div class="clearfix"></div>
+
+			</div>
+
+
+
+			<div class="list-of-events col-4 container">
+
+				<div class="header">
+					<h2 class="header__title">
+						<strong>What’s on in Dublin</strong>
+						<span class="divider"></span> 
+						<a href="#">Trending events</a> 
+					</h2>
+
+					<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+				</div>
+
+				<div class="clearfix"></div>
+
+				<div class="list-of-events__container">
+
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-4">
+						<div class="list-of-events__picture">
+							<img src="content/Imelda-May-Mayhem-Video-Version.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Imelda May</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-4">
+						<div class="list-of-events__picture">
+							<img src="content/mumford_and_sons.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Mumford & Sons</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+
+				<!-- item start -->
+					<div class="list-of-events__item pure-u-1-4">
+						<div class="list-of-events__picture">
+							<img src="content/franzferd.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Franz Ferdinand</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+
+					<div class="list-of-events__item pure-u-1-4">
+						<div class="list-of-events__picture">
+							<img src="content/franzferd.jpg" alt="Imelda May">
+						</div>				
+
+						<div class="list-of-events__info">
+							<h3 class="list-of-events__title">
+								<a href="#">Franz Ferdinand Franz Ferdinand Franz Ferdinand</a>
+							</h3>
+
+							<div class="list-of-events__description">
+								<p>20.10.2014 - Lorem Concert hall</p>
+							</div>
+						</div>
+					</div>
+				<!-- item end -->
+				</div>
+				<div class="clearfix"></div>
+
+		</section>
+
+
+		<div class="ew-filter-link">
+			<a href="#" class="Show Filter">Show Filter</a>	
+		</div>
+
+			
+		<!-- Footer -->
+			<footer id="footer">
+				<div class="container">
+					<div class="widgets">
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Lorem ipsum</h3>
+							<div class="widget__text">
+								<ul>
+									<li><a href="#">Phasellus non nisi</a></li>
+									<li><a href="#">Viverra, pharetra est quis</a></li>
+									<li><a href="#">Congue erat. </a></li>
+									<li><a href="#">Mauris sapien elit</a></li>
+									<li><a href="#">Sagittis eget viverra</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="widget pure-u-1-4">
+							<h3 class="widget__title">Follow us</h3>
+							<div class="widget__text">
+								<ul class="social">
+									<li class="social__item">
+										<a href="#"><i class="fa fa-twitter-square"></i>Twitter</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-facebook-square"></i>Facebook</a>
+									</li>
+									<li class="social__item">
+										<a href="#"><i class="fa fa-rss-square"></i>RSS</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+					<!-- end .widgets -->
+				</div>
+			</footer>
+
+	<!-- libraries -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="libs/idangerous.swiper/idangerous.swiper.min.js"></script>
+	<script src="libs/bootstrap/bootstrap.js"></script>
+
+	<!-- js -->
+	<script src="src/common.js"></script>
+	<script src="src/pages/main.js"></script>
+
+
+	</body>
+</html>

@@ -1,5 +1,5 @@
 define('fb',
-	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/all.js'],
+	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/sdk.js'],
 	function($, utils, noty) {
 
 		function fb($, utils, noty)
@@ -23,7 +23,7 @@ define('fb',
 				btnEventGoing: '#event-join',
 				btnEventMaybe: '#event-maybe',
 				btnEventDecline: '#event-decline',
-				btnEventShare: '#event_share', 
+				btnEventShare: '.share-event',
 				errorBox: '#login_message',
 				status: true,
 
@@ -35,20 +35,13 @@ define('fb',
 				maybe: 'MAYBE',
 				decline: 'DECLINE'
 			};
-			self.userData = [
-				'first_name',
-				'last_name', 
-				'email', 
-				'current_location', 
-				'current_address', 
-				'pic_big'
-			];
+			self.userData = {};
 			self.accessToken = '';
 			self.accessUid = '';
+			self.accessType = 'login';
 			self.relocateAfterLogin = true;
 
 			self.shareImg = '/img/logo200.png';
-			//self.firstPage = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
 			self.firstPage = '/map';
 			self.demoPage = '/search/map?searchTitle=&searchLocationField=Dublin%2C+Ireland&searchLocationLatMin=51.4221955&searchLocationLngMin=-10.6694501&searchLocationLatMax=55.3884899&searchLocationLngMax=-5.99471&searchLocationType=country&&searchStartDate=&searchEndDate=&searchCategory%5B%5D=2&searchTag=racing&searchCategoriesType=global&searchType=in_map';
 			self.reDemo = /.*\/motologin$/;
@@ -62,6 +55,7 @@ define('fb',
 			{
                 FB.init({
                     appId: window.fbAppId,
+                    version: window.fbAppVersion,
                     status: self.settings.status
                 });
                 
@@ -108,7 +102,7 @@ define('fb',
 				});
 
 				$(self.settings.btnEventShare).click(function(e) {
-					self.__shareEvent();
+					self.__shareEvent(this);
 				});
 			}
 			
@@ -123,16 +117,10 @@ define('fb',
 
 			self.__register = function(data)
 			{
-				params = { uid: self.accessUid,
-                           token: self.accessToken,
-                           address: data.current_address,
-                           location: data.current_location,
-                           email: data.email,
-                           logo: data.pic_big,
-                           first_name: data.first_name,
-                           last_name: data.last_name,
-                           username: data.first_name + ' ' + data.last_name };
-			
+				params = self.userData;
+				params.uid = self.accessUid;
+				params.token = self.accessToken;
+
                 $.when(self.__request('post', '/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
@@ -141,7 +129,7 @@ define('fb',
                 		$(self.settings.errorBox).html('Facebook return empty result :(');
 		                $(self.settings.errorBox).show();
                 	}
-                }); 
+                });  
 			}
 			
 			self.__getLoginResponse = function(response)
@@ -162,29 +150,58 @@ define('fb',
 			self.__getLoginData = function()
 			{
 				authParams = { uid: self.accessUid, 
-         			   		   access_token: self.accessToken };
-				
+         			   		   access_token: self.accessToken,
+         			   		   access_type: self.accessType };
+
 		        $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
-		         			var userData = self.userData.join(',');
-		         			FB.api({
-					                method: 'fql.query',
-				               		query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
-					               	function(facebookData) {
+		         			if (self.accessType == 'login') {
+			         			FB.api('/me', 	function(facebookData) {
 					               		if (!facebookData) {
 					               			alert('Can\'t get your info from FB acc');
 					               			return false;
 					               		}
-					               		
-					               		self.__register(facebookData[0]);
-					               	}); 
+					               		self.userData.user_name = facebookData.name;
+					               		if (facebookData.first_name) {
+					               			self.userData.first_name = facebookData.first_name;
+					               		}
+					               		if (facebookData.last_name) {
+					               			self.userData.last_name = facebookData.last_name;
+					               		}
+					               		if (facebookData.email) {
+					                    	self.userData.email = facebookData.email;	
+					                    }
+					        			if (facebookData.location) {
+					        				self.userData.locationId = facebookData.location.id;
+					        			}
+					               		FB.api('/me/picture', function(response) {
+	           								if (response) {
+	           									self.userData.logo = response.data.url;
+	           								}
+	           								if (self.userData.locationId) {
+	           									FB.api('/' + self.userData.locationId, function(response) {
+	           										if (response) {
+	           											self.userData.locationLat = response.location.latitude; 
+	           											self.userData.locationLng = response.location.longitude;
+	           										}
+	           										self.__register(facebookData);
+	           									});
+	           								} else {
+	           									self.__register(facebookData);
+	           								}
+	           							});
+					               	});
+		         			} else if(self.accessType = 'sync') {
+		         				syncResponse = {'status': data.status};
+		         				return syncResponse;
+		         			}
 		         		} else {
 		         			alert('I can\'t authorize you, sorry, bro');
 		         		}  
-		        }); 
+		        });  
 			}
-			
+
 			self.__checkPermissions = function()
 			{
 				FB.api(
@@ -237,7 +254,11 @@ define('fb',
 	                                	}
 	                    				window.close();
 	                    			} else {
-	                    				window.location.href = self.firstPage;
+	                    				if (self.relocateAfterLogin == true) {
+	                    					window.location.href = self.firstPage;
+	                    				} else {
+	                    					return;
+	                    				}
 	                    			}
 	                    		}
 	                    	} else {
@@ -265,23 +286,25 @@ define('fb',
 								 result = 'not_logged';
 							 }
 						} else {
-							result = 'error';
+							result = response.status;
 						}
 					});
 				}
 				return result;
 			}
 
-			self.__shareEvent = function()
+			self.__shareEvent = function(obj)
 			{
-                var image = $(self.settings.currentEventIdBox + ' img');
+                var image = window.location.host + $(obj).data('image-source');
+                var source = window.location.host + $(obj).data('event-source');
 
-		 		FB.ui({ picture: window.location.host + image.attr('src'),
+                FB.ui({ picture: image,
 		            	method: 'feed',
-		            	link: window.location.href,
+		            	link: source,
 		            	caption: 'I am attending event at Event Weekly!'
-		        }, function(response){});
+		        }, function(response){}); 
 			}
+
 
 			self.__inviteFriends = function()
 			{
@@ -296,22 +319,25 @@ define('fb',
                     noty({text: 'Please <a href="#" class="fb-login-popup" onclick="return false;">login via Facebook</a> to be able do this', type: 'warning'});
                     return false;
                 }
-
-				$(self.settings.btnEventGoing).hide();
-				$(self.settings.btnEventMaybe).hide();
-				$(self.settings.btnEventDecline).hide();
+                
+               	$(self.settings.btnEventGoing).hide();	
+               	$(self.settings.btnEventDecline).hide();	
 
 				var params = { 
 						answer: status, 
 						event_id : $('#current_event_id').attr('event') 
 				};
-//console.log(params);
+
 				$.when(utils.request('post', '/event/answer', params)).then(function(data) {
 					data = $.parseJSON(data);
-                    //console.log(data);
+					//console.log(data);
+					
 					if (data.status == 'OK') {
-						$('#event-' + data.event_member_status.toLowerCase()).show();
-						$('#event-' + data.event_member_status.toLowerCase()).prop('disabled',true);
+						if (data.event_member_status == self.eventStatuses.decline) {
+							$(self.settings.btnEventGoing).show();
+						} else {
+							$(self.settings.btnEventDecline).show();
+						}
 
                         self.__plusUserEventsGoing();
 

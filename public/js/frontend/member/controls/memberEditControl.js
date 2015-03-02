@@ -1,34 +1,11 @@
 define('frontMemberEditControl',
-    ['jquery', 'utils', 'noty', 'domReady'],
-    function($, utils, noty) {
+    ['jquery', 'utils', 'noty', 'fb', 'domReady'],
+    function($, utils, noty, fb) {
 
-        function frontMemberEditControl($, utils, noty)
+        function frontMemberEditControl($, utils, noty, fb)
         {
             var self = this;
 
-            /*self.permissions = 'email,user_activities,user_birthday,user_groups,user_interests,user_likes,' +
-                'user_groups,user_interests,user_likes,user_location,user_checkins,user_events,' +
-                'friends_birthday,friends_groups,friends_interests,friends_likes,friends_location,' +
-                'friends_checkins,friends_events,publish_actions,publish_stream,read_stream,' +
-                'create_event,rsvp_event,read_friendlists,manage_friendlists,read_insights,manage_pages', */
-            
-            self.permissions = 'email,user_likes,user_location,user_events,' +
-					            'user_friends,friends_events,publish_actions,publish_stream,' +
-					            'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
-            
-            self.basicPermList = ['basic_info', 'email', 'friends_events', 'installed', 'public_profile', 'read_friendlists', 'user_events', 'user_friends', 'user_likes', 'user_location'];
-            self.publishPermList = ['create_note', 'photo_upload', 'publish_actions', 'publish_checkins', 'publish_stream', 'share_item', 'status_update', 'video_upload'];
-            self.managePermList = ['create_event', 'manage_pages', 'read_insights', 'rsvp_event'];
-
-            self.userData = [
-                'first_name',
-                'last_name',
-                'email',
-                'current_location',
-                'current_address',
-                'username',
-                'pic_big'
-            ],
             self.accessToken = '',
             self.accessUid = '',
 
@@ -43,6 +20,7 @@ define('frontMemberEditControl',
                 settingsBoxCheckbox: '.settings-box-one .checkbox',
                 activeCheckbox: '.settings-box-one .checkbox',
                 fieldId: '.fieldId',
+                categoryNameCheckbox: '.catNamen',
 
                 filters: '#filters',
                 saveFilterBtn: '#saveFilter',
@@ -60,8 +38,12 @@ define('frontMemberEditControl',
                 disabledMarker: 'disabled-marker',
                 inpTagIds: '#tagIds',
 
-                linkToFbAccBtn: '#linkToFbAcc',
                 syncFbAccBtn: '#syncFbAcc',
+                syncFbAddTaskUrl: '/member/task-fb',
+                syncFbSyncUrl: '/member/sync-fb',
+                syncFbLinkUrl: '/member/link-fb',
+                syncSuccessMsg: 'Your account was successfully synced with Facebook account. We are updating your account with facebook events, you will have your listings available shortly.',
+                syncErrorMsg: 'Error during syncing accounts',
                 
                 deleteMemberAcc: '#deleteMemberAcc',
                 deleteMemberLoc: '/member/annihilate',
@@ -71,7 +53,7 @@ define('frontMemberEditControl',
 
             self.init = function()
             {
-                self.bindEvents();
+                self.__bindClicks();
 
                 // process address
                 $(self.settings.inpAddress).keyup(function() {
@@ -81,9 +63,13 @@ define('frontMemberEditControl',
                 if ($(self.settings.passwordWasChanged).val() == 1) {
                 	noty({text: 'Your password successfully changed', type: 'success'});
                 }
+
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+                
             }
 
-            self.bindEvents = function()
+            self.__bindClicks = function()
             {
             	$(self.settings.deleteMemberAcc).click(function() {
             		noty({text: 'Warning: this cannot be undone! Are you sure you want to delete your account? If you click “OK”, all your details, preferences, settings, and events will be deleted permanently. <br>Please click “Cancel” if you want to keep your account. (We would love for you to stay with us!)', 
@@ -113,8 +99,22 @@ define('frontMemberEditControl',
                     $(self.settings.filters).submit();
                 });
 
-                $(self.settings.activeCheckbox).click(function(){
-                    self.__clearTags($(this).parent());
+                /*
+                **********************
+                * =deprecated in new design
+                **********************
+                */
+                // $(self.settings.activeCheckbox).click(function(){
+                //     self.__clearTags($(this).parent());
+                // });
+
+                /*
+                **********************
+                * =show/hide category
+                **********************
+                */
+                $('.categories-accordion__arrow').click(function () {
+                    $(this).closest('.categories-accordion__item').find('.event-site').toggle();
                 });
 
                 $(self.settings.settingsBoxCheckbox).click(function () {
@@ -184,153 +184,209 @@ define('frontMemberEditControl',
                     self.__loadImage(e);
                 });
 
-                $(self.settings.marker).click(function(){
-                    $(this).toggleClass(self.settings.disabledMarker);
 
+
+
+                /*
+                **********************
+                * =select filters
+                **********************
+                */
+
+                $(self.settings.marker).click(function(){
+                    var input = $(this).find("input");
+
+                    $(this).toggleClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+                    //console.log(tagIds);
+                    
+                    
+
+
+                    if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                        input.prop("checked",false);
+                    } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                    }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
+
+
+                    //check checkboxes near category names
+                    self.__setCategoriesChecked();
+                });
+                
+
+
+
+
+
+                $(self.settings.syncFbAccBtn).click(function(){
+                	self.__syncFb();
+                });
+
+
+
+
+                /*
+            **********************
+            * =select all by clicking on category name, in new design
+            **********************
+            */
+            $('.checkbox_category').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
+                if (divs.length == 0) { 
+                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
+                };
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).toggleClass(self.settings.disabledMarker);
+                    
                     var clickedId = $(this).attr('data-id');
 
                     var tagIds = $(self.settings.inpTagIds).val().split(',');
 
                     if (jQuery.inArray(clickedId, tagIds) == -1) {
                         tagIds.push(clickedId);
+                        input.prop("checked",false);
                     } else {
                         tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                        //category.prop("checked",true);
                     }
 
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
 
-                $(self.settings.linkToFbAccBtn).click(function(){
-                    FB.login(
-                        function(response) {
-                            if (response.authResponse) {
-                                self.accessToken = response.authResponse.accessToken;
-                                self.accessUid = response.authResponse.userID;
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
 
-                                var userData = self.userData.join(',');
-                                FB.api(
-                                    { method: 'fql.query', query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
-                                    function(facebookData) {
-                                        if (!facebookData) {
-                                            alert('Can\'t get your info from FB acc');
-                                            return false;
-                                        }
-                                        self.__linkFBAccount(facebookData[0], 'link');
-                                    }
-                                );
-                            }
-                        },
-                        { scope: self.permissions }
-                    );
+
+                /*
+            **********************
+            * =select all
+            **********************
+            */
+            $('.check_all').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+                
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).addClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');console.log(clickedId);
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                    // if (jQuery.inArray(clickedId, tagIds) == -1) {
+                    //     tagIds.push(clickedId);
+                    //     input.prop("checked",false);
+                    // } else {
+                        tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        input.prop("checked",true);
+                        //category.prop("checked",true);
+                    // }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
                 });
 
-                $(self.settings.syncFbAccBtn).click(function(){
-                    FB.login(
-                        function(response) {
-                            if (response.authResponse) {
-                                self.accessToken = response.authResponse.accessToken;
-                                self.accessUid = response.authResponse.userID;
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
 
-                                var userData = self.userData.join(',');
-                                FB.api(
-                                    { method: 'fql.query', query: 'SELECT ' + userData + ' FROM user WHERE uid = ' + self.accessUid },
-                                    function(facebookData) {
-                                        if (!facebookData) {
-                                            alert('Can\'t get your info from FB acc');
-                                            return false;
-                                        }
-                                        self.__linkFBAccount(facebookData[0], 'sync');
-                                    }
-                                );
-                            }
-                        },
-                        { scope: self.permissions }
-                    );
+
+                /*
+            **********************
+            * =unselect all
+            **********************
+            */
+            $('.uncheck_all').click(function(){
+                //var category = $(this).closest('form-checkbox').find("input");
+
+                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+                
+                divs.each(function( ) {
+                    var input = $(this).find("input");
+                
+                    $(this).addClass(self.settings.disabledMarker);
+                    
+                    var clickedId = $(this).attr('data-id');console.log(clickedId);
+
+                    var tagIds = $(self.settings.inpTagIds).val().split(',');
+
+                     if (jQuery.inArray(clickedId, tagIds) == -1) {
+                        tagIds.push(clickedId);
+                        input.prop("checked",false);
+                     } 
+                    //else {
+                        // tagIds.splice( tagIds.indexOf(clickedId), 1);
+                        // input.prop("checked",true);
+                        //category.prop("checked",true);
+                    // }
+
+                    $(self.settings.inpTagIds).val(tagIds.join());
                 });
-               
-            }
 
-            self.__linkFBAccount = function(data, action)
-            {
-                var url = '/member/link-fb';
-                var successMsg = 'Your account was successfully linked with Facebook account. We are updating your account with facebook events, you will have your listings available shortly.';
-                var errorMsg = 'Error during linking accounts';
+                //check checkboxes near category names
+                self.__setCategoriesChecked();
+            });
 
-                if (action == 'sync') {
-                    url = '/member/sync-fb';
-                    successMsg = 'Your account was successfully synced with Facebook account. We are updating your account with facebook events, you will have your listings available shortly.';
-                    errorMsg = 'Error during syncing accounts';
-                }
 
-                params = { uid: self.accessUid,
-		                    token: self.accessToken,
-		                    address: data.current_address,
-		                    location: data.current_location,
-		                    email: data.email,
-		                    logo: data.pic_big,
-		                    first_name: data.first_name,
-		                    last_name: data.last_name,
-		                    username: data.username };
-                $.when(self.__request('post', url, params)).then(function(response) {
-                    data = $.parseJSON(response);
-                    if (data.errors !== 'false') {
-                        noty({text: successMsg, type: 'warning'});
-
-                        self.__checkPermissions(action);
-                        /*if (action == 'link') {
-                            $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
-                            $(self.settings.linkToFbAccBtn).remove();
-                        }*/
-
-                    } else {
-                        noty({text: errorMsg, type: 'error'});
-                    }
-                });
             }
             
-            self.__checkPermissions = function(action)
-			{
-            	FB.api(
-                	'/me/permissions',
-	               	function(permData) {
-	               		permission_base = 1;
-	               		permission_publish = 1;
-	               		permission_manage = 1;
-	               		
-	               		self.basicPermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
-	    						permission_base = 0;
-	    					}
-	    				});
-	               		self.publishPermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
-	    						permission_publish = 0;
-	    					}
-	    				});
-	               		self.managePermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
-	    						permission_manage = 0;
-	    					}
-	    				});
-	               		
-	               		params = {'permission_base': permission_base,
-	               				  'permission_publish': permission_publish,
-	               				  'permission_manage': permission_manage};
-	               		
-	               		$.when(self.__request('post', '/fbpermissions', params)).then(function(response) {
-	               			data = $.parseJSON(response);
-	                    	if (data.status != 'OK') {
-	                    		$(self.settings.errorBox).html('Facebook return empty permissions :(');
-	    		                $(self.settings.errorBox).show();
-	                    	} 
-	               		})
-                	});
-            	
-                if (action == 'link') {
-	                $(self.settings.linkToFbAccBtn).parent().prepend('<button id="syncFbAcc" class="btn btn-block ">Facebook sinc</button>');
-	                $(self.settings.linkToFbAccBtn).remove();
-            	}
-			}
+
+            //category checkboxes
+            self.__setCategoriesChecked = function(){
+                $('#profile_right').find('.catNamen').each(function() { 
+                    var isChecked = false;
+                    $(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
+                        if(this.checked) isChecked = true;
+                    });
+                    $(this).prev('input').prop('checked', isChecked);       
+                });
+            }
+
+
+
+             self.__syncFb = function()
+             {
+            	 $.when(fb.__checkLoginStatus()).then(function(status) {
+            		 // status: connected, session_expired, not_logged, unknown
+                     if (status === 'connected') {
+                    	 $.when(self.__request('post', self.settings.syncFbAddTaskUrl)).then(function(response) {
+                    		 self.__syncFbShowResult(response);
+                    	 });
+                     } else {
+                    	 fb.accessType = 'sync';
+                    	 $.when(fb.__login()).then(function(response) {
+                    		 self.__syncFbShowResult(response);
+                    	 });
+                     }
+            	 });
+             }
+             
+             
+             self.__syncFbShowResult = function(response)
+             {
+            	 if (response.status == 'OK') {
+        			 noty({text: self.syncSuccessMessage, type: 'warning'});
+        		 } else {
+        			 noty({text: self.syncErrorMessage, type: 'error'});
+        		 }
+             }
+
 
             self.checkFill = function(field)
             {
@@ -393,6 +449,7 @@ define('frontMemberEditControl',
 
             self.__clearTags = function(element)
             {
+
                 var tagsToClear = $(element).find('.marker:not(.disabled-marker)');
 
                 var tagIds = null;
@@ -404,6 +461,11 @@ define('frontMemberEditControl',
                     $(self.settings.inpTagIds).val(tagIds.join());
                 });
             }
+
+
+
+
+
 
             self.__request = function(method, url, params)
             {
@@ -418,7 +480,7 @@ define('frontMemberEditControl',
             }
         }
 
-        return new frontMemberEditControl($, utils, noty);
+        return new frontMemberEditControl($, utils, noty, fb);
     }
 );
 

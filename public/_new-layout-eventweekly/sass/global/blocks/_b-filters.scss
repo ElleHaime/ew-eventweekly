@@ -1,0 +1,110 @@
+.b-filters {
+	&__wrapper {
+		padding: 26px 30px;
+
+		@include breakpoint(320px) {
+			padding: 20px;
+		}
+	}
+
+	&__buttons {
+		display: inline-block;
+		line-height: 100%;
+		margin-bottom: 25px;
+		text-align: center;
+
+		.ew-button {
+			display: inline-block;
+			margin: 4px 3px;
+			padding: 8px 10px;
+			font-size: 13px;
+		}
+	}
+
+	.categories-accordion {
+
+
+		&__item {
+			@include clearfix();
+			position: relative;
+			margin: 15px 0;
+		}
+
+		&__head {
+			@include clearfix();
+
+			.form-checkbox {
+				float:left;
+				position: relative;
+				padding-right: 10px;
+				background: #262626;
+				z-index: 60;
+
+				input[type="checkbox"]:not(old) + label {
+					color:$color-link;
+					font-size: 18px;	
+				}
+			}
+
+		}
+
+		&__line {
+			width: 100%;
+			height: 1px;
+			background: #4D4D4D;
+			position: absolute;
+			top: 10px;
+			z-index: 50;
+		}
+
+		&__arrow {
+			@include border-radius(50%);
+			float:right;
+			position: relative;
+			width: 19px;
+			height: 19px;
+			border: 1px solid #4D4D4D;
+			color:#4D4D4D;
+			text-align: center;
+			background: #262626;
+			overflow: hidden;
+			z-index: 60;
+			margin-top:1px;
+
+			.icon {
+				@extend .fa;
+				@extend .fa-angle-left;
+				vertical-align: top;
+				padding-top: 0;
+				padding-right: 1px;
+			}
+
+			&--is-expanded {
+				.icon {
+					@extend .fa;
+					@extend .fa-angle-down;
+					padding-top: 1px;
+					padding-right: 0;
+				}
+			}
+		}
+
+		&__body {
+			padding: 20px 27px;
+
+			.form-checkbox {
+				float:left;
+				margin-bottom: 15px;
+				input[type="checkbox"]:not(old) + label {
+					@include text-truncate();
+					max-width: 90%;
+					padding: 2px 0;
+				}
+				
+
+			}
+		}
+
+
+	}
+}

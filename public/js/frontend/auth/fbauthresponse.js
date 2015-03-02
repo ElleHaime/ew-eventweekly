@@ -9,10 +9,7 @@ require([
     'http://connect.facebook.net/en_US/all.js'
 ],
     function($, fb, noty) {
-        fb.init({
-            appId: window.fbAppId,
-            status: true
-        });
+        fb.init();
         
         /*FB.Event.subscribe('auth.authResponseChange', function(response) {
         	alert('123');

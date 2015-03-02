@@ -14,6 +14,19 @@ use Objects\EventMemberCounter as EventMemberCounterObject,
 class EventMemberCounter extends EventMemberCounterObject
 {
 
+	public function addMemberCounters($id)
+	{
+		$memberCounter = new self;
+		$memberCounter -> assign(['member_id' => $id,
+									'userEventsLiked' => 0,
+									'userEventsGoing' => 0,
+									'userFriendsGoing' => 0,
+									'userEventsCreated' => 0]);
+		$memberCounter -> save();
+		
+		return;
+	}
+	
 	public function getMemberCounter()
 	{
 		if ($this -> getDi() -> get('session') -> has('memberId')) {

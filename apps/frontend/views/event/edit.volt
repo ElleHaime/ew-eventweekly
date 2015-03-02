@@ -1,8 +1,12 @@
-{% extends "layouts/base.volt" %}
+{% extends "layouts/base_new.volt" %}
 
 {% block content %}
-    <!-- content -->
-    <div class="container " id="content_noBorder">
+
+
+    <div class="page">
+    <section id="content" class="container page-search" >
+
+    <div id="add_event_left">
     
         <form method="post" enctype="multipart/form-data" name="addEventForm">
 
@@ -13,7 +17,7 @@
                         <div class="row-fluid">
                             <div class="span12">
                                 <div class="padd_30"></div>
-                                <h3 class="title-add">
+                                <h1 class="page__title">
                                     {% if event.id %}
                                         Edit event
                                     {% else %}
@@ -21,7 +25,7 @@
                                     {% endif %}
 
                                     {{ form.render('id') }}
-                                </h3>
+                                </h1>
                             </div>
                         </div>
                         <div class="row-fluid">
@@ -33,16 +37,16 @@
                                             <div id="content-box">
                                                 <div class="form-center clearfix">
                                                     <div class="input-div clearfix">
-                                                    	
-                                                        {{ form.render('name') }}
 
-                                                        <div class="arrow_box"> arrow</div>
+                                                        <input type="text" id="name" name="name" placeholder="Main title" class="input_add_event_main"> 
+                                                    	
+
                                                     </div>
 
                                                     <div class="input-div_date clearfix">
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-start" class="input-div_small">
-                                                                {{ form.render('start_date') }}
+                                                                <input type="text" id="start_date" name="start_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="Start date" autocomplete="off" class="input_add_event_date">
                                                             <span class="add-on">
                                                                                 {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
                                                                             </span>
@@ -50,7 +54,7 @@
                                                         </div>
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-end" class="input-div_small">
-                                                                {{ form.render('end_date') }}
+                                                                <input type="text" id="end_date" name="end_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="End date" autocomplete="off" class="input_add_event_date">
                                                             <span class="add-on">
                                                                                 {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
                                                                             </span>
@@ -58,12 +62,12 @@
                                                         </div>
 
                                                         <div class="date-box clearfix">
-                                                            <label>
+                                                            <label class="add_event_label_to_checkbox">
                                                                 {{ form.render('event_status') }} Publish event immediately
                                                             </label>
 
                                                             {% if event.fb_uid == '' %}
-                                                            <label>
+                                                            <label class="add_event_label_to_checkbox">
                                                                 {{ form.render('event_fb_status') }} Publish event to facebook
                                                             </label>
                                                             {% endif %}
@@ -71,13 +75,13 @@
                                                         </div>
 
                                                         <div class="date-box" id="time-string" style="display:none;">
-                                                            <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start"
-                                                                                                                                         class="date-time">00:00:00</span><br>
+                                                            <span id="date-start" class="date-start">12 Aug 2013</span>, starts at <span id="time-start" class="date-time">00/span><br>
                                                             <span id="days-count" class="day-title">Event happens today</span>
                                                         </div>
                                                     </div>
 
-                                                    {{ form.render('description') }}
+                                                    
+                                                    <textarea id="description" name="description" class="resizable field-big input_add_event_description" placeholder="Add description" ></textarea>
 
                                                     <div class="input-div clearfix">
                                                         {{ form.render('tickets_url') }}
@@ -90,7 +94,7 @@
                                             <div class="input-append">
                                                 <label for="location">
                                                     {{ form.render('location') }}
-                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                    <button class="btn" type="button" style="display:none;"><i class="icon-place-marker"></i></button>
                                                 </label>
 
 
@@ -106,7 +110,7 @@
                                             <div class="input-append">
                                                 <label for="address">
                                                     {{ form.render('address') }}
-                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                    <button class="btn" type="button" style="display:none;"><i class="icon-place-marker"></i></button>
                                                 </label>
 
                                                 {{ form.render('address-coords') }}
@@ -119,7 +123,7 @@
                                             <div class="input-append">
                                                 <label for="venue">
                                                     {{ form.render('venue') }}
-                                                    <button class="btn" type="button"><i class="icon-place-marker"></i></button>
+                                                    <button class="btn" type="button" style="display:none;"><i class="icon-place-marker"></i></button>
                                                 </label>
 
                                                 {{ form.render('venue_latitude') }}
@@ -133,7 +137,7 @@
                                             <div class="input-append">
 
                                                     <input type="text" id="sites" placeholder="Event web site"/>
-                                                    <button class="btn btn-primary" id="add-web-site" type="button">Add</button>
+                                                    <button class="ew-button" id="add-web-site" type="button">Add</button>
 
 
                                                 <div class="warning-box"
@@ -175,7 +179,7 @@
                                                 {% endif %}
                                             </div>
 
-                                            <div class="type-box">
+                                            <div class="type-box" style="display:none;">
                                                 <div class="event-site">
                                                     <p>Type:</p>
 
@@ -227,27 +231,30 @@
                                             </div>
                                         </div>
                                         <div class="btn-add_group clearfix">
-                                            <button class="btn btn-cancel" type="button" id="btn-cancel">Cancel</button>
+                                            <button class="ew-button " type="button" id="btn-cancel">Cancel</button>
                                             <button class="btn" type="button" id="btn-preview" href="#previewEvent" role="button" data-toggle="modal">Preview</button>
-                                            <button class="btn" type="submit" id="btn-submit">Save</button>
+                                            <button class="ew-button " type="submit" id="btn-submit">Save</button>
                                         </div>
                                     </div>
                                 </div>
+<div class="add_event_images">
 <div class="add-img-box clearfix">
     <div class="add-img">
         <div class="event-one-img">
             <div class="all-img clearfix">
                 {% if event.logo %}
                     <img
+                            id="img_posters"
                             data-id="{{ event.id }}"
                             class='img-box img-logo'
                             src="/upload/img/event/{{ event.id }}/{{ event.logo }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-logo' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-logo' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
                 <input type="hidden" name="event_logo" value="{{ event.logo }}"/>
@@ -255,7 +262,7 @@
 
             {{ form.render('logo') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('logo') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-logo-upload') }}
@@ -267,24 +274,26 @@
                 {% if poster is defined %}
 
                     <img
+                            id="img_posters"
                             data-id="{{ poster.id }}"
                             class='img-box img-poster'
                             src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <input type="hidden" name="event_poster" value="{{ poster.image }}"/>
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>
 
             {{ form.render('poster') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('poster') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-poster-upload') }}
@@ -296,29 +305,39 @@
                 {% if flyer is defined %}
 
                     <img
+                            id="img_posters"
                             data-id="{{ flyer.id }}"
                             class='img-box img-flyer'
                             src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
                             alt=""
+                            style="width: 200px; height: 200px;"
                             />
 
                     <input type="hidden" name="event_flyer" value="{{ flyer.image }}"/>
 
                     <span class="delete-logo"></span>
                 {% else %}
-                    <img class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" />
+                    <img id="img_posters" class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
                 {% endif %}
             </div>
 
             {{ form.render('flyer') }}
         </div>
-        <button style="text-align: center; overflow: hidden; height: 42px;" class="btn btn-block btn-file add-img-btn"
+        <button style="text-align: center; overflow: hidden; height: 42px;" class="ew-button edit_event_img_button btn-file add-img-btn"
                 type="button">{{ form.label('flyer') }}</button>
         <!-- input id="add-img-upload" type="file" value="upload" style="display:none;" -->
         {{ form.render('add-img-flyer-upload') }}
     </div>
 </div>
+</div>
+
+
+
+
+
+
+
 
                             </div>
                             <div class="padd_30"></div>
@@ -328,6 +347,9 @@
                 </div>
             </div>
         </form>
+
+    </div><!-- add_event_left --> 
+
         {% if viewMode is defined %}
         	<div id = "viewMode" switch = "on" fbevent = "{{ event.fb_uid }}" style="display:none; visibility:hidden;"></div>
         {% else %}
@@ -342,18 +364,21 @@
     <!-- Modal -->
 
         <div class="modal fade" id="previewEvent" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+            <div class="modal-dialog" style="width:90%; height:100%;">
+                <div class="modal-content" style="height:100%;">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h3 id="myModalLabel">Event Preview</h3>
+                        <h3 id="myModalLabel" >Event Preview</h3>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" style="height:80%;">
                         <iframe name="eventPreview_iframe" src="http://dev.eventweekly.com" style="width: 100%; height: 100%;"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
+    </section>
+    </div>
 
 
 {% endblock %}

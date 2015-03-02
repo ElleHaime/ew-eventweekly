@@ -4,6 +4,8 @@ namespace Frontend\Controllers;
 
 use Core\Utils as _U,
 	Core\Utils\DateTime as _UDT,
+	Frontend\Models\MemberFilter, //<---for new filters
+	Frontend\Models\Tag,          //<---for new filters	
     Frontend\Models\Location,
     Frontend\Models\Venue as Venue,
     Frontend\Models\MemberNetwork,
@@ -64,9 +66,9 @@ class EventController extends \Core\Controllers\CrudController
     	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
     				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
-
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
     	
+		$eventGrid->setLimit(100);
 		$page = $this->request->getQuery('page');
 		if (empty($page)) {
 			$eventGrid -> setPage(1);
@@ -92,6 +94,89 @@ class EventController extends \Core\Controllers\CrudController
 		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $result);
     	$this->view->pick('event/eventList');
+    	
+/*
+    	$this->session->set('lastFetchedEvent', 0);
+    	
+    	$postData = $this->request->getQuery();
+    	$page = $this->request->getQuery('page');
+    	if (empty($page)) {
+    		$page = 1;
+    	}
+    	
+    	$loc = $this->session->get('location');
+    	$event = new Event();
+    	$request = $this -> request -> getQuery();
+    	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
+    		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);
+    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLngCurrent']);
+    	} else {
+	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
+	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
+    	}
+    	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
+    	$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
+    	
+    	$event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
+    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
+    	$event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
+    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
+    	$event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
+    	
+    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent')); 
+    	$event-> addCondition('Frontend\Models\Event.event_status = 1');
+    	
+    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
+    			Event::ORDER_ASC,
+    			['page' => $page, 'limit' => 10],
+    			$applyPersonalization, [], false, false, false, true, true);
+		$events = $result -> items;
+		unset($result -> items);
+		 
+		if (isset($events)) {
+			$this->view->setVar('pagination', $result);
+		}
+
+        if ($this->session->has('memberId')) {
+            $this->fetchMemberLikes();
+        }
+
+        if ($this -> session -> has('passwordChanged') && $this -> session -> get('passwordChanged') === true) {
+            $this -> session -> set('passwordChanged', false);
+            $this -> view -> setVar('passwordChanged', true);
+        } 
+        
+        $member = '\Frontend\Models\Member';
+        $list = $member::findFirst($this -> session -> get('memberId'));
+        if (!$list -> location) {
+            $list -> location = $this -> session -> get('location');
+        }
+        //$memberForm = new MemberForm($list);
+        //var_dump($member);
+        if ($this -> session -> has('eventsTotal')) {
+            $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+        }
+        $MemberFilter = new MemberFilter();
+        $member_categories = $MemberFilter->getbyId($list->id);
+
+        $tagIds = '';
+        if ( isset($member_categories['tag']['value']) ) {
+            $tagIds = implode(',', $member_categories['tag']['value']);
+        }
+
+        $this->view->setVars(array(
+                'member', $list,
+                'categories' => Category::find()->toArray(),
+                'tags' => Tag::find()->toArray(),
+                'tagIds' => $tagIds,
+                'member_categories' => $member_categories
+            ));
+        //var_dump($tagIds); die();
+
+		$this->view->setVar('urlParams', 'list');
+		$this->view->setVar('list', $events);
+    	$this->view->pick('event/eventList');
+*/
     }
     
     

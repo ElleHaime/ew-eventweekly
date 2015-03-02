@@ -1,0 +1,16 @@
+.breadcrumbs {
+	font-family: "Open Sans";
+	font-weight: 300;
+	font-size: 12px;
+
+	&__divider {
+		color: $color-link;
+		margin: 0 6px;
+	}
+
+	strong {
+		color: #ccc;
+		font-weight: 300;
+	}
+
+}

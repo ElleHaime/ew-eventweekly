@@ -3,7 +3,6 @@ define('googleMap',
 	function($, _) {
 
         function Map(options) {
-
             self.markers = [];
 
             self.events = [];
