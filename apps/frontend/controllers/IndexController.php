@@ -31,14 +31,16 @@ class IndexController extends \Core\Controller
         } else {
 			// get featured events
         	$featuredId = $trendingId = $resultFe = [];
- 			
-        	if ($featuredEvents = Featured::find(['object_type="event"'])) {
+        	$featuredEvents = Featured::find(['object_type="event" and location_id=' . $this -> session -> get('location') -> id]);
+        	
+        	if ($featuredEvents -> count() != 0) {
 				foreach ($featuredEvents as $fe) {
 					$featuredId[$fe -> object_id] = $fe -> priority;
 					$resultFe[$fe -> priority] = [];
 				}
 				
-				$events = Event::find(['id in(' . implode(",", array_keys($featuredId)) .')']);
+				$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
+				$events = $ev::find(['id in(' . implode(",", array_keys($featuredId)) .')']);
 				foreach ($events as $ev) {
 					foreach ($resultFe as $key => $val) {
 						if ($featuredId[$ev -> id] == $key) {
@@ -46,12 +48,13 @@ class IndexController extends \Core\Controller
 							$resultFe[$key][] = $ev;
 						}
 					}
-				}				
+				}
         	} else {
 				// get first 14 events in current location
-				$events = Event::find(['location_id = ' . $this -> session -> get('location') -> id . '
-											and (end_date > now() 
-											or start_date > "' . date('Y-m-d H:i:s', strtotime('today midnight')). '")', 
+        		$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
+				$events = $ev::find(['location_id = ' . $this -> session -> get('location') -> id . '
+										and (end_date > now() 
+										or start_date > "' . date('Y-m-d H:i:s', strtotime('today midnight')). '")', 
 										'limit' => ['number' => 14]]);
 				foreach($events as $ev) {
 					$resultFe[1][] = $ev;
@@ -62,7 +65,7 @@ class IndexController extends \Core\Controller
         	// get trending events
 			$trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
 												'order' => 'rank DESC']);
-			if (!is_null($trendingEvents -> count)) {
+			if ($trendingEvents -> count() != 0) {
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}

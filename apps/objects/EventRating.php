@@ -18,4 +18,8 @@ class EventRating extends Model
 				
         $this -> belongsTo('event_id', '\Objects\Event', 'id', array('alias' => 'event_rating'));
 	}
+	
+	public function addEventRating($event)
+	{
+	}
 }

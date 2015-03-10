@@ -19,6 +19,6 @@ class MemberNetwork extends MemberNetworkObject
 		
 		$memberNetwork -> save();
 		
-		return;
+		return $memberNetwork;
 	}
 } 

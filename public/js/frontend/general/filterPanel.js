@@ -17,7 +17,9 @@ define('frontFilterPanel',
 				tagBlock: '.userTag-subfilters',
 				categoryBtn: '.userFilter-category',
 				toggleBtn: '.categories-accordion__arrow',
-				filtersWrapper: '.b-filters__wrapper'
+				filtersWrapper: '.b-filters__wrapper',
+				personalPresetState: '#personalPresetActive',
+				personalPresetTags: '#tagIds'
 			},
 			panelState: null,
 			panelWidth: '350px',
@@ -112,20 +114,21 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__applyPersonalize: function() {
-				var personalTags = $('#tagIds').val();
-
-            	if (personalTags=='') {
+				var personalTags = $(self.settings.personalPresetTags).val().split(',');
+				if (personalTags.length == 0) {
             		noty({text: 'Please login and set your default tags first!', type: 'error'});
             		return true;
             	}
-
+				
 				$('.userFilter-tag').each(function() { //loop through each checkbox
-					var tagNumber = this.id.replace( /[^\d.]/g, '' );console.log(tagNumber);
-					this.checked = true;
-					if (personalTags.indexOf(","+tagNumber+",") >= 0) {
-						this.checked = false;		
+					var tagNumber = this.id.replace( /[^\d.]/g, '' );
+					if ($.inArray(tagNumber, personalTags) >= 0) {
+						this.checked = true;		
+					} else {
+						this.checked = false;
 					}               
             	});
+				$(self.settings.personalPresetTags).val('1');
             	this.__setCategoriesChecked();
 			},
 			
@@ -141,8 +144,7 @@ define('frontFilterPanel',
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 this.checked = true;  //select all checkboxes with class "userFilter-category"               
             	});
-            	
-            
+            	$(self.settings.personalPresetTags).val('0');
 			},
 
 			/*
@@ -157,6 +159,7 @@ define('frontFilterPanel',
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-category"               
             	});
+            	$(self.settings.personalPresetTags).val('0');            	
 			},
 			
 			/*

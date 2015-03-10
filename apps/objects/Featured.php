@@ -11,4 +11,5 @@ class Featured extends Model
 	public $object_type;
 	public $object_id;
 	public $priority;
+	public $location_id;
 }

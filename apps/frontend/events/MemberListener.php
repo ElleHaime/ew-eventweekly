@@ -56,38 +56,6 @@ class MemberListener {
     }
     
 
-    /**
-     * Writer custom, liked, following event counts in session
-     *
-     * @param $subject
-     */
-    public function setEventsCounters($subject) {
-        $this->subject = $subject -> getSource();
-        $params = $subject -> getData();
-
-        if ($params) {
-            $userId = $params->id;
-
-            // set total counters from db
-			$model = EventMemberCounter::findFirst('member_id = ' . $userId);
-			$this -> subject -> cacheData -> save('userEventsCreated.' . $userId, $model -> userEventsCreated);
-			$this -> subject -> cacheData -> save('userEventsLiked.' . $userId, $model -> userEventsLiked);
-			$this -> subject -> cacheData -> save('userEventsGoing.' . $userId, $model -> userEventsGoing);
-			$this -> subject -> cacheData -> save('userFriendsGoing.' . $userId, $model -> userFriendsGoing);
-			
-			// set background task for the detailed caching
-			$newTask = new \Objects\Cron();
-			$task = ['name' => 'cache_events_counters',
-					 'parameters' => serialize(['member_id' => $userId]),
-					 'state' => 0,
-					 'member_id' => $userId,
-					 'hash' => time()];
-			$newTask -> assign($task);
-			$newTask -> save();
-        }
-    }
-
-
     public function checkLocationMatch($subject)
     {
         $this->subject = $subject->getSource();

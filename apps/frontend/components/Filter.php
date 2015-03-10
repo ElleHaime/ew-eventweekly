@@ -13,7 +13,7 @@ class Filter extends Component
 	public $userFilters	= [];
 	
 	
-	public function loadUserFilters()
+	public function loadUserFilters($applyPersonalization = true)
 	{
 		$categories = Category::find() -> toArray();
 		$tags = Tag::find() -> toArray();
@@ -24,18 +24,50 @@ class Filter extends Component
 		}
 
 		foreach ($tags as $obj) {
-			$this -> userFilters[$obj['category_id']]['tags'][] = $obj;
+			$this -> userFilters[$obj['category_id']]['tags'][$obj['id']] = $obj;
 		}
-		
-		$this -> applyMemberPersonalization();
 
+		if ($applyPersonalization) {
+			$this -> applyMemberPersonalization();
+			$this -> view -> setVar('personalPresetActive', 1);
+		} else {
+			$this -> applySessionFilters();
+			$this -> view -> setVar('personalPresetActive', 0);
+		}
 		$this -> view -> setVar('userFilters', $this -> userFilters);
 	}
 	
+
 	
 	public function applySessionFilters()
 	{
+		foreach($this -> userFilters as $index => $filter) {
+			if ($this -> session -> has('userSearchFilters')) {
+				$sessionFilters = array_keys($this -> session -> get('userSearchFilters'));
+				 
+				foreach ($this -> userFilters as $index => $filter) {
+					$tagsInCategory = 0;
+					foreach ($filter['tags'] as $item => $tag) {
+						if (in_array($item, $sessionFilters)) {
+							$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
+							$tagsInCategory++;
+						}
+					}
+					if ($tagsInCategory == count($filter['tags'])) {
+						$this -> userFilters[$index]['fullCategorySelect'] = 1;
+					}
+				}
+			} else {
+				foreach ($this -> userFilters as $index => $filter) {
+					foreach ($filter['tags'] as $item => $tag) {
+						$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
+					}
+					$this -> userFilters[$index]['fullCategorySelect'] = 1;
+				}
+			}
+		}
 		
+		return;
 	}
 	
 	
@@ -43,6 +75,30 @@ class Filter extends Component
 	{
 		if ($this -> session -> has('memberId')) {
 			
+			$memberPreset = (new MemberFilter()) -> getbyId($this -> session -> get('memberId'));
+			
+			if (!empty($memberPreset)) {
+				if (isset($memberPreset['category'])) {
+					foreach ($memberPreset['category']['value'] as $index => $filter) {
+						$this -> userFilters[$filter]['inPreset'] = 1;
+						
+						if(isset($memberPreset['tag'])) {
+							$tagsInCategory = 0;
+							
+							foreach ($this -> userFilters[$filter]['tags'] as $index => $tag) {
+								if (in_array($index, $memberPreset['tag']['value'])) {
+									$this -> userFilters[$filter]['tags'][$index]['inPreset'] = 1;
+									$tagsInCategory++;
+								}
+							}
+							
+							if ($tagsInCategory == count($this -> userFilters[$filter]['tags'])) {
+								$this -> userFilters[$filter]['fullCategorySelect'] = 1;
+							}		
+						}
+					}
+				}
+			}
 		} 
 		
 		return;

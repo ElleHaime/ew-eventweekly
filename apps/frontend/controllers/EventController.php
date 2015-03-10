@@ -13,6 +13,7 @@ use Core\Utils as _U,
     Frontend\Models\EventCategory as EventCategory,
     Frontend\Models\Event as Event,
     Frontend\Models\EventSite,
+    Frontend\Models\EventRating,
     Frontend\Models\Cron as Cron,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
@@ -338,53 +339,14 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> view -> setVar('viewModeUp', true);
     	}
 
-    	$ev = new Event;
-    	$ev -> setShardById($eventId);
+    	$ev = (new Event())-> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
+    	$event -> memberpart = (new EventMember()) -> getMemberpart();
+    	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url); 
+    	
+    	(new EventImageModel()) -> setViewImages($event -> id);
+    	(new EventRating()) -> addEventRating($event);
 
-        $memberpart = null;
-        if ($this->session->has('member') && $event->memberpart->count() > 0) {
-            foreach ($event->memberpart as $mpart) {
-                if ($mpart->member_id == $this->memberId) {
-                    $memberpart = $mpart->member_status;
-                    break;
-                }
-            }
-        }
-        $event->memberpart = $memberpart;
-
-        $cfg = $this->di->get('config');
-        $logoFile = '';
-        
-        if ($event->logo != '') {
-            $logoFile = $cfg->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
-        }
-
-        $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/upload/img/event/' . $event->id . '/' . $event->logo;
-        if (!file_exists($logoFile)) {
-            $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
-        }
-         
-        if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')) {
-        	$fb = new Extractor($this -> getDi());
-        	$res = $fb -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $event -> fb_uid), $this -> session -> get('user_token'));
-
-        	if ($res['STATUS'] && !is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
-        		$event -> tickets_url = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
-        	} else {
-        		$event -> tickets_url = false;
-        	}  
-        } else {
-        	if ($event -> tickets_url) {
-        		$event -> tickets_url = 'https://www.facebook.com/events/' . $event -> fb_uid;
-        	} else {
-        		$event -> tickets_url = false;
-        	}
-        }
-        
-		(new EventImageModel()) -> setViewImages($event -> id);        
-        
-        $this->view->setVar('logo', $logo);
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());
         $this->view->setVar('link_back_to_list', true);

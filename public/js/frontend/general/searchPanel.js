@@ -170,8 +170,8 @@ define('frontSearchPanel',
                 });
 
                 /* sent data from form2(filters) */
-                $.each ( $('#form2 input').serializeArray(), function ( i, obj ) {
-                  $('<input type="hidden">').prop( obj ).appendTo( nativeForm );
+                $.each ($('#form2 input').serializeArray(), function ( i, obj ) {
+                  $('<input type="hidden">').prop(obj).appendTo(nativeForm);
                 } );
 
                 // If no option was chosen show notification or submit form
@@ -184,6 +184,7 @@ define('frontSearchPanel',
                     } else {
                         nativeForm.action = nativeForm.action+'/list';
                     }
+
                     nativeForm.submit();
                 }
             }

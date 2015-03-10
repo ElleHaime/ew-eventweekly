@@ -59,7 +59,6 @@ class AuthController extends \Core\Controller
                     }
                 } else {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
                     if (!$this->request->isAjax()) {
@@ -110,7 +109,6 @@ class AuthController extends \Core\Controller
                 	$memberCounter -> save();
                 	 
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this -> eventsManager -> fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this -> response -> redirect('/map');
                 } 
                     
@@ -143,7 +141,7 @@ class AuthController extends \Core\Controller
         		 
         		if ($memberNetwork) {
         			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+        			(new Cron()) -> createUserTask();
         		}
         		$this -> session -> set('role', Acl::ROLE_MEMBER);
         		$this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
@@ -172,7 +170,7 @@ class AuthController extends \Core\Controller
        		$memberNetwork = MemberNetwork::findFirst('account_id = "' .  $userData['uid'] . '"');
        		if ($memberNetwork) {
        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-       			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+        		(new Cron()) -> createUserTask();
        		}
         } elseif ($this -> session -> has('member') && !isset($this -> session -> get('member') -> network)) {
         	(new MemberNetwork()) -> addMemberNetwork($this -> session -> get('memberId'), $userData['uid'], $userData['user_name']);
@@ -221,14 +219,14 @@ class AuthController extends \Core\Controller
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
                 (new EventMemberCounter()) -> addMemberCounters($member -> id);
-                (new MemberNetwork()) -> addMemberNetwork($member, $userData['uid'], $userData['user_name']);
+                $memberNetwork = (new MemberNetwork()) -> addMemberNetwork($member, $userData['uid'], $userData['user_name']);
                 
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
                 $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
                     		'member' => $member,
                     		'uid' => $userData['uid'],
                     		'token' => $userData['token']));
-				$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
+                (new Cron()) -> createUserTask();                
             }
         }
 

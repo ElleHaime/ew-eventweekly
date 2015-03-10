@@ -226,7 +226,6 @@ class Event extends EventObject
     	$event -> logo = $logo;
     }
     
-    
     public function getCover()
     {
     	$this -> cover = false;
