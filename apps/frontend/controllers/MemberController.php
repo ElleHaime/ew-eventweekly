@@ -64,8 +64,6 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $this->view->memberForm = $memberForm;
-
-        //var_dump($tagIds); die();
 	}
 
 
