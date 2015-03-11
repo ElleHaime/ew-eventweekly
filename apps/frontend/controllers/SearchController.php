@@ -51,8 +51,8 @@ class SearchController extends \Core\Controller
             $postData = $this->session->get('userSearch');
         }
 
-/*_U::dump($this -> view -> getVar('userFilters'));        
-_U::dump($postData);*/
+//_U::dump($this -> view -> getVar('userFilters'));        
+_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -116,7 +116,7 @@ _U::dump($postData);*/
 
             // add search condition by dates
             if ($elemExists('searchStartDate')) {
-                $startDate = $postData['searchStartDate'];
+                $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
                 $queryData['searchStartDate'] = $startDate;
                 $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime('today +30 days'));
                 
@@ -140,8 +140,8 @@ _U::dump($postData);*/
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 
 			// search type
-            if ($elemExists('searchType')) {
-                if ($postData['searchType'] == 'in_map') {
+            if ($elemExists('searchTypeResult')) {
+                if ($postData['searchTypeResult'] == 'Map') {
                 	$eventGrid -> setLimit(100);
 					$results = $eventGrid->getData();
 
@@ -205,7 +205,7 @@ _U::dump($postData);*/
         $urlParams = http_build_query($postData);
         $urlParamsPaginate = $urlParams;
         
-        if ($postData['searchType'] == 'in_map') {
+        if ($postData['searchTypeResult'] == 'Map') {
         	$urlParams = str_replace(['in_map'], ['in_list'], $urlParams); 
         } else {
         	$urlParamsPaginate = $urlParams;
@@ -233,7 +233,7 @@ _U::dump($postData);*/
         		'tagIds' => $tagIds
 		]);
         
-        if (strtolower($postData['searchTypeResult']) == 'map') {
+        if (strtolower($postData['searchTypeResult']) == 'Map') {
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
