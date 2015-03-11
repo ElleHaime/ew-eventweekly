@@ -339,13 +339,16 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> view -> setVar('viewModeUp', true);
     	}
 
-    	$ev = (new Event())-> setShardById($eventId);
+    	$ev = new Event();
+    	$ev-> setShardById($eventId);
+    	
     	$event = $ev::findFirst($eventId);
-    	$event -> memberpart = (new EventMember()) -> getMemberpart();
+    	$event -> memberpart = (new EventMember()) -> getMemberpart($ev);
     	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url); 
     	
-    	(new EventImageModel()) -> setViewImages($event -> id);
-    	(new EventRating()) -> addEventRating($event);
+    	$images = (new EventImageModel()) -> setViewImages($event -> id);
+    	$this -> view -> setVars($images);
+    	//(new EventRating()) -> addEventRating($event);
 
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());

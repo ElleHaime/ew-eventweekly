@@ -12,8 +12,10 @@ class EventImage extends EventImageObject
 	public function setViewImages($eventId)
 	{
 		$posters = $flyers = $gallery = $cover = null;
+		$result = [];
 		
-	 	if ($images = self::find('event_id = ' . $id)) {
+		$this -> setShardById($eventId); 
+	 	if ($images = self::find('event_id = "' . $eventId . '"')) {
             foreach ($images as $img) {
                 if ($img -> type == 'poster') {
                     $posters[] = $img;
@@ -26,11 +28,12 @@ class EventImage extends EventImageObject
                 }
             }
 		}
+		isset($posters[0]) ? $result['poster'] = $posters[0] : $result['poster'] = null;
+		isset($flyers[0]) ? $result['flyer'] = $flyers[0] : $result['flyer'] = null;
+		isset($cover) ? $result['cover'] = $cover : $result['cover'] = null;
+		$result['gallery'] = $gallery;
 		
-		$this -> view -> setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this -> view -> setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
-        $this -> view -> setVar('cover', isset($cover) ? $cover : null);
-        $this -> view -> setVar('gallery', $gallery);
+		return $result;
 	}
 
 }

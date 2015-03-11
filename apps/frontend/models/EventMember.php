@@ -32,7 +32,7 @@ class EventMember extends EventMemberObject
     {
     	$memberpart = null;
     	
-    	if ($this->session->has('member') && $event->memberpart->count() > 0) {
+    	if ($this -> getDI() -> get('session') -> has('member') && $event->memberpart->count() > 0) {
     		foreach ($event->memberpart as $mpart) {
     			if ($mpart->member_id == $this->memberId) {
     				$memberpart = $mpart->member_status;
