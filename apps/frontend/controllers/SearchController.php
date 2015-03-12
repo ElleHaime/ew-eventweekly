@@ -166,6 +166,7 @@ class SearchController extends \Core\Controller
                     } else {
                     	$eventGrid->setPage($page);
                     }
+                    $eventGrid -> setLimit(9);
                     $results = $eventGrid->getData();
 
                     foreach($results['data'] as $key => $value) {

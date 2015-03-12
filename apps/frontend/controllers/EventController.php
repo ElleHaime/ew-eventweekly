@@ -97,6 +97,12 @@ class EventController extends \Core\Controllers\CrudController
 			$this->fetchMemberLikes();
         }
         
+        $tagIds = '';
+        $member_categories = (new MemberFilter())->getbyId();
+        if (isset($member_categories['tag'])) {
+        	$tagIds = implode(',', $member_categories['tag']['value']);
+        }
+        
 		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $result);
 		if ($pickFullTemplate) {
