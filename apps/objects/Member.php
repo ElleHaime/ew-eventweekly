@@ -72,24 +72,6 @@ class Member extends Model
 	
 	public function fullDelete()
 	{
-		$query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\Event.id
-												FROM Frontend\Models\Event
-												WHERE Frontend\Models\Event.member_id = " . $this -> id, $this -> getDI());
-		$result = $query -> execute();
-
-		if ($result -> count() > 0) {
-			$eventIds = '';
-			foreach ($result as $item) {
-				$eventIds .= $item -> id . ',';
-			}
-			
-			$syncCounters = new EventMemberCounter();
-			$syncCounters -> syncDeleted(substr($eventIds, 0, strlen($eventIds)-1));
-		}
-		
-		if ($this -> getRelated('event')) {		
-			$this -> getRelated('event') -> delete();
-		}
 		if ($this -> getRelated('eventpart')) {
 			$this -> getRelated('eventpart') -> delete();
 		}
@@ -104,9 +86,6 @@ class Member extends Model
 		}
 		if ($this -> getRelated('member_filter')) {
 			$this -> getRelated('member_filter') -> delete();
-		}
-		if ($this -> getRelated('counters')) {
-			$this -> getRelated('counters') -> delete();
 		}
 		$this -> delete();
 		
