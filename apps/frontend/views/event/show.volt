@@ -20,10 +20,18 @@
 					<div class="short-info">
 					<!-- pic -->
 						<div class="short-info__picture">
-							{% if cover is defined %}
-								<img src="{{ checkCover(cover) }}" alt="{{ event.name }}">
+							{% if eventPreview is defined %}
+								{% if cover is defined %}
+									<img src="{{ checkTmpCover(cover) }}" alt="{{ event.name }}">
+								{% else %}
+									<img src="{{ checkTmpLogo(event) }}" alt="{{ event.name }}">
+								{% endif %}
 							{% else %}
-								<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+								{% if cover is defined %}
+									<img src="{{ checkCover(cover) }}" alt="{{ event.name }}">
+								{% else %}
+									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+								{% endif %}
 							{% endif %}
 						</div>
 					

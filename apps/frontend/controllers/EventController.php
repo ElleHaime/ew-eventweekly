@@ -1025,6 +1025,7 @@ class EventController extends \Core\Controllers\CrudController
         		$this->view->setVar('eventPreviewLogo', $post['logo']);
         	}	
         }
+        
         if (!empty($post['event_poster'])) {
             $this->view->setVar('eventPreviewPoster', $post['event_poster']);
             $this->view->setVar('eventPreviewPosterReal', $post['event_poster']);
@@ -1071,6 +1072,7 @@ class EventController extends \Core\Controllers\CrudController
                 $site[] = $ss;
             }
         }
+        
         $Event->site = $site;
         $Event->category = Category::find('id = ' . (int)$post['category']);
         $Event->memberpart = null;
