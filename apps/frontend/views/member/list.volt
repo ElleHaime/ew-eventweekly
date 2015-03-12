@@ -79,7 +79,7 @@
                                                             <div class="control-group">
                                                                 <label for="uLocation" class="control-label mail">Default location:</label>
                                                                 <div class="controls">
-                                                                    <input type="text" id="uLocation" class="input-registration-control">
+                                                                    <input type="text" id="uLocation" class="input-registration-control" value="{{ member.location.city }}, {{ member.location.country }}">
                                                                 </div>
                                                             </div>
                                                         </form>
