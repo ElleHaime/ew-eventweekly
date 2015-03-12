@@ -19,7 +19,8 @@ define('frontTopPanel',
 				btnHz: '#back-to',
 
                 emailLoginBtn: '#email-login',
-                fbLoginBtn: '.top-line__link'
+                fbLoginBtn: '.top-line__link',
+                fbLoginBtn2: '.fb-login-popup'
 		    },
 		    self.__city = null,
 	    
@@ -69,7 +70,8 @@ define('frontTopPanel',
                         "toolbar=yes, scrollbars=yes, resizable=yes, top=" + top + ", left=" + left + ", width=" + width + ", height=" + height
                     );
                 }
-
+                $('body').on('click', self.settings.fbLoginBtn2, showPopup);
+                return false;
                 $('body').on('click', self.settings.fbLoginBtn, showPopup);
             }
 		}; 

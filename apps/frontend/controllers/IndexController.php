@@ -74,6 +74,12 @@ class IndexController extends \Core\Controller
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}
+/*				$queryData = [];				
+				$queryData['searchId'] = array_keys($trendingId);
+	
+				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+				$results = $eventGrid->getData();
+				$trendingEvents = $results['data']; */
 				$trendingEvents = [];
 				foreach ($trendingId as $index => $event) {
 					$e = new Event();

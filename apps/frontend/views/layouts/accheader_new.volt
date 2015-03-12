@@ -114,7 +114,7 @@
 						</a>
 					</div>
 					<div class="top-line__item top-line__item--divider">
-						<a href="#" class="top-line__link"  onclick="return false;">Sign In</a>
+						<a href="#" class="top-line__link fb-login-popup"  onclick="return false;">Sign In</a>
 					</div>
 					
                     

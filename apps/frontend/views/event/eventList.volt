@@ -85,9 +85,9 @@
 										</div>
 
 										<div class="actions">
-											<a class="ew-button">
+											<!-- a class="ew-button">
 												<i class="fa fa-calendar"></i> Add to calendar
-											</a>
+											</a -->
 											<a class="ew-button share-event" 
 											   style="cursor:pointer;" 
 											   data-event-source="/{{ toSlugUri(event.name) }}-{{ event.id }}"
