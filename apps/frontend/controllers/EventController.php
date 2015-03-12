@@ -856,7 +856,7 @@ class EventController extends \Core\Controllers\CrudController
             $eventCategories = (new EventCategory()) -> setShardById($ev->id);
             $eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
             if ($eCats) {
-            	_U::dump($eCats -> toArray(), true);
+            	//_U::dump($eCats -> toArray(), true);
                 foreach ($eCats as $ec) {
                     $ec->delete();
                 }
