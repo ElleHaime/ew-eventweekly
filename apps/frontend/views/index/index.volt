@@ -62,7 +62,7 @@
 							<a href="#">Featured events</a>
 						</h2>
 	
-						<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+						<a href="/list" class="header__link-show-more">Show more What’s on in Dublin</a>
 					</div>
 	
 					<div class="clearfix"></div>
@@ -119,7 +119,7 @@
 						<a href="#">Trending events</a> 
 					</h2>
 
-					<a href="#" class="header__link-show-more">Show more What’s on in Dublin</a>
+					<a href="/list" class="header__link-show-more">Show more What’s on in Dublin</a>
 				</div>
 
 				<div class="clearfix"></div>

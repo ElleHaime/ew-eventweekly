@@ -136,7 +136,7 @@ class SearchController extends \Core\Controller
 				$this -> filters -> loadUserFilters(false); 
 				$queryData['searchTag'] = array_keys($postData['searchTags']); 
             } 
-_U::dump($queryData, true);
+//_U::dump($queryData, true);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			
 			// search type
@@ -181,7 +181,7 @@ _U::dump($queryData, true);
             }
             $countResults = $results['all_count'];
         }
-_U::dump($results);        
+//_U::dump($results);        
 
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
