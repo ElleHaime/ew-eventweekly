@@ -20,7 +20,8 @@ require([
             mapCenter: {
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')
-            }
+            },
+            mapZoom: $('#isMobile').val() === '1' ? 13 : 12
         });
         eventsPointer.init();
 

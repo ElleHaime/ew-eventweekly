@@ -28,6 +28,11 @@
 		        window.searchResults = {{ list }};
 		    </script>
 		{% endif %}
+		{% if urlParams is defined %}
+			<script type="text/javascript">
+				window.searchUrlParams = "{{ urlParams }}";
+    		</script>
+    	{% endif %}
 	{% endif %}
 
     {{ stylesheet_link('/css/normalBootstrapDateTimepicker.min.css') }}

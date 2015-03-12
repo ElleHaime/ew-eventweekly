@@ -30,17 +30,12 @@ class SearchController extends \Core\Controller
     {
 		(new Cron()) -> createUserTask();
 		    	
-        $categories = Category::find();
-        $categories = $categories->toArray();
-        $this -> view -> setVar('categories', $categories);
-
         $form = new SearchForm();
         $this -> view -> form = $form;
 
         $result = array();
         $countResults = 0;
 
-        $needTags = false;
         $postData = $this->request->getQuery();
         // retrieve data from POST
         if (empty($postData)) {
@@ -141,8 +136,16 @@ class SearchController extends \Core\Controller
 			
 			// search type
             if ($elemExists('searchTypeResult')) {
+            	$page = $this -> request -> getQuery('page');
+            	empty($page) ?	$eventGrid->setPage(1) : $eventGrid->setPage($page);
+            	 
                 if ($postData['searchTypeResult'] == 'Map') {
-                	$eventGrid -> setLimit(100);
+                	if (empty($page)) {
+                		$eventGrid->setPage(1);
+                	} else {
+                		$eventGrid->setPage($page);
+                	}
+                	$eventGrid -> setLimit(50);
 					$results = $eventGrid->getData();
 
                     foreach($results['data'] as $id => $event) {
@@ -155,17 +158,10 @@ class SearchController extends \Core\Controller
                     	}
                     	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     }
-                    
-                    $result = json_encode($result, JSON_UNESCAPED_UNICODE);
+                   	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
+
                     
                 } else {
-                    $page = $this->request->getQuery('page');
-                    
-                    if (empty($page)) {
-                    	$eventGrid->setPage(1);
-                    } else {
-                    	$eventGrid->setPage($page);
-                    }
                     $eventGrid -> setLimit(9);
                     $eventGrid -> setParam('order','start_date');
                     $eventGrid -> setSortDirection('ASC');
@@ -236,13 +232,30 @@ class SearchController extends \Core\Controller
                 'member_categories' => $member_categories,
         		'tagIds' => $tagIds
 		]);
-        
+        $categories = Category::find();
+        $categories = $categories->toArray();
+        $this -> view -> setVar('categories', $categories);
+    
         if (strtolower($postData['searchTypeResult']) == 'map') {
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
-            $this->view->pick('event/map');
-        } else {  
+        	
+        	if ((int)$page > 1) {
+	        	if ($results['page_now'] < $results['all_page']) {
+					$res['stop'] = false;
+				} else {
+					$res['stop'] = true;
+				}
+        		$res['data'] = json_decode($result);
+        		$res['page_now'] = $results['page_now'];
+        		$res['page_all'] = $results['all_page'];
+				$this -> sendAjax($res);
+				exit();        		
+        	} else {
+        		$this->view->pick('event/map');
+        	}
+        } else {
             if ($page >1 ) {
                 $this->view->setVar('searchResultList', true);
                 $this->view->pick('event/eventListPart');
