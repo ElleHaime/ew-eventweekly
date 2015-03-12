@@ -767,9 +767,9 @@ class EventController extends \Core\Controllers\CrudController
 
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
-_U::dump($ev -> getShardTable(), true);
+//_U::dump($ev -> getShardTable(), true);
         if ($ev -> save()) {
-_U::dump($ev -> toArray(), true); 
+//_U::dump($ev -> toArray(), true); 
         	
             // create event dir if not exists
             if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {

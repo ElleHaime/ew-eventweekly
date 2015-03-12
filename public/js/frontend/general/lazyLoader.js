@@ -68,7 +68,7 @@ define('lazyLoader',
                 $.ajax({url:nextPageUrl,
                 	success: function(result) 
                 	{
-console.log(result);                		
+//console.log(result);                		
                 		$(self.settings.divToUpdate).last().html(result);
                 		$(self.settings.divToOverlay).css({'opacity' : 1});
                             //'background-color': 'transparent'

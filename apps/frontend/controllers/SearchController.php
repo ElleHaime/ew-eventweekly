@@ -167,6 +167,8 @@ class SearchController extends \Core\Controller
                     	$eventGrid->setPage($page);
                     }
                     $eventGrid -> setLimit(9);
+                    $eventGrid -> setParam('order','start_date');
+                    $eventGrid -> setSortDirection('ASC');
                     $results = $eventGrid->getData();
 
                     foreach($results['data'] as $key => $value) {
@@ -182,6 +184,7 @@ class SearchController extends \Core\Controller
             }
             $countResults = $results['all_count'];
         }
+        
 //_U::dump($results);        
 
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
@@ -234,11 +237,11 @@ class SearchController extends \Core\Controller
         		'tagIds' => $tagIds
 		]);
         
-        if (strtolower($postData['searchTypeResult']) == 'Map') {
+        if (strtolower($postData['searchTypeResult']) == 'map') {
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
-            $this->view->pick('event/mapEvent');
+            $this->view->pick('event/map');
         } else {  
             if ($page >1 ) {
                 $this->view->setVar('searchResultList', true);
