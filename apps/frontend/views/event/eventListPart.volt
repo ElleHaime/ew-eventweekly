@@ -44,7 +44,7 @@
 											{% if event.start_date != '0000-00-00' %}
                                                 {{ dateToFormat(event.start_date, '%d %b %Y') }}
                                                 
-                                                {% if event.end_date != '0000-00-00' %}
+                                                {% if event.end_date is defined and event.end_date != '0000-00-00' %}
                                                  	- {{ dateToFormat(event.end_date, '%d %b %Y') }}
                                                  {% endif %}
                                             {% endif %}
@@ -71,9 +71,9 @@
 
 
 										<div class="footer">
-											<div class="footer__item">
+											<!-- div class="footer__item">
 												<i class="fa fa-ticket"></i> Tickets: $100-$200
-											</div>
+											</div -->
 											{% if event.recurring == 7 %}
 												<div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div>
 											{% elseif event.recurring == 1 %}
@@ -84,9 +84,9 @@
 										</div>
 
 										<div class="actions">
-											<a class="ew-button">
+											<!-- a class="ew-button">
 												<i class="fa fa-calendar"></i> Add to calendar
-											</a>
+											</a -->
 											<a class="ew-button share-event" 
 											   style="cursor:pointer;" 
 											   data-event-source="/{{ toSlugUri(event.name) }}-{{ event.id }}"
