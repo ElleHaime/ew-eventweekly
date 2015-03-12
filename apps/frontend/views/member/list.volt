@@ -109,11 +109,13 @@
                                     </div>
 
 
-                                    <div class=" profile-btn-rt clearfix profile_bottom">
-                                            <div class="change-box">
-                                                <button class="ew-button" onclick="window.location = '/profile/change-password'"><i class="fa fa-lock"></i>Change password</button>
-                                            </div>
-                                    </div>
+									{% if external_logged is not defined %}
+	                                    <div class=" profile-btn-rt clearfix profile_bottom">
+	                                            <div class="change-box">
+	                                                <button class="ew-button" onclick="window.location = '/profile/change-password'"><i class="fa fa-lock"></i>Change password</button>
+	                                            </div>
+                                    	</div>
+                                    {% endif %}
 
                                     <div class=" profile-btn-rt clearfix profile_bottom">
                                             
@@ -139,13 +141,6 @@
                     <a class="uncheck_all ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
                 </div>
                         <div class="categories-accordion__item">
-
-
-
-                            
-
-
-
                             <div class="categories-accordion__head">
                             
                             <!-- <div class="toggle_category_profile_page">
