@@ -59,22 +59,26 @@ class EventController extends \Core\Controllers\CrudController
     
     /**
      * @Route("/list", methods={"GET", "POST"})
+     * @Route("/list&page={[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function eventlistAction()
     {
     	$result = [];
+    	$pickFullTemplate = true;
+    	
     	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
     				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-    	
-		$eventGrid->setLimit(100);
+		$eventGrid->setLimit(9);
+		
 		$page = $this->request->getQuery('page');
 		if (empty($page)) {
 			$eventGrid -> setPage(1);
 		} else {
-			$eventGrid -> setPage($page);
+			$pickFullTemplate = false;
+			$eventGrid -> setPage((int)$page);
 		}
 		$results = $eventGrid->getData();
 
@@ -92,9 +96,14 @@ class EventController extends \Core\Controllers\CrudController
         if ($this->session->has('memberId')) {
 			$this->fetchMemberLikes();
         }
+        
 		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $result);
-    	$this->view->pick('event/eventList');
+		if ($pickFullTemplate) {
+    		$this->view->pick('event/eventList');
+		} else {
+			$this->view->pick('event/eventListPart');
+		}
     	
 /*
     	$this->session->set('lastFetchedEvent', 0);

@@ -16,27 +16,19 @@ define('lazyLoader',
                 url: window.location.href,
                 nextPageUrl: '',
                 totalPagesJs: 0,
-
-
-                
             },
 
         	self.init = function()
         	{
         		$(self.settings.loadMoreButton).hide();
                 self.settings.totalPagesJs = document.getElementById("totalPagesJs").textContent;
-        
     
                 if ( self.settings.totalPagesJs>1 ) {
                     $(self.settings.loadMoreButton).show();
                 }       
-
                 $("img.lazy").lazyload();
-
         		// initialize clicks
         		self.__bindClicks();
-
-
         	},
 
         	self.__bindClicks = function() 
@@ -50,7 +42,6 @@ define('lazyLoader',
 
         	self.__someFunc = function()
         	{
-        		//alert('someFunc');
                  $("img.lazy").lazyload();
         
                 //overlay before request done
@@ -67,29 +58,23 @@ define('lazyLoader',
                         'left': $(window).width()/2-128/2,
                         'display': 'inline'
                     });
-
-
                 self.settings.pageNumber++;
 
-                if ( self.settings.pageNumber>=self.settings.totalPagesJs ) {
+                if (self.settings.pageNumber>=self.settings.totalPagesJs ) {
                     $(self.settings.loadMoreButton).hide();
                 }
 
-
-                
                 nextPageUrl = self.settings.url + '&page=' + self.settings.pageNumber;
-                $.ajax({url:nextPageUrl,success:function(result){
-                    $(self.settings.divToUpdate).last().html(result);
-                    $(self.settings.divToOverlay)
-                        .css({
-                            'opacity' : 1,
-                            //'background-color': 'transparent',
-                        });
-                    $(self.settings.preloader)
-                        .css({
-                            'display': 'none',
-                        });
-                }});
+                $.ajax({url:nextPageUrl,
+                	success: function(result) 
+                	{
+console.log(result);                		
+                		$(self.settings.divToUpdate).last().html(result);
+                		$(self.settings.divToOverlay).css({'opacity' : 1});
+                            //'background-color': 'transparent'
+                		$(self.settings.preloader).css({'display': 'none'});
+                	}
+                });
         	}
         };
         
