@@ -6,7 +6,8 @@ use Core\Utils as _U,
     Frontend\Models\Featured,
     Frontend\Models\Event,
     Frontend\Models\EventImage,
-    Frontend\Models\EventRating;
+    Frontend\Models\EventRating,
+	Core\Utils\DateTime as _UDT;
 
 /**
  * @RoutePrefix('/')
@@ -50,15 +51,19 @@ class IndexController extends \Core\Controller
 					}
 				}
         	} else {
-				// get first 14 events in current location
-        		$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
-				$events = $ev::find(['location_id = ' . $this -> session -> get('location') -> id . '
-										and (end_date > now() 
-										or start_date > "' . date('Y-m-d H:i:s', strtotime('today midnight')). '")', 
-										'limit' => ['number' => 14]]);
-				foreach($events as $ev) {
-					$resultFe[1][] = $ev;
-				}	 				        		
+        		// get last 14 events from current location
+        		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+        		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+        		$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+        		
+        		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+        		$eventGrid -> setLimit(14);
+        		$eventGrid -> setParam('order', 'DESC');
+        		$results = $eventGrid->getData();
+        		
+        		foreach($results['data'] as $ev) {
+        			$resultFe[1][] = $ev;
+        		}
         	}
         	$this -> view -> setVar('featuredEvents', $resultFe);
         	
