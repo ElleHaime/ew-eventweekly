@@ -83,7 +83,7 @@
 		
 								<div class="list-of-events__info">
 									<h3 class="list-of-events__title">
-										<a href="#">{{ event.name }}</a>
+										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">{{ event.name }}</a>
 									</h3>
 		
 									<div class="list-of-events__description">
@@ -141,7 +141,7 @@
 		
 								<div class="list-of-events__info">
 									<h3 class="list-of-events__title">
-										<a href="#">{{ event.name }}</a>
+										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">{{ event.name }}</a>
 									</h3>
 		
 									<div class="list-of-events__description">

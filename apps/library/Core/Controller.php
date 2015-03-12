@@ -47,7 +47,8 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> filters -> loadUserFilters();
 
         $member = $this->session->get('member');
-        
+
+        $this->session->set('location', Location::findFirst(['id=1']));
         $loc = $this->session->get('location');
 
         if ($loc === null) {

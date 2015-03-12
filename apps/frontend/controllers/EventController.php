@@ -348,7 +348,7 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$images = (new EventImageModel()) -> setViewImages($event -> id);
     	$this -> view -> setVars($images);
-    	//(new EventRating()) -> addEventRating($event);
+    	(new EventRating()) -> addEventRating($event);
 
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());

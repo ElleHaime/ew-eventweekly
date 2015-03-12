@@ -69,12 +69,14 @@ class IndexController extends \Core\Controller
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}
-
-				$events = Event::find(['id in(' . implode(",", array_keys($trendingId)) .')']);
-				foreach ($events as $ev) {
-					$trendingId[$ev -> id] = $ev;
+				$trendingEvents = [];
+				foreach ($trendingId as $index => $event) {
+					$e = new Event();
+					$e -> setShardById($index);
+					$trendingEvents[] = $e::findFirst($index);
 				}
-				$this -> view -> setVar('trendingEvents', $trendingId);
+				
+				$this -> view -> setVar('trendingEvents', $trendingEvents);
 			}
         }
     }

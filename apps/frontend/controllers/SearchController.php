@@ -52,7 +52,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-_U::dump($postData, true);
+//_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -136,9 +136,9 @@ _U::dump($postData, true);
 				$this -> filters -> loadUserFilters(false); 
 				$queryData['searchTag'] = array_keys($postData['searchTags']); 
             } 
-
+_U::dump($queryData, true);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-
+			
 			// search type
             if ($elemExists('searchTypeResult')) {
                 if ($postData['searchTypeResult'] == 'Map') {
@@ -181,7 +181,7 @@ _U::dump($postData, true);
             }
             $countResults = $results['all_count'];
         }
-        
+_U::dump($results);        
 
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
