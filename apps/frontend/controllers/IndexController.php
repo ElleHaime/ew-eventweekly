@@ -58,7 +58,6 @@ class IndexController extends \Core\Controller
         		
         		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
         		$eventGrid -> setLimit(14);
-        		$eventGrid -> setParam('order', 'DESC');
         		$results = $eventGrid->getData();
         		
         		foreach($results['data'] as $ev) {
