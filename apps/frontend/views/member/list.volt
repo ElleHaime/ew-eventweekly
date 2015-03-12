@@ -143,13 +143,6 @@
                         <div class="categories-accordion__item">
                             <div class="categories-accordion__head">
                             
-                            <!-- <div class="toggle_category_profile_page">
-                                <div class="categories-accordion__line"></div>
-                                <a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="blockfilter-{{ category['id'] }}">
-                                    <i class="icon"></i> Expand
-                                </a>
-                            </div> -->
-
                                 <div class="row-fluid">
                                     <div class="span12">
                                     
@@ -168,12 +161,6 @@
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% endif %}
-
-
-                                                
-
-
-
                                                 <input type="checkbox" name="category[]" id="cat{{ index }}" value="{{ node['id'] }}" {% if checked %}checked{% endif %}/> - {{ node['name'] }}
                                             </label>
                                         {% endfor %}

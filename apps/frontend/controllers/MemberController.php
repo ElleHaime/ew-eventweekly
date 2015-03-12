@@ -51,10 +51,10 @@ class MemberController extends \Core\Controllers\CrudController
         if ( isset($member_categories['tag']['value']) ) {
             $tagIds = implode(',', $member_categories['tag']['value']);
         }
-
+        
 		$this->view->setVars(array(
                 'member', $list,
-                'categories' => Category::find()->toArray(),
+                'categories' => Category::find(['is_default != 1'])->toArray(),
                 'tags' => Tag::find()->toArray(),
                 'tagIds' => $tagIds,
                 'member_categories' => $member_categories
