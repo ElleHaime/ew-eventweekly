@@ -37,7 +37,8 @@ class MemberController extends \Core\Controllers\CrudController
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
-		$memberForm = new MemberForm($list);
+		$form = new MemberForm($list);
+		$this->view->form = $form;
 		
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
@@ -62,8 +63,6 @@ class MemberController extends \Core\Controllers\CrudController
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
         }
-
-        $this->view->memberForm = $memberForm;
 	}
 
 
@@ -87,7 +86,7 @@ class MemberController extends \Core\Controllers\CrudController
                 $member->address = $formValues['address'];
                 $member->phone = $formValues['phone'];
 
-                if ($this->request->hasFiles() == true) {
+                if ($this->request->hasFiles() != 0) {
                     $uploadedFile = $this->request->getUploadedFiles();
                     $file = array_shift($uploadedFile);
 

@@ -35,38 +35,39 @@
                                             <div class="profile-info clearfix">
 
                                                 <div class="control-group">
-                                                    <label for="name" >Name<span style="color: white;">*</span>:</label>
+                                                    <label>{{ form.label('name') }}<span style="color: white;">*</span></label>
 
                                                     <div class="controls" >
-                                                        <input type="text" id="name" name="name" class="input-registration-control" {% if member.name %} value="{{member.name}}" {% endif %}>
+                                                        {{ form.render('name') }}
+                                                        {{ form.messages('name') }}
                                                     </div>
                                                 </div>
 
                                                 <div class="control-group">
-                                                    <label for="address" >Address:</label>
+                                                    <label for="address" >{{ form.label('address') }}</label>
 
                                                     <div class="controls" >
-                                                        <input type="text" id="address" name="address" class="input-registration-control">
+                                                        {{ form.render('address') }}
+                                                        {{ form.messages('address') }}
                                                     </div>
                                                 </div>
 
                                                 <div class="control-group">
-                                                    <label for="phone" >Phone:</label>
+                                                    <label for="phone" >{{ form.label('phone') }}</label>
                 
                                                     <div class="controls" >
-                                                        <input type="text" id="phone" name="phone" class="input-registration-control">
+                                                        {{ form.render('phone') }}
+                                						{{ form.messages('phone') }}
                                                     </div>
                                                 </div>
 
                                                 <div class="control-group">
-                                                    <label for="extra_email" >E-mail:</label>
-
+                                                    <label for="extra_email" >{{ form.label('extra_email') }}</label>
                                                     <div class="controls" >
-                                                        <input type="text" id="extra_email" name="extra_email" class="input-registration-control">
+                                                        {{ form.render('extra_email') }}
+                                						{{ form.messages('extra_email') }}
                                                     </div>
                                                 </div>
-
-
 
                                                 <div class="row-fluid">
                                                     <div class="span12">
@@ -88,7 +89,7 @@
 
                                                 <div class="control-group" id="save_button_div">
                                                     <div class="controls">
-                                                        {{ memberForm.render('logo') }}
+                                                        {{ form.render('logo') }}
                                                         <button type="submit" id="save-member" value="Save" class="ew-button"><i class="fa fa-save"></i>Save</button>
                                                     </div>
                                                 </div>

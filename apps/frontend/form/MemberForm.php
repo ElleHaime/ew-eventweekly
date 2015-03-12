@@ -18,15 +18,17 @@ class MemberForm extends Form
 	public function init()
 	{
         $this->setAttribute('class', 'form-horizontal');
-        $this -> addElement('text', 'extra_email', 'Additional email', array(
-            'placeholder' => 'Additional email'
-        ));
-        $this -> addElement('text', 'name', 'Your name', array(
-            'placeholder' => 'Your name'
-        ));
+        
+        $this -> addElement('text', 'extra_email', 'Additional email', ['placeholder' => 'Additional email',
+        												  'class' => 'input-registration-control']);
+        
+        $this -> addElement('text', 'name', 'Your name', ['placeholder' => 'Your name',
+        												  'class' => 'input-registration-control']);
 
-        $this -> addElement('text', 'address', 'Address', array('placeholder' => 'Your address'));
-        $this -> addElement('text', 'phone', 'Phone', array('placeholder' => 'Your phone'));
+        $this -> addElement('text', 'address', 'Address', ['placeholder' => 'Your address',
+        													'class' => 'input-registration-control']);
+        $this -> addElement('text', 'phone', 'Phone', ['placeholder' => 'Your phone',
+        													'class' => 'input-registration-control']);
 
         $this -> addElement('file', 'logo', 'Logo', array('style' => 'display:none;'));
 
