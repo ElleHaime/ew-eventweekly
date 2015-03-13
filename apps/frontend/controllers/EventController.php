@@ -81,7 +81,7 @@ class EventController extends \Core\Controllers\CrudController
 			$eventGrid -> setPage((int)$page);
 		}
 		$results = $eventGrid->getData();
-
+//_U::dump($results);
 		foreach($results['data'] as $key => $value) {
 			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 		}

@@ -56,7 +56,7 @@
 											<div class="b-list-of-events-g__category">
 												<i class="fa fa-tag"></i>
 												{% for cat in event.category %}
-													{{ cat.name }}
+													{{ cat }}
 													{% if !loop.last %}, {% endif %}
 												{% endfor %}
 											</div>
