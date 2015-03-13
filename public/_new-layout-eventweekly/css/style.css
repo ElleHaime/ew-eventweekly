@@ -920,6 +920,13 @@ label.add_event_label_to_checkbox span {
     font-size: 12px;
 }
  
+.icon-remove {
+    float: right;
+}
+
+.ecat_elem {
+  width: 250px;
+}
 
 /*
 **********************
