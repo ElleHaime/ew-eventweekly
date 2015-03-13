@@ -110,12 +110,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Irbi/shardingtrait.git",
-                "reference": "ce687d5159ebd17e63658314d6b1375759266979"
+                "reference": "b71099cd4c84763a229ce5cc4d5db9e74f283ba5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Irbi/shardingtrait/zipball/ce687d5159ebd17e63658314d6b1375759266979",
-                "reference": "ce687d5159ebd17e63658314d6b1375759266979",
+                "url": "https://api.github.com/repos/Irbi/shardingtrait/zipball/b71099cd4c84763a229ce5cc4d5db9e74f283ba5",
+                "reference": "b71099cd4c84763a229ce5cc4d5db9e74f283ba5",
                 "shasum": ""
             },
             "require": {
@@ -136,7 +136,7 @@
             "keywords": [
                 "sharding"
             ],
-            "time": "2015-03-11 12:29:31"
+            "time": "2015-03-12 23:47:49"
         }
     ],
     "packages-dev": [],

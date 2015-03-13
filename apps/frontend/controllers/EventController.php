@@ -853,10 +853,9 @@ class EventController extends \Core\Controllers\CrudController
             }*/
 
             // process categories
-            $eventCategories = (new EventCategory()) -> setShardById($ev->id);
+            $eventCategories = (new EventCategory())->setShardById($ev->id);
             $eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
             if ($eCats) {
-            	//_U::dump($eCats -> toArray(), true);
                 foreach ($eCats as $ec) {
                     $ec->delete();
                 }
@@ -865,7 +864,7 @@ class EventController extends \Core\Controllers\CrudController
                 $aCats = explode(',', $event['category']);
                 foreach ($aCats as $key => $value) {
                     if (!empty($value)) {
-                        $eCats = (new EventCategory()) -> setShardById($ev -> id);
+                        $eCats = (new EventCategory())->setShardById($ev -> id);
                         $eCats->assign(array('event_id' => $ev->id,
                             				 'category_id' => $value));
                         $eCats->save();
@@ -876,7 +875,7 @@ class EventController extends \Core\Controllers\CrudController
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
             	$img = (new EventImageModel()) -> setShardById($ev -> id); 
-                $eventPoster = $img::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
+                $eventPoster = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
 
                 $filename = $this->uploadImageFile(
                     empty($eventPoster) ? '' : $eventPoster->image,
@@ -902,16 +901,12 @@ class EventController extends \Core\Controllers\CrudController
             if (!empty($flyer)) {
                 $addEventImage($flyer, 'flyer');
             }
-
-            if (empty($event['id'])) {
-                $this -> counters -> increaseUserCounter('userEventsCreated');
-            }
         }  
 
         if (!empty($event['id'])) {
-        	return ['id' => (int)$ev -> id, 'type' => 'update'];
+        	return ['id' => $ev -> id, 'type' => 'update'];
         } else {
-        	return ['id' => (int)$ev -> id, 'type' => 'new'];
+        	return ['id' => $ev -> id, 'type' => 'new'];
         }
     }
     
