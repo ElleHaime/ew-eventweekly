@@ -57,12 +57,12 @@
 	
 					<div class="header">
 						<h2 class="header__title">
-							<strong>What’s on in Dublin</strong>
+							<strong>What’s on in {{ location.city }}</strong>
 							<span class="divider"></span> 
 							<a href="#">Featured events</a>
 						</h2>
 	
-						<a href="/list" class="header__link-show-more">Show more What’s on in Dublin</a>
+						<a href="/list" class="header__link-show-more">Show more What’s on in {{ location.city }}</a>
 					</div>
 	
 					<div class="clearfix"></div>
@@ -114,12 +114,12 @@
 
 				<div class="header">
 					<h2 class="header__title">
-						<strong>What’s on in Dublin</strong>
+						<strong>What’s on in {{ location.city }}</strong>
 						<span class="divider"></span> 
 						<a href="#">Trending events</a> 
 					</h2>
 
-					<a href="/list" class="header__link-show-more">Show more What’s on in Dublin</a>
+					<a href="/list" class="header__link-show-more"> {{ location.city }}</a>
 				</div>
 
 				<div class="clearfix"></div>

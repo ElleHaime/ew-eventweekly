@@ -28,8 +28,8 @@ class EventImage extends EventImageObject
                 }
             }
 		}
-		isset($posters[0]) ? $result['poster'] = $posters[0] : $result['poster'] = null;
-		isset($flyers[0]) ? $result['flyer'] = $flyers[0] : $result['flyer'] = null;
+		isset($posters[0]) ? $result['poster'] = $posters : $result['poster'] = null;
+		isset($flyers[0]) ? $result['flyer'] = $flyers : $result['flyer'] = null;
 		isset($cover) ? $result['cover'] = $cover : $result['cover'] = null;
 		$result['gallery'] = $gallery;
 		

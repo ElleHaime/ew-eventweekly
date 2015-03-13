@@ -200,9 +200,7 @@
 
 			                <!-- slides container -->
 							<div class="js-b-gallery-slider">
-							<?php //var_dump($poster);die; ?>
 								{% if poster is defined %}
-								<!-- (not(items is empty)) -->
 									{% for pimg in poster %}
 										<div class="b-gallery__item js-b-gallery-slider-slide">
 											<img src="/upload/img/event/{{ event.id }}/poster/{{ pimg.image }}" alt="{{ event.name }}">

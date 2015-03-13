@@ -18,6 +18,7 @@ class Model extends \Phalcon\Mvc\Model
     {
         $this -> setReadConnectionService('dbSlave');
         $this -> setWriteConnectionService('dbMaster');
+        $this -> useDynamicUpdate(true);
     }
 
 	public function getDependencyProperty()

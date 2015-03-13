@@ -363,6 +363,7 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$images = (new EventImageModel()) -> setViewImages($event -> id);
     	$this -> view -> setVars($images);
+    	
     	(new EventRating()) -> addEventRating($event);
 
         $this->view->setVar('event', $event);
@@ -767,13 +768,10 @@ class EventController extends \Core\Controllers\CrudController
 
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
-//_U::dump($ev -> getShardTable(), true);
         if ($ev -> save()) {
-//_U::dump($ev -> toArray(), true); 
-        	
             // create event dir if not exists
             if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
-                mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id);
+                mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
             }
 
             // start prepare params for FB event
@@ -798,14 +796,14 @@ class EventController extends \Core\Controllers\CrudController
 
             // save image
             $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
+            
             if (isset($logo)) {
-                $filename = $this->uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
+                $filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
                 $ev->logo = $filename;
-                $ev->save(); 
+                $ev->update();
             } else if ($ev->logo != '') {
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
-
             } else {
                 $ev->logo = '';
                 $ev->save();
@@ -950,7 +948,7 @@ class EventController extends \Core\Controllers\CrudController
             mkdir($path, 0777, true);
         }
 
-        $imgExts = array('image/jpeg', 'image/png');
+        $imgExts = array('image/jpeg', 'image/png', 'image/jpg');
 
         $filename = '';
         if (in_array($file->getType(), $imgExts)) {
