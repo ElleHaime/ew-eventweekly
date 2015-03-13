@@ -85,6 +85,9 @@ define('frontFilterPanel',
 			__switchPanel: function() {
 				if (!this.panelState) {
 					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
+					if ($(window).width()<400) {
+						$(this.settings.btnSwitchPanel).css('left', $(window).width()-40);
+					}
 					$(this.settings.btnSwitchPanel).css('z-index', "1000");
 					$(this.settings.overlayBlock).show();
 					$(this.settings.filterPanel).show();
