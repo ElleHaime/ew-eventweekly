@@ -119,7 +119,7 @@
 						<a href="#">Trending events</a> 
 					</h2>
 
-					<a href="/list" class="header__link-show-more"> {{ location.city }}</a>
+					<!-- a href="/list" class="header__link-show-more"> {{ location.city }}</a -->
 				</div>
 
 				<div class="clearfix"></div>

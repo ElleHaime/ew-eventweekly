@@ -37,25 +37,21 @@
                                 </li>
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/event/list">
-										<span class="btn-count" id="userEventsCreated">{{ userEventsCreated }}</span>
                                         <span class="btn-text">My events</span>
                                 	</a>
                                 </li>
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/event/joined">
-										<span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span>
                                         <span class="btn-text">Events I’m attending</span>
                                 	</a>
                                 </li>
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/event/liked">
-										<span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
                                         <span class="btn-text">Events I like</span>
                                 	</a>
                                 </li>
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/event/friends">
-										<span class="btn-count" id="userFriendsGoing">{{ userFriendsGoing }}</span>
                                         <span class="btn-text">Friends’ events</span>
                                 	</a>
                                 </li>

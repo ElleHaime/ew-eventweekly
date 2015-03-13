@@ -226,7 +226,7 @@
 				<div class="clearfix"></div>
 			</div>
 
-			<div class="b-user-widgets-container">
+			<!-- div class="b-user-widgets-container">
 
 				<div class="b-user-widget pure-u-1-3">
 					<div class="b-user-widget__wrapper">
@@ -275,7 +275,7 @@
 					</div>
 				</div>
 				<div class="clearfix"></div>
-			</div>
+			</div -->
 		</section>
 		<aside>
 			
