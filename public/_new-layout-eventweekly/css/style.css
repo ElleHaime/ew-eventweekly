@@ -920,6 +920,13 @@ label.add_event_label_to_checkbox span {
     font-size: 12px;
 }
  
+.icon-remove {
+    float: right;
+}
+
+.ecat_elem {
+  width: 250px;
+}
 
 /*
 **********************
@@ -3987,7 +3994,7 @@ table.default thead {
 
 .ew-filter-link {
   position: fixed;
-  top: 258px;
+  top: 221px;
   left: 0;
   z-index: 100;
 }

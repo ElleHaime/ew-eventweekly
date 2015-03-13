@@ -383,7 +383,7 @@ define('frontEventEditControl',
 				var list = $(self.settings.listCategory);
 
 				var item = '<div class="ecat_elem"><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
-						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
+						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"><i class="fa fa-close" ></i></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
 		        $(self.settings.inpCategory + ' :selected').remove();
 
