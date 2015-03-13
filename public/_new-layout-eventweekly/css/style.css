@@ -196,6 +196,10 @@ events on map
   margin-bottom: 20px;
 }
 
+.about_page .about_image_div2 img{
+  max-width: 100%;
+}
+
 .about_page .about_image_description {
   margin-top: 150px;
 }
