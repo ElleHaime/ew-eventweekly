@@ -3419,6 +3419,38 @@ input[type="button"],
   text-decoration: none;
   text-align: center;
 }
+/*disable like buttons*/
+.eventLikeBtn .ew-button-dis {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 -1px #8F5611;
+  -moz-box-shadow: inset 0 -1px #8F5611;
+  box-shadow: inset 0 -1px #8F5611;
+  position: relative;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-family: "Open Sans";
+  font-size: 16px;
+  background: #D6801A;
+  color: #fff;
+  outline: 0;
+  border: 0;
+  border-bottom: 1px solid #8F5611;
+  text-decoration: none;
+  text-align: center;
+  display: block;
+  padding: 6px 12px;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
 button i,
 input[type="submit"] i,
 input[type="reset"] i,
