@@ -89,7 +89,7 @@ define('fb',
                     	noty({text: 'Your facebook authorization has expired =/ We can\'t share your action. <br>Please <a href="#" class="fb-login-popup" onclick="return false;">re-auth via Facebook</a> to be able to share this', type: 'info', timeout: false, maxVisible: 20});
                     } else {
                     	self.__goingEvent();
-                    	self.__shareEvent();
+                    	self.__shareEvent(this);
                     }
 				});
 

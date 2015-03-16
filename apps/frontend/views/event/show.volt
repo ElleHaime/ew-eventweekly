@@ -161,7 +161,9 @@
 								</a>
 							</div>
 							
-							<div class="actions__button pure-u-1-2" id='event-join' {% if event.memberpart|length and (event.memberpart == 1 or event.memberpart == 2) %} style="display:none;"{% endif %}>
+							<div class="actions__button pure-u-1-2" id='event-join' data-event-source="/{{ toSlugUri(event.name) }}-{{ event.id }}"
+											   data-image-source="{{ checkLogo(event) }}"
+								{% if event.memberpart|length and (event.memberpart == 1 or event.memberpart == 2) %} style="display:none;"{% endif %}>
 								<a class="ew-button">
 									<i class="fa fa-arrow-circle-right"></i> Join
 								</a>
