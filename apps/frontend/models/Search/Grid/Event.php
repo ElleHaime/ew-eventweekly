@@ -112,7 +112,7 @@ class Event extends Grid
             'searchLocationField' => new Field\Join("Location", "\Frontend\Models\Search\Model\Location"),
             'searchCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
             'searchTitle' => new Field\Name("Name"),
-            'searchId' => new Field\Primary("Id", 'id', null, Criteria::CRITERIA_IN),
+            'searchId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_IN),
             'searchMember' => new Field\Standart('MemberID', 'member_id', null, Criteria::CRITERIA_EQ),
             'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),

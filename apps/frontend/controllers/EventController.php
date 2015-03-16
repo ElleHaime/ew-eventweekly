@@ -145,26 +145,45 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
-    	}
-    	$event = new Event();
-    
-    	//$this->view->setvar('listName', 'Liked Events');
-    
-    	$event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\EventLike.status = 1');
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.end_date > "' .  _UDT::getDefaultStartDate() . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			//['page' => $page, 'limit' => 10],
-    			[],
-    			false, [], false, false, true, true, true);
-    			
-		$this -> showListResults($result, 'liked', 'liked', 'liked Events');
+    	$searchEventsId = [];
+    	$result = [];
+    	
+    	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray(); 
+		if (!is_null($eventsLiked)) {
+			foreach ($eventsLiked as $event) {
+				$searchEventsId[] = $event -> event_id; 
+			}
+			
+			$page = $this->request->getQuery('page');
+			if (empty($page)) {
+				$page = 1;
+			}
+			$event = new Event();
+			
+			$result = [];
+			$pickFullTemplate = true;
+			
+			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+						  'searchId' => $searchEventsId]; 
+			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+			$eventGrid->setLimit(9);
+			 
+			$page = $this->request->getQuery('page');
+			if (empty($page)) {
+				$eventGrid -> setPage(1);
+			} else {
+				$pickFullTemplate = false;
+				$eventGrid -> setPage((int)$page);
+			}
+			$results = $eventGrid->getData();
+
+			foreach($results['data'] as $key => $value) {
+				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+			}
+			$countResults = $results['all_count'];
+		}
+
+		$this -> showListResults($result, 'liked', 'liked', 'Liked events');
     }
     
     /**
@@ -224,11 +243,7 @@ class EventController extends \Core\Controllers\CrudController
     
     protected function showListResults($result = [], $urlParams = '', $listType = 'liked', $listTitle = 'Events')
     {
-		if (count($result) > 0) {
-    		$events = $result[0];
-    		$this -> view -> setVar('list', $events);
-		}
-						    			
+   		$this -> view -> setVar('list', $result);
     	if ($this -> session -> has('memberId')) {
     		$this -> fetchMemberLikes();
     	}

@@ -40,17 +40,19 @@ trait TCMember {
 
     public function fetchMemberLikeForEvent($eventId)
     {
-        $query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.status
-                                                FROM Frontend\Models\EventLike
-                                                WHERE Frontend\Models\EventLike.event_id = '" . $eventId . "'
-                                                    AND Frontend\Models\EventLike.member_id = " . $this -> session -> get('memberId'), 
-                                            $this -> getDI());
-        $event = $query -> execute() -> toArray();
-        $likedEventStatus = 0;
-
-        if(!empty($event)) {
-			$likedEventStatus = $event[0]['status'];
-        }
-        $this -> view -> setvar('likedEventStatus', $likedEventStatus);
+    	if ($this -> session -> has('memberId')) {
+	        $query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.status
+	                                                FROM Frontend\Models\EventLike
+	                                                WHERE Frontend\Models\EventLike.event_id = '" . $eventId . "'
+	                                                    AND Frontend\Models\EventLike.member_id = " . $this -> session -> get('memberId'), 
+	                                            $this -> getDI());
+	        $event = $query -> execute() -> toArray();
+	        $likedEventStatus = 0;
+	
+	        if(!empty($event)) {
+				$likedEventStatus = $event[0]['status'];
+	        }
+	        $this -> view -> setvar('likedEventStatus', $likedEventStatus);
+    	}
     }
 } 
