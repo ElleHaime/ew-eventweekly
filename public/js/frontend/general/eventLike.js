@@ -74,7 +74,7 @@ define('frontEventLike',
 	            } else {
 	            	self.target = null;
 	            }
-	            
+
 	            $.when(utils.request('get', url)).then(function(response){
 	                self.__responseHandler(response);
 	            });
@@ -87,18 +87,19 @@ define('frontEventLike',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
+		    	//console.log(data);
 		        if (data.status == true) {
 		        	if (!self.target) {
 			        	if (data.member_like == 1) {
-			        		$(self.settings.likeBtn).hide();
-			        		$(self.settings.dislikeBtn).show();
+			        		$(self.settings.likeBtnShow).hide();
+			        		$(self.settings.dislikeBtnShow).show();
 			        	} else {
-			        		$(self.settings.likeBtn).show();
-			        		$(self.settings.dislikeBtn).hide();
+			        		$(self.settings.likeBtnShow).show();
+			        		$(self.settings.dislikeBtnShow).hide();
 			        	}
 		        	} else {
-			        	var like = $(self.target + self.settings.likeBtn + '[data-id=' + data.event_id + ']');
-			        	var dislike = $(self.target + self.settings.dislikeBtn + '[data-id=' + data.event_id + ']');
+			        	var like = $(self.target + self.settings.likeBtnList + '[data-id=' + data.event_id + ']');
+			        	var dislike = $(self.target + self.settings.dislikeBtnList + '[data-id=' + data.event_id + ']');
 			        	
 			        	if (data.member_like == 1) {
 	                        like.blur();

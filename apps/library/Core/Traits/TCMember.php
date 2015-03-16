@@ -42,7 +42,7 @@ trait TCMember {
     {
         $query = new \Phalcon\Mvc\Model\Query("SELECT Frontend\Models\EventLike.status
                                                 FROM Frontend\Models\EventLike
-                                                WHERE Frontend\Models\EventLike.event_id = " . $eventId . "
+                                                WHERE Frontend\Models\EventLike.event_id = '" . $eventId . "'
                                                     AND Frontend\Models\EventLike.member_id = " . $this -> session -> get('memberId'), 
                                             $this -> getDI());
         $event = $query -> execute() -> toArray();

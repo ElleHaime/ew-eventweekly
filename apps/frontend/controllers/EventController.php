@@ -17,7 +17,6 @@ use Core\Utils as _U,
     Frontend\Models\Cron as Cron,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
-    Frontend\Models\EventMemberCounter,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
@@ -217,7 +216,7 @@ class EventController extends \Core\Controllers\CrudController
     	$this -> view -> setVar('listTitle', 'Created');
     
     	$this -> eventListCreatorFlag = true;
-    	$this -> view -> pick('event/eventList');
+    	$this -> view -> pick('event/eventUserList');
     
     	return array('eventListCreatorFlag' => $this -> eventListCreatorFlag);
     }
@@ -276,15 +275,15 @@ class EventController extends \Core\Controllers\CrudController
     	$event -> memberpart = (new EventMember()) -> getMemberpart($ev);
     	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url); 
     	
-    	$images = (new EventImageModel()) -> setViewImages($event -> id);
-    	$this -> view -> setVars($images);
-    	
     	(new EventRating()) -> addEventRating($event);
-
+    	
+    	$images = (new EventImageModel()) -> setViewImages($event -> id);
+    	$this->view->setVars($images);
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());
         $this->view->setVar('link_back_to_list', true);
-
+        $this->fetchMemberLikeForEvent($event -> id);
+        
         $eventTags = [];
         foreach ($event->tag as $Tag) {
             $eventTags[] = $Tag->name;
@@ -365,11 +364,6 @@ class EventController extends \Core\Controllers\CrudController
             if ($eventMember->save()) {
                 $ret = ['status' => 'OK',
                         'event_member_status' => $data['answer']];
-
-                if ($status == EventMember::JOIN) {
-                    $this -> counters -> increaseUserCounter('userEventsGoing');
-                    $this -> counters -> setUserCounters();
-                }
             }
         } else {
             $ret['error'] = 'not_logged';
@@ -382,7 +376,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/edit", methods={"GET", "POST"})
-     * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/event/edit/{id:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
     public function editAction($id = false)
@@ -396,12 +390,39 @@ class EventController extends \Core\Controllers\CrudController
     		}
     	}
 
-       	parent::editAction();
-        if (isset($this->obj->id)) {
-            (new EventImageModel()) -> setViewImages($id);
-        }
+       	//parent::editAction();
+       	if ($id) {
+       		$ev = new Event();
+    		$ev -> setShardById($id);
+    		$event = $ev::findFirst($id);
+       		
+       		$event -> setExtraRelations($this -> getEditExtraRelations());
+       		$event -> getDependencyProperty();
+       		$images = (new EventImageModel()) -> setViewImages($event -> id);
+       		$this -> view -> setVars($images);
+       		
+       		$this -> view -> setVar('editEvent', true);       		
+       	} else {
+       		$event = new Event();
+       	}
+		$form = $this -> loadForm($event);
+       	
+       	$this -> view -> setVar('event', $event);
+       	$this -> view -> form = $form;
+       	
+       	if ($this -> request -> isPost() && !$this -> dispatcher -> wasForwarded()) {
+       		if ($form -> isValid($this -> request -> getPost())) {
+       			$redirectOptions = $this -> processForm($form);
+       			if(is_array($redirectOptions)) {
+       				$this -> loadRedirect($redirectOptions);
+       			} else {
+       				$this -> loadRedirect();
+       			}
+       		}
+       	}
+       	
         $this -> view -> setVar('categories', (new Category()) -> getDefaultIdsAsString());
-        
+
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
@@ -431,15 +452,11 @@ class EventController extends \Core\Controllers\CrudController
             if ($event) {
                 $event->event_status = 0;
                 $event->deleted = 1;
-                $event->save();
-
-                $this -> counters -> decreaseUserCounter('userEventsCreated');
+                $event->update();
              
                 $result = $this -> counters -> setUserCounters();
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
-
-                (new EventMemberCounter()) -> syncDeleted((int)$data['id']);
             }
         }
 
@@ -448,49 +465,37 @@ class EventController extends \Core\Controllers\CrudController
 
 
     /**
-     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET","POST"})
+     * @Route("/event/like/{eventId:[0-9_]+}/{status:[0-9]}", methods={"GET","POST"})
      * @Acl(roles={'member','guest'});
      */
     public function likeAction($eventId, $status = 0)
     {
-        $response = array(
-            'status' => false
-        );
+        $response = ['status' => false];
 
         if ($this->session->has('member')) {
             $memberId = $this->session->get('memberId');
-            $eventLike = EventLike::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            $eventLike = EventLike::findFirst('event_id = "' . $eventId . '" AND member_id = ' . $memberId);
+            
             if (!$eventLike) {
                 $eventLike = new EventLike();
             }
-            $eventLike->assign(array(
-                'event_id' => $eventId,
-                'member_id' => $memberId,
-                'status' => $status
-            ));
+            $eventLike->assign(['event_id' => $eventId,
+                				'member_id' => $memberId,
+                				'status' => $status]);
             
-            if ($eventLike->save()) {
+            if ($eventLike -> save()) {
             	if ($status != 1) {
-            		$eventGoing = EventMember::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            		$eventGoing = EventMember::findFirst('event_id = "' . $eventId . '" AND member_id = ' . $memberId);
             		if ($eventGoing) {
             			$eventGoing->delete();
             		}
             	}
-            	 
-                if ($status == 1) {
-                   $this -> counters -> increaseUserCounter('userEventsLiked', 1);
-                } else {
-                   $this -> counters -> decreaseUserCounter('userEventsLiked', 1);
-                   $this -> counters -> decreaseUserCounter('userEventsGoing', 1);
-                }
 
                 $response = $this -> counters -> setUserCounters();
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
-
-                $this->eventsManager->fire('App.Event:afterLike', $this);
-            }
+            } 
         } else {
             $response['error'] = 'not_logged';
         }
@@ -511,7 +516,6 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 $result = array_merge($res, array('status' => 'OK'));
-                (new EventMemberCounter()) -> syncPublished((int)$data['id']);
             }
         }
 
@@ -532,8 +536,6 @@ class EventController extends \Core\Controllers\CrudController
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 /* delete sites, event members, send mails etc */
                 $result = array_merge($res, array('status' => 'OK'));
-                
-                (new EventMemberCounter()) -> syncUnpublished((int)$data['id']);
             }
         }
 
@@ -569,13 +571,11 @@ class EventController extends \Core\Controllers\CrudController
 
         $loc = new Location();
         $venue = new Venue();
-        $coords = array();
         $venueId = false;
-        $newEvent = array();
+        $newEvent = [];
         
         if (!empty($event['id'])) {
-        	$e = new Event();
-        	$e -> setShardById($event['id']);
+        	$e = (new Event()) -> setShardById($event['id']);
             $ev = $e::findFirst($event['id']);
         } else {
             $ev = new Event();
@@ -593,6 +593,7 @@ class EventController extends \Core\Controllers\CrudController
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
         $newEvent['recurring'] = $event['recurring'];
         $newEvent['campaign_id'] = $event['campaign_id'];
+        $newEvent['location_id'] = $event['location_id'];
 
         // process location
         if (empty($event['location_id']) && !empty($event['location_latitude']) && !empty($event['location_longitude'])) {
@@ -683,7 +684,12 @@ class EventController extends \Core\Controllers\CrudController
 
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
-        if ($ev -> save()) {
+        if ($ev -> id) {
+        	$saveEvent = $ev -> update();  
+        } else {
+        	$saveEvent = $ev -> save();
+        }
+        if ($saveEvent) {
             // create event dir if not exists
             if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
                 mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
@@ -890,7 +896,7 @@ class EventController extends \Core\Controllers\CrudController
     public function eventPreviewAction()
     {
         $post = $this->request->getPost();
-		//_U::dump($post);
+//_U::dump($post);
         $uploadedFiles = $this->request->getUploadedFiles();
 
         if (!empty($uploadedFiles)) {
@@ -902,6 +908,7 @@ class EventController extends \Core\Controllers\CrudController
                     $logoPieces = explode('/', $filePath);
 
                     $post['logo'] = end($logoPieces);
+                    $this->view->setVar('eventPreviewLogo', $post['logo']);
                     $file->moveTo($filePath);
                     chmod($filePath, 0777);
 
@@ -922,38 +929,27 @@ class EventController extends \Core\Controllers\CrudController
                     chmod($filePath, 0777);
                 }
             }
-
         } 
 
-        if (!empty($post['event_logo'])) {
-            $this->view->setVar('eventPreviewLogo', $post['event_logo']);
-            $this->view->setVar('eventPreviewLogoReal', $post['event_logo']);
-        } else {
-        	if (!empty($post['logo'])) {
-        		$this->view->setVar('eventPreviewLogo', $post['logo']);
-        	}	
-        }
-        
         if (!empty($post['event_poster'])) {
-            $this->view->setVar('eventPreviewPoster', $post['event_poster']);
             $this->view->setVar('eventPreviewPosterReal', $post['event_poster']);
         } else {
         	if (!empty($post['poster'])) {
+        		$this->view->setVar('previewPoster', $post['poster']);
         		$this->view->setVar('eventPreviewPoster', $post['poster']);
         	}	
         } 
 
         if (!empty($post['event_flyer'])) {
-            $this->view->setVar('eventPreviewFlyer', $post['event_flyer']);
             $this->view->setVar('eventPreviewFlyerReal', $post['event_flyer']);
         } else {
         	if (!empty($post['flyer'])) {
+        		$this->view->setVar('previewFlyer', $post['flyer']);
         		$this->view->setVar('eventPreviewFlyer', $post['flyer']);
         	}	
         }
 
         $Event = new \stdClass();
-
         if (isset($post['id'])) {
             $Event->id = $post['id'];
         } else {
@@ -989,9 +985,6 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('eventPreview', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
-        $this->view->setVar('poster', $post['poster']);
-        $this->view->setVar('flyer', $post['flyer']);
-
         $this->view->pick('event/show');
     }
 

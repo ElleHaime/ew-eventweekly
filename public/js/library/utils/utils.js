@@ -41,7 +41,6 @@ define('utils',
 
 			self.request = function(method, url, params, dataType)
 			{
-
 				if (typeof method == 'undefined') {
 					method = 'post';
 				}
@@ -53,11 +52,10 @@ define('utils',
 					}
 					call.dataType = dataType;
 				}
-
 				if (params) {
 					call.data = params;
 				}
-
+				
 				return $.ajax(call);
 			},
 			

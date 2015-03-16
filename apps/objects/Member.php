@@ -4,7 +4,6 @@ namespace Objects;
 
 use Core\Model,
 	Core\Utils as _U,
-	Frontend\Models\EventMemberCounter as EventMemberCounter,
 	Phalcon\Mvc\Model\Validator\Uniqueness;
 
 class Member extends Model
@@ -33,7 +32,6 @@ class Member extends Model
 		$this -> hasOne('id', '\Objects\EventMemberFriend', 'member_id', array('alias' => 'eventfriendpart'));
         $this -> hasMany('id', '\Objects\MemberFilter', 'member_id', array('alias' => 'member_filter'));
         $this -> hasMany('id', '\Objects\EventLike', 'member_id', array('alias' => 'event_like'));
-        $this -> hasOne('id', '\Objects\EventMemberCounter', 'member_id', array('alias' => 'counters'));
 	}
 	
 	public function getDependency()

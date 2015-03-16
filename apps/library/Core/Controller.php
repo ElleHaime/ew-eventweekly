@@ -256,10 +256,4 @@ class Controller extends \Phalcon\Mvc\Controller
     	
     	echo 'Cache cleared';
     }
-    
-    public function syncTotalCounters()
-    {
-    	$counters = new \Frontend\Models\EventMemberCounter();
-    	$counters -> syncMemberCounter();
-    }
 }

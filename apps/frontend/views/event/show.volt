@@ -21,10 +21,10 @@
 					<!-- pic -->
 						<div class="short-info__picture">
 							{% if eventPreview is defined %}
-								{% if cover is defined %}
-									<img src="{{ checkTmpCover(cover) }}" alt="{{ event.name }}">
-								{% else %}
+								{% if eventPreviewLogo is defined %}
 									<img src="{{ checkTmpLogo(event) }}" alt="{{ event.name }}">
+								{% else %}
+									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
 								{% endif %}
 							{% else %}
 								{% if cover is defined %}
@@ -97,18 +97,18 @@
 										<div class="contact-info__text"><a href="{{ event.tickets_url }}" target="_blank">Buy tickets</a></div>
 									</li>
                                 {% endif %}
-								{% if event.fb_uid is defined %}
+								{% if event.fb_uid is defined  and event.fb_uid != '' %}
 									<li class="contact-info__item">
 										<i class="fa fa-facebook"></i>
 										<div class="contact-info__text">
 											{{ event.name }} <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">on facebook</a>
 										</div>
 									</li>
-								{% elseif event.eb_url is defined %}
+								{% elseif event.eb_url is defined and event.eb_url != '' %}
 									<li class="contact-info__item">
 										<i class="fa fa-globe"></i>
 										<div class="contact-info__text">
-											{{ event.name }} <a target="_blank" href="{{ event.eb_url }}">on eventbrite</a>
+											{{ event.name }} {{ event.eb_url }}
 										</div>
 									</li>
 								{% endif %}
@@ -124,7 +124,7 @@
 						</div>
 
 					<!-- location -->
-					{% if event.venue is defined %}
+					{% if event.venue is defined and event.venue.name != '' %}
 						<div class="short-info__item">
 							<p>EVENT HOST: {{ event.venue.name|striptags }}</p>
 						</div>
@@ -213,6 +213,50 @@
 											<img src="/upload/img/event/{{ event.id }}/flyer/{{ fimg.image }}" alt="{{ event.name }}">
 										</div>
 									{% endfor %}
+								{% endif %}
+							</div>
+						</div>
+					{% elseif eventPreviewPoster is defined or eventPreviewFlyer is defined%}
+						<div class="b-gallery">
+			                <a class="b-gallery__arrow b-gallery__arrow--prev js-b-gallery-arrow-prev">
+			                	<i class="fa fa-chevron-left"></i>
+			                </a>
+			                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next">
+			                	<i class="fa fa-chevron-right"></i>
+			                </a>
+
+							<div class="js-b-gallery-slider">
+								{% if eventPreviewPoster is defined %}
+									<div class="b-gallery__item js-b-gallery-slider-slide">
+										<img src="/upload/img/event/tmp/{{ previewPoster }}" alt="{{ event.name }}">
+									</div>
+								{% endif %}
+								{% if eventPreviewFlyer is defined %}
+									<div class="b-gallery__item js-b-gallery-slider-slide">
+										<img src="/upload/img/event/tmp/{{ previewFlyer }}" alt="{{ event.name }}">
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					{% elseif eventPreviewPosterReal is defined or eventPreviewFlyerReal is defined%}
+						<div class="b-gallery">
+			                <a class="b-gallery__arrow b-gallery__arrow--prev js-b-gallery-arrow-prev">
+			                	<i class="fa fa-chevron-left"></i>
+			                </a>
+			                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next">
+			                	<i class="fa fa-chevron-right"></i>
+			                </a>
+
+							<div class="js-b-gallery-slider">
+								{% if eventPreviewPosterReal is defined %}
+									<div class="b-gallery__item js-b-gallery-slider-slide">
+										<img src="/upload/img/event/{{ event.id }}/poster/{{ eventPreviewPosterReal }}" alt="{{ event.name }}">
+									</div>
+								{% endif %}
+								{% if eventPreviewFlyerReal is defined %}
+									<div class="b-gallery__item js-b-gallery-slider-slide">
+										<img src="/upload/img/event/{{ event.id }}/flyer/{{ eventPreviewFlyerReal }}" alt="{{ event.name }}">
+									</div>
 								{% endif %}
 							</div>
 						</div>

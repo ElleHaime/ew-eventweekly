@@ -18,7 +18,7 @@
                             <div class="span12">
                                 <div class="padd_30"></div>
                                 <h1 class="page__title">
-                                    {% if event.id %}
+                                    {% if editEvent is defined %}
                                         Edit event
                                     {% else %}
                                         Create event
@@ -37,27 +37,22 @@
                                             <div id="content-box">
                                                 <div class="form-center clearfix">
                                                     <div class="input-div clearfix">
-
-                                                        <input type="text" id="name" name="name" placeholder="Main title" class="input_add_event_main"> 
-                                                    	
-
+                                                         {{ form.render('name') }} Publish event to facebook
                                                     </div>
 
                                                     <div class="input-div_date clearfix">
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-start" class="input-div_small">
-                                                                <input type="text" id="start_date" name="start_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="Start date" autocomplete="off" class="input_add_event_date">
-                                                            <span class="add-on">
-                                                                                {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
-                                                                            </span>
+                                                                <!-- input type="text" id="start_date" name="start_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="Start date" autocomplete="off" class="input_add_event_date" -->
+                                                                {{ form.render('start_date') }}
+                                                            <span class="add-on"></span>
                                                             </div>
                                                         </div>
                                                         <div class="date-picker_one clearfix">
                                                             <div id="date-picker-end" class="input-div_small">
-                                                                <input type="text" id="end_date" name="end_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="End date" autocomplete="off" class="input_add_event_date">
-                                                            <span class="add-on">
-                                                                                {#<i data-time-icon="icon-date" data-date-icon="icon-calendar"></i>#}
-                                                                            </span>
+                                                                <!-- input type="text" id="end_date" name="end_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="End date" autocomplete="off" class="input_add_event_date" -->
+                                                                {{ form.render('end_date') }}
+                                                            <span class="add-on"></span>
                                                             </div>
                                                         </div>
 
@@ -81,7 +76,7 @@
                                                     </div>
 
                                                     
-                                                    <textarea id="description" name="description" class="resizable field-big input_add_event_description" placeholder="Add description" ></textarea>
+                                                    {{ form.render('description') }}
 
                                                     <div class="input-div clearfix">
                                                         {{ form.render('tickets_url') }}
@@ -145,7 +140,7 @@
                                                 </div>
 
                                             </div>
-                                            {#<div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
+                                            <div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
                                                 <input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
                                                 <p>Event web-sites :</p>
                                                 {% if event.site|length %}
@@ -157,7 +152,7 @@
                                                         </div>
                                                     {% endfor %}
                                                 {% endif %}
-                                            </div>#}
+                                            </div>
 
                                             {{ form.render('event_category') }}
 
@@ -167,12 +162,12 @@
                                                 <input type="hidden" id="category" name="category" value="{% if event.category|length %}{% for key, name in event.category %}{{ key }},{% endfor %}{% endif %}">
 
                                                 <p>Event categories :</p>
-                                                {% if event.category|length %}
+                                                {% if event.category | length %}
                                                     {% for key, name in event.category %}
                                                         <div class="ecat_elem">
                                                             <div>
                                                                 <label>{{ name }}</label>
-                                                                <a href="#" class="icon-remove" catid="{{ key }}"></a>
+                                                                <a href="#" class="icon-remove" catid="{{ key }}"><i class="fa fa-close" ></i></a>
                                                             </div>
                                                         </div>
                                                     {% endfor %}
@@ -272,19 +267,20 @@
         <div class="event-one-img">
             <div class="all-img clearfix">
                 {% if poster is defined %}
-
-                    <img
-                            id="img_posters"
-                            data-id="{{ poster.id }}"
-                            class='img-box img-poster'
-                            src="/upload/img/event/{{ event.id }}/poster/{{ poster.image }}"
-                            alt=""
-                            style="width: 200px; height: 200px;"
-                            />
-
-                    <input type="hidden" name="event_poster" value="{{ poster.image }}"/>
-
-                    <span class="delete-logo"></span>
+                	{% for pimg in poster %}
+	                    <img
+	                            id="img_posters"
+	                            data-id="{{ pimg.id }}"
+	                            class='img-box img-poster'
+	                            src="/upload/img/event/{{ event.id }}/poster/{{ pimg.image }}"
+	                            alt=""
+	                            style="width: 200px; height: 200px;"
+	                            />
+	
+	                    <input type="hidden" name="event_poster" value="{{ pimg.image }}"/>
+	
+	                    <span class="delete-logo"></span>
+	                 {% endfor %}
                 {% else %}
                     <img id="img_posters" class='img-box img-uploaded-poster' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>
@@ -303,19 +299,20 @@
         <div class="event-one-img">
             <div class="all-img clearfix">
                 {% if flyer is defined %}
-
-                    <img
-                            id="img_posters"
-                            data-id="{{ flyer.id }}"
-                            class='img-box img-flyer'
-                            src="/upload/img/event/{{ event.id }}/flyer/{{ flyer.image }}"
-                            alt=""
-                            style="width: 200px; height: 200px;"
-                            />
-
-                    <input type="hidden" name="event_flyer" value="{{ flyer.image }}"/>
-
-                    <span class="delete-logo"></span>
+					{% for fimg in flyer %}
+	                    <img
+	                            id="img_posters"
+	                            data-id="{{ fimg.id }}"
+	                            class='img-box img-flyer'
+	                            src="/upload/img/event/{{ event.id }}/flyer/{{ fimg.image }}"
+	                            alt=""
+	                            style="width: 200px; height: 200px;"
+	                            />
+	
+	                    <input type="hidden" name="event_flyer" value="{{ fimg.image }}"/>
+	
+	                    <span class="delete-logo"></span>
+	                 {% endfor %}
                 {% else %}
                     <img id="img_posters" class='img-box img-uploaded-flyer' src="/img/demo/q1.jpg" alt="" style="width: 200px; height: 200px;"/>
                     <span class="delete-logo"></span>

@@ -11,7 +11,6 @@ use Frontend\Models\Event,
     Frontend\Models\EventLike,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
-    Frontend\Models\EventMemberCounter,
     Frontend\Models\Location,
     Frontend\Models\Cron,
     Thirdparty\Facebook\Extractor;

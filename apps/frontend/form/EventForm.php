@@ -41,7 +41,8 @@ class EventForm extends Form
 		);
 		$this -> addElement('text', 'name', 'Name', 
 								array('validators' => $nameValidators,
-									   'placeholder' => 'Main title'));
+									   'placeholder' => 'Main title',
+										'class' => 'input_add_event_main'));
 
         $this -> addElement('text', 'tickets_url', 'tickets_url', array('placeholder' => 'Link to tickets'));
 
@@ -69,7 +70,7 @@ class EventForm extends Form
 
 		$this -> addElement('textarea', 'description', 'Description', 
 								array('placeholder' => 'Add description',
-									  'class' => 'resizable field-big'));
+									  'class' => 'resizable field-big input_add_event_description'));
 
 		$this -> addElement('text', 'event_site', 'Event web site',
 								array('style' => 'display:none;'));     
@@ -78,14 +79,16 @@ class EventForm extends Form
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
 									  'placeholder' => 'Start date',
-                                      'autocomplete' => 'off'));
+                                      'autocomplete' => 'off',
+									  'class' => 'input_add_event_date'));
 
 		
 		$this -> addElement('date', 'end_date', 'End date',
 								array('data-format' => 'dd/MM/yyyy',
 									  'data-type' => 'event_date',
 									  'placeholder' => 'End date',
-                                      'autocomplete' => 'off'));
+                                      'autocomplete' => 'off',
+									  'class' => 'input_add_event_date'));
 
 		$this -> addElement('select', 'event_category', 'Suggest category', 
 								array('options' => \Frontend\Models\Category::find(),

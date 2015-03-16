@@ -10,7 +10,6 @@ use Frontend\Form\SignupForm,
     Frontend\Models\Member,
     Frontend\Models\Cron,
     Frontend\Models\Location,
-    Frontend\Models\EventMemberCounter,
     Frontend\Models\MemberNetwork,
     Frontend\Events\MemberListener,
     Core\Auth,
@@ -100,14 +99,6 @@ class AuthController extends \Core\Controller
                 }
 
                 if ($member -> save()) {
-                	$memberCounter = new EventMemberCounter();
-                	$memberCounter -> assign(['member_id' => $member -> id,
-				                			  'userEventsLiked' => 0,
-				                			  'userEventsGoing' => 0,
-				                			  'userFriendsGoing' => 0,
-				                			  'userEventsCreated' => 0]);
-                	$memberCounter -> save();
-                	 
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
                     $this -> response -> redirect('/map');
                 } 
@@ -218,7 +209,6 @@ class AuthController extends \Core\Controller
             if ($member -> save()) {
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
-                (new EventMemberCounter()) -> addMemberCounters($member -> id);
                 $memberNetwork = (new MemberNetwork()) -> addMemberNetwork($member, $userData['uid'], $userData['user_name']);
                 
                 $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);

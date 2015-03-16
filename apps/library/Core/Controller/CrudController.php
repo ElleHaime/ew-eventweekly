@@ -40,7 +40,8 @@ class CrudController extends \Core\Controller
 		$param = $this -> dispatcher -> getParam('id');
 
 		if ($param !== null) {
-			$this -> obj = $object::findFirstById((int)$param);
+			$this -> obj = $object::findFirst($param);
+			
 			$this -> obj -> setExtraRelations($this -> getEditExtraRelations());
 			$this -> obj -> getDependencyProperty();
 			//$this -> setDependencyProperty($this -> obj -> getDependency());
@@ -88,12 +89,13 @@ class CrudController extends \Core\Controller
 		return $this;
 	}
 
-	public function loadForm()
+	public function loadForm($obj = false)
 	{
+		!$obj ? $formObject = $this -> obj : $formObject  = $obj;
 		$model = $this -> getModel();
 
 		$formClass = $this -> getFormPath() . $model . 'Form';
-		$form = new $formClass($this -> obj);
+		$form = new $formClass($formObject);
 
 		return $form;
 	}
@@ -104,6 +106,7 @@ class CrudController extends \Core\Controller
 		$model = strtolower($this -> getModel());
 		$this -> response -> redirect('/' . strtolower($model). '/list');
 	}
+	
 	
 	public function processForm($form) 
 	{

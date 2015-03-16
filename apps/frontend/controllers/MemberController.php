@@ -15,8 +15,7 @@ use Core\Utils as _U,
     Frontend\Models\MemberNetwork,
 	Frontend\Models\EventLike,
 	Frontend\Models\EventMember,
-	Frontend\Models\EventMemberFriend,
-	Frontend\Models\EventMemberCounter;
+	Frontend\Models\EventMemberFriend;
 
 
 class MemberController extends \Core\Controllers\CrudController

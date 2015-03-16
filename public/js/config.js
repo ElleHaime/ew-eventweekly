@@ -146,7 +146,7 @@ require.config({
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
         
         var moduleName, fileName = '',
-        	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
+        	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/reset\/.+/;
         if (restoreRel.test(location.pathname)) {
@@ -154,7 +154,7 @@ require.config({
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (re.test(location.pathname) != 'undefined') {
-            fileName = location.pathname.replace(/(\/\d+)?$/, '');
+            fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
