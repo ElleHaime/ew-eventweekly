@@ -1,6 +1,5 @@
-<!-- <div class="page" style="padding:0;"> -->
-	<div class="page__wrapper">
-		<section id="content" class="container page-search">
+<div class="page__wrapper">
+		<section id="content" class="container page-search" >
 
 			<div class="page__sort"></div>
 
@@ -16,21 +15,38 @@
 								<div class="b-list-of-events-g__wrapper">
 									<div class="b-list-of-events-g__picture">
 										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
 										</a>
 
 										<div class="like-buttons">  
-											<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
-												<a href="/" class="ew-button" title="Like" >
-													<i class="fa fa-thumbs-up"></i>
-												</a>
-											</div>
-
-											<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
-												<a href="#" class="ew-button" title="Dislike">
-													<i class="fa fa-thumbs-down"></i>
-												</a>
-											</div>
+											{% if eventListCreatorFlag %}
+												{% if event.event_status == 1 %}
+                                                    <div class="pure-u-1-2 unpublishEvent" id="{{ event.id }}">
+														<a href="/" class="ew-button" title="Unpublish">Unpublish</a>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="pure-u-1-2 publishEvent" id="{{ event.id }}">
+														<a href="/" class="ew-button" title="Publish">Unpublish</a>
+                                                    </div>
+												{% endif %}
+												<div class="pure-u-1-2 like-buttons__item editEvent" id="{{ event.id }}">
+													<a href="/" class="ew-button" title="Edit">Edit</a>
+												</div>
+												<div class="pure-u-1-2 like-buttons__item deleteEvent" id="{{ event.id }}">
+													<a href="/" class="ew-button" title="Archive">Archive</a>
+												</div>
+											{% else %}
+												<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
+													<a href="/" class="ew-button" title="Like" >
+														<i class="fa fa-thumbs-up"></i>
+													</a>
+												</div>
+												<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
+													<a href="#" class="ew-button" title="Dislike">
+														<i class="fa fa-thumbs-down"></i>
+													</a>
+												</div>
+											{% endif %}
 										</div>
 									</div>
 
@@ -42,13 +58,11 @@
 										<div class="b-list-of-events-g__date">
 											{% if event.start_date != '0000-00-00' %}
                                                 {{ dateToFormat(event.start_date, '%d %b %Y') }}
-                                                
                                                 {% if event.end_date is defined and event.end_date != '0000-00-00' %}
                                                  	- {{ dateToFormat(event.end_date, '%d %b %Y') }}
                                                  {% endif %}
                                             {% endif %}
 										</div>
-
 										{% if event.category|length %}
 											<div class="b-list-of-events-g__category">
 												<i class="fa fa-tag"></i>
@@ -67,7 +81,6 @@
 										<div class="b-list-of-events-g__description" id="555">
 											<p>{{ event.description|striptags|escape|truncate(250) }}</p>
 										</div>
-
 
 										<div class="footer">
 											<!-- div class="footer__item">
@@ -108,14 +121,11 @@
 							
 					</div>
 
-					
 				{% endif %}
-					
 
+						
 
 				</div>
 		</section>
-		
-	</div>
-	<div class="page__wrapper_ajax_search"></div>
-<!-- </div> -->
+
+<div class="page__wrapper_ajax_search"></div>

@@ -80,7 +80,7 @@ class EventController extends \Core\Controllers\CrudController
 			$eventGrid -> setPage((int)$page);
 		}
 		$results = $eventGrid->getData();
-//_U::dump($results);
+
 		foreach($results['data'] as $key => $value) {
 			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 		}
@@ -118,24 +118,16 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listFriendAction()
     {
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
+    	$eventsFriend = EventMemberFriend::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	if (!is_null($eventsFriend)) {
+    		foreach ($eventsFriend as $event) {
+    			$searchEventsId[] = $event['event_id'];
+    		}
+    			
+    		$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+    					  'searchId' => $searchEventsId];
     	}
-    	
-    	$event = new Event();
-    
-    	$event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' .  _UDT::getDefaultStartDate() . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-						    			Event::ORDER_ASC,
-						    			//['page' => $page, 'limit' => 10],
-						    			[],
-						    			false, [], true, false, false, true, true);
-    	$this -> showListResults($result, 'friends', 'friends', 'Friend\'s events');
+    	$this -> showListResults($queryData, 'friends', 'friends', 'Friend\'s events');
     }
     
     
@@ -145,45 +137,17 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
-    	$searchEventsId = [];
-    	$result = [];
-    	
-    	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray(); 
+    	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
 		if (!is_null($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
-				$searchEventsId[] = $event -> event_id; 
+				$searchEventsId[] = $event['event_id']; 
 			}
-			
-			$page = $this->request->getQuery('page');
-			if (empty($page)) {
-				$page = 1;
-			}
-			$event = new Event();
-			
-			$result = [];
-			$pickFullTemplate = true;
 			
 			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
 						  'searchId' => $searchEventsId]; 
-			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-			$eventGrid->setLimit(9);
-			 
-			$page = $this->request->getQuery('page');
-			if (empty($page)) {
-				$eventGrid -> setPage(1);
-			} else {
-				$pickFullTemplate = false;
-				$eventGrid -> setPage((int)$page);
-			}
-			$results = $eventGrid->getData();
-
-			foreach($results['data'] as $key => $value) {
-				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
-			}
-			$countResults = $results['all_count'];
 		}
 
-		$this -> showListResults($result, 'liked', 'liked', 'Liked events');
+		$this -> showListResults($queryData, 'liked', 'liked', 'Liked events');
     }
     
     /**
@@ -192,23 +156,17 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listJoinedAction()
     {
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
+    	$eventsJoined = EventMember::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	if (!is_null($eventsJoined)) {
+    		foreach ($eventsJoined as $event) {
+    			$searchEventsId[] = $event['event_id'];
+    		}
+    			
+    		$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+			    		  'searchId' => $searchEventsId];
     	}
     	
-    	$event = new Event();
-		    
-    	$event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\EventMember.member_status = 1');
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.end_date > "' .  _UDT::getDefaultStartDate() . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-						    			Event::ORDER_ASC,
-						    			//['page' => $page, 'limit' => 10],
-						    			[],
-						    			false, [], false, true, false, true, true);
-		$this -> showListResults($result, 'joined', 'join', 'Where I am going');						    			
+    	$this -> showListResults($queryData, 'joined', 'join', 'Where I am going');
     }
     
     
@@ -233,32 +191,53 @@ class EventController extends \Core\Controllers\CrudController
     	}
     	
     	$this -> view -> setVar('listTitle', 'Created');
-    
-    	$this -> eventListCreatorFlag = true;
     	$this -> view -> pick('event/eventUserList');
     
-    	return array('eventListCreatorFlag' => $this -> eventListCreatorFlag);
+    	return array('eventListCreatorFlag' => true);
     }
     
     
-    protected function showListResults($result = [], $urlParams = '', $listType = 'liked', $listTitle = 'Events')
+    protected function showListResults($queryData = [], $urlParams = '', $listType = 'liked', $listTitle = 'Events')
     {
-   		$this -> view -> setVar('list', $result);
-    	if ($this -> session -> has('memberId')) {
-    		$this -> fetchMemberLikes();
+		$result = [];
+    	$pickFullTemplate = true;
+    	
+    	if (!empty($queryData)) {
+	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+	    	$eventGrid->setLimit(9);
+	    	
+	    	$page = $this->request->getQuery('page');
+	    	if (empty($page)) {
+	    		$eventGrid -> setPage(1);
+	    	} else {
+	    		$pickFullTemplate = false;
+	    		$eventGrid -> setPage((int)$page);
+	    	}
+	    	$results = $eventGrid->getData();
+   	
+	    	foreach($results['data'] as $key => $value) {
+	    		$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+	    	}
+	    	$this -> view -> setVar('list', $result);
+	    	
+	    	$countResults = $results['all_count'];
+	    	if ($results['all_page'] > 1) {
+	    		$this -> view -> setVar('pagination', $results['array_pages']);
+	    		$this -> view -> setVar('pageCurrent', $results['page_now']);
+	    		$this -> view -> setVar('pageTotal', $results['all_page']);
+	    	}
     	}
-    
+
+   		$this -> fetchMemberLikes();
     	$this->view->setvar('list_type', $listType);
-
-    	/*if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}*/
-
     	$this->view->setVar('listTitle', $listTitle);
-    	//$this->view->setVar('urlParams', http_build_query($postData));
     	$this->view->setVar('urlParams', $urlParams);
     	
-    	$this->view->pick('event/eventUserList'); 
+    	if ($pickFullTemplate) {
+    		$this->view->pick('event/eventUserList');
+    	} else {
+    		$this->view->pick('event/eventUserListPart');
+    	}
     }
     
     
