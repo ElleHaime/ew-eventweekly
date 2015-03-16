@@ -66,7 +66,7 @@ class IndexController extends \Core\Controller
         		} 
         	}
         	$this -> view -> setVar('featuredEvents', $resultFe);
-        	
+
         	// get trending events
 			$trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
 												'order' => 'rank DESC']);
@@ -79,7 +79,7 @@ class IndexController extends \Core\Controller
 	
 				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 				$results = $eventGrid->getData();
-				$trendingEvents = $results['data']; 
+				$trendingEvents = $results['data'];
 /*				$trendingEvents = [];
 				foreach ($trendingId as $index => $event) {
 					$e = new Event();
