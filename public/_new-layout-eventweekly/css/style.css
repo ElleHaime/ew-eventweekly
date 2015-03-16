@@ -935,7 +935,18 @@ label.add_event_label_to_checkbox span {
 */
 
 
+#buttons_on_my_events .ew-button {
+display: inline-block;
+padding: 8px 10px;
+font-size: 13px;
+margin: 0 2px;
+width: 90px;
+margin-bottom: 4px;
+}
 
+#buttons_on_my_events .ff {
+  left: 10px;
+}
 
 
 

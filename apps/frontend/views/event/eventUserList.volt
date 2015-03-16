@@ -24,21 +24,21 @@
 											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
 										</a>
 
-										<div class="like-buttons">  
+										<div class="like-buttons" id="buttons_on_my_events">  
 											{% if eventListCreatorFlag %}
 												{% if event.event_status == 1 %}
-                                                    <div class="pure-u-1-2 unpublishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button" title="Unpublish">Unpublish</a>
+                                                    <div class="unpublishEvent" id="{{ event.id }}">
+														<a href="/" class="ew-button ff" title="Unpublish">Unpublish</a>
                                                     </div>
                                                 {% else %}
-                                                    <div class="pure-u-1-2 publishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button" title="Publish">Unpublish</a>
+                                                    <div class="publishEvent" id="{{ event.id }}">
+														<a href="/" class="ew-button ff" title="Publish">Unpublish</a>
                                                     </div>
 												{% endif %}
-												<div class="pure-u-1-2 like-buttons__item editEvent" id="{{ event.id }}">
+												<div class="like-buttons__item editEvent" id="{{ event.id }}">
 													<a href="/" class="ew-button" title="Edit">Edit</a>
 												</div>
-												<div class="pure-u-1-2 like-buttons__item deleteEvent" id="{{ event.id }}">
+												<div class="like-buttons__item deleteEvent" id="{{ event.id }}">
 													<a href="/" class="ew-button" title="Archive">Archive</a>
 												</div>
 											{% else %}
