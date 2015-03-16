@@ -150,20 +150,21 @@
                                         {% if member_categories['category']['id'] is defined %}
                                             <input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>
                                         {% endif %}
+                                        
                                         {% for index, node in categories %}
                                             <label for="cat{{ index }}">
 
                                                 {% set checked = false %}
-                                                {% if member_categories['category'] is defined %}
-                                                    {% for indx, id in member_categories['category']['value'] %}
-                                                        {% if id == node['id'] %}
-                                                            {% set checked = true %}
-                                                        {% endif %}
-                                                    {% endfor %}
+                                                {% if node['fullCategorySelect'] id defined %}
+													{% set checked = true %}
                                                 {% endif %}
-                                                <input type="checkbox" name="category[]" id="cat{{ index }}" value="{{ node['id'] }}" {% if checked %}checked{% endif %}/> - {{ node['name'] }}
+                                                <input type="checkbox" name="category[]" 
+                                                	id="cat{{ index }}" 
+                                                	value="{{ node['id'] }}" 
+                                                	{% if checked %}checked{% endif %}/> - {{ node['name'] }}
                                             </label>
                                         {% endfor %}
+                                        
                                         <input type="submit" value="Save"/>
 
                                         {% if member_categories['tag']['id'] is defined %}
@@ -178,68 +179,46 @@
 
                                         <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
                                         <form action="/member/save-filters" method="post">
-                                            {% if member_categories['category']['id'] is defined %}
-                                                {#<input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>#}
-                                            {% endif %}
-
-                                            {% for index, node in categories %}
-                                                {% set checked = false %}
-                                                {% if member_categories['category'] is defined %}
-                                                    {% for indx, id in member_categories['category']['value'] %}
-                                                        {% if id == node['id'] %}
-                                                            {% set checked = true %}
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                {% endif %}
-
-                                                <div class="settings-box-one {% if checked %}active-box{% endif %}">
+                                            {% for index, node in userFilters %}
+                                                <div class="settings-box-one 
+                                                	{% if node['fullCategorySelect'] is defined %}active-box{% endif %}">
                                                     <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
-                                                    
-
-
                                                 <div class="categories-accordion__item">
 
-                            <div class="toggle_category_profile_page">
-                                <div class="categories-accordion__line"></div>
-                                <a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="toggle_category_button">
-                                    <i class="icon"></i> Expand
-                                </a>
-                            </div>
-
-
-                                      
-<div class="checkbox">
-                                                    <div class="form-checkbox pure-u-1-2">
-                                                        <input type="checkbox" class="checkbox_category" id="tag-{{ node['name'] }}" style="display:none;">
-                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}"
-    ><span><span></span></span>{{ node['name'] }}</label>    <!-- name of category -->
-                                                    </div>
-</div>
-
-
+						                            <div class="toggle_category_profile_page">
+						                                <div class="categories-accordion__line"></div>
+						                                <a class="categories-accordion__arrow categories-accordion__arrow--is-expanded" id="toggle_category_button">
+						                                    <i class="icon"></i> Expand
+						                                </a>
+						                            </div>
+						                            
+													<div class="checkbox">
+	                                                    <div class="form-checkbox pure-u-1-2">
+	                                                        <input type="checkbox" class="checkbox_category" id="tag-{{ node['name'] }}" 
+	                                                        	style="display:none;">
+	                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}">
+	                                                        	<span><span>
+	                                                        	</span></span>
+	                                                        	{{ node['name'] }}
+	                                                        </label>    <!-- name of category -->
+	                                                    </div>
+													</div>
 
 
                                                     <div class="hide-box">
                                                         <div class="activity clearfix">
                                                             <div class="event-site clearfix">
                                                                 
-                                                                {% for tag in tags %}
-                                                                    {% if node['id'] == tag['category_id'] %}
+                                                                {% for tag in node['tags'] %}
 
-                                                                        {% set checked = true %}
-                                                                        {% if member_categories['tag']['value'] is defined %}
-                                                                            {% for tagId in member_categories['tag']['value'] %}
-                                                                                {% if tagId == tag['id'] %}
-                                                                                    {% set checked = false %}
-                                                                                {% endif %}
-                                                                            {% endfor %}
+                                                                        {% set checked = false %}
+                                                                        {% if tag['inPreset'] is defined %}
+																			{% set checked = true %}
                                                                         {% endif %}
-                                                                        
 
-    <div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
+		<div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
         <input type="checkbox" class="userFilter-tag" name="tag-{{ tag['id']}}" {% if checked %}checked{% endif %} >
-        <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}"
-    style="overflow: hidden;
+        <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}" style="overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 90%;
@@ -247,10 +226,6 @@
  
     </div>
 
-
-    
-
-                                                                    {% endif %}
                                                                 {% endfor %}
                                                             </div>
                                                         </div>
@@ -276,18 +251,8 @@
 
                             </div>
                         </div>
-
-
-
-
-
-
                     </div>
                 </div>
-                
-                        
-
-
         </section>
     </div>
 </div>

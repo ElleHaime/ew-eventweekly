@@ -747,7 +747,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
             // process site
-            /*$eSites = EventSite::find('event_id = ' . $ev->id);
+            $eSites = EventSite::find('event_id = ' . $ev->id);
             if ($eSites) {
                 foreach ($eSites as $es) {
                     $es->delete();
@@ -759,11 +759,11 @@ class EventController extends \Core\Controllers\CrudController
                     if (!empty($value)) {
                         $eSites = new EventSite();
                         $eSites->assign(array('event_id' => $ev->id,
-                            'url' => $value));
+                            				   'url' => $value));
                         $eSites->save();
                     }
                 }
-            }*/
+            }
 
             // process categories
             $eventCategories = (new EventCategory())->setShardById($ev->id);

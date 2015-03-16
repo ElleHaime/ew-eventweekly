@@ -202,6 +202,7 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $postData = $this->request->getPost();
+_U::dump($postData);        
         if (!empty($postData)) {
             $elemExists = function($elem) use (&$postData) {
                 if (!is_array($postData[$elem])) {

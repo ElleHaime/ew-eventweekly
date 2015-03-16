@@ -42,6 +42,7 @@ class Filter extends Component
 			$this -> applySessionFilters();
 			$this -> view -> setVar('personalPresetActive', 0);
 		}
+//_U::dump($this -> userFilters);		
 		$this -> view -> setVar('userFilters', $this -> userFilters);
 	}
 	

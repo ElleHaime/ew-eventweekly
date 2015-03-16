@@ -125,7 +125,7 @@ class SearchController extends \Core\Controller
             		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	} 
 			}
-
+	
 			if ($elemExists('searchTags')) {
 				$this -> session -> set('userSearchFilters', $postData['searchTags']);
 				$this -> filters -> loadUserFilters(false); 
