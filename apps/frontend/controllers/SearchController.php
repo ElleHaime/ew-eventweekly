@@ -140,11 +140,6 @@ class SearchController extends \Core\Controller
             	empty($page) ?	$eventGrid->setPage(1) : $eventGrid->setPage($page);
             	 
                 if ($postData['searchTypeResult'] == 'Map') {
-                	if (empty($page)) {
-                		$eventGrid->setPage(1);
-                	} else {
-                		$eventGrid->setPage($page);
-                	}
                 	$eventGrid -> setLimit(50);
 					$results = $eventGrid->getData();
 

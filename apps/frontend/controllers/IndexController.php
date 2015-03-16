@@ -66,26 +66,22 @@ class IndexController extends \Core\Controller
         		} 
         	}
         	$this -> view -> setVar('featuredEvents', $resultFe);
-        	
+
         	// get trending events
 			$trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
 												'order' => 'rank DESC']);
+			
 			if ($trendingEvents -> count() != 0) {
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}
+				
 				$queryData = [];				
 				$queryData['searchId'] = array_keys($trendingId);
 	
 				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 				$results = $eventGrid->getData();
-				$trendingEvents = $results['data']; 
-/*				$trendingEvents = [];
-				foreach ($trendingId as $index => $event) {
-					$e = new Event();
-					$e -> setShardById($index);
-					$trendingEvents[] = $e::findFirst($index);
-				} */ 
+				$trendingEvents = $results['data'];
 				
 				$this -> view -> setVar('trendingEvents', $trendingEvents);
 			}
