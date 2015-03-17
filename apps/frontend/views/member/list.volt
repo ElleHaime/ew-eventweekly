@@ -145,44 +145,13 @@
                             
                                 <div class="row-fluid">
                                     <div class="span12">
-                                    
-                                    <form action="/member/save-filters" method="post" id="filters" style="display: none">
-                                        {% if member_categories['category']['id'] is defined %}
-                                            <input type="hidden" name="member_filter_category_id" value="{{ member_categories['category']['id'] }}"/>
-                                        {% endif %}
-                                        
-                                        {% for index, node in categories %}
-                                            <label for="cat{{ index }}">
-
-                                                {% set checked = false %}
-                                                {% if node['fullCategorySelect'] is defined %}
-													{% set checked = true %}
-                                                {% endif %}
-                                                <input type="checkbox" name="category[]" 
-                                                	id="cat{{ index }}" 
-                                                	value="{{ node['id'] }}" 
-                                                	{% if checked %}checked{% endif %}/> - {{ node['name'] }}
-                                            </label>
-                                        {% endfor %}
-                                        
-                                        <input type="submit" value="Save"/>
-
-                                        {% if member_categories['tag']['id'] is defined %}
-                                            <input id="recordTagId" name="recordTagId" type="hidden" value="{{ member_categories['tag']['id'] }}" />
-                                        {% endif %}
-
-                                        <input id="tagIds" name="tagIds" type="hidden" value="{{ tagIds }}" />
-                                    </form>
-
-                                    <div class="settings-box">
+                                      <div class="settings-box">
 
 
-                                        <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
-                                        <form action="/member/save-filters" method="post">
+                                    <!-- form with checkboxes -->
+                                        <form action="/member/save-filters" method="post" id="filters">
                                             {% for index, node in userFilters %}
-                                            	{% if node['tags'] | length %}
-                                                <div class="settings-box-one 
-                                                	{% if node['fullCategorySelect'] is defined %}active-box{% endif %}">
+                                                <div class="settings-box-one {% if node['fullCategorySelect'] is defined %}active-box{% endif %}">
                                                     <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
                                                 <div class="categories-accordion__item">
 
@@ -195,8 +164,8 @@
 						                            
 													<div class="checkbox">
 	                                                    <div class="form-checkbox pure-u-1-2">
-	                                                        <input type="checkbox" class="checkbox_category" id="tag-{{ node['name'] }}" 
-	                                                        	style="display:visible;" {% if node['fullCategorySelect'] is defined %} checked{% endif %}>
+	                                                        <input type="checkbox" class="checkbox_category" name="category[{{ node['id'] }}]" id="tag-{{ node['name'] }}" 
+	                                                        	style="display:visible;" {% if node['inPreset'] is defined %} checked{% endif %}>
 	                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}">
 	                                                        	<span><span>
 	                                                        	</span></span>
@@ -217,7 +186,7 @@
                                                                         {% endif %}
 
 		<div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
-        <input type="checkbox" class="userFilter-tag" name="tag-{{ tag['id']}}" {% if checked %}checked{% endif %} >
+        <input type="checkbox" class="userFilter-tag" name="tag[{{ tag['id']}}]" {% if checked %}checked{% endif %} >
         <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}" style="overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -235,10 +204,9 @@
 
 
                                                 </div>
-                                                {% endif %}
                                             {% endfor %}
                                             </form>
-                                            <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
+                                    <!-- form with checkboxes -->
                                             <div class="profile-btn">
                                                  
                                                  <button id="saveFilter" class="ew-button"><i class="fa fa-save"></i>Save</button>

@@ -8,6 +8,7 @@ define('frontMemberEditControl',
 
             self.accessToken = '',
             self.accessUid = '',
+            self.checkboxAction = '',
 
             self.settings = {
                 btnImg: '#file',
@@ -65,7 +66,7 @@ define('frontMemberEditControl',
                 }
 
                 //check checkboxes near category names
-                self.__setCategoriesChecked();
+                //self.__setCategoriesChecked();
             }
 
             self.__bindClicks = function()
@@ -97,15 +98,6 @@ define('frontMemberEditControl',
                 $(self.settings.saveFilterBtn).click(function(){
                     $(self.settings.filters).submit();
                 });
-
-                /*
-                **********************
-                * =deprecated in new design
-                **********************
-                */
-                // $(self.settings.activeCheckbox).click(function(){
-                //     self.__clearTags($(this).parent());
-                // });
 
                 /*
                 **********************
@@ -196,33 +188,11 @@ define('frontMemberEditControl',
                     var input = $(this).find("input");
 
                     $(this).toggleClass(self.settings.disabledMarker);
-                    
                     var clickedId = $(this).attr('data-id');
 
-                    var tagIds = $(self.settings.inpTagIds).val().split(',');
-                    //console.log(tagIds);
-                    
-                    
-
-
-                    if (jQuery.inArray(clickedId, tagIds) == -1) {
-                        tagIds.push(clickedId);
-                        input.prop("checked",false);
-                    } else {
-                        tagIds.splice( tagIds.indexOf(clickedId), 1);
-                        input.prop("checked",true);
-                    }
-
-                    $(self.settings.inpTagIds).val(tagIds.join());
-
-
-                    //check checkboxes near category names
+                    self.checkboxAction = 'uncheck_one';
                     self.__setCategoriesChecked();
                 });
-                
-
-
-
 
 
                 $(self.settings.syncFbAccBtn).click(function(){
@@ -230,118 +200,56 @@ define('frontMemberEditControl',
                 });
 
 
+	            $('.checkbox_category').click(function() {
+	            	var ifParentChecked = false;
+	            	if ($(this).is(':checked') === true) {
+	            		ifParentChecked = true;
+	            	}
+	
+	                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
+	                if (divs.length == 0) { 
+	                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
+	                };
+	                
+	                divs.each(function() {
+	                    var input = $(this).find("input");
+	   
+	                    $(this).toggleClass(self.settings.disabledMarker);
+	                    var clickedId = $(this).attr('data-id');
+	                   	input.prop("checked", ifParentChecked);
+	                });
+	            });
 
 
-                /*
-            **********************
-            * =select all by clicking on category name, in new design
-            **********************
-            */
-            $('.checkbox_category').click(function(){
-                //var category = $(this).closest('form-checkbox').find("input");
-
-                var divs = $(this).closest( ".categories-accordion__item" ).find('.marker:not(.disabled-marker)');
-                if (divs.length == 0) { 
-                    divs = $(this).closest( ".categories-accordion__item" ).find('div.event-category');
-                };
-                divs.each(function( ) {
-                    var input = $(this).find("input");
-                
-                    $(this).toggleClass(self.settings.disabledMarker);
-                    
-                    var clickedId = $(this).attr('data-id');
-
-                    var tagIds = $(self.settings.inpTagIds).val().split(',');
-
-                    if (jQuery.inArray(clickedId, tagIds) == -1) {
-                        tagIds.push(clickedId);
-                        input.prop("checked",false);
-                    } else {
-                        tagIds.splice( tagIds.indexOf(clickedId), 1);
-                        input.prop("checked",true);
-                        //category.prop("checked",true);
-                    }
-
-                    $(self.settings.inpTagIds).val(tagIds.join());
-                });
-
-                //check checkboxes near category names
-                self.__setCategoriesChecked();
-            });
+	            $('.check_all').click(function(){
+	                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+	                
+	                divs.each(function( ) {
+	                    var input = $(this).find("input");
+	                    $(this).addClass(self.settings.disabledMarker);
+	                    var clickedId = $(this).attr('data-id');
+                        input.prop("checked", true);
+	                });
+	
+	                //check checkboxes near category names
+	                self.__setCategoriesChecked();
+	            });
 
 
-                /*
-            **********************
-            * =select all
-            **********************
-            */
-            $('.check_all').click(function(){
-                //var category = $(this).closest('form-checkbox').find("input");
-
-                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
-                
-                divs.each(function( ) {
-                    var input = $(this).find("input");
-                
-                    $(this).addClass(self.settings.disabledMarker);
-                    
-                    var clickedId = $(this).attr('data-id');
-                    //console.log(clickedId);
-
-                    var tagIds = $(self.settings.inpTagIds).val().split(',');
-
-                    // if (jQuery.inArray(clickedId, tagIds) == -1) {
-                    //     tagIds.push(clickedId);
-                    //     input.prop("checked",false);
-                    // } else {
-                        tagIds.splice( tagIds.indexOf(clickedId), 1);
-                        input.prop("checked",true);
-                        //category.prop("checked",true);
-                    // }
-
-                    $(self.settings.inpTagIds).val(tagIds.join());
-                });
-
-                //check checkboxes near category names
-                self.__setCategoriesChecked();
-            });
-
-
-                /*
-            **********************
-            * =unselect all
-            **********************
-            */
-            $('.uncheck_all').click(function(){
-                //var category = $(this).closest('form-checkbox').find("input");
-
-                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
-                
-                divs.each(function( ) {
-                    var input = $(this).find("input");
-                
-                    $(this).addClass(self.settings.disabledMarker);
-                    
-                    var clickedId = $(this).attr('data-id');
-                    //console.log(clickedId);
-                    var tagIds = $(self.settings.inpTagIds).val().split(',');
-
-                     if (jQuery.inArray(clickedId, tagIds) == -1) {
-                        tagIds.push(clickedId);
+	            $('.uncheck_all').click(function(){
+	                var divs = $(this).closest( "#profile_right" ).find('.form-checkbox');
+	                
+	                divs.each(function( ) {
+	                    var input = $(this).find("input");
+	                    $(this).addClass(self.settings.disabledMarker);
+	                    var clickedId = $(this).attr('data-id');
                         input.prop("checked", false);
-                     } 
-                    //else {
-                        // tagIds.splice( tagIds.indexOf(clickedId), 1);
-                        // input.prop("checked",true);
-                        //category.prop("checked",true);
-                    // }
-
-                    $(self.settings.inpTagIds).val(tagIds.join());
-                });
-
-                //check checkboxes near category names
-                self.__setCategoriesChecked();
-            });
+	                });
+	
+	                //check checkboxes near category names
+	                self.checkboxAction = 'uncheck_all';
+	                self.__setCategoriesChecked();
+	            });
 
 
             }
@@ -351,11 +259,20 @@ define('frontMemberEditControl',
             self.__setCategoriesChecked = function(){
                 $('#profile_right').find('.catNamen').each(function() { 
                     var isChecked = false;
-                    $(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
-                        if(this.checked) isChecked = true;
-                    });
-                    $(this).prev('input').prop('checked', isChecked);       
+                    if ($(this).closest('.categories-accordion__item').find('.userFilter-tag').length > 0) {
+	                    $(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
+	                        if(this.checked) isChecked = true;
+	                    });
+	                    
+	                    $(this).prev('input').prop('checked', isChecked);       
+                    } else {
+                    	if (self.checkboxAction != 'uncheck_all' && self.checkboxAction != 'uncheck_one') {
+                    			isChecked = true;
+                   		}
+                       	$(this).prev('input').prop('checked', isChecked);
+                   	}
                 });
+                self.checkboxAction = '';
             }
 
 
@@ -445,26 +362,6 @@ define('frontMemberEditControl',
 
                 reader.readAsDataURL(file);
             }
-
-            self.__clearTags = function(element)
-            {
-
-                var tagsToClear = $(element).find('.marker:not(.disabled-marker)');
-
-                var tagIds = null;
-                tagsToClear.each(function( index, element) {
-                    $(this).toggleClass('disabled-marker');
-
-                    tagIds = $(self.settings.inpTagIds).val().split(',');
-                    tagIds.splice( tagIds.indexOf($(this).attr('data-id')), 1);
-                    $(self.settings.inpTagIds).val(tagIds.join());
-                });
-            }
-
-
-
-
-
 
             self.__request = function(method, url, params)
             {

@@ -202,7 +202,7 @@ class MemberController extends \Core\Controllers\CrudController
         }
 
         $postData = $this->request->getPost();
-//_U::dump($postData);        
+      
         if (!empty($postData)) {
             $elemExists = function($elem) use (&$postData) {
                 if (!is_array($postData[$elem])) {
@@ -211,74 +211,31 @@ class MemberController extends \Core\Controllers\CrudController
                 return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
             };
 
-            $MemberFilter = new MemberFilter();
-
             if (!empty($postData['category']) && $elemExists('category')) {
+            	$newMemberFilterTag = json_encode(array_keys($postData['tag']));
+            	$newMemberFilterCategory = json_encode(array_keys($postData['category']));
 
-                $toSave = array(
-                    'member_id' => $Member->id,
-                    'key' => 'category',
-                    'value' => $postData['category']
-                );
-
-                if (!empty($postData['member_filter_category_id']) && $elemExists('member_filter_category_id')) {
-                    $toSave['id'] = $postData['member_filter_category_id'];
-                }
-
-                $MemberFilter->save($toSave);
-                
-                // add unselected tags to full categories
-                !empty($postData['tagIds']) ? $tagDiff = explode(',', $postData['tagIds']) : $tagDiff = [];
-                $isTagSetted = [];
-                $additionalCatTags = [];
-                $additionalTags = [];
-                foreach ($postData['category'] as $key => $val) { 
-                	$curTags = Tag::find(['category_id = ' . $val]) -> toArray();
-                	$isTagSetted[$val] = false;
-                	if ($curTags) {
-						while (list(, $tagOptions) = each($curTags)) {
-	                		if (in_array($tagOptions['id'], $tagDiff)) {
-	                			$isTagSetted[$val] = true;
-	                			break;
-	                		} else {
-	                			$additionalCatTags[$val][] = $tagOptions['id']; 
-	                		}
-                		}
-                	}
-                	if ($isTagSetted[$val]) {
-                		unset($additionalCatTags[$val]);
-                	} else {
-                		$additionalTags = array_merge($additionalTags, $additionalCatTags[$val]);
-                	}
-                }
-
-        	} else {
-                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
-                if ($filters) {
-                    $filters->delete();
-                }
-            }
-            
-            $MemberFilter = new MemberFilter();
-            if (!empty($postData['tagIds']) || !empty($additionalTags)) {
-				!empty($postData['tagIds']) ? $allTags = $postData['tagIds'] . ',' . implode(',', $additionalTags) : $allTags = implode(',', $additionalTags); 	
-            	
-                $toSave = array(
-                    'member_id' => $Member->id,
-                    'key' => 'tag',
-                    'value' => json_encode(array_filter(explode(',', $allTags)))
-                );
-
-                if (!empty($postData['recordTagId']) && isset($postData['recordTagId'])) {
-                    $toSave['id'] = $postData['recordTagId'];
-                }
-
-                $MemberFilter->save($toSave);
-            } else {
-                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "tag"');
-                if ($filters) {
-                    $filters->delete();
-                }
+            	$memberFilters = MemberFilter::find(['member_id = ' . $this -> session -> get('memberId')]);
+            	if ($memberFilters -> count() != 0) {
+            		foreach ($memberFilters as $mf) {
+            			$mf -> delete();
+            		}	
+            	}
+           		foreach ($postData as $index => $filters) {
+           			if ($index == 'tag') {
+           				$memberFilters = new MemberFilter();
+           				$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+           										 'key' => 'tag',
+           										 'value' => $newMemberFilterTag]);
+           				$memberFilters -> save();            				
+           			} elseif ($index == 'category') {
+           				$memberFilters = new MemberFilter();
+           				$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+			            						'key' => 'category',
+			            						'value' => $newMemberFilterCategory]);
+           				$memberFilters -> save();
+           			}
+           		}
             }
         }
 
