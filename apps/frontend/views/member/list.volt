@@ -155,7 +155,7 @@
                                             <label for="cat{{ index }}">
 
                                                 {% set checked = false %}
-                                                {% if node['fullCategorySelect'] id defined %}
+                                                {% if node['fullCategorySelect'] is defined %}
 													{% set checked = true %}
                                                 {% endif %}
                                                 <input type="checkbox" name="category[]" 
@@ -180,6 +180,7 @@
                                         <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->
                                         <form action="/member/save-filters" method="post">
                                             {% for index, node in userFilters %}
+                                            	{% if node['tags'] | length %}
                                                 <div class="settings-box-one 
                                                 	{% if node['fullCategorySelect'] is defined %}active-box{% endif %}">
                                                     <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
@@ -195,15 +196,14 @@
 													<div class="checkbox">
 	                                                    <div class="form-checkbox pure-u-1-2">
 	                                                        <input type="checkbox" class="checkbox_category" id="tag-{{ node['name'] }}" 
-	                                                        	style="display:none;">
+	                                                        	style="display:visible;" {% if node['fullCategorySelect'] is defined %} checked{% endif %}>
 	                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}">
 	                                                        	<span><span>
 	                                                        	</span></span>
 	                                                        	{{ node['name'] }}
-	                                                        </label>    <!-- name of category -->
+	                                                        </label>
 	                                                    </div>
 													</div>
-
 
                                                     <div class="hide-box">
                                                         <div class="activity clearfix">
@@ -235,6 +235,7 @@
 
 
                                                 </div>
+                                                {% endif %}
                                             {% endfor %}
                                             </form>
                                             <!-- form with checkboxes1111111111111111111111111111111111111111111111111111111111 -->

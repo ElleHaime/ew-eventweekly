@@ -747,7 +747,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
             // process site
-            $eSites = EventSite::find('event_id = ' . $ev->id);
+            $eSites = EventSite::find('event_id = "' . $ev->id . '"');
             if ($eSites) {
                 foreach ($eSites as $es) {
                     $es->delete();

@@ -99,7 +99,7 @@ class Filter extends Component
 					if ($tagsInCategory == count($this -> userFilters[$filter]['tags'])) {
 						$this -> userFilters[$filter]['fullCategorySelect'] = 1;
 					}		
-				}
+				} 
 			}
 		}
 		

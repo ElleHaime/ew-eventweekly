@@ -66,7 +66,6 @@ define('frontMemberEditControl',
 
                 //check checkboxes near category names
                 self.__setCategoriesChecked();
-                
             }
 
             self.__bindClicks = function()
@@ -286,7 +285,8 @@ define('frontMemberEditControl',
                 
                     $(this).addClass(self.settings.disabledMarker);
                     
-                    var clickedId = $(this).attr('data-id');console.log(clickedId);
+                    var clickedId = $(this).attr('data-id');
+                    //console.log(clickedId);
 
                     var tagIds = $(self.settings.inpTagIds).val().split(',');
 
@@ -322,13 +322,13 @@ define('frontMemberEditControl',
                 
                     $(this).addClass(self.settings.disabledMarker);
                     
-                    var clickedId = $(this).attr('data-id');console.log(clickedId);
-
+                    var clickedId = $(this).attr('data-id');
+                    //console.log(clickedId);
                     var tagIds = $(self.settings.inpTagIds).val().split(',');
 
                      if (jQuery.inArray(clickedId, tagIds) == -1) {
                         tagIds.push(clickedId);
-                        input.prop("checked",false);
+                        input.prop("checked", false);
                      } 
                     //else {
                         // tagIds.splice( tagIds.indexOf(clickedId), 1);
@@ -357,7 +357,6 @@ define('frontMemberEditControl',
                     $(this).prev('input').prop('checked', isChecked);       
                 });
             }
-
 
 
              self.__syncFb = function()
