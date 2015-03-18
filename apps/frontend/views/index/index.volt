@@ -59,7 +59,7 @@
 						<h2 class="header__title">
 							<strong>What’s on in {{ location.city }}</strong>
 							<span class="divider"></span> 
-							<a href="#">Featured events</a>
+							<a style="text-decoration:none;">Featured events</a>
 						</h2>
 	
 						<a href="/list" class="header__link-show-more">Show more What’s on in {{ location.city }}</a>
@@ -116,7 +116,7 @@
 					<h2 class="header__title">
 						<strong>What’s on in {{ location.city }}</strong>
 						<span class="divider"></span> 
-						<a href="#">Trending events</a> 
+						<a style="text-decoration:none;">Trending events</a> 
 					</h2>
 
 					<!-- a href="/list" class="header__link-show-more"> {{ location.city }}</a -->

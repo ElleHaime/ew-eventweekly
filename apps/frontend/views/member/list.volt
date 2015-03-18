@@ -101,7 +101,11 @@
 
                                     <div class=" profile-btn-rt clearfix profile_bottom">
                                         <div class="profile-btn">
-                                                <p>You can import interests from facebook (need login via facebook)</p>
+                                        		{% if external_logged is not defined or external_logged != 'facebook' %}
+                                        			<p>Get your facebook events right now!</p>
+                                        		{% else %}
+                                                	<p>You can import interests from facebook (need login via facebook)</p>
+                                                {% endif %}
                                                 <div id="facebook_sync_button_div">
                                                     <button id="syncFbAcc" class="ew-button"><i class="fa fa-facebook-square"></i>Facebook sync</button>
                                                 </div>
