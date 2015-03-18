@@ -141,7 +141,8 @@ define('frontFilterPanel',
 						this.checked = false;
 					}               
             	});
-				$(this.settings.personalPresetTags).val('1');
+				//$(this.settings.personalPresetTags).val('1');
+				$(this.settings.personalPresetState).val('1');				
             	this.__setCategoriesChecked();
 			},
 			
@@ -159,7 +160,9 @@ define('frontFilterPanel',
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 this.checked = true;  //select all checkboxes with class "userFilter-category"               
             	});
-            	$(this.settings.personalPresetTags).val('0');
+            	
+            	$(this.settings.personalPresetState).val('0');
+//            	$(this.settings.personalPresetTags).val('0');
 			},
 
 			/*
@@ -176,7 +179,8 @@ define('frontFilterPanel',
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-category"               
             	});
-            	$(this.settings.personalPresetTags).val('0');            	
+            	$(this.settings.personalPresetState).val('0');
+  //          	$(this.settings.personalPresetTags).val('0');
 			},
 			
 			/*
@@ -195,6 +199,7 @@ define('frontFilterPanel',
 	                	this.checked = false;  //deselect all checkboxes with class "userFilter-tag"               
 	            	});
 	            }
+				$(this.settings.personalPresetState).val('0');
 			},
 			
 			/*
