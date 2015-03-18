@@ -196,47 +196,35 @@ class MemberController extends \Core\Controllers\CrudController
      */
     public function saveFiltersAction()
     {
-        $Member = $this->session->get('member');
-        if (!$Member) {
-            return;
-        }
-
         $postData = $this->request->getPost();
-      
-        if (!empty($postData)) {
-            $elemExists = function($elem) use (&$postData) {
-                if (!is_array($postData[$elem])) {
-                    $postData[$elem] = trim(strip_tags($postData[$elem]));
-                }
-                return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
-            };
-
-            if (!empty($postData['category']) && $elemExists('category')) {
-            	$newMemberFilterTag = json_encode(array_keys($postData['tag']));
-            	$newMemberFilterCategory = json_encode(array_keys($postData['category']));
-
-            	$memberFilters = MemberFilter::find(['member_id = ' . $this -> session -> get('memberId')]);
-            	if ($memberFilters -> count() != 0) {
-            		foreach ($memberFilters as $mf) {
-            			$mf -> delete();
-            		}	
-            	}
-           		foreach ($postData as $index => $filters) {
-           			if ($index == 'tag') {
-           				$memberFilters = new MemberFilter();
-           				$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
-           										 'key' => 'tag',
-           										 'value' => $newMemberFilterTag]);
-           				$memberFilters -> save();            				
-           			} elseif ($index == 'category') {
-           				$memberFilters = new MemberFilter();
-           				$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
-			            						'key' => 'category',
-			            						'value' => $newMemberFilterCategory]);
-           				$memberFilters -> save();
-           			}
-           		}
+        $elemExists = function($elem) use (&$postData) {
+            if (!is_array($postData[$elem])) {
+                $postData[$elem] = trim(strip_tags($postData[$elem]));
             }
+            return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
+        };
+
+        $memberFilters = MemberFilter::find(['member_id = ' . $this -> session -> get('memberId')]);
+        if ($memberFilters -> count() != 0) {
+			foreach ($memberFilters as $mf) {
+				$mf -> delete();
+			}
+		}
+            
+		if (!empty($postData['category']) && $elemExists('category')) {
+			$memberFilters = new MemberFilter();
+			$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+			           					'key' => 'category',
+			           					'value' => json_encode(array_keys($postData['category']))]);
+			$memberFilters -> save();
+		}
+            
+		if (!empty($postData['tag']) && $elemExists('tag')) {
+			$memberFilters = new MemberFilter();
+			$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+           								'key' => 'tag',
+           								'value' => json_encode(array_keys($postData['tag']))]);
+   			$memberFilters -> save();
         }
 
         $this->loadRedirect();

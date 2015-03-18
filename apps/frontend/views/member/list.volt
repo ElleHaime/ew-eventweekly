@@ -165,7 +165,7 @@
 													<div class="checkbox">
 	                                                    <div class="form-checkbox pure-u-1-2">
 	                                                        <input type="checkbox" class="checkbox_category" name="category[{{ node['id'] }}]" id="tag-{{ node['name'] }}" 
-	                                                        	style="display:visible;" {% if node['inPreset'] is defined %} checked{% endif %}>
+	                                                        	style="display:visible;" {% if node['fullCategorySelect'] is defined %} checked{% endif %}>
 	                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}">
 	                                                        	<span><span>
 	                                                        	</span></span>

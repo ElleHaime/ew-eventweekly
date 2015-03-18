@@ -42,7 +42,7 @@ class Filter extends Component
 			$this -> applySessionFilters();
 			$this -> view -> setVar('personalPresetActive', 0);
 		}
-//_U::dump($this -> userFilters);		
+		
 		$this -> view -> setVar('userFilters', $this -> userFilters);
 	}
 	
@@ -82,26 +82,20 @@ class Filter extends Component
 	
 	public function applyMemberPersonalization($memberPreset)
 	{
-		if (isset($memberPreset['category'])) {
-			foreach ($memberPreset['category']['value'] as $index => $filter) {
-				$this -> userFilters[$filter]['inPreset'] = 1;
+		if(isset($memberPreset['tag'])) {
+			foreach ($this -> userFilters as $filter => $val) {
+				if (isset($memberPreset['category'][$val['id']])) {
+					$this -> userFilters[$filter]['inPreset'] = 1;
+					$this -> userFilters[$filter]['fullCategorySelect'] = 1;
+				}
 				
-				if(isset($memberPreset['tag'])) {
-					$tagsInCategory = 0;
-					
-					foreach ($this -> userFilters[$filter]['tags'] as $index => $tag) {
-						if (in_array($index, $memberPreset['tag']['value'])) {
-							$this -> userFilters[$filter]['tags'][$index]['inPreset'] = 1;
-							$tagsInCategory++;
-						}
+				foreach ($val['tags'] as $index => $tag) {
+					if (in_array($index, $memberPreset['tag']['value'])) {
+						$this -> userFilters[$filter]['tags'][$index]['inPreset'] = 1;
 					}
-					
-					if ($tagsInCategory == count($this -> userFilters[$filter]['tags'])) {
-						$this -> userFilters[$filter]['fullCategorySelect'] = 1;
-					}		
-				} 
+				}
 			}
-		}
+		} 
 		
 		return;
 	}

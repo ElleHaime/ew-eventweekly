@@ -258,18 +258,22 @@ define('frontMemberEditControl',
             //category checkboxes
             self.__setCategoriesChecked = function(){
                 $('#profile_right').find('.catNamen').each(function() { 
-                    var isChecked = false;
+                    var isChecked = true;
                     if ($(this).closest('.categories-accordion__item').find('.userFilter-tag').length > 0) {
 	                    $(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
-	                        if(this.checked) isChecked = true;
+	                    	
+	                        if($(this).is(':checked') === false) {
+	                        	isChecked = false;
+	                        	return false;
+	                        }
 	                    });
 	                    
 	                    $(this).prev('input').prop('checked', isChecked);       
                     } else {
                     	if (self.checkboxAction != 'uncheck_all' && self.checkboxAction != 'uncheck_one') {
                     			isChecked = true;
+                    			$(this).prev('input').prop('checked', isChecked);
                    		}
-                       	$(this).prev('input').prop('checked', isChecked);
                    	}
                 });
                 self.checkboxAction = '';
