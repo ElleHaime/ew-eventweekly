@@ -45,7 +45,7 @@ define('eventsPointer',
                     // redraw clusterer
                     gmap.MC.redraw();
 
-                    gmap.Map.setCenter(new google.maps.LatLng($this.__lastLat, $this.__lastLng));
+                    //gmap.Map.setCenter(new google.maps.LatLng($this.__lastLat, $this.__lastLng));
                 }
             },
 
