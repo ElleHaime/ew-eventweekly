@@ -23,9 +23,11 @@ class ResetForm extends Form
             'StringLength' => array('min' => 6)
         );
 
-        $this -> addElement('password', 'password', 'Password', array('validators' => $conf_passwordValidators));
+        $this -> addElement('password', 'password', 'Password', array('validators' => $conf_passwordValidators,
+        																'class' => 'input-registration-control'));
 
-        $this -> addElement('password', 'conf_password', 'Confirm Password', array('validators' => $passwordValidators));
+        $this -> addElement('password', 'conf_password', 'Confirm Password', array('validators' => $passwordValidators,
+        																			'class' => 'input-registration-control'));
 
         $this -> add(new Submit('Reset password'));
     }

@@ -326,8 +326,8 @@ class AuthController extends \Core\Controller
      */
     public function resetAction($hash = false)
     {
-        if ($hash) {
-            if ($hash == $this -> session -> get('reset_uri')) {
+        /*if ($hash) {
+            if ($hash == $this -> session -> get('reset_uri')) { */
                 $form = new ResetForm();
 
                 if ($this -> request -> isPost()) {
@@ -349,11 +349,11 @@ class AuthController extends \Core\Controller
                     }
                 }
                 $this -> view -> form = $form;
-            } else {
-				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
-				$this -> view -> setVar('flashMsgType', 'error');
-            }
-        } 
+            //} else {
+//				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
+				//$this -> view -> setVar('flashMsgType', 'error');
+            //}
+        //} 
     }
 
    /**
