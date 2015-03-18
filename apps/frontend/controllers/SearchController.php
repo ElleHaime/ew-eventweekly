@@ -127,11 +127,34 @@ class SearchController extends \Core\Controller
 			}
 	
 			if ($elemExists('searchTags')) {
-				$this -> session -> set('userSearchFilters', $postData['searchTags']);
-				$this -> filters -> loadUserFilters(false); 
-				$queryData['searchTag'] = array_keys($postData['searchTags']); 
-            } 
-//_U::dump($queryData, true);
+				if ($postData['personalPresetActive'] != 1) {
+					if ($elemExists('searchCategories')) {
+						$userSearchFilters['category'] = $postData['searchCategories'];
+						$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+					} else {
+						$userSearchFilters['category'] = [];
+					}
+					if ($elemExists('searchTags')) {
+						$userSearchFilters['tag'] = $postData['searchTags'];
+						$queryData['searchTag'] = array_keys($postData['searchTags']);
+					} else {
+						$userSearchFilters['tag'] = [];
+					}
+					$this -> session -> set('userSearchFilters', $userSearchFilters);
+					$this -> filters -> loadUserFilters(false);
+				}
+            } else {
+            	$filterTags = $this -> filters -> getActiveTags();
+            	if (!empty($filterTags)) {
+            		$queryData['searchTag'] = $filterTags;
+            	} 
+            	$filterCategories = $this -> filters -> getActiveCategories();
+            	if (!empty($filterCategories)) {
+            		$queryData['searchCategory'] = $filterCategories;
+            	}
+            }
+            
+//_U::dump($queryData);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			
 			// search type
@@ -221,11 +244,15 @@ class SearchController extends \Core\Controller
         if (isset($member_categories['tag'])) {
         	$tagIds = implode(',', $member_categories['tag']['value']);
         }
+        if (isset($member_categories['category'])) {
+        	$categoryIds = implode(',', $member_categories['category']['value']);
+        }
 
         $this->view->setVars([
                 'member', $list,
                 'member_categories' => $member_categories,
-        		'tagIds' => $tagIds
+        		'tagIds' => $tagIds,
+        		'categoryIds' => $categoryIds
 		]);
         $categories = Category::find();
         $categories = $categories->toArray();

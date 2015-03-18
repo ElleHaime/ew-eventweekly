@@ -1,7 +1,8 @@
 <input id="tagIds" name="tagIds" type="hidden" value="{{ tagIds }}" />
-<input id="personalPresetActive" name="personalPresetActive" type="hidden" value="{{ personalPresetActive }}" />
+<input id="categoryIds" name="categoryIds" type="hidden" value="{{ categoryIds }}" />
 
 <form action="" id="form2">
+		<input id="personalPresetActive" name="personalPresetActive" type="hidden" value="{{ personalPresetActive }}" />
 		<div class="ew-filter-link" id="swithFilterPanel">
 			<a class="Show Filter" style="cursor:pointer;">Show Filter</a>	
 		</div>
@@ -23,7 +24,7 @@
 									<div class="categories-accordion__line"></div>
 		
 									<div class="form-checkbox">
-										<input type="checkbox" id="cattag-{{ category['id']}}" class="userFilter-category" 
+										<input type="checkbox" name="searchCategories[{{ category['id'] }}]" id="cattag-{{ category['id']}}" class="userFilter-category" 
 											{% if category['fullCategorySelect'] is defined %} checked {% endif %}> 
 										<label for="t1"><span><span></span></span>{{ category['name'] }}</label>
 									</div>

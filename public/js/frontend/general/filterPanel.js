@@ -21,6 +21,7 @@ define('frontFilterPanel',
 				personalPresetState: '#personalPresetActive',
 				personalPresetTags: '#tagIds'
 			},
+			checkboxAction: '',
 			panelState: null,
 			panelWidth: '350px',
 			expandClass: 'categories-accordion__arrow--is-expanded',
@@ -69,11 +70,18 @@ define('frontFilterPanel',
 			*/
 			__setCategoriesChecked: function() {
 				$(this.settings.filtersWrapper).find(this.settings.categoryBox).each(function() { 
-					var isChecked = false;
-					$(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
-						if(this.checked) isChecked = true;
-					});
-					this.checked = isChecked;		
+					var isChecked = true;
+					if ($(this).closest('.categories-accordion__item').find('.userFilter-tag').length > 0) {
+						$(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
+	                        if($(this).is(':checked') === false) {
+	                        	isChecked = false;
+	                        	return false;
+	                        }
+						});
+						this.checked = isChecked;
+					} else {
+						
+					}
 				});
 			},
 			
@@ -117,9 +125,11 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__applyPersonalize: function() {
-				var personalTags = $(self.settings.personalPresetTags).val().split(',');
+				var $this = this;
+				
+				var personalTags = $(this.settings.personalPresetTags).val().split(',');
 				if (personalTags.length == 0) {
-            		noty({text: 'Please login and set your default tags first!', type: 'error'});
+            		noty({text: 'Please set your default tags first!', type: 'error'});
             		return true;
             	}
 				
@@ -131,7 +141,7 @@ define('frontFilterPanel',
 						this.checked = false;
 					}               
             	});
-				$(self.settings.personalPresetTags).val('1');
+				$(this.settings.personalPresetTags).val('1');
             	this.__setCategoriesChecked();
 			},
 			
@@ -141,13 +151,15 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__checkOptions: function() {
+				var $this = this;
+				
 				$('.userFilter-tag').each(function() { //loop through each checkbox
                 	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
             	});
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 this.checked = true;  //select all checkboxes with class "userFilter-category"               
             	});
-            	$(self.settings.personalPresetTags).val('0');
+            	$(this.settings.personalPresetTags).val('0');
 			},
 
 			/*
@@ -156,13 +168,15 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__uncheckOptions: function() {
+				var $this = this;
+				
 				$('.userFilter-tag').each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-tag"               
             	});
             	$('.userFilter-category').each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-category"               
             	});
-            	$(self.settings.personalPresetTags).val('0');            	
+            	$(this.settings.personalPresetTags).val('0');            	
 			},
 			
 			/*

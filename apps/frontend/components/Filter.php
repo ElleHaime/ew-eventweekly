@@ -46,23 +46,21 @@ class Filter extends Component
 		$this -> view -> setVar('userFilters', $this -> userFilters);
 	}
 	
-
 	
 	public function applySessionFilters()
 	{
 		foreach($this -> userFilters as $index => $filter) {
 			if ($this -> session -> has('userSearchFilters')) {
-				$sessionFilters = array_keys($this -> session -> get('userSearchFilters'));
+				$userSearchFilters = $this -> session -> get('userSearchFilters'); 
+				$sessionFilters = array_keys($userSearchFilters['tag']);
 				 
 				foreach ($this -> userFilters as $index => $filter) {
-					$tagsInCategory = 0;
 					foreach ($filter['tags'] as $item => $tag) {
 						if (in_array($item, $sessionFilters)) {
 							$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
-							$tagsInCategory++;
 						}
 					}
-					if ($tagsInCategory == count($filter['tags'])) {
+					if (in_array($index, array_keys($userSearchFilters['category']))) {
 						$this -> userFilters[$index]['fullCategorySelect'] = 1;
 					}
 				}
@@ -98,5 +96,41 @@ class Filter extends Component
 		} 
 		
 		return;
+	}
+
+	
+	public function getActiveTags()
+	{
+		$result = [];
+		
+		foreach ($this -> userFilters as $index => $filter) {
+			foreach ($filter['tags'] as $i => $v) {
+				if (isset($v['inPreset'])) {
+					$result[] = $i;
+				} 				
+			}
+		}
+		
+		return $result;
+	}
+	
+	
+	public function getActiveCategories()
+	{
+		$result = [];
+		
+		foreach ($this -> userFilters as $index => $filter) {
+			if (isset($filter['fullCategorySelect'])) {
+				$result[] = $filter -> id;
+			}
+		}
+		
+		return $result;
+	}
+	
+	
+	public function getUserFilters()
+	{
+		return $this -> userFilters;
 	}
 }
