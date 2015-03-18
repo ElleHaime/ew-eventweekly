@@ -78,7 +78,7 @@ class SearchController extends \Core\Controller
 
             // add search condition by title
             if ($elemExists('searchTitle')) {
-                $queryData['searchTtitle'] = $postData['searchTitle'];
+                $queryData['searchTitle'] = $postData['searchTitle'];
                 $pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
             }
 

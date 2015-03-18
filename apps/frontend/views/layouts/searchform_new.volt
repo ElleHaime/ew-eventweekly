@@ -25,7 +25,7 @@
 						            {% set searchLocation = '' %}
 						            {% set searchLocationPlaceholder = 'Dublin' %}
 						        {% endif %}
-						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ searchLocation }}"/>
+						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ location.city }}"/>
 						        
 				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
 						            {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}

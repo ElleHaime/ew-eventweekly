@@ -149,7 +149,7 @@ define('frontSearchPanel',
 
                 event.preventDefault();
 
-                if (!_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
+                if (_.isEmpty($($this.settings.searchLocation).val()) && $this.__locationChosen == false) {
                     noty({text: 'You must chose location from list!', type: 'error'});
                     return false;
                 }
