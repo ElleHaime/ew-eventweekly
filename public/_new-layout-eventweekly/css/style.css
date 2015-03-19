@@ -3808,12 +3808,7 @@ table.default thead {
   }
 }
 
-/*calendar iphone*/
-@media only screen and (max-width: 480px) {
-  #header .filters .filters-form__item:nth-child(4) {
-      display: block;
-    }
-}
+
 
 #header .filters .filters-form__divider {
   display: inline-block;
@@ -5011,4 +5006,12 @@ table.default thead {
   font-style: normal;
   font-weight: 400;
   src: url("../fonts/pf-agora-slab-pro/PFAgoraSlabPro-Medium.ttf");
+}
+
+
+/*calendar iphone*/
+@media only screen and (max-width: 480px) {
+  #header .filters .filters-form__item:nth-child(4) {
+      display: block;
+    }
 }
