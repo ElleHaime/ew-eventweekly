@@ -31,6 +31,7 @@ class Filter extends Component
 		if ($applyPersonalization) {
 			if ($this -> session -> has('memberId')) {
 				$memberPreset = (new MemberFilter()) -> getbyId($this -> session -> get('memberId'));
+				
 				if (!empty($memberPreset)) {
 					$this -> applyMemberPersonalization($memberPreset);
 					$this -> view -> setVar('personalPresetActive', 1);
@@ -81,8 +82,14 @@ class Filter extends Component
 	public function applyMemberPersonalization($memberPreset)
 	{
 		if(isset($memberPreset['tag'])) {
+			if (isset($memberPreset['category']) && !empty($memberPreset['category']['value'])) {
+				$memberCategories = $memberPreset['category']['value'];
+			} else {
+				$memberCategories = [];
+			}
+			
 			foreach ($this -> userFilters as $filter => $val) {
-				if (isset($memberPreset['category'][$val['id']])) {
+				if (in_array($val['id'], $memberCategories)) {
 					$this -> userFilters[$filter]['inPreset'] = 1;
 					$this -> userFilters[$filter]['fullCategorySelect'] = 1;
 				}

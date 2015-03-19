@@ -62,6 +62,7 @@ class MemberController extends \Core\Controllers\CrudController
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
         }
+        //_U::dump($this -> filters -> getUserFilters());        
 	}
 
 
@@ -197,6 +198,7 @@ class MemberController extends \Core\Controllers\CrudController
     public function saveFiltersAction()
     {
         $postData = $this->request->getPost();
+//_U::dump($postData);
         $elemExists = function($elem) use (&$postData) {
             if (!is_array($postData[$elem])) {
                 $postData[$elem] = trim(strip_tags($postData[$elem]));
@@ -210,7 +212,7 @@ class MemberController extends \Core\Controllers\CrudController
 				$mf -> delete();
 			}
 		}
-            
+   
 		if (!empty($postData['category']) && $elemExists('category')) {
 			$memberFilters = new MemberFilter();
 			$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
