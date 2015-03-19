@@ -3807,6 +3807,14 @@ table.default thead {
     width: 100%;
   }
 }
+
+/*calendar iphone*/
+@media only screen and (max-width: 480px) {
+  #header .filters .filters-form__item:nth-child(4) {
+      display: block;
+    }
+}
+
 #header .filters .filters-form__divider {
   display: inline-block;
   width: 1px;
