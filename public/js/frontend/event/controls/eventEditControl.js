@@ -438,8 +438,10 @@ define('frontEventEditControl',
 			        if (url.indexOf('http', 0) < 0) {
 			            url = 'http://' + url;
 			        }
-			        var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
-			        			'<a href="#" class="icon-remove"></a></div>';
+			        //var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
+			        //			'<a href="#" class="icon-remove"></a></div>';
+			        var link = '<div class = "ecat_elem"><a target="_blank" href="' + url + '">' + url + '</a>' +
+			        			'<a href="#" class="icon-remove"><i class="fa fa-close"></i></a></div>'; 
 
 			        self.settings.listSite.append(link);
 			        self.settings.listSite.show();
@@ -454,7 +456,7 @@ define('frontEventEditControl',
 				elem.parent('div').remove();
 		        elem.remove();
 				self.settings.inpSiteReal.val(self.settings.inpSiteReal.val().replace(url + ',', ''));
-
+//console.log(self.settings.inpSiteReal.val());
 		        if (self.settings.listSite.children('div').length == 0) {
 		        	self.settings.listSite.hide();
 		        }

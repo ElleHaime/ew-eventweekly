@@ -393,6 +393,7 @@ class EventController extends \Core\Controllers\CrudController
        		$event -> setExtraRelations($this -> getEditExtraRelations());
        		$event -> getDependencyProperty();
        		$images = (new EventImageModel()) -> setViewImages($event -> id);
+       		$event -> site = EventSite::find(['event_id = "' . $event -> id . '"']);
        		$this -> view -> setVars($images);
        		
        		$this -> view -> setVar('editEvent', true);       		
@@ -562,7 +563,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-
+_U::dump($event);
         $loc = new Location();
         $venue = new Venue();
         $venueId = false;

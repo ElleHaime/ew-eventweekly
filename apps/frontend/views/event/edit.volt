@@ -131,9 +131,8 @@
 
                                             <div class="input-append">
 
-                                                    <input type="text" id="sites" placeholder="Event web site"/>
-                                                    <button class="ew-button" id="add-web-site" type="button">Add</button>
-
+                                                <input type="text" id="sites" placeholder="Event web site"/>
+                                                <button class="ew-button" id="add-web-site" type="button">Add</button>
 
                                                 <div class="warning-box"
                                                      style="background: green; width: 200px; height: 200px; display: none; position: absolute; z-index: 101; top:43px; right:0">
@@ -142,15 +141,16 @@
                                             </div>
                                             <div id="event-site-selected" class="event-site clearfix" {% if not (event.site|length) %} style="display:none;" {% endif %}>
                                                 <input type="hidden" id="event_site" name="event_site" value="{% if event.site|length %}{% for es in event.site %}{{ es.url }},{% endfor %}{% endif %}">
-                                                <p>Event web-sites :</p>
+                                                <p>Event web-sites:</p>
                                                 {% if event.site|length %}
 
                                                     {% for site in event.site %}
                                                         <div class = "esite_elem">
                                                             <a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
-                                                            <a href="#" class="icon-remove"></a>
+                                                            <a href="#" class="icon-remove" siteid={{ site.id }}><i class="fa fa-close"></i></a>
                                                         </div>
                                                     {% endfor %}
+                                                    
                                                 {% endif %}
                                             </div>
 

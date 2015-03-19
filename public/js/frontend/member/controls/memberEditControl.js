@@ -300,7 +300,6 @@ define('frontMemberEditControl',
              
              self.__syncFbShowResult = function(response)
              {
-console.log(response);            	 
             	 if (response.status == 'OK') {
         			 noty({text: self.settings.syncSuccessMessage, type: 'success'});
         		 } else {
