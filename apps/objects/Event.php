@@ -42,19 +42,18 @@ class Event extends Model
 																	 	   'baseField' => 'alias'));
 		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'event',
 																		'baseField' => 'name'));		
-		$this -> hasMany('id', '\Objects\EventImage', 'event_id', array('alias' => 'image'));
-		$this -> hasMany('id', '\Objects\EventMember', 'event_id', array('alias' => 'memberpart'));
-		$this -> hasMany('id', '\Objects\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));
-		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'memberlike'));
-		$this -> hasMany('id', '\Objects\EventSite', 'event_id', array('alias' => 'site'));
-		$this -> hasManyToMany('id', '\Objects\EventCategory',
+		$this -> hasMany('id', '\Frontend\Models\EventImage', 'event_id', array('alias' => 'image'));
+		$this -> hasMany('id', '\Frontend\Models\EventMember', 'event_id', array('alias' => 'memberpart'));
+		$this -> hasMany('id', '\Frontend\Models\EventMemberFriend', 'event_id', array('alias' => 'memberfriendpart'));
+		$this -> hasMany('id', '\Frontend\Models\EventLike', 'event_id', array('alias' => 'event_like'));
+		$this -> hasMany('id', '\Frontend\Models\EventSite', 'event_id', array('alias' => 'site'));
+		$this -> hasManyToMany('id', '\Frontend\Models\EventCategory',
 							   'event_id', 'category_id',
-							   '\Objects\Category', 'id', array('alias' => 'category',
+							   '\Frontend\Models\Category', 'id', array('alias' => 'category',
 							   		 							'baseField' => 'name'));
-        $this -> hasManyToMany('id', '\Objects\EventTag',
+        $this -> hasManyToMany('id', '\Frontend\Models\EventTag',
 							   'event_id', 'tag_id',
-							   '\Objects\Tag', 'id', array('alias' => 'tag',
+							   '\Frontend\Models\Tag', 'id', array('alias' => 'tag',
 							   		 							'baseField' => 'name'));
-		$this -> hasMany('id', '\Objects\EventLike', 'event_id', array('alias' => 'event_like'));
 	}
 }

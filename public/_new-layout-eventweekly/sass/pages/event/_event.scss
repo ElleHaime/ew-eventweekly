@@ -1,0 +1,64 @@
+.page-event {
+
+
+	&__content {
+		@include border-radius(2px);
+		padding: 20px;
+		background: #404040;
+		font-family: "Open Sans";
+		font-size: 14px;
+	}
+
+	&__description {
+		p {
+			line-height: 25px;
+			margin-bottom: 25px;
+		}
+		
+	}
+
+	&__wrapper {
+		margin-bottom: 40px;
+	}
+
+	.b-gallery {
+		margin-bottom: 20px;
+	}
+
+	.upcoming-events {
+		@include border-radius(2px);
+		margin: 20px 0;
+		padding: 20px;
+		background: #404040;
+
+		&__title {
+			font-family: "Open Sans";
+			font-weight: 600;
+			font-size:18px;
+			color:#CCCCCC;
+			margin: 0;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #545454;
+		}
+	}
+
+	&__layout-left {
+		@include breakpoint(695px) {
+			width: 100%;
+			margin-bottom: 20px;
+		}
+	}
+
+	&__layout-right {
+		padding: 0 0 0 1.6%;
+
+		@include breakpoint(695px) {
+			width: 100%;
+			padding: 0;
+			overflow: hidden;
+		}
+	}
+}
+
+
+@import 'blocks/short-info';

@@ -3,24 +3,28 @@
 namespace Frontend\Controllers;
 
 use Core\Utils as _U,
+	Core\Utils\DateTime as _UDT,
+	Frontend\Models\MemberFilter, //<---for new filters
+	Frontend\Models\Tag,          //<---for new filters	
     Frontend\Models\Location,
     Frontend\Models\Venue as Venue,
     Frontend\Models\MemberNetwork,
     Frontend\Models\Category as Category,
     Frontend\Models\EventCategory as EventCategory,
     Frontend\Models\Event as Event,
-    Objects\EventImage,
-    Objects\EventSite,
+    Frontend\Models\EventSite,
+    Frontend\Models\EventRating,
+    Frontend\Models\Cron as Cron,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
-    Frontend\Models\EventMemberCounter,
     Frontend\Models\EventLike,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
     Core\Utils\SlugUri as SUri,
     Frontend\Models\EventImage as EventImageModel,
 	Thirdparty\Facebook\Extractor,
-	Categoryzator\Core\Inflector;
+	Categoryzator\Core\Inflector,
+	\Frontend\Models\Search\Grid\Event as EventGrid;
 
 /**
  * @RouteRule(useCrud = true)
@@ -29,6 +33,8 @@ class EventController extends \Core\Controllers\CrudController
 {
 
     use \Core\Traits\TCMember;
+    use \Core\Traits\Facebook;
+    use \Sharding\Core\Env\Converter\Phalcon;
 
     protected $friendsUid = array();
     protected $friendsGoingUid = array();
@@ -37,16 +43,7 @@ class EventController extends \Core\Controllers\CrudController
     protected $pagesUid = array();
     protected $actualQuery = false;
 
-
-    public function initialize()
-    {
-        parent::initialize();
-
-        if (!$this->session->has('lastFetchedEvent')) {
-            $this->session->set('lastFetchedEvent', 0);
-        }
-    }
-
+    
     /**
      * @Route("/map", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
@@ -61,59 +58,59 @@ class EventController extends \Core\Controllers\CrudController
     
     /**
      * @Route("/list", methods={"GET", "POST"})
+     * @Route("/list&page={[0-9]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function eventlistAction()
     {
-    	$this->session->set('lastFetchedEvent', 0);
+    	$result = [];
+    	$pickFullTemplate = true;
     	
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
-    	}
-    	
-    	$loc = $this->session->get('location');
-    	$event = new Event();
-    	$request = $this -> request -> getQuery();
-    	if (isset($request['searchLocationLatCurrent']) && isset($request['searchLocationLngCurrent'])) {
-    		$event-> addCondition('Frontend\Models\Event.latitude = ' . $request['searchLocationLatCurrent']);
-    		$event-> addCondition('Frontend\Models\Event.longitude = ' . $request['searchLocationLngCurrent']);
-    	} else {
-	    	$event-> addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax);
-	    	$event-> addCondition('Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax);
-    	}
-    	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-    	$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
-    	
-    	$event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
-    	$event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-    	$event->addCondition('OR', Event::CONDITION_SIMPLE);
-    	$event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
-    	
-    	//$event-> addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent')); 
-    	$event-> addCondition('Frontend\Models\Event.event_status = 1');
-    	
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			['page' => $page, 'limit' => 10],
-    			$applyPersonalization, [], false, false, false, true, true);
-		$events = $result -> items;
-		unset($result -> items);
-		 
-		if (isset($events)) {
-			$this->view->setVar('pagination', $result);
+    	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
+    				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
+    				  'searchLocationField' => $this -> session -> get('location') -> id];
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$eventGrid->setLimit(9);
+		
+		$page = $this->request->getQuery('page');
+		if (empty($page)) {
+			$eventGrid -> setPage(1);
+		} else {
+			$pickFullTemplate = false;
+			$eventGrid -> setPage((int)$page);
 		}
+		$results = $eventGrid->getData();
 
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
+		foreach($results['data'] as $key => $value) {
+			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+		}
+		$countResults = $results['all_count'];
+		
+    	if ($results['all_page'] > 1) {
+            $this -> view -> setVar('pagination', $results['array_pages']);
+            $this -> view -> setVar('pageCurrent', $results['page_now']);
+            $this -> view -> setVar('pageTotal', $results['all_page']);
         }
-
+    	
+        if ($this->session->has('memberId')) {
+			$this->fetchMemberLikes();
+        }
+        
+        $tagIds = '';
+        $member_categories = (new MemberFilter())->getbyId();
+        if (isset($member_categories['tag'])) {
+        	$tagIds = implode(',', $member_categories['tag']['value']);
+        }
+        
 		$this->view->setVar('urlParams', 'list');
-		$this->view->setVar('list', $events);
-    	$this->view->pick('event/eventList');
+		$this->view->setVar('list', $result);
+		if ($pickFullTemplate) {
+    		$this->view->pick('event/eventList');
+		} else {
+			$this->view->pick('event/eventListPart');
+		}
     }
+    
     
     /**
      * @Route("/event/friends", methods={"GET", "POST"})
@@ -121,40 +118,16 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listFriendAction()
     {
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
+    	$eventsFriend = EventMemberFriend::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	if (!is_null($eventsFriend)) {
+    		foreach ($eventsFriend as $event) {
+    			$searchEventsId[] = $event['event_id'];
+    		}
+    			
+    		$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+    					  'searchId' => $searchEventsId];
     	}
-    	
-    	$event = new Event();
-    
-    	$event->addCondition('Frontend\Models\EventMemberFriend.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			['page' => $page, 'limit' => 10],
-    			false, [], true, false, false, true, true);
-
-    	$events = $result -> items;
-    	unset($result -> items);
-    	
-    	if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}
-    	///$this->view->setVar('urlParams', http_build_query($postData));
-    	$this->view->setVar('urlParams', 'friends');
-    	
-        if ($this->session->has('memberId')) {
-            $this->fetchMemberLikes();
-        }
-
-    	$this->view->setvar('listName', 'Friend\'s events');
-    	$this->view->setvar('list', $events);
-    	$this->view->setVar('listTitle', 'Friend\'s events');
-    	$this->view->pick('event/eventList');
+    	$this -> showListResults($queryData, 'friends', 'friends', 'Friend\'s events');
     }
     
     
@@ -164,42 +137,17 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
-    	}
-    	$event = new Event();
-    
-    	$this->view->setvar('listName', 'Liked Events');
-    
-    	$event->addCondition('Frontend\Models\EventLike.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\EventLike.status = 1');
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-    			Event::ORDER_ASC,
-    			['page' => $page, 'limit' => 10],
-    			false, [], false, false, true, true, true);
-    	
-    	$events = $result -> items;
-    	unset($result -> items);
-    	
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    	}
-    
-    	if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}
-    	
-    	//$this->view->setVar('urlParams', http_build_query($postData));
-    	$this->view->setVar('urlParams', 'liked');
-    	
-    	$this->view->setvar('list', $events);
-    	$this->view->setVar('listTitle', 'Liked');
-    	$this->view->pick('event/eventList');
+    	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+		if (!is_null($eventsLiked)) {
+			foreach ($eventsLiked as $event) {
+				$searchEventsId[] = $event['event_id']; 
+			}
+			
+			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+						  'searchId' => $searchEventsId]; 
+		}
+
+		$this -> showListResults($queryData, 'liked', 'liked', 'Liked events');
     }
     
     /**
@@ -208,42 +156,17 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listJoinedAction()
     {
-    	$postData = $this->request->getQuery();
-    	$page = $this->request->getQuery('page');
-    	if (empty($page)) {
-    		$page = 1;
+    	$eventsJoined = EventMember::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	if (!is_null($eventsJoined)) {
+    		foreach ($eventsJoined as $event) {
+    			$searchEventsId[] = $event['event_id'];
+    		}
+    			
+    		$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+			    		  'searchId' => $searchEventsId];
     	}
     	
-    	$event = new Event();
-		    
-    	$event->addCondition('Frontend\Models\EventMember.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\EventMember.member_status = 1');
-    	$event->addCondition('Frontend\Models\Event.event_status = 1');
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$result = $event->fetchEvents(Event::FETCH_OBJECT,
-						    			Event::ORDER_ASC,
-						    			['page' => $page, 'limit' => 10],
-						    			false, [], false, true, false, true, true);
-		$events = $result -> items;
-		unset($result -> items);
-		    	
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    	}
-    
-    	$this->view->setvar('list_type', 'join');
-
-    	if (isset($events)) {
-    		$this->view->setVar('pagination', $result);
-    	}
-
-    	$this->view->setVar('list', $events);
-    	$this->view->setVar('listTitle', 'Where I am going');
-    	//$this->view->setVar('urlParams', http_build_query($postData));
-    	$this->view->setVar('urlParams', 'joined');
-    	
-    	$this->view->pick('event/eventList');
+    	$this -> showListResults($queryData, 'joined', 'join', 'Where I am going');
     }
     
     
@@ -253,35 +176,82 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listAction()
     {
-    	$event = new Event();
-    
-    	$event->addCondition('Frontend\Models\Event.member_id = ' . $this->session->get('memberId'));
-    	$event->addCondition('Frontend\Models\Event.deleted = 0');
-    	$event->addCondition('Frontend\Models\Event.event_status IN (0, 1)');
-    	//$event->addCondition('Frontend\Models\Event.start_date > "' . date('Y-m-d H:i:s', strtotime('today -1 minute')) . '"');
-    	$events = $event->fetchEvents();
-    
-    	if ($events->count()) {
-    		$this->view->setVar('object', $events);
-    		$this->view->setVar('list', $events);
+    	$result = [];
+    	$queryData = ['searchMember' => (int)$this -> session -> get('memberId')];
+		   	
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$results = $eventGrid->getData();
+		
+		if ($results['all_count'] > 0) {
+			foreach($results['data'] as $key => $value) {
+				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+            }
+    		$this -> view -> setVar('object', $result);
+    		$this -> view -> setVar('list', $result);
     	}
+    	
+    	$this -> view -> setVar('listTitle', 'Created');
+    	$this -> view -> pick('event/eventUserList');
     
-    	$this->view->setVar('listTitle', 'Created');
+    	return array('eventListCreatorFlag' => true);
+    }
     
-    	$this->eventListCreatorFlag = true;
-    	$this->view->pick('event/eventList');
     
-    	return array('eventListCreatorFlag' => $this->eventListCreatorFlag);
+    protected function showListResults($queryData = [], $urlParams = '', $listType = 'liked', $listTitle = 'Events')
+    {
+		$result = [];
+    	$pickFullTemplate = true;
+    	
+    	if (!empty($queryData)) {
+	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+	    	$eventGrid->setLimit(9);
+	    	
+	    	$page = $this->request->getQuery('page');
+	    	if (empty($page)) {
+	    		$eventGrid -> setPage(1);
+	    	} else {
+	    		$pickFullTemplate = false;
+	    		$eventGrid -> setPage((int)$page);
+	    	}
+	    	$results = $eventGrid->getData();
+   	
+	    	foreach($results['data'] as $key => $value) {
+	    		$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+	    	}
+	    	$this -> view -> setVar('list', $result);
+	    	
+	    	$countResults = $results['all_count'];
+	    	if ($results['all_page'] > 1) {
+	    		$this -> view -> setVar('pagination', $results['array_pages']);
+	    		$this -> view -> setVar('pageCurrent', $results['page_now']);
+	    		$this -> view -> setVar('pageTotal', $results['all_page']);
+	    	}
+    	}
+
+   		$this -> fetchMemberLikes();
+    	$this->view->setvar('list_type', $listType);
+    	$this->view->setVar('listTitle', $listTitle);
+    	$this->view->setVar('urlParams', $urlParams);
+    	
+    	if ($pickFullTemplate) {
+    		$this->view->pick('event/eventUserList');
+    	} else {
+    		$this->view->pick('event/eventUserListPart');
+    	}
     }
     
     
     /**
-     * @Route("/{slugUri}-{eventId:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/{slugUri}-{eventId:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function showAction($slug, $eventId)
     {
-		$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+    	if (isset($_SERVER['HTTP_REFERER'])) {
+			$previousUri = str_replace($_SERVER['HTTP_HOST'], '', str_replace('http://', '', $_SERVER['HTTP_REFERER']));
+    	} else {
+    		$previousUri = $_SERVER['HTTP_HOST'];
+    	}
 		$this -> view -> setVar('back_position_url_params', $previousUri);
 		
     	if ($this -> session -> has('eventViewForwardedNew') && $this -> session -> get('eventViewForwardedNew') == 1) {
@@ -291,79 +261,28 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> session -> set('eventViewForwardedUp', 0);
     		$this -> view -> setVar('viewModeUp', true);
     	}
-    	 
-        $event = Event::findFirst($eventId);
-        $memberpart = null;
-        if ($this->session->has('member') && $event->memberpart->count() > 0) {
-            foreach ($event->memberpart as $mpart) {
-                if ($mpart->member_id == $this->memberId) {
-                    $memberpart = $mpart->member_status;
-                    break;
-                }
-            }
-        }
-        $event->memberpart = $memberpart;
 
-        $cfg = $this->di->get('config');
-        $logoFile = '';
-        if ($event->logo != '') {
-            $logoFile = $cfg->application->uploadDir . 'img/event/' . $event->id . '/' . $event->logo;
-        }
-
-        $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/upload/img/event/' . $event->id . '/' . $event->logo;
-        if (!file_exists($logoFile)) {
-            $logo = 'http://' . $_SERVER['HTTP_HOST'] . '/img/logo200.png';
-        }
-         
-        if ($this -> session -> has('user_token') && $this -> session -> has('user_fb_uid')) {
-        	$fb = new Extractor($this -> getDi());
-        	$res = $fb -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $event -> fb_uid), $this -> session -> get('user_token'));
-
-        	if ($res['STATUS'] && !is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
-        		$event -> tickets_url = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
-        	} else {
-        		$event -> tickets_url = false;
-        	}  
-        } else {
-        	if ($event -> tickets_url) {
-        		$event -> tickets_url = 'https://www.facebook.com/events/' . $event -> fb_uid;
-        	} else {
-        		$event -> tickets_url = false;
-        	}
-        }
-        
-        $this->view->setVar('logo', $logo);
+    	$ev = new Event();
+    	$ev-> setShardById($eventId);
+    	
+    	$event = $ev::findFirst($eventId);
+    	$event -> memberpart = (new EventMember()) -> getMemberpart($ev);
+    	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url); 
+    	
+    	(new EventRating()) -> addEventRating($event);
+    	
+    	$images = (new EventImageModel()) -> setViewImages($event -> id);
+    	$this->view->setVars($images);
         $this->view->setVar('event', $event);
-        $categories = Category::find();
-        $this->view->setVar('categories', $categories->toArray());
-
+        $this->view->setVar('categories', Category::find() -> toArray());
         $this->view->setVar('link_back_to_list', true);
-
-        $posters = $flyers = $gallery = [];
-        if (isset($event->image)) {
-            foreach ($event -> image as $eventImage) {
-                if ($eventImage -> type == 'poster') {
-                    $posters[] = $eventImage;
-                } else if ($eventImage -> type == 'flyer') {
-                    $flyers[] = $eventImage;
-                } else if ($eventImage -> type == 'gallery') {
-                    $gallery[] = $eventImage;
-                } else if ($eventImage -> type == 'cover') {
-                    $cover = $eventImage;
-                } 
-            }
-        }
+        $this->fetchMemberLikeForEvent($event -> id);
         
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
-        $this->view->setVar('cover', isset($cover) ? $cover : null);
-        $this->view->setVar('gallery', $gallery);
-
         $eventTags = [];
         foreach ($event->tag as $Tag) {
             $eventTags[] = $Tag->name;
         }
-      
+
         return array(
             'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
             'eventMetaData' => $event,
@@ -389,9 +308,7 @@ class EventController extends \Core\Controllers\CrudController
             }
 
         } else {
-            $CategoryEvent = new EventCategory();
-
-            if ($CategoryEvent->save(array(
+            if ((new EventCategory())->save(array(
                 'event_id' => $eventId,
                 'category_id' => $categoryId
             ))
@@ -441,11 +358,6 @@ class EventController extends \Core\Controllers\CrudController
             if ($eventMember->save()) {
                 $ret = ['status' => 'OK',
                         'event_member_status' => $data['answer']];
-
-                if ($status == EventMember::JOIN) {
-                    $this -> counters -> increaseUserCounter('userEventsGoing');
-                    $this -> counters -> setUserCounters();
-                }
             }
         } else {
             $ret['error'] = 'not_logged';
@@ -458,7 +370,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/edit", methods={"GET", "POST"})
-     * @Route("/event/edit/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/event/edit/{id:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
     public function editAction($id = false)
@@ -471,35 +383,46 @@ class EventController extends \Core\Controllers\CrudController
     			$this -> view -> setVar('flashMsgType', 'warning');
     		}
     	}
-    	
-        $category = new Category();
-        $this->view->setVar('categories', $category->getDefaultIdsAsString());
 
-       	parent::editAction();
+       	//parent::editAction();
+       	if ($id) {
+       		$ev = new Event();
+    		$ev -> setShardById($id);
+    		$event = $ev::findFirst($id);
+       		
+       		$event -> setExtraRelations($this -> getEditExtraRelations());
+       		$event -> getDependencyProperty();
+       		$images = (new EventImageModel()) -> setViewImages($event -> id);
+       		$event -> site = EventSite::find(['event_id = "' . $event -> id . '"']);
+       		$this -> view -> setVars($images);
+       		
+       		$this -> view -> setVar('editEvent', true);       		
+       	} else {
+       		$event = new Event();
+       	}
+		$form = $this -> loadForm($event);
+       	
+       	$this -> view -> setVar('event', $event);
+       	$this -> view -> form = $form;
+       	
+       	if ($this -> request -> isPost() && !$this -> dispatcher -> wasForwarded()) {
+       		if ($form -> isValid($this -> request -> getPost())) {
+       			$redirectOptions = $this -> processForm($form);
+       			if(is_array($redirectOptions)) {
+       				$this -> loadRedirect($redirectOptions);
+       			} else {
+       				$this -> loadRedirect();
+       			}
+       		}
+       	}
+       	
+        $this -> view -> setVar('categories', (new Category()) -> getDefaultIdsAsString());
 
-       	$posters = $flyers = $gallery = [];
-        if (isset($this->obj->id)) {
-            $eventImages = EventImageModel::find('event_id = ' . $id);
-
-            foreach ($eventImages as $eventImage) {
-                if ($eventImage->type == 'poster') {
-                    $posters[] = $eventImage;
-                } else if ($eventImage->type == 'flyer') {
-                    $flyers[] = $eventImage;
-                } else if ($eventImage->type == 'gallery') {
-                    $gallery[] = $eventImage;
-                }
-            }
-        }
-
-        $this->view->setVar('poster', isset($posters[0]) ? $posters[0] : null);
-        $this->view->setVar('flyer', isset($flyers[0]) ? $flyers[0] : null);
-        $this->view->setVar('gallery', $gallery);
-        
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
     }
+    
     
     public function setEditExtraRelations()
     {
@@ -524,16 +447,11 @@ class EventController extends \Core\Controllers\CrudController
             if ($event) {
                 $event->event_status = 0;
                 $event->deleted = 1;
-                $event->save();
-
-                $this -> counters -> decreaseUserCounter('userEventsCreated');
+                $event->update();
              
                 $result = $this -> counters -> setUserCounters();
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
-
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncDeleted((int)$data['id']);
             }
         }
 
@@ -542,49 +460,37 @@ class EventController extends \Core\Controllers\CrudController
 
 
     /**
-     * @Route("/event/like/{eventId:[0-9]+}/{status:[0-9]+}", methods={"GET","POST"})
+     * @Route("/event/like/{eventId:[0-9_]+}/{status:[0-9]}", methods={"GET","POST"})
      * @Acl(roles={'member','guest'});
      */
     public function likeAction($eventId, $status = 0)
     {
-        $response = array(
-            'status' => false
-        );
+        $response = ['status' => false];
 
         if ($this->session->has('member')) {
             $memberId = $this->session->get('memberId');
-            $eventLike = EventLike::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            $eventLike = EventLike::findFirst('event_id = "' . $eventId . '" AND member_id = ' . $memberId);
+            
             if (!$eventLike) {
                 $eventLike = new EventLike();
             }
-            $eventLike->assign(array(
-                'event_id' => $eventId,
-                'member_id' => $memberId,
-                'status' => $status
-            ));
+            $eventLike->assign(['event_id' => $eventId,
+                				'member_id' => $memberId,
+                				'status' => $status]);
             
-            if ($eventLike->save()) {
+            if ($eventLike -> save()) {
             	if ($status != 1) {
-            		$eventGoing = EventMember::findFirst('event_id = ' . $eventId . ' AND member_id = ' . $memberId);
+            		$eventGoing = EventMember::findFirst('event_id = "' . $eventId . '" AND member_id = ' . $memberId);
             		if ($eventGoing) {
             			$eventGoing->delete();
             		}
             	}
-            	 
-                if ($status == 1) {
-                   $this -> counters -> increaseUserCounter('userEventsLiked', 1);
-                } else {
-                   $this -> counters -> decreaseUserCounter('userEventsLiked', 1);
-                   $this -> counters -> decreaseUserCounter('userEventsGoing', 1);
-                }
 
                 $response = $this -> counters -> setUserCounters();
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
-
-                $this->eventsManager->fire('App.Event:afterLike', $this);
-            }
+            } 
         } else {
             $response['error'] = 'not_logged';
         }
@@ -605,9 +511,6 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 $result = array_merge($res, array('status' => 'OK'));
-                
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncPublished((int)$data['id']);
             }
         }
 
@@ -628,9 +531,6 @@ class EventController extends \Core\Controllers\CrudController
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 /* delete sites, event members, send mails etc */
                 $result = array_merge($res, array('status' => 'OK'));
-                
-                $syncCounters = new EventMemberCounter();
-                $syncCounters -> syncUnpublished((int)$data['id']);
             }
         }
 
@@ -655,41 +555,6 @@ class EventController extends \Core\Controllers\CrudController
         return $result;
     }
 
-    public function saveEventAtFacebook($url, $fbParams)
-    {
-        $http = $this->di->get('http');
-        $httpClient = $http::getProvider();
-
-        $httpClient->setBaseUri('https://graph.facebook.com/');
-        $response = $httpClient->post($url, $fbParams);
-        $result = $response->body;
-
-        $id = null;
-        if ($result) {
-            $result = json_decode($result, true);
-
-            if (!isset($result['error'])) {
-                $id = $result['id'];
-            }
-        }
-
-        return $id;
-    }
-    
-    public function checkFacebookExpiration()
-    {
-    	$http = $this->di->get('http');
-    	$httpClient = $http::getProvider();
-    	
-    	$httpClient->setBaseUri('https://graph.facebook.com/');
-    	$response = $httpClient->get('me?access_token=' . $this->session->get('user_token'));
-
-    	if($response -> header -> statusCode == 200 && $response -> header -> statusMessage == 'OK') {
-    		return true;
-    	} else {
-    		return false;
-		}
-    }
 
     /**
      * @Route("/event/eventsave", methods={"POST"})
@@ -698,17 +563,18 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-       
+
         $loc = new Location();
         $venue = new Venue();
-        $coords = array();
         $venueId = false;
-        $newEvent = array();
+        $newEvent = [];
+        
         if (!empty($event['id'])) {
-            $ev = Event::findFirst($event['id']);
+        	$e = (new Event()) -> setShardById($event['id']);
+            $ev = $e::findFirst($event['id']);
         } else {
             $ev = new Event();
-            if (isset($this -> session -> get('member') -> network)) {
+            if ($this -> session -> get('member') -> network) {
                 $newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
             }
             $newEvent['member_id'] = $this -> session -> get('memberId');
@@ -722,6 +588,7 @@ class EventController extends \Core\Controllers\CrudController
         $newEvent['event_fb_status'] = !is_null($event['event_fb_status']) ? 1 : 0;
         $newEvent['recurring'] = $event['recurring'];
         $newEvent['campaign_id'] = $event['campaign_id'];
+        $newEvent['location_id'] = $event['location_id'];
 
         // process location
         if (empty($event['location_id']) && !empty($event['location_latitude']) && !empty($event['location_longitude'])) {
@@ -779,15 +646,10 @@ class EventController extends \Core\Controllers\CrudController
 
         $vn = false;
         if ($event['venue_latitude'] != '' || $event['venue_longitude'] != '') {
-            $vn = $venue->createOnChange($venueInfo);
+            $vn = $venue -> createOnChange($venueInfo);
         }
 
-
-        if ($vn) {
-            $newEvent['venue_id'] = $vn->id;
-        } else {
-            $newEvent['venue_id'] = '';
-        }
+        $vn ? $newEvent['venue_id'] = $vn -> id : $newEvent['venue_id'] = ''; 
 
         // process address
         $newEvent['address'] = $event['address'];
@@ -815,11 +677,17 @@ class EventController extends \Core\Controllers\CrudController
             }
         }
 
-        $ev->assign($newEvent);
-        if ($ev->save()) {
+        $ev -> assign($newEvent);
+        $ev -> setShardByCriteria($newEvent['location_id']);
+        if ($ev -> id) {
+        	$saveEvent = $ev -> update();  
+        } else {
+        	$saveEvent = $ev -> save();
+        }
+        if ($saveEvent) {
             // create event dir if not exists
-            if (!is_dir($this->config->application->uploadDir . 'img/event/' . $ev->id)) {
-                mkdir($this->config->application->uploadDir . 'img/event/' . $ev->id);
+            if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
+                mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
             }
 
             // start prepare params for FB event
@@ -833,7 +701,6 @@ class EventController extends \Core\Controllers\CrudController
             if ($newEvent['start_date'] !== $newEvent['end_date']) {
             	$fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
             }
-            
 
             if ($event['venue'] != '') {
                 $fbParams['location'] = $event['venue'];
@@ -845,17 +712,17 @@ class EventController extends \Core\Controllers\CrudController
 
             // save image
             $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
+            
             if (isset($logo)) {
-                $filename = $this->uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
+                $filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
                 $ev->logo = $filename;
-                $ev->save(); 
+                $ev->update();
             } else if ($ev->logo != '') {
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
-
             } else {
                 $ev->logo = '';
-                $ev->save();
+                $ev->update();
             }
 
             list($width, $height, $type, $attr) = getimagesize($file);
@@ -869,19 +736,19 @@ class EventController extends \Core\Controllers\CrudController
             if ($newEvent['event_fb_status'] == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
                 // add/edit event to facebook
                 if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
-                    $fbEventId = $this->saveEventAtFacebook('me/events', $fbParams);
+                    $fbEventId = $this->sendToFacebook('me/events', $fbParams);
 
                     if (!is_null($fbEventId)) {
                         $ev->fb_uid = $fbEventId;
-                        $ev->save();
+                        $ev->update();
                     }
                 } else {
-                    $this->saveEventAtFacebook('/' . $ev->fb_uid, $fbParams);
+                    $this->sendToFacebook('/' . $ev->fb_uid, $fbParams);
                 }
             }
 
             // process site
-            $eSites = EventSite::find('event_id = ' . $ev->id);
+            $eSites = EventSite::find('event_id = "' . $ev->id . '"');
             if ($eSites) {
                 foreach ($eSites as $es) {
                     $es->delete();
@@ -893,14 +760,15 @@ class EventController extends \Core\Controllers\CrudController
                     if (!empty($value)) {
                         $eSites = new EventSite();
                         $eSites->assign(array('event_id' => $ev->id,
-                            'url' => $value));
+                            				   'url' => $value));
                         $eSites->save();
                     }
                 }
             }
 
             // process categories
-            $eCats = EventCategory::find('event_id = ' . $ev->id);
+            $eventCategories = (new EventCategory())->setShardById($ev->id);
+            $eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
             if ($eCats) {
                 foreach ($eCats as $ec) {
                     $ec->delete();
@@ -910,9 +778,9 @@ class EventController extends \Core\Controllers\CrudController
                 $aCats = explode(',', $event['category']);
                 foreach ($aCats as $key => $value) {
                     if (!empty($value)) {
-                        $eCats = new EventCategory();
+                        $eCats = (new EventCategory())->setShardById($ev -> id);
                         $eCats->assign(array('event_id' => $ev->id,
-                            'category_id' => $value));
+                            				 'category_id' => $value));
                         $eCats->save();
                     }
                 }
@@ -920,7 +788,8 @@ class EventController extends \Core\Controllers\CrudController
 
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
-                $eventPoster = EventImageModel::findFirst('event_id = ' . $ev->id . ' AND type = "' . $imageType . '"');
+            	$img = (new EventImageModel()) -> setShardById($ev -> id); 
+                $eventPoster = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
 
                 $filename = $this->uploadImageFile(
                     empty($eventPoster) ? '' : $eventPoster->image,
@@ -931,12 +800,11 @@ class EventController extends \Core\Controllers\CrudController
                 if ($eventPoster) {
                     $eventPoster->image = $filename;
                 } else {
-                    $eventPoster = new EventImageModel();
+                    $eventPoster = (new EventImageModel()) -> setShardById($ev -> id);
                     $eventPoster->event_id = $ev->id;
                     $eventPoster->image = $filename;
                     $eventPoster->type = $imageType;
                 }
-
                 $eventPoster->save();
             };
 
@@ -947,16 +815,12 @@ class EventController extends \Core\Controllers\CrudController
             if (!empty($flyer)) {
                 $addEventImage($flyer, 'flyer');
             }
-
-            if (empty($event['id'])) {
-                $this -> counters -> increaseUserCounter('userEventsCreated');
-            }
-        } 
+        }  
 
         if (!empty($event['id'])) {
-        	return ['id' => (int)$ev -> id, 'type' => 'update'];
+        	return ['id' => $ev -> id, 'type' => 'update'];
         } else {
-        	return ['id' => (int)$ev -> id, 'type' => 'new'];
+        	return ['id' => $ev -> id, 'type' => 'new'];
         }
     }
     
@@ -964,14 +828,16 @@ class EventController extends \Core\Controllers\CrudController
     public function loadRedirect($params = [])
     {
     	if (!empty($params) && $params['type'] == 'update') {
-    		$ev = Event::findFirst((int)$params['id']);
+    		$event = (new Event()) -> setShardById($params['id']);
+    		$ev = $event::findFirst($params['id']);
     		$name = SUri::slug($ev -> name);
     		$this -> session -> set('eventViewForwardedUp', 1);
     		
     		$this -> response -> redirect('/' . $name . '-' . $ev -> id);
     		
     	} elseif(!empty($params) && $params['type'] == 'new') {
-    		$ev = Event::findFirst((int)$params['id']);
+    		$event = (new Event()) -> setShardById($params['id']);
+    		$ev = $event::findFirst($params['id']);
     		$name = SUri::slug($ev -> name);
     		$this -> session -> set('eventViewForwardedNew', 1);
     		
@@ -998,7 +864,7 @@ class EventController extends \Core\Controllers\CrudController
             mkdir($path, 0777, true);
         }
 
-        $imgExts = array('image/jpeg', 'image/png');
+        $imgExts = array('image/jpeg', 'image/png', 'image/jpg');
 
         $filename = '';
         if (in_array($file->getType(), $imgExts)) {
@@ -1016,68 +882,6 @@ class EventController extends \Core\Controllers\CrudController
         return $filename;
     }
 
-    /**
-     * @Route("/event/import-categories", methods={"GET", "POST"})
-     * @Acl(roles={'guest'});
-     */
-    /*public function importCategoriesAction()
-    {
-        $Parser = new \Categoryzator\Core\Parser();
-        $categories = $Parser->getCategories();
-
-        // categories
-        if (!empty($categories)) {
-            foreach ($categories as $categoryKey => $children) {
-                $Category = new Category();
-
-                $Category->key = strtolower($categoryKey);
-                $Category->name = ucfirst($categoryKey);
-                $Category->parent_id = 0;
-
-                if ($categoryKey === 'other') {
-                    $Category->is_default = 1;
-                }
-
-                $Category->save();
-            }
-
-            // tags (subcategories)
-            foreach ($categories as $categoryKey => $children) {
-                $parent = Category::findFirst('key = "'.$categoryKey.'"');
-                if (!empty($children)) {
-                    unset($children[0]);
-                    foreach ($children as $key => $cat) {
-                        $Tag = new \Frontend\Models\Tag();
-                        $Tag->category_id = $parent->id;
-
-                        if (is_string($cat)) {
-                            $catk = strtolower(str_replace(' ', '_', $cat));
-                            $Tag->key = $catk;
-                            $Tag->name = ucfirst($cat);
-                        } elseif (is_array($cat)) {
-                            $keyk = strtolower(str_replace(' ', '_', $key));
-                            $Tag->key = $keyk;
-                            $Tag->name = ucfirst($key);
-
-                            // keywords
-                            $keywords = [];
-                            foreach ($cat as $index => $keyword) {
-                                $keywords[$index] = new \Frontend\Models\Keyword();
-                                $keywords[$index]->key = $keyword;
-                            }
-
-                            $Tag->tag_keyword = $keywords;
-
-                        }
-
-                        $Tag->save();
-                    }
-                }
-            }
-        }
-
-        exit('DONE');
-    }*/
 
 
     /**
@@ -1099,6 +903,7 @@ class EventController extends \Core\Controllers\CrudController
                     $logoPieces = explode('/', $filePath);
 
                     $post['logo'] = end($logoPieces);
+                    $this->view->setVar('eventPreviewLogo', $post['logo']);
                     $file->moveTo($filePath);
                     chmod($filePath, 0777);
 
@@ -1119,37 +924,27 @@ class EventController extends \Core\Controllers\CrudController
                     chmod($filePath, 0777);
                 }
             }
-
         } 
 
-        if (!empty($post['event_logo'])) {
-            $this->view->setVar('eventPreviewLogo', $post['event_logo']);
-            $this->view->setVar('eventPreviewLogoReal', $post['event_logo']);
-        } else {
-        	if (!empty($post['logo'])) {
-        		$this->view->setVar('eventPreviewLogo', $post['logo']);
-        	}	
-        }
         if (!empty($post['event_poster'])) {
-            $this->view->setVar('eventPreviewPoster', $post['event_poster']);
             $this->view->setVar('eventPreviewPosterReal', $post['event_poster']);
         } else {
         	if (!empty($post['poster'])) {
+        		$this->view->setVar('previewPoster', $post['poster']);
         		$this->view->setVar('eventPreviewPoster', $post['poster']);
         	}	
         } 
 
         if (!empty($post['event_flyer'])) {
-            $this->view->setVar('eventPreviewFlyer', $post['event_flyer']);
             $this->view->setVar('eventPreviewFlyerReal', $post['event_flyer']);
         } else {
         	if (!empty($post['flyer'])) {
+        		$this->view->setVar('previewFlyer', $post['flyer']);
         		$this->view->setVar('eventPreviewFlyer', $post['flyer']);
         	}	
         }
 
         $Event = new \stdClass();
-
         if (isset($post['id'])) {
             $Event->id = $post['id'];
         } else {
@@ -1176,6 +971,7 @@ class EventController extends \Core\Controllers\CrudController
                 $site[] = $ss;
             }
         }
+        
         $Event->site = $site;
         $Event->category = Category::find('id = ' . (int)$post['category']);
         $Event->memberpart = null;
@@ -1184,144 +980,71 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('eventPreview', 'http://' . $_SERVER['HTTP_HOST'] . '/event/' . $Event->id . '-' . SUri::slug($Event->name));
 
         $this->view->setVar('event', $Event);
-        $this->view->setVar('poster', $post['poster']);
-        $this->view->setVar('flyer', $post['flyer']);
-
         $this->view->pick('event/show');
     }
 
-
-    public function resetLocation($lat = null, $lng = null, $city = null)
-    {
-        $loc = $this->session->get('location');
-        $newLocation = new Location();
-        $newLocation = $newLocation->createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-
-        if ($newLocation->id != $loc->id) {
-            if (!empty($city)) {
-                $newLocation->city = $city;
-                $newLocation->alias = $city;
-            }
-
-            $this->session->set('location', $newLocation);
-            $this->session->set('lastFetchedEvent', 0);
-            $loc = $this->session->get('location');
-        }
-
-        return $loc;
-    }
+    
 
     /**
      * @Route("/event/test-get", methods={'GET'})
-     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET", "POST"})
-     * @Route("/event/test-get/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET", "POST"})
+     * @Route("/event/test-get/{page:[0-9]+}", methods={"GET"})
+     * @Route("/event/test-get/{page:[0-9]+}/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}", methods={"GET"})
+     * @Route("/event/test-get/{page:[0-9]+}/{lat:[0-9\.-]+}/{lng:[0-9\.-]+}/{city}", methods={"GET"})
      * @Acl(roles={'guest', 'member'});
      */
-    public function testGetAction($lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = true, $applyPersonalization = false)
+    public function testGetAction($page = 1, $lat = null, $lng = null, $city = null, $needGrab = true, $withLocation = true, $applyPersonalization = false)
     {
-        $Event = new Event();
-        $loc = $this->session->get('location');
+    	$queryData = [];
 
-        if (!empty($lat) && !empty($lng)) {
-            $loc = $this->resetLocation($lat, $lng, $city);
+    	if (!empty($lat) && !empty($lng) && !empty($city)) {
+            $location = (new Location()) -> resetLocation($lat, $lng, $city);
         } else {
-            $loc = $this->session->get('location');
-        }
-        
-        $startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-        $endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
-        if ($withLocation) {
-        	$lat = ($loc->latitudeMin + $loc->latitudeMax) / 2;
-            $lng = ($loc->longitudeMin + $loc->longitudeMax) / 2;
-            
-            $loc = new Location();
-            $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-            if ($newLocation) {
-            	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
-            }
-            
-        	
-/*            $Event->addCondition('Frontend\Models\Event.latitude BETWEEN ' . $loc->latitudeMin . ' AND ' . $loc->latitudeMax . '
-        						AND Frontend\Models\Event.longitude BETWEEN ' . $loc->longitudeMin . ' AND ' . $loc->longitudeMax); */
-            
-            $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);            
-            
-        } else {
-        	
-			$Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-            $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);        
-        }
-        
-        $Event->addCondition('Frontend\Models\Event.id > ' . $this->session->get('lastFetchedEvent'));
-        $Event->addCondition('Frontend\Models\Event.event_status = 1');
-        
-        $events = $Event->fetchEvents(Event::FETCH_ARRAY,
-        							  Event::ORDER_ASC, 
-        							  array(), 
-        							  $applyPersonalization,
-        							  array('start' => $this -> session -> get('lastFetchedEvent'), 'limit' => $this -> config -> application -> limitFetchEvents));
-
-        if (count($events) ==  $this -> config -> application -> limitFetchEvents) {
-            $this->session->set('lastFetchedEvent', (int)$this -> session -> get('lastFetchedEvent') + (int)$this -> config -> application -> limitFetchEvents);
-            $res['status'] = true;
-            $res['stop'] = false;
-            $res['events'] = $events;
-        } elseif (count($events) >= 0 && count($events) < (int)$this->config->application->limitFetchEvents) {
-        	$res['stop'] = true;
-        	$res['status'] = true;
-        	$res['events'] = $events;
-        } else {
-        	$res['status'] = 'ERROR';
-        	$res['message'] = 'no events';
-        }
-  
-        foreach($res['events'] as $id => $event) {
-        	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
-        		$res['events'][$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
-        	} else {
-        		$res['events'][$id]['logo'] = $this -> config -> application -> defaultLogo;
-        	}
-        }
-
-        if ($needGrab === false) {
-			return $events;
+            $location = $this -> session -> get('location');
         }
       
-        $this->sendAjax($res);
+    	if ($withLocation) {
+    		$queryData['searchLocationField'] = $location -> id;
+    	}
+    	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+    	$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+	
+    	$eventGrid = new EventGrid($queryData, $this -> getDi(), null, ['adapter' => 'dbMaster']);
+		$eventGrid -> setPage($page);
+		$results = $eventGrid -> getData();
 
-        if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
-            $newTask = false;
+		if ($results['all_count'] > 0) {
+			foreach($results['data'] as $id => $event) {
+				$eComposed = (array)$event;
 
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
-            if ($taskSetted -> count() > 0) {
-                $tsk = $taskSetted -> getLast();
-                if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
-                    $newTask = new \Objects\Cron();
-                }
-            } else {
-                $newTask = new \Objects\Cron();
-            }
-
-            if ($newTask) {
-                $params = ['user_token' => $this -> session -> get('user_token'),
-                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
-                           'member_id' => $this -> session -> get('memberId')];
-                $task = ['name' => 'extract_facebook_events',
-                         'parameters' => serialize($params),
-                         'state' => 0,
-                         'member_id' => $this -> session -> get('memberId'),
-                         'hash' => time()];
+				if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
+					$eComposed['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
+				} else {
+					$eComposed['logo'] = $this -> config -> application -> defaultLogo;
+				}
+                $eComposed['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                 
-                $newTask -> assign($task);
-                $newTask -> save();
-            }
+                $result[] = $eComposed;
+			}
+			
+			$res = ['events' => $result,
+					'status' => true];
+
+			if ($results['page_now'] < $results['all_page']) {
+				$res['stop'] = false;
+				$res['nextPage'] = $results['array_pages']['next'];
+			} else {
+				$res['stop'] = true;
+			}
+        } else {
+			$res = ['status' => 'ERROR',
+					'message' => 'no events'];
+        }
+
+		if ($needGrab === false) {
+			return $events;
+        } else {
+        	$this -> sendAjax($res);
+			(new Cron()) -> createUserTask();
         }
     }
 

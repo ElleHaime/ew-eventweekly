@@ -24,3 +24,13 @@ $cfg_memcache = array(
 	'host' => '127.0.0.1',
 	'port' => '11211'
 );
+
+$cfg_elastic = array(
+    'index' => 'eventweekly',
+    'connections' => [
+        [
+            'host' => 'localhost',
+            'port' => 9200
+        ]
+    ]
+);

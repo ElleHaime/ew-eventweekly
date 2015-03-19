@@ -44,10 +44,13 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> plugSearch();
         $this -> checkCache();
         $this -> counters -> setUserCounters();
+        $this -> filters -> loadUserFilters();
 
         $member = $this->session->get('member');
+
+        //$this->session->set('location', Location::findFirst(['id=1']));
         $loc = $this->session->get('location');
-//_U::dump($loc -> city);
+
         if ($loc === null) {
             $locModel = new Location();
             $loc = $locModel->createOnChange();
@@ -100,14 +103,13 @@ class Controller extends \Phalcon\Mvc\Controller
                 
                 if (isset($this->view->member->network)) {
                     $this->view->setVar('acc_external', $this->view->member->network);
-                    $this->view->setVar('acc_external', $this->view->member->network);
-                    $this->view->setVar('acc_external', $this->view->member->network);
                 }
             }
 
             if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
                 $this->view->setVar('acc_external', $member->network);
             }
+           
         } else {
             $this->session->set('role', Acl::ROLE_GUEST);
         }
@@ -132,6 +134,8 @@ class Controller extends \Phalcon\Mvc\Controller
         } else {
             $this->view->setVar('isMobile', '0');
         }
+        isset($this -> getDI() -> get('facebook_config') -> facebook -> version) ? $fbAppVersion = $this -> getDI() -> get('facebook_config') -> facebook -> version : $fbAppVersion = 'v2.0'; 
+        $this -> view -> setVar('fbAppVersion', $this -> getDI() -> get('facebook_config') -> facebook -> version);
     }
 
 
@@ -251,11 +255,5 @@ class Controller extends \Phalcon\Mvc\Controller
     	}
     	
     	echo 'Cache cleared';
-    }
-    
-    public function syncTotalCounters()
-    {
-    	$counters = new \Frontend\Models\EventMemberCounter();
-    	$counters -> syncMemberCounter();
     }
 }

@@ -1,20 +1,19 @@
-/**
- * Created by Slava Basko on 12/26/13 <basko.slava@gmail.com>.
- */
 require([
     'jquery',
     'fb',
     'frontEventLike',
     'noty',
+    'lazyLoader',//new  !! eventList.volt has <scriptjquery    
     'utils',
     'domReady',
     'underscore',
     'jCookie'
 ],
-    function($, fb, frontEventLike, noty) {
-        fb.init();
+    function($, fb, frontEventLike, noty, lazyLoader) {
 
+        fb.init();
         frontEventLike.init();
+        lazyLoader.init();
 
         if ($('#splash_messages').length > 0) {
             var fMessage = $('#splash_messages');

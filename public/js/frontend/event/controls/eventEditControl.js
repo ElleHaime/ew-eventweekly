@@ -383,7 +383,7 @@ define('frontEventEditControl',
 				var list = $(self.settings.listCategory);
 
 				var item = '<div class="ecat_elem"><label>' + $(self.settings.inpCategory + ' :selected').text() + '</label>' +
-						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"></div>';
+						'<a href="#" class="icon-remove" catid="' + $(self.settings.inpCategory + ' :selected').val() + '"><i class="fa fa-close" ></i></div>';
 		        $(self.settings.inpCategoryReal).val($(self.settings.inpCategoryReal).val() + $(self.settings.inpCategory + ' :selected').val() + ',');
 		        $(self.settings.inpCategory + ' :selected').remove();
 
@@ -414,13 +414,15 @@ define('frontEventEditControl',
 
             self.__initCategoryList = function()
             {
-                var categories = $(self.settings.inpCategoryReal).val().split(',');
-
-                categories.forEach(function(cat) {
-                    if (cat == "") return;
-
-                    $(self.settings.inpCategory + " option[value='" + cat + "']").remove();
-                });
+            	if ($(self.settings.inpCategoryReal).val() != undefined) {
+	                var categories = $(self.settings.inpCategoryReal).val().split(',');
+	
+	                categories.forEach(function(cat) {
+	                    if (cat == "") return;
+	
+	                    $(self.settings.inpCategory + " option[value='" + cat + "']").remove();
+	                });
+            	}
             }
 
 			self.__addSite = function()
@@ -436,8 +438,10 @@ define('frontEventEditControl',
 			        if (url.indexOf('http', 0) < 0) {
 			            url = 'http://' + url;
 			        }
-			        var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
-			        			'<a href="#" class="icon-remove"></a></div>';
+			        //var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
+			        //			'<a href="#" class="icon-remove"></a></div>';
+			        var link = '<div class = "ecat_elem"><a target="_blank" href="' + url + '">' + url + '</a>' +
+			        			'<a href="#" class="icon-remove"><i class="fa fa-close"></i></a></div>'; 
 
 			        self.settings.listSite.append(link);
 			        self.settings.listSite.show();
@@ -452,7 +456,7 @@ define('frontEventEditControl',
 				elem.parent('div').remove();
 		        elem.remove();
 				self.settings.inpSiteReal.val(self.settings.inpSiteReal.val().replace(url + ',', ''));
-
+//console.log(self.settings.inpSiteReal.val());
 		        if (self.settings.listSite.children('div').length == 0) {
 		        	self.settings.listSite.hide();
 		        }

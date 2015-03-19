@@ -8,14 +8,14 @@ use Core\Utils as _U,
     Frontend\Models\Member,
     Frontend\Models\Location,
     Frontend\Models\Tag,
+    Frontend\Models\Cron,
     Frontend\Form\ChangePassForm,
     Frontend\Form\MemberForm,
     Frontend\Form\LoginForm,
     Frontend\Models\MemberNetwork,
 	Frontend\Models\EventLike,
 	Frontend\Models\EventMember,
-	Frontend\Models\EventMemberFriend,
-	Frontend\Models\EventMemberCounter;
+	Frontend\Models\EventMemberFriend;
 
 
 class MemberController extends \Core\Controllers\CrudController
@@ -36,7 +36,8 @@ class MemberController extends \Core\Controllers\CrudController
 		if (!$list -> location) {
 			$list -> location = $this -> session -> get('location');
 		}
-		$memberForm = new MemberForm($list);
+		$form = new MemberForm($list);
+		$this->view->form = $form;
 		
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
@@ -49,10 +50,10 @@ class MemberController extends \Core\Controllers\CrudController
         if ( isset($member_categories['tag']['value']) ) {
             $tagIds = implode(',', $member_categories['tag']['value']);
         }
-
+        
 		$this->view->setVars(array(
                 'member', $list,
-                'categories' => Category::find()->toArray(),
+                'categories' => Category::find(['is_default != 1'])->toArray(),
                 'tags' => Tag::find()->toArray(),
                 'tagIds' => $tagIds,
                 'member_categories' => $member_categories
@@ -61,8 +62,7 @@ class MemberController extends \Core\Controllers\CrudController
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
         }
-
-        $this->view->memberForm = $memberForm;
+        //_U::dump($this -> filters -> getUserFilters());        
 	}
 
 
@@ -86,7 +86,7 @@ class MemberController extends \Core\Controllers\CrudController
                 $member->address = $formValues['address'];
                 $member->phone = $formValues['phone'];
 
-                if ($this->request->hasFiles() == true) {
+                if ($this->request->hasFiles() != 0) {
                     $uploadedFile = $this->request->getUploadedFiles();
                     $file = array_shift($uploadedFile);
 
@@ -197,89 +197,36 @@ class MemberController extends \Core\Controllers\CrudController
      */
     public function saveFiltersAction()
     {
-        $Member = $this->session->get('member');
-        if (!$Member) {
-            return;
-        }
-
         $postData = $this->request->getPost();
-        if (!empty($postData)) {
-            $elemExists = function($elem) use (&$postData) {
-                if (!is_array($postData[$elem])) {
-                    $postData[$elem] = trim(strip_tags($postData[$elem]));
-                }
-                return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
-            };
-
-            $MemberFilter = new MemberFilter();
-
-            if (!empty($postData['category']) && $elemExists('category')) {
-
-                $toSave = array(
-                    'member_id' => $Member->id,
-                    'key' => 'category',
-                    'value' => $postData['category']
-                );
-
-                if (!empty($postData['member_filter_category_id']) && $elemExists('member_filter_category_id')) {
-                    $toSave['id'] = $postData['member_filter_category_id'];
-                }
-
-                $MemberFilter->save($toSave);
-                
-                // add unselected tags to full categories
-                !empty($postData['tagIds']) ? $tagDiff = explode(',', $postData['tagIds']) : $tagDiff = [];
-                $isTagSetted = [];
-                $additionalCatTags = [];
-                $additionalTags = [];
-                foreach ($postData['category'] as $key => $val) { 
-                	$curTags = Tag::find(['category_id = ' . $val]) -> toArray();
-                	$isTagSetted[$val] = false;
-                	if ($curTags) {
-						while (list(, $tagOptions) = each($curTags)) {
-	                		if (in_array($tagOptions['id'], $tagDiff)) {
-	                			$isTagSetted[$val] = true;
-	                			break;
-	                		} else {
-	                			$additionalCatTags[$val][] = $tagOptions['id']; 
-	                		}
-                		}
-                	}
-                	if ($isTagSetted[$val]) {
-                		unset($additionalCatTags[$val]);
-                	} else {
-                		$additionalTags = array_merge($additionalTags, $additionalCatTags[$val]);
-                	}
-                }
-
-        	} else {
-                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "category"');
-                if ($filters) {
-                    $filters->delete();
-                }
+//_U::dump($postData);
+        $elemExists = function($elem) use (&$postData) {
+            if (!is_array($postData[$elem])) {
+                $postData[$elem] = trim(strip_tags($postData[$elem]));
             }
+            return (array_key_exists($elem, $postData) && !empty($postData[$elem]));
+        };
+
+        $memberFilters = MemberFilter::find(['member_id = ' . $this -> session -> get('memberId')]);
+        if ($memberFilters -> count() != 0) {
+			foreach ($memberFilters as $mf) {
+				$mf -> delete();
+			}
+		}
+   
+		if (!empty($postData['category']) && $elemExists('category')) {
+			$memberFilters = new MemberFilter();
+			$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+			           					'key' => 'category',
+			           					'value' => json_encode(array_keys($postData['category']))]);
+			$memberFilters -> save();
+		}
             
-            $MemberFilter = new MemberFilter();
-            if (!empty($postData['tagIds']) || !empty($additionalTags)) {
-				!empty($postData['tagIds']) ? $allTags = $postData['tagIds'] . ',' . implode(',', $additionalTags) : $allTags = implode(',', $additionalTags); 	
-            	
-                $toSave = array(
-                    'member_id' => $Member->id,
-                    'key' => 'tag',
-                    'value' => json_encode(array_filter(explode(',', $allTags)))
-                );
-
-                if (!empty($postData['recordTagId']) && isset($postData['recordTagId'])) {
-                    $toSave['id'] = $postData['recordTagId'];
-                }
-
-                $MemberFilter->save($toSave);
-            } else {
-                $filters = $MemberFilter->findFirst('member_id = '.$Member->id.' AND key = "tag"');
-                if ($filters) {
-                    $filters->delete();
-                }
-            }
+		if (!empty($postData['tag']) && $elemExists('tag')) {
+			$memberFilters = new MemberFilter();
+			$memberFilters -> assign(['member_id' => $this -> session -> get('memberId'),
+           								'key' => 'tag',
+           								'value' => json_encode(array_keys($postData['tag']))]);
+   			$memberFilters -> save();
         }
 
         $this->loadRedirect();
@@ -428,115 +375,22 @@ class MemberController extends \Core\Controllers\CrudController
         $this->view->pick('member/login');
     }
 
+    
     /**
-     * @Route("/member/link-fb", methods={'post'})
+     * @Route("/member/task-fb", methods={'post'})
      * @Acl(roles={'member'});
      */
-    public function linkToFBAccountAction()
+    public function addCronTaskAction()
     {
-        $response = [
-            'errors' => false
-        ];
-
-        $userData = $this->request->getPost();
-
-        if ($this->session->has('member')) {
-            $member = $this->session->get('member');
-
-            $memberNetwork = new MemberNetwork();
-
-            empty($userData['username']) ? $username = $member -> email : $username = $userData['username'];
-            
-            $memberNetwork -> assign(array(
-                'member_id' => $member->id,
-                'network_id' => 1,
-                'account_uid' => $userData['uid'],
-                'account_id' => $username
-            ));
-
-            if ($memberNetwork -> save()) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-						                    'member' => $member,
-						                    'uid' => $userData['uid'],
-						                    'token' => $userData['token']));
-
-                $this -> session -> set('user_fb_uid', $userData['uid']);
-                $this -> session -> set('user_token', $userData['token']);
-                $this -> session -> set('acc_synced', true);
-                $this -> view -> setVar('acc_external', $memberNetwork);
-            } else {
-            	$response['errors'] = true;	
-            }
-        }
-
-        echo json_encode($response);
-    }
-
-    /**
-     * @Route("/member/sync-fb", methods={'post'})
-     * @Acl(roles={'member'});
-     */
-    public function syncToFBAccountAction()
-    {
-        $response = [
-            'errors' => false
-        ];
-
-        $userData = $this->request->getPost();
-
-        if ($this->session->has('member')) {
-            $member = $this->session->get('member');
-
-            $memberNetwork = MemberNetwork::findFirst('member_id = ' . $member->id . ' AND account_uid = ' . $userData['uid']);
-
-            if ($memberNetwork->id) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
-                    'member' => $member,
-                    'uid' => $userData['uid'],
-                    'token' => $userData['token']
-                ));
-
-                $this -> session -> set('user_fb_uid', $userData['uid']);
-                $this->session->set('user_token', $userData['token']);
-                $this->session->set('acc_synced', true);
-                $this->view->setVar('acc_external', $memberNetwork);
-                
-                if ($this->session->has('user_token') && $this->session->has('user_fb_uid')) {
-                	$newTask = false;
-                
-                	$taskSetted = \Objects\Cron::find(array('member_id = ' . $member -> id  . ' and name =  "extract_facebook_events"'));
-                	if ($taskSetted -> count() > 0) {
-                		 $tsk = $taskSetted -> getLast();
-                		if (time()-($tsk -> hash) > 300) {
-                			$newTask = new \Objects\Cron();
-                		}
-                	} else {
-                		$newTask = new \Objects\Cron();
-                	}
-                
-                	if ($newTask) {
-                		$params = ['user_token' => $this -> session -> get('user_token'),
-			                		'user_fb_uid' => $this -> session -> get('user_fb_uid'),
-			                		'member_id' => $this -> session -> get('memberId')];
-                		
-                		$task = ['name' => 'extract_facebook_events',
-			                		'parameters' => serialize($params),
-			                		'state' => 0,
-			                		'member_id' => $this -> session -> get('memberId'),
-			                		'hash' => time()];
-                
-                		$newTask -> assign($task);
-                		$newTask -> save();
-                	}
-                }
-            } else {
-                $response = [ 'errors' => true ];
-            }
-        }
-
-        echo json_encode($response);
+    	$response['error'] = '';
+    	
+    	if ((new Cron()) -> createUserTask()) {
+    		$response['status'] = 'OK';
+    	} else {
+    		$response['status'] = 'FAIL';
+    	}
+    	
+    	$this -> sendAjax($response); 
     }
     
     

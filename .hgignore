@@ -1,12 +1,16 @@
 config/database.php
 config/facebook.php
 config/rabbitmq.php
+config/sharding.php
+config/shardingService.php
+config/service.php
 .htaccess
 .idea
 .buildpath
 htpasswd
 public/.htaccess
 public/upload
+vendor/*
 ^var/compiled/(?!empty$)
 ^var/logs/(?!empty$)
 ^var/cache/data/(?!empty$)
@@ -15,3 +19,6 @@ public/upload
 ^service_py/*
 ^\.pydevproject
 ^\.settings/org.eclipse.php.core.prefs
+apps/library/Thirdparty/Sharding/config.php
+composer.lock
+vendor/

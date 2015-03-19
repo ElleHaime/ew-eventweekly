@@ -1,6 +1,6 @@
 require.config({
 	baseUrl: '/js',
-   // urlArgs: "bust=" + (new Date()).getTime(),
+    urlArgs: "bust=" + (new Date()).getTime(),
 	paths: {
 		// plugins
 		'async': 'requirePlugins/async',
@@ -14,15 +14,17 @@ require.config({
 
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
+        'lazyload': 'library/vendors/lazyload',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'jTruncate': 'library/vendors/jquery.truncate',
 		'underscore': 'library/vendors/underscore',
 		'resizer': 'library/vendors/resizer',
-		'bootstrap': 'library/vendors/bootstrap.min',
+		'bootstrap': 'library/vendors/bootstrap',
 		'datetimepicker': 'library/vendors/datetimepicker.min',
 		'bootstrapDatepicker': 'library/vendors/bootstrap-datepicker',
 		'normalDatePicker': 'library/vendors/normalBootstrapDateTimepicker',
 		'niceDate': 'library/vendors/date',
+		'idangerous': '../_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min',
 
 		// maps
 		'gmap': 'library/maps/gmap',
@@ -36,9 +38,11 @@ require.config({
 		'noti': 'frontend/general/noti',
 		'noty': 'library/vendors/noty/js/noty/packaged/jquery.noty.packaged',
 		'frontEventLike': 'frontend/general/eventLike',
+		'lazyLoader': 'frontend/general/lazyLoader',
 		'signupControl': 'frontend/signup/signupControl',
 		'frontListSuggestCategory': 'frontend/list/suggestCategory',
 		'frontTopPanel': 'frontend/general/topPanel',
+		'frontFilterPanel': 'frontend/general/filterPanel',
 		'frontEventEditControl': 'frontend/event/controls/eventEditControl',
 		'frontEventListControl': 'frontend/event/controls/eventListControl',
 		'frontEventInviteFriend': 'frontend/event/controls/eventInviteFriend',
@@ -48,6 +52,7 @@ require.config({
         'frontMemberChangeLocation': 'frontend/member/controls/memberChangeLocation',
         'frontSearchPanel': 'frontend/general/searchPanel',
         'eventFriendControl': 'frontend/event/controls/eventFriendControl',
+        'eventSliderControl': 'frontend/event/controls/eventSliderControl',
         'profileChangePasswordControl': 'frontend/profile/controls/profileChangePasswordControl',
         'profileRestorePasswordControl': 'frontend/profile/controls/profileRestorePasswordControl',
         'frontCounterUpdater': 'frontend/general/counterUpdater',
@@ -68,6 +73,10 @@ require.config({
 		'underscore': {
             exports: '_'
         },
+        'lazyload': {
+        	deps: ['jquery'],
+        	exports: 'lazyload'
+        },
         'datetimepicker': {
         	deps: ['jquery'],
         	exports: 'datetimepicker'
@@ -86,6 +95,10 @@ require.config({
         },
         'bootstrap' : {
             deps: ['jquery']
+        },
+        'idangerous' : {
+            deps: ['jquery'],
+            exports: 'idangerous'
         },
         'noty' : {
             deps: ['jquery'],
@@ -130,17 +143,18 @@ require.config({
 
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
+        window.fbAppVersion = document.getElementById('fbAppVersion').value;
         
         var moduleName, fileName = '',
-        	re = /(\/[a-zA-Z-_]+)*(\/\d+){1}$/,
-            re1 = /\/([a-zA-Z0-9\-_]+)*\-(\d+){1}$/,
+        	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
+            re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/reset\/.+/;
         if (restoreRel.test(location.pathname)) {
             fileName = '/restore'
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (re.test(location.pathname) != 'undefined') {
-            fileName = location.pathname.replace(/(\/\d+)?$/, '');
+            fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
@@ -150,16 +164,20 @@ require.config({
         } else {
         	moduleName = 'frontend' + fileName;
         };
-        
+
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontCounterUpdater', 'bootstrap'], function($, frontSearchPanel, frontTopPanel, frontCounterUpdater, bootstrap){
-            $('.tooltip-text').tooltip();
-            frontSearchPanel.init();
-            frontCounterUpdater.init();
-            frontTopPanel.init({
-                searchCityBlock: '.searchCityBlock'
-            });
-        });
+        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
+      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
+      		{
+	            $('.tooltip-text').tooltip();
+	            
+	            frontSearchPanel.init();
+	            frontFilterPanel.init();
+	            frontTopPanel.init({
+	                searchCityBlock: '.searchCityBlock'
+	            });
+        	}
+       );
     }	
 });

@@ -9,11 +9,16 @@ class Model extends \Phalcon\Mvc\Model
 	public $extraOptions;
 	public $needCache = false;
 
-
+	public function onConstruct()
+	{
+		
+	}
+	
 	public function initialize()
     {
         $this -> setReadConnectionService('dbSlave');
         $this -> setWriteConnectionService('dbMaster');
+        $this -> useDynamicUpdate(true);
     }
 
 	public function getDependencyProperty()
@@ -76,7 +81,7 @@ class Model extends \Phalcon\Mvc\Model
 			$alias = $func -> getShortName();
 		}
 		
-		return $alias;;
+		return $alias;
 	}
 	
 	private function getRelationAliasName($refOptions)

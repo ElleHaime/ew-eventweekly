@@ -5,10 +5,13 @@ define('eventsPointer',
         return {
 
             settings: {
-                debug: false,
+                debug: true,
                 autoGetEvents: true,
-                eventsUrl: '/eventmap',
-                truncateLength: 30
+                eventsUrl: '/search/map',
+                eventsUrlParams: '.urlParams',
+                truncateLength: 30,
+                pageCurrent: 1,
+                requestInterval: 2000
             },
 
             __lastLat: null,
@@ -19,8 +22,13 @@ define('eventsPointer',
                 var $this = this;
 
                 $this.settings = _.extend($this.settings, options);
-
                 $this.pointEvents(searchResults);
+                
+                if ($this.settings.autoGetEvents) {
+                	$this.settings.pageCurrent++;
+                	
+                	$this.__getNextEvents();
+                }
             },
 
             pointEvents: function(events) {
@@ -28,24 +36,22 @@ define('eventsPointer',
 
                 if (_.isEmpty(events)) {
                     noty({text: 'No events for your request!', type: 'warning'});
-                }else {
+                } else {
                     _.each(events, function(node) {
                         $this.__drawMarker(node);
                     });
-
                     // add markers to clusterer
                     gmap.MC.addMarkers(gmap.Map.markers);
                     // redraw clusterer
                     gmap.MC.redraw();
 
-                    gmap.Map.setCenter(new google.maps.LatLng($this.__lastLat, $this.__lastLng));
+                    //gmap.Map.setCenter(new google.maps.LatLng($this.__lastLat, $this.__lastLng));
                 }
             },
 
             __drawMarker: function(event) {
                 var $this = this;
                 if ($this.settings.debug) {
-                    //console.log('Draw event: ');
                     //console.log(event);
                 }
 
@@ -82,56 +88,6 @@ define('eventsPointer',
                             marker.setIcon(marker.defaultIcon);
                         });
                     }
-                    /*// prepare HTML for popup window on map
-                    var contentString = $this.__createInfoPopupContentSingle(event);
-
-                    // initialize popup window
-                    var infoWindow = new google.maps.InfoWindow({
-                        content: contentString
-                    });
-
-                    $this.__lastLat = event.venue.latitude;
-                    $this.__lastLng = event.venue.longitude;
-
-                    var newLatLng = new google.maps.LatLng(event.venue.latitude, event.venue.longitude);
-
-                    // get array of markers currently in cluster
-                    var allMarkers = gmap.markers;
-
-                    // check to see if any of the existing markers match the latlng of the new marker
-                    if (allMarkers.length != 0) {
-                        for (var i=0; i < allMarkers.length; i++) {
-                            var existingMarker = allMarkers[i];
-                            var pos = existingMarker.getPosition();
-                            if (newLatLng.equals(pos)) {
-                                infoWindow.content = existingMarker.content + " & " + $this.__createInfoPopupContentSingle(event);
-                            }
-                        }
-                    }
-
-                    // create marker
-                    var marker = new google.maps.Marker({
-                        position: newLatLng,
-                        map: gmap.Map,
-                        title: event.name
-                    });
-
-                    // add content to marker
-                    marker.content = infoWindow.content;
-
-                    if ($this.settings.debug) {
-                        //console.log('New map marker was created below:');
-                        //console.log(marker);
-                    }
-
-                    // push new marker to storage
-                    gmap.markers.push(marker);
-
-                    // initialize click to marker on map for open information window
-                    google.maps.event.addListener(marker, 'click', function() {
-                        infoWindow.open(gmap.Map, marker);
-                    });*/
-                //}
             },
 
             __createInfoPopupContentSingle: function(event) {
@@ -145,6 +101,50 @@ define('eventsPointer',
                     '<a target="_blank" href="https://www.facebook.com/events/'+event.fb_uid+'">Facebook link</a> ' +
                     '<a href="'+eventlink+'">Eventweekly link</a></div>' +
                     '</div>';
+            },
+            
+            __getNextEvents: function()
+            {
+            	var $this = this;
+            	
+            	var makeRequest = function() {
+            		var url = $this.settings.eventsUrl + '?' + searchUrlParams + '&page=' + $this.settings.pageCurrent;
+
+            		$.when($.ajax({ url: url,
+                        			type: 'GET',
+                        			dataType: 'json',
+                        error: function() {
+                        	$this.settings.pageCurrent = 1;
+                            clearInterval(interval);
+                        }
+                    })).done(function(response) {
+                    	$this.__responseHandler(response);
+                    }).always(function(response) {
+                        //console.log('empty result');
+                    }); 	
+            	};
+            	
+            	makeRequest();
+            	
+                if ($this.settings.requestInterval > 0) {
+                    interval = setInterval(function() {
+                         makeRequest();
+                     }, $this.settings.requestInterval);
+                 }
+
+            },
+            
+            __responseHandler: function(data) {
+            	var $this = this;
+            	$this.pointEvents(data['data']);
+
+            	if (data['stop'] == true) {
+            		console.log('clear interval');
+                	$this.settings.pageCurrent = 1;
+                    clearInterval(interval);
+                } else {
+               		$this.settings.pageCurrent++;
+                }
             }
 
         };

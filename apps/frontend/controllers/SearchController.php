@@ -2,13 +2,16 @@
 
 namespace Frontend\Controllers;
 
-use Frontend\Form\SearchForm,
+use Frontend\Models\MemberFilter, //<---for new filters
+    Frontend\Models\Tag,          //<---for new filters
+    Frontend\Form\SearchForm,
     Frontend\Models\Event as EventModel,
     Phalcon\Mvc\Model\Resultset,
     Frontend\Models\Category,
     Frontend\Models\Location,
     Frontend\Models\Event,
-    Core\Utils as _U;
+    Core\Utils as _U,
+    Frontend\Models\Cron as Cron;
 
 /**
  * @RoutePrefix('/')
@@ -25,56 +28,26 @@ class SearchController extends \Core\Controller
      */
     public function searchAction()
     {
-    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
-            $newTask = null;
-            $taskSetted = \Objects\Cron::find(array('member_id = ' . $this -> session -> get('memberId') . ' and name =  "extract_facebook_events"'));
-            
-            if ($taskSetted -> count() > 0) {
-                $tsk = $taskSetted -> getLast();
-                if (time()-($tsk -> hash) > $this -> config -> application -> pingFbPeriod) {
-                    $newTask = new \Objects\Cron();
-                }
-            } else {
-                $newTask = new \Objects\Cron();
-            }
-
-            if ($newTask) {
-                $params = ['user_token' => $this -> session -> get('user_token'),
-                           'user_fb_uid' => $this -> session -> get('user_fb_uid'),
-                           'member_id' => $this -> session -> get('memberId')];
-                $task = ['name' => 'extract_facebook_events',
-                         'parameters' => serialize($params),
-                         'state' => 0,
-                         'member_id' => $this -> session -> get('memberId'),
-                         'hash' => time()];
-                
-                $newTask -> assign($task);
-                $newTask -> save();
-            }
-        }
-    	
-        $categories = Category::find();
-        $categories = $categories->toArray();
-        $this->view->setVar('categories', $categories);
-
+		(new Cron()) -> createUserTask();
+		    	
         $form = new SearchForm();
         $this -> view -> form = $form;
 
         $result = array();
         $countResults = 0;
-        $Event = new Event();
-        $needTags = false;
+
         $postData = $this->request->getQuery();
-//_U::dump($postData, true);
         // retrieve data from POST
         if (empty($postData)) {
             $postData = $this->request->getPost();
         }
-
         // retrieve data from GET
         if (empty($postData)) {
             $postData = $this->session->get('userSearch');
         }
+
+//_U::dump($this -> view -> getVar('userFilters'));        
+//_U::dump($postData);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -95,57 +68,40 @@ class SearchController extends \Core\Controller
             }
             return $answer;
         };
-
-        // if no location specify - set from user location
-        if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) {
-            $location = $this->session->get('location');
-            
-            $postData['searchLocationLatMin'] = $location->latitudeMin;
-            $postData['searchLocationLatMax'] = $location->latitudeMax;
-            $postData['searchLocationLngMin'] = $location->longitudeMin;
-            $postData['searchLocationLngMax'] = $location->longitudeMax;
-        }
-
+        
         $pageTitle = 'Search results: ';
-
+        $queryData = [];
+        
         // if income data not empty
         if (!empty($postData)) {
-            $this->view->setVar('userSearch', $postData);
+        	$this -> view -> setVar('userSearch', $postData);
 
             // add search condition by title
             if ($elemExists('searchTitle')) {
-                $Event->addCondition('Frontend\Models\Event.name LIKE "%'.$postData['searchTitle'].'%"');
-
+                $queryData['searchTitle'] = $postData['searchTitle'];
                 $pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
             }
 
             // add search condition by location
-            if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
-            	$Event->addCondition('Frontend\Models\Event.latitude = '.$postData['searchLocationLatCurrent'].' 
-            			AND Frontend\Models\Event.longitude = '.$postData['searchLocationLngCurrent']);
+        	// if no location specify - set from user location
+        	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
+        	{
+        		if ($elemExists('searchTitle', false)) {
+            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+	        	}
             	
-            } elseif ($elemExists('searchLocationLatMin') && $elemExists('searchLocationLatMax') 
-            	&& $elemExists('searchLocationLngMin') && $elemExists('searchLocationLngMax')) {
-         	
-                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') ||
-                    ($elemExists('searchLocationField', false) && $elemExists('searchCategoriesType') && 
-                        $postData['searchCategoriesType'] == 'private' && $elemExists('searchTitle', false)))
+        	} else {
+        		
+                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') && $elemExists('searchTitle', false))
                 {
-                    $Event->addCondition('Frontend\Models\Event.latitude BETWEEN '.$postData['searchLocationLatMin'].' 
-                    		AND '.$postData['searchLocationLatMax'].' AND Frontend\Models\Event.longitude BETWEEN '.$postData['searchLocationLngMin'].' 
-                    		AND '.$postData['searchLocationLngMax']); 
-                	
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 
-                    $loc = new Location();
-                    $newLocation = $loc -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-/*                    if ($newLocation) {
-                    	$Event -> addCondition('Frontend\Models\Event.location_id = ' . $newLocation -> id);
-                    } */
-
+                    $newLocation = (new Location()) -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+                    if ($newLocation) {
+                    	$queryData['searchLocationField'] = $newLocation -> id;
+                    } 
                     $this->session->set('location', $newLocation);
-
                     $this->cookies->get('lastLat')->delete();
                     $this->cookies->get('lastLng')->delete();
 
@@ -154,138 +110,105 @@ class SearchController extends \Core\Controller
             } 
 
             // add search condition by dates
-            if ($elemExists('searchStartDate') && $elemExists('searchEndDate', false)) {
-                $Event->addCondition('((Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].' 00:00:00" AND Frontend\Models\Event.end_date >= "'.$postData['searchStartDate'].' 23:59:59")');
-                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('Frontend\Models\Event.start_date >= "'.$postData['searchStartDate'].' 00:00:00")', Event::CONDITION_SIMPLE);
-
-                $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
-
-            } elseif ($elemExists('searchStartDate', false) && $elemExists('searchEndDate')) {
-            	$Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "' . date('Y-m-d H:m:i', time()). '" AND "'.$postData['searchEndDate'].' 23:59:59")');
-            	
-            	$pageTitle .= 'now and till "'.$postData['searchEndDate'].'" | ';
-            	 
-            } elseif($elemExists('searchStartDate') && $elemExists('searchEndDate')) {
-                $Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "'.$postData['searchStartDate'].' 00:00:00" AND "'.$postData['searchEndDate'].' 23:59:59")');
-                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$postData['searchStartDate'].' 00:00:00" AND "'.$postData['searchEndDate'].' 23:59:59")', Event::CONDITION_SIMPLE);
-                $Event->addCondition('OR', Event::CONDITION_SIMPLE);
-                $Event->addCondition('(Frontend\Models\Event.start_date <= "'.$postData['searchStartDate'].' 00:00:00" AND Frontend\Models\Event.end_date >= "'.$postData['searchEndDate'].' 23:59:59"))', Event::CONDITION_SIMPLE);
-
-                $pageTitle .= 'from "'.$postData['searchStartDate'].'" | ';
-                $pageTitle .= 'to "'.$postData['searchEndDate'].'" | ';
+            if ($elemExists('searchStartDate')) {
+                $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
+                $queryData['searchStartDate'] = $startDate;
+                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime('today +30 days'));
                 
-            } else {
-            	if ($elemExists('searchTitle', false) && !$elemExists('searchCategory')) {
-            		$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-            		$endDate = date('Y-m-d H:i:s', strtotime('today +3 days'));
-            		
-            		$Event->addCondition('((Frontend\Models\Event.start_date BETWEEN "' . $startDate .'" AND "'. $endDate .'")');
-            		$Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            		$Event->addCondition('(Frontend\Models\Event.end_date BETWEEN "'.$startDate .'" AND "'.$endDate .'")', Event::CONDITION_SIMPLE);
-            		$Event->addCondition('OR', Event::CONDITION_SIMPLE);
-            		$Event->addCondition('(Frontend\Models\Event.start_date <= "'.$startDate .'" AND Frontend\Models\Event.end_date >= "'.$endDate .'"))', Event::CONDITION_SIMPLE);
-            		
+                $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
+            }  else {
+            	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
+            	$queryData['searchStartDate'] = $startDate;
+            	
+            	if ($elemExists('searchTitle', false)) {
+            		$queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime('today +30 days'));
             		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
             	} 
+			}
+	
+			if ($elemExists('searchTags')) {
+				if ($postData['personalPresetActive'] != 1) {
+					if ($elemExists('searchCategories')) {
+						$userSearchFilters['category'] = $postData['searchCategories'];
+						$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+					} else {
+						$userSearchFilters['category'] = [];
+					}
+					if ($elemExists('searchTags')) {
+						$userSearchFilters['tag'] = $postData['searchTags'];
+						$queryData['searchTag'] = array_keys($postData['searchTags']);
+					} else {
+						$userSearchFilters['tag'] = [];
+					}
+					$this -> session -> set('userSearchFilters', $userSearchFilters);
+					$this -> filters -> loadUserFilters(false);
+				} else {
+					$searchTags = $this -> filters -> getActiveTags();
+					$searchCategories = $this -> filters -> getActiveCategories();
+					if (!empty($searchTags)) {
+						$queryData['searchTag'] = $searchTags;
+					}
+					if (!empty($searchCategories)) {
+						$queryData['searchCategory'] = $searchCategories;
+					}
+				}
+            } else {
+            	$filterTags = $this -> filters -> getActiveTags();
+            	if (!empty($filterTags)) {
+            		$queryData['searchTag'] = $filterTags;
+            	} 
+            	$filterCategories = $this -> filters -> getActiveCategories();
+            	if (!empty($filterCategories)) {
+            		$queryData['searchCategory'] = $filterCategories;
+            	}
             }
             
-            // set order by start date
-            $Event->addOrder('Frontend\Models\Event.start_date ASC');
+//_U::dump($queryData);
+			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+			
+			// search type
+            if ($elemExists('searchTypeResult')) {
+            	$page = $this -> request -> getQuery('page');
+            	empty($page) ?	$eventGrid->setPage(1) : $eventGrid->setPage($page);
+            	 
+                if ($postData['searchTypeResult'] == 'Map') {
+                	$eventGrid -> setLimit(50);
+					$results = $eventGrid->getData();
 
-            // search type
-            if ($elemExists('searchType')) {
-                if ($postData['searchType'] == 'in_map') {
+                    foreach($results['data'] as $id => $event) {
+                    	$result[$event -> id] = (array)$event;
 
-                	if ($elemExists('searchTag')) {
-						$Event->addCondition('Frontend\Models\EventTag.tag_id IN (33,34,67)');
-						$needTags = true;
-					}
-
-                    if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
-                        $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
-
-                        $pageTitle .= 'by categories - ';
-
-                        foreach ($categories as $node) {
-                            if (in_array($node['id'], $postData['searchCategory'])) {
-                                $pageTitle .= ' '.$node['name'];
-                            }
-                        }
-
-                        if (count($postData['searchCategory']) == 1) {
-                            $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
-                        }
-
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], false, [],
-                                                           false, false, false, false, false, $needTags);
-                    } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
-                        								   false, false, false, false, false, $needTags, $postData['searchCategory']);
-                    } elseif (!$elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                    	$result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_DESC, [], true, [],
-                    										false, false, false, false, false, $needTags, []);
-                	} else {
-                        $result = $Event->fetchEvents(Event::FETCH_ARRAY, Event::ORDER_ASC, [], false, [],
-                        								   false, false, false, false, false, $needTags);
-                    }
-
-                    foreach($result as $id => $event) {
-                    	if (file_exists(ROOT_APP . 'public/upload/img/event/' . $event['id'] . '/' . $event['logo'])) {
-                    		$result[$id]['logo'] = '/upload/img/event/' . $event['id'] . '/' . $event['logo'];
+                    	if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
+                    		$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
                     	} else {
-                    		$result[$id]['logo'] = $this -> config -> application -> defaultLogo;
+                    		$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
                     	}
+                    	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     }
+                   	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
+
                     
-                    
-                    $countResults = count($result);
-                    $result = json_encode($result, JSON_UNESCAPED_UNICODE);
                 } else {
-                    $page = $this->request->getQuery('page');
-                    if (empty($page)) {
-                        $page = 1;
+                    $eventGrid -> setLimit(9);
+                    $eventGrid -> setParam('order','start_date');
+                    $eventGrid -> setSortDirection('ASC');
+                    $results = $eventGrid->getData();
+
+                    foreach($results['data'] as $key => $value) {
+                    	$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
                     }
-
-                    if ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'global') {
-                        $Event->addCondition('Frontend\Models\EventCategory.category_id IN ('.implode(',', $postData['searchCategory']).')');
-
-                        $pageTitle .= 'by categories - ';
-
-                        foreach ($categories as $node) {
-                            if (in_array($node['id'], $postData['searchCategory'])) {
-                                $pageTitle .= ' '.$node['name'];
-                            }
-                        }
-
-                        if (count($postData['searchCategory']) == 1) {
-                            $this->view->setVar('primaryCategory', $postData['searchCategory'][0]);
-                        }
-
-                        if ($elemExists('searchTag')) {
-							$Event->addCondition('Frontend\Models\EventTag.tag_id IN (34,33,67)');
-							$needTags = true;
-						}
-
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10],
-                        								   false, [], false, false, false, true, true, $needTags);
-
-                    } elseif ($elemExists('searchCategory') && $postData['searchCategoriesType'] == 'private' && $this->session->has('memberId')) {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], true, [],
-                        								   false, false, false, true, true, $needTags, $postData['searchCategory']);
-                    } else {
-                        $fetchedData = $Event->fetchEvents(Event::FETCH_OBJECT, Event::ORDER_DESC, ['page' => $page, 'limit' => 10], false, [],
-                        								   false, false, false, true, true, $needTags);
-                    }
-                    $result = $fetchedData->items;
                     
-                    unset($fetchedData->items);
-                    $countResults = $fetchedData->total_items;
+	                if ($results['all_page'] > 1) {
+			            $this -> view -> setVar('pagination', $results['array_pages']);
+			            $this -> view -> setVar('pageCurrent', $results['page_now']);
+			            $this -> view -> setVar('pageTotal', $results['all_page']);
+			        }
                 }
             }
-
+            $countResults = $results['all_count'];
         }
+        
+//_U::dump($results);        
 
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
@@ -293,9 +216,6 @@ class SearchController extends \Core\Controller
 
         $this->view->setVar('list', $result);
         $this->view->setVar('eventsTotal', $countResults);
-        if (isset($fetchedData)) {
-            $this->view->setVar('pagination', $fetchedData);
-        }
         
         if ($elemExists('searchLocationLatCurrent') && $elemExists('searchLocationLngCurrent')) {
         	if (isset($fetchedData) && ($fetchedData -> current == $fetchedData -> total_pages)) {
@@ -307,13 +227,12 @@ class SearchController extends \Core\Controller
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
-
         $this->view->setVar('listTitle', $pageTitle);
      
         $urlParams = http_build_query($postData);
         $urlParamsPaginate = $urlParams;
         
-        if ($postData['searchType'] == 'in_map') {
+        if ($postData['searchTypeResult'] == 'Map') {
         	$urlParams = str_replace(['in_map'], ['in_list'], $urlParams); 
         } else {
         	$urlParamsPaginate = $urlParams;
@@ -322,16 +241,62 @@ class SearchController extends \Core\Controller
         }
         $this->view->setVar('urlParams', $urlParams);
         
-        if ($postData['searchType'] == 'in_map') {
+        $member = '\Frontend\Models\Member';
+		$list = $member::findFirst($this -> session -> get('memberId'));
+        
+        if ($this -> session -> has('eventsTotal')) {
+            $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+        }
+        
+        $tagIds = '';        
+        $member_categories = (new MemberFilter())->getbyId();
+        if (isset($member_categories['tag'])) {
+        	$tagIds = implode(',', $member_categories['tag']['value']);
+        }
+        if (isset($member_categories['category'])) {
+        	$categoryIds = implode(',', $member_categories['category']['value']);
+        }
+
+        $this->view->setVars([
+                'member', $list,
+                'member_categories' => $member_categories,
+        		'tagIds' => $tagIds,
+        		'categoryIds' => $categoryIds
+		]);
+        $categories = Category::find();
+        $categories = $categories->toArray();
+        $this -> view -> setVar('categories', $categories);
+    
+        if (strtolower($postData['searchTypeResult']) == 'map') {
         	$this->view->setVar('link_to_list', true);
         	$this->view->setVar('searchResult', true);
         	$this->view->setVar('searchResultMap', true);
-            $this->view->pick('event/mapEvent');
+        	
+        	if ((int)$page > 1) {
+	        	if ($results['page_now'] < $results['all_page']) {
+					$res['stop'] = false;
+				} else {
+					$res['stop'] = true;
+				}
+        		$res['data'] = json_decode($result);
+        		$res['page_now'] = $results['page_now'];
+        		$res['page_all'] = $results['all_page'];
+				$this -> sendAjax($res);
+				exit();        		
+        	} else {
+        		$this->view->pick('event/map');
+        	}
         } else {
-        	$this->view->setVar('searchResultList', true);
-            $this->view->pick('event/eventList');
+            if ($page >1 ) {
+                $this->view->setVar('searchResultList', true);
+                $this->view->pick('event/eventListPart');
+            }
+            else {
+                $this->view->setVar('searchResultList', true);
+                $this->view->setVar('totalPagesJs', $fetchedData -> total_pages);
+                $this->view->pick('event/eventList');
+            }
         }
     }
-
 }
 

@@ -22,9 +22,17 @@ class SearchForm extends Form
         $this->addElement('hidden', 'searchLocationLngMax', 'By Location Longitude');
 
         // start date
-        $this->addElement('text', 'searchStartDate', 'Start Date');
+        $this->addElement('hidden', 'searchStartDate', 'Start Date');
+        
+        // search result: map or list
+        $this->addElement('hidden', 'searchTypeResult', 'Show result');
+        $this -> view -> setVar('searchTypes', ['Map', 'List']);
 
-        // end date
+/*
+ 		// start date
+        $this->addElement('text', 'searchStartDate', 'Start Date'); 
+      
+  		// end date
         $this->addElement('text', 'searchEndDate', 'End Date');
 
         // search by category
@@ -36,7 +44,7 @@ class SearchForm extends Form
                     'value' => $node['id']
                 ));
         }
-
+*/
         $this->add(new Submit('search'));
     }
 

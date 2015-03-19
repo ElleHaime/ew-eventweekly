@@ -16,18 +16,6 @@ class EventImage extends Model
 	{
 		parent::initialize();
 				
-		$this -> belongsTo('event_id', '\Object\Event', 'id', array('alias' => 'event'));
-	}
-	
-	public function beforeValidationOnCreate()
-	{
-	}
-	
-	public function afterSave()
-	{
-	}
-	
-	public function validation()
-	{
+		$this -> belongsTo('event_id', '\Frontend\Models\Event', 'id', array('alias' => 'event'));
 	}
 }

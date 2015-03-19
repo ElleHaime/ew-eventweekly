@@ -9,6 +9,8 @@ class Venue extends Model
 {
 	public $id;
 	public $fb_uid;
+	public $eb_uid;
+	public $eb_url;
 	public $location_id;
 	public $name;
 	public $address;	
@@ -23,7 +25,7 @@ class Venue extends Model
 		parent::initialize();
 				
 		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
-		$this -> hasOne('id', '\Object\Event', 'venue_id', array('alias' => 'event'));
+		$this -> hasMany('id', '\Frontend\Models\Event', 'venue_id', array('alias' => 'event'));
 	}
 	
 	public function createOnChange($argument = array())

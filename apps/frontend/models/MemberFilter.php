@@ -22,12 +22,19 @@ class MemberFilter extends MemberFilterObject
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
-    public function getbyId($id)
+    public function getbyId($id = false)
     {
         $return = array();
 
-        if (!empty($id)) {
-            $result = $this->find('member_id = '.$id)->toArray();
+        if (!$id) {
+        	if ($this -> getDI() -> has('session') && $this -> getDI() -> get('session') -> has('memberId')) {
+        		$id = $this -> getDI() -> get('session') -> get('memberId');
+        	} 
+        }
+
+        if ($id) {
+            $result = self::find('member_id = '.$id) -> toArray();
+
             if ($result) {
 	            foreach ($result as $node) {
 	                if (self::isJson($node['value'])) {
@@ -37,6 +44,7 @@ class MemberFilter extends MemberFilterObject
 	            }
            }
         }
+
         return $return;
     }
     
@@ -46,8 +54,8 @@ class MemberFilter extends MemberFilterObject
 
     	if (!empty($return)) {
 			$isPresetChanged = array_diff($return['category']['value'], $compareSet);
-			
-    		if (!empty($isPresetChanged)) {
+
+			if (!empty($isPresetChanged)) {
     			$categoryPreseted = $return['category']['value'];
     			$tagsPreseted = $return['tag']['value'];
     			

@@ -17,7 +17,10 @@ class Application extends BaseApplication
 	private $_config 				= null;
 	private $_facebookConfig		= null;
 	private $_databaseConfig 		= null;
+    private $_elasticConfig 		= null;
 	private $_router 				= null;
+	private $_shardingConfig		= null;
+	private $_shardingServiceConfig	= null;
 	protected $_loader				= null;
 	protected $_annotations			= null;
 	public static $defModule		= 'frontend';
@@ -30,15 +33,23 @@ class Application extends BaseApplication
 		include_once(CONFIG_SOURCE);
 		include_once(DATABASE_CONFIG_SOURCE);
 		include_once(FACEBOOK_CONFIG_SOURCE);
+        include_once(SERVICE_CONFIG_SOURCE);
+        include_once(SHARDING_CONFIG_SOURCE);
+        include_once(SHARDING_SERVICE_CONFIG_SOURCE);
 
 		$this -> _config = new Config($cfg_settings);
 		$this -> _databaseConfigWrite = new Config($cfg_database_master);
 		$this -> _databaseConfigRead = new Config($cfg_database_slave);
 		$this -> _facebookConfig = new Config($cfg_facebook);
+        $this -> _elasticConfig = new Config($cfg_elastic);
+        $this -> _shardingConfig = new Config($cfg_sharding);
+        $this -> _shardingServiceConfig = new Config($cfg_sharding_service);
 
 		$di = new DIFactory();
 		$di -> setShared('config', $this -> _config);
 		$di -> setShared('facebook_config', $this -> _facebookConfig);
+		$di -> setShared('shardingConfig', $this -> _shardingConfig);
+		$di -> setShared('shardingServiceConfig', $this -> _shardingServiceConfig);
 
 		if ($this -> _config -> application -> defaultModule) {
 			self::$defModule = $this -> _config -> application -> defaultModule;
@@ -63,6 +74,7 @@ class Application extends BaseApplication
 		$this -> _initUrl($di);
 		$this -> _initCache($di);
 		$this -> _initModules($di);
+        $this -> _initElastic($di);
 
 		$di -> setShared('app', $this);
 	}
@@ -104,7 +116,7 @@ class Application extends BaseApplication
 			$this -> _loader -> register();
 
             // Loader fo GeoIp MaxMind
-            ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce::getLoader();
+            ComposerAutoloaderInit19cdb3f649c3bc3b13267b71c926c6ce::getLoader(); 
 
 			$di -> set('loader', $this -> _loader);
 		}
@@ -138,7 +150,7 @@ class Application extends BaseApplication
 	{
 		$this -> _annotations = new \Core\Annotations($di);
 		$this -> _annotations -> run();
-				
+
 		$di -> set('annotations', $this -> _annotations);
 	}
 
@@ -159,7 +171,6 @@ class Application extends BaseApplication
 				$this -> _router -> add($link, $route);
 			}
 		}
-		 
 		$di -> set('router', $this -> _router);
 	}
 	
@@ -190,6 +201,7 @@ class Application extends BaseApplication
 	
 	protected function _initDatabase(\Phalcon\DI $di)
 	{
+		
 		if (!$di -> has('dbSlave')) {
 
 			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigRead -> adapter;
@@ -241,7 +253,6 @@ class Application extends BaseApplication
 		}
 
 		if (!$di -> has('dbMaster')) {
-
 			$adapter = '\Phalcon\Db\Adapter\Pdo\\' . $this -> _databaseConfigWrite -> adapter;
 			$config = $this -> _databaseConfigWrite;
 			
@@ -271,7 +282,6 @@ class Application extends BaseApplication
 					);
 
                     $connection->setEventsManager($eventsManager);
-
 					return $connection;
 				} 
 			);
@@ -292,4 +302,16 @@ class Application extends BaseApplication
 
 		$di -> set('cacheData', $cache);
 	}
+
+    protected function _initElastic(\Phalcon\DI $di)
+    {
+        $params = $this -> _elasticConfig -> toArray();
+        $di->set('elastic', function() use ($params, $di) {
+            $config = [
+                'index' => $params['index'],
+                'connections' => $params['connections']
+            ];
+            return new \Engine\Search\Elasticsearch\Client($config);
+        });
+    }
 }

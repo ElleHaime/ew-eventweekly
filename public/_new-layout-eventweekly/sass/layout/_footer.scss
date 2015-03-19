@@ -1,0 +1,88 @@
+#footer {
+	position: relative;
+	width: 100%;
+	padding: 50px 0;
+	background: #1A1A1A;
+	border-top:2px solid #A86514;
+	z-index: 101;
+
+	.widgets {
+		@include clearfix();
+		margin-left: -1.6%;
+
+		.widget {
+			float:left;
+			padding: 0 0 0 1.6%;
+
+			&__title {
+				color:#F7931E;
+				font-family: "Open Sans";
+				font-size:20px;
+				font-weight: 300;
+				margin-bottom: 25px;
+
+				@include breakpoint(480px) {
+					font-size: 22px;
+				}	
+			}
+
+			&__text {
+				font-family: "Open Sans";
+				font-weight: 300;
+				font-size: 14px;
+				color:#B3B3B3;
+
+				@include breakpoint(480px) {
+					font-size: 16px;
+				}	
+			}
+
+			a {
+				color:#B3B3B3;
+			}
+
+			ul {
+				li {
+					margin-bottom: 15px; 
+
+					@include breakpoint(480px) {
+						margin-bottom: 25px;
+					}	
+				}
+			}
+
+
+			.social {
+				&__item {
+					display: inline-block;
+					font-size:30px;
+					margin-right: 10px;
+
+					a {
+						position: relative;
+						display: block;
+						width: 26px;
+						height: 34px;
+						overflow: hidden;
+						color:#D67F1A;
+						&:active {
+							top: 1px;
+						}
+					}
+				}
+			}
+
+
+			@include breakpoint(695px) {
+				width: 50%;
+			}	
+
+			@include breakpoint(480px) {
+				width: 100%;
+				text-align: center;	
+			}	
+		}
+
+
+	}
+}

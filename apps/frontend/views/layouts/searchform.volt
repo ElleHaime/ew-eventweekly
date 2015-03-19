@@ -51,7 +51,7 @@
             {% else %}
                 {% set searchStartDate = '' %}
             {% endif %}
-            {{ searchForm.render('searchStartDate', {'placeholder':'From', 'value': searchStartDate, 'class': 'startDatePicker'}) }}
+            {{ searchForm.render('searchStartDate', {'placeholder':searchStartDate, 'value': searchStartDate, 'class': 'startDatePicker'}) }}
             {#<i class="icon-calendar"></i>#}
         </div>
         <div class="input-div ">

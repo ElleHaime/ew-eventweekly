@@ -8,7 +8,7 @@ define('profileRestorePasswordControl',
 
             self.settings = {
                 formRestorePassword: '#restore-password-form',
-                formResetPassword: '#reset-password-form',
+                formResetPassword: '#form_signup',
 
                 inpEmail: '#email',
                 inpPassword: '#password',

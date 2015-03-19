@@ -1,0 +1,66 @@
+.form-checkbox {
+
+    input[type="checkbox"]:not(old) {
+    // .form-radio input[type="radio"]:not(old){
+        width: 16px;
+        height: 18px;   
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+    }
+
+    input[type="checkbox"]:not(old) + label {
+    // .form-radio input[type="radio"]:not(old) + label{
+        display: inline-block;
+        margin-left : -20px;
+        margin-bottom: 0;
+        font-family: "Open Sans";
+        font-size: 14px;
+        font-weight: normal;
+        color:#999999;
+        // padding-left: 20px;
+        // overflow: hidden;
+    }
+
+    input[type="checkbox"]:not(old) + label > span {
+    // .form-radio input[type="radio"]:not(old) + label > span{
+        @include border-radius(2px);
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background: #4D4D4D;
+        border: 1px solid #666666;
+        margin-right: 10px;
+        margin-top: -4px;
+        vertical-align: middle;
+    }
+
+    input[type="checkbox"]:not(old):checked + label > span {
+    // .form-radio input[type="radio"]:not(old):checked + label > span{
+        // styles for checked
+    }
+
+    input[type="checkbox"]:not(old):checked + label > span:before{
+        content: '✓';
+        display: block;
+        color:#F7931E;
+        text-align: center;
+        font-size: 14px;
+    }
+
+}
+
+// .form-radio input[type="radio"]:not(old):checked +  label > span > span{
+//     display          : block;
+//     width            : 0.5em;
+//     height           : 0.5em;
+//     margin           : 0.125em;
+//     border           : 0.0625em solid rgb(115,153,77);
+//     border-radius    : 0.125em;
+//     background       : rgb(153,204,102);
+//     background-image :    -moz-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+//     background-image :     -ms-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+//     background-image :      -o-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+//     background-image : -webkit-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+//     background-image :         linear-gradient(rgb(179,217,140),rgb(153,204,102));
+// }

@@ -69,10 +69,27 @@ class DateTime {
      */
     protected static $_time = null;
     
+    public static $defaultStartDate = 'today -1 minute';
+    public static $defaultEndDate = 'today +3 days';
+    
+    
+    public static function getDefaultStartDate()
+    {
+		return date('Y-m-d H:i:s', self::fromString(self::$defaultStartDate));
+    }
+    
+    
+    public static function getDefaultEndDate()
+    {
+        return date('Y-m-d H:i:s', self::fromString(self::$defaultEndDate));
+    }
+    
+    
     public static function setConfig($config)
     {
         self::$config = $config;
     }
+    
 
     /**
      * Magic set method for backwards compatibility.
@@ -349,6 +366,7 @@ class DateTime {
         if (!$format) {
             $format = self::$niceFormat;
         }
+
         return self::_strftime(self::convertSpecifiers($format, $date), $date);
     }
 

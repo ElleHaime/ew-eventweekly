@@ -16,6 +16,6 @@ class Category extends Model
 	public function initialize()
 	{
 		parent::initialize();
-		$this -> hasMany('id', '\Objects\EventCategory', 'category_id', array('alias' => 'eventpart'));
+		$this -> hasMany('id', '\Frontend\Models\EventCategory', 'category_id', array('alias' => 'eventpart'));
 	}
 }

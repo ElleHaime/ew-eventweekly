@@ -8,7 +8,8 @@ use Frontend\Form\SignupForm,
     Frontend\Form\RestoreForm,
     Frontend\Form\ResetForm,
     Frontend\Models\Member,
-    Frontend\Models\EventMemberCounter,
+    Frontend\Models\Cron,
+    Frontend\Models\Location,
     Frontend\Models\MemberNetwork,
     Frontend\Events\MemberListener,
     Core\Auth,
@@ -57,7 +58,6 @@ class AuthController extends \Core\Controller
                     }
                 } else {
                     $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
                     if (!$this->request->isAjax()) {
@@ -99,16 +99,7 @@ class AuthController extends \Core\Controller
                 }
 
                 if ($member -> save()) {
-                	$memberCounter = new EventMemberCounter();
-                	$memberCounter -> assign(['member_id' => $member -> id,
-				                			  'userEventsLiked' => 0,
-				                			  'userEventsGoing' => 0,
-				                			  'userFriendsGoing' => 0,
-				                			  'userEventsCreated' => 0]);
-                	$memberCounter -> save();
-                	 
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this -> eventsManager -> fire('App.Auth.Member:setEventsCounters', $this, $member);
                     $this -> response -> redirect('/map');
                 } 
                     
@@ -126,23 +117,26 @@ class AuthController extends \Core\Controller
      */
     public function fbloginAction()
     {
+    	$uid = $this -> request -> getPost('uid', 'string');
         $access_token = $this -> request -> getPost('access_token', 'string');
-        $uid = $this -> request -> getPost('uid', 'string');
+        $access_type = $this -> request -> getPost('access_type', 'string');
 
         if (!empty($access_token)) {
-          	$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
-          
-            if ($memberNetwork) {
-                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-                $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-            } 
-           
-            $this -> session -> set('user_token', $access_token);
-            $this -> session -> set('user_fb_uid', $uid);
-            $this -> session -> set('role', Acl::ROLE_MEMBER);
-
-            $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this); 
-
+        	$this -> session -> set('user_token', $access_token);
+        	$this -> session -> set('user_fb_uid', $uid);
+        	
+        	if ($access_type == 'sync') {
+				(new Cron()) -> createUserTask();				 
+        	} else {
+        		$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
+        		 
+        		if ($memberNetwork) {
+        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			(new Cron()) -> createUserTask();
+        		}
+        		$this -> session -> set('role', Acl::ROLE_MEMBER);
+        		$this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+        	}
             $res['status'] = 'OK';
             $res['message'] = $access_token;
             echo json_encode($res);
@@ -160,90 +154,76 @@ class AuthController extends \Core\Controller
     public function fbregisterAction()
     {
         $userData =  $this -> request -> getPost();
+        isset($this -> getDI() -> get('facebook_config') -> facebook -> version) ? $fbVesrion = $this -> getDI() -> get('facebook_config') -> facebook -> version : $fbVersion = 'v2.2';
         $res = [];
         
         if (!$this -> session -> has('member')) {
-        	$checkMember = Member::findFirst('email = "' . $userData['email'] . '"');
-        	if ($checkMember && $checkMember -> network) {
-        		$memberNetwork = MemberNetwork::findFirst('member_id = ' . $checkMember -> id);
-        		if ($memberNetwork) {
-        			$memberNetwork -> account_uid = $userData['uid'];
-        			$memberNetwork -> update();
-        			
-        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-        			$this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-        		}
-        	}
+       		$memberNetwork = MemberNetwork::findFirst('account_id = "' .  $userData['uid'] . '"');
+       		if ($memberNetwork) {
+       			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        		(new Cron()) -> createUserTask();
+       		}
+        } elseif ($this -> session -> has('member') && !isset($this -> session -> get('member') -> network)) {
+        	(new MemberNetwork()) -> addMemberNetwork($this -> session -> get('memberId'), $userData['uid'], $userData['user_name']);
         }
+        
         
         if (!$this -> session -> has('member')) {
             $member = new Member();
-
             $locationByIp = $this->session->get('location');
-            if (isset($userData['location']) && !empty($userData['location']) && $locationByIp) {
-                $locationByFb = $userData['location'];
+            if (isset($userData['locationLat']) && isset($userData['locationLng']) && $locationByIp) {
+                $locationByFb = (new Location()) -> createOnChange(['latitude' => $userData['locationLat'], 'longitude' => $userData['locationLng']]);
 
-                if ((strtolower($locationByFb['country']) != strtolower($locationByIp->country)) 
-                        || (strtolower($locationByFb['city']) != strtolower($locationByIp->city))) 
-                {
-                    $this->session->set('location_conflict', true);
-                    $this->session->set('location_conflict_profile_flag', true);
+                if ($locationByIp -> id != $locationByFb -> id) { 
+                    $this -> session -> set('location_conflict', true);
+                    $this -> session -> set('location_conflict_profile_flag', true);
                 }
             }
 
-            $memberLocation = $locationByIp;
-
             $member -> assign(array(
-                    'pass' => $this->security->hash(rand(0, 500) . '+' . microtime()), //md5(rand(0, 500) . '+' . microtime()),
-                    'email' => $userData['email'],
+                    'pass' => $this -> security -> hash(rand(0, 500) . '+' . microtime()), //md5(rand(0, 500) . '+' . microtime()),
                     'role' => Acl::ROLE_MEMBER,
-                    'location_id' => $memberLocation -> id,
-                    'name' => $userData['first_name'] . ' ' . $userData['last_name'],
+                    'location_id' => $locationByIp -> id,
                     'auth_type' => 'facebook',
-                    'address' => $userData['address'],
                     'logo' => $userData['logo']
                 ));
-
+            if (isset($userData['email'])) {
+            	$member -> assign(['email' => $userData['email']]);
+            }
+            if (isset($userData['first_name'])) {
+            	if (isset($userData['last_name'])) { 
+            		$member -> assign(['name' => $userData['first_name'] . ' ' . $userData['last_name']]);
+            	} else {
+            		$member -> assign(['name' => $userData['first_name']]);
+            	}
+            } else {
+            	$member -> assign(['name' => $userData['user_name']]);
+            }
+            
+            if ($userData['user_name'] == '' || empty($userData['user_name'])) {
+            	if ($userData['email']) {
+            		$userData['user_name'] = $userData['email'];
+            	}
+            }
+            
             if ($member -> save()) {
                 $this->eventsManager->fire('App.Auth.Member:afterPasswordSet', $this, $member);
 
-                $memberCounter = new EventMemberCounter();
-                $memberCounter -> assign(['member_id' => $member -> id,
-				               			  'userEventsLiked' => 0,
-				               			  'userEventsGoing' => 0,
-				               			  'userFriendsGoing' => 0,
-				               			  'userEventsCreated' => 0]);
-                $memberCounter -> save();
+                $memberNetwork = (new MemberNetwork()) -> addMemberNetwork($member, $userData['uid'], $userData['user_name']);
                 
-                $memberNetwork = new MemberNetwork();
-                if ($userData['username'] == '' || empty($userData['username'])) {
-                	if ($userData['email']) {
-                		$userData['username'] = $userData['email'];
-                	}
-                }
-                $memberNetwork -> assign(array(
-                        'member_id' => $member -> id,
-                        'network_id' => 1,
-                        'account_uid' => $userData['uid'],
-                        'account_id' => $userData['username']
-                    ));
-
-                if ($memberNetwork -> save()) {
-                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
+                $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
+                $this->eventsManager->fire('App.Auth.Member:checkLocationMatch', $this, array(
                     		'member' => $member,
                     		'uid' => $userData['uid'],
-                    		'token' => $userData['token']
-                    ));
-
-                    $this->eventsManager->fire('App.Auth.Member:setEventsCounters', $this, $memberNetwork -> member);
-                } 
+                    		'token' => $userData['token']));
+                (new Cron()) -> createUserTask();                
             }
         }
 
         $res['status'] = 'OK';
         echo json_encode($res);
     }
+    
     
     /**
      * @Route("/auth/fbauthresponse{request}", methods={"GET", "POST"})
@@ -346,8 +326,8 @@ class AuthController extends \Core\Controller
      */
     public function resetAction($hash = false)
     {
-        if ($hash) {
-            if ($hash == $this -> session -> get('reset_uri')) {
+        /*if ($hash) {
+            if ($hash == $this -> session -> get('reset_uri')) { */
                 $form = new ResetForm();
 
                 if ($this -> request -> isPost()) {
@@ -369,11 +349,11 @@ class AuthController extends \Core\Controller
                     }
                 }
                 $this -> view -> form = $form;
-            } else {
-				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
-				$this -> view -> setVar('flashMsgType', 'error');
-            }
-        } 
+            //} else {
+//				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
+				//$this -> view -> setVar('flashMsgType', 'error');
+            //}
+        //} 
     }
 
    /**

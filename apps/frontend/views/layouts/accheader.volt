@@ -48,20 +48,20 @@
                                 <div class="btn-list">
                                     <div class="btn-line clearfix">
                                         <button class="btn btn-block" onclick="location.href='/event/list'">
-                                            <span class="btn-count" id="userEventsCreated">{{ userEventsCreated }}</span>
+                                            <!-- span class="btn-count" id="userEventsCreated">{{ userEventsCreated }}</span -->
                                             <span class="btn-text">My events</span>
                                         </button>
                                     </div>
                                     <button class="btn btn-block" onclick="location.href='/event/joined'">
-                                        <span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span>
+                                        <!-- span class="btn-count" id="userEventsGoing">{{ userEventsGoing }}</span -->
                                         <span class="btn-text">Events I’m attending</span>
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/liked'">
-                                        <span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span>
+                                        <!-- span class="btn-count" id="userEventsLiked">{{ userEventsLiked }}</span -->
                                         <span class="btn-text">Events I like</span>
                                     </button>
                                     <button class="btn btn-block" onclick="location.href='/event/friends'">
-                                        <span class="btn-count" id="userFriendsGoing">{{ userFriendsGoing }}</span>
+                                        <!-- span class="btn-count" id="userFriendsGoing">{{ userFriendsGoing }}</span -->
                                         <span class="btn-text">Friends’ events</span>
                                     </button>
                                 </div>
@@ -165,7 +165,7 @@
                               data-placement="bottom" 
                               title=""
                               id="events_count"
-                              data-original-title="0">0</span>
+                              data-original-title="0">Go find</span>
                     {% endif %} 
                     <div class="location-place location-place_country">
                         <a href="#" class="location-city locationCity">
@@ -189,7 +189,7 @@
                         </a>
 
                         <div class="location-search clearfix advancedSearchBlock">
-                            {% include 'layouts/searchform.volt' %}
+                            {% include 'layouts/searchform_new.volt' %}
                         </div>
                     </div>
                 </div>

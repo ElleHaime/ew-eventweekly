@@ -7,11 +7,13 @@ use Thirdparty\Facebook\FacebookApiException,
 
 class Extractor
 {
+	public $di;
     private $facebook;
 
     public function __construct($dependencyInjector = null)
     {
         if ($dependencyInjector) {
+        	$this -> di = $dependencyInjector;
             $fb_config = $dependencyInjector -> get('facebook_config');
         } else {
             include(FACEBOOK_CONFIG_SOURCE);
@@ -23,6 +25,28 @@ class Extractor
             'secret' => $fb_config -> facebook -> appSecret,
         );
         $this -> facebook = new \Thirdparty\Facebook\Facebook($config);
+    }
+    
+    public function getEventTicketUrl($fbUid, $eUrl = false)
+    {
+    	$ticketsUrl = false;
+    	
+		if ($this -> di) {
+			$session = $this -> di -> getShared('session');
+			if ($session -> has('user_token') && $session -> has('user_fb_uid')) {
+				$res = $this -> getFQL(array('ticket' => 'SELECT ticket_uri FROM event WHERE eid = ' . $fbUid), $session -> get('user_token'));
+			
+				if ($res['STATUS'] && !is_null($res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'])) {
+					$ticketsUrl = $res['MESSAGE'][0]['fql_result_set'][0]['ticket_uri'];
+				} 
+			} else {
+				if ($eUrl) {
+					$ticketsUrl = 'https://www.facebook.com/events/' . $fbUid;
+				} 
+			}
+		}    	
+		
+		return $ticketsUrl;
     }
 
     public function getFQL($query, $accessToken)

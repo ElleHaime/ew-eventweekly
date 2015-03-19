@@ -51,8 +51,10 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'noty', 'domReady'], fun
                         // change city text in header
                         //$('.location-place_country span').text(city);
 
-                        $('#mLocation').text(city);
-                        $('#uLocation').val('');
+                        $('#mLocation').text(city + ',' + country );
+                        $('#uLocation').text(city + ',' + country );
+                        //$('#mLocation').text(city);
+                        //$('#uLocation').val('');
 
                         $('#lConflict').remove();
                         

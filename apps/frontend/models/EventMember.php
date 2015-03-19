@@ -27,4 +27,20 @@ class EventMember extends EventMemberObject
             return 0;
         }
     }
+    
+    public function getMemberpart($event)
+    {
+    	$memberpart = null;
+    	
+    	if ($this -> getDI() -> get('session') -> has('member') && $event->memberpart->count() > 0) {
+    		foreach ($event->memberpart as $mpart) {
+    			if ($mpart->member_id == $this->memberId) {
+    				$memberpart = $mpart->member_status;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return $memberpart;
+    }
 } 
