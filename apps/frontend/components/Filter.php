@@ -128,7 +128,7 @@ class Filter extends Component
 		
 		foreach ($this -> userFilters as $index => $filter) {
 			if (isset($filter['fullCategorySelect'])) {
-				$result[] = $filter -> id;
+				$result[] = $filter['id'];
 			}
 		}
 		

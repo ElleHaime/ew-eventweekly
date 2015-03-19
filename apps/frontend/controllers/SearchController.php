@@ -142,6 +142,15 @@ class SearchController extends \Core\Controller
 					}
 					$this -> session -> set('userSearchFilters', $userSearchFilters);
 					$this -> filters -> loadUserFilters(false);
+				} else {
+					$searchTags = $this -> filters -> getActiveTags();
+					$searchCategories = $this -> filters -> getActiveCategories();
+					if (!empty($searchTags)) {
+						$queryData['searchTag'] = $searchTags;
+					}
+					if (!empty($searchCategories)) {
+						$queryData['searchCategory'] = $searchCategories;
+					}
 				}
             } else {
             	$filterTags = $this -> filters -> getActiveTags();
