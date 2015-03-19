@@ -563,7 +563,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-_U::dump($event);
+
         $loc = new Location();
         $venue = new Venue();
         $venueId = false;
