@@ -21,7 +21,7 @@
 									
 									<div class="b-slide__info">
 										<h2 class="b-slide__title">
-											<a href="#">{{ event.name }}</a>
+											<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">{{ event.name }}</a>
 										</h2>
 		
 										<div class="b-slide__description">
@@ -36,7 +36,7 @@
 											</p>
 										</div>
 										
-										<a href="#" class="b-slide__button-detail">Details →</a>
+										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}" class="b-slide__button-detail">Details →</a>
 		
 									</div>
 		

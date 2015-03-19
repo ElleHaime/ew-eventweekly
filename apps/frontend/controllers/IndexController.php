@@ -40,6 +40,7 @@ class IndexController extends \Core\Controller
 					$resultFe[$fe -> priority] = [];
 				}
 				
+				$evIds = "'" . implode("','", array_keys($featuredId)) . "'";
 				$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
 				$events = $ev::find(['id in(' . implode(",", array_keys($featuredId)) .')']);
 				foreach ($events as $ev) {
@@ -50,7 +51,7 @@ class IndexController extends \Core\Controller
 						}
 					}
 				}
-        	} else {
+        	//} else {
         		// get last 14 events from current location
         		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
         		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
