@@ -37,5 +37,7 @@ class Cron extends CronObject
 	            }
 	        }
 		}
+		
+		return true;
 	}
 }

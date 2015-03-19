@@ -97,11 +97,9 @@
                                         </form>
                                     </div>
 
-
-
                                     <div class=" profile-btn-rt clearfix profile_bottom">
                                         <div class="profile-btn">
-                                        		{% if external_logged is not defined or external_logged != 'facebook' %}
+                                        		{% if external_logged is defined and external_logged == 'facebook' %}
                                         			<p>Get your facebook events right now!</p>
                                         		{% else %}
                                                 	<p>You can import interests from facebook (need login via facebook)</p>

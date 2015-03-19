@@ -380,15 +380,15 @@ class MemberController extends \Core\Controllers\CrudController
      */
     public function addCronTaskAction()
     {
-    	$response['error'] == '';
+    	$response['error'] = '';
     	
     	if ((new Cron()) -> createUserTask()) {
     		$response['status'] = 'OK';
     	} else {
-    		$response['error'] = 'ooops';
+    		$response['status'] = 'FAIL';
     	}
-
-    	echo json_encode($response); 
+    	
+    	$this -> sendAjax($response); 
     }
     
     

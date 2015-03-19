@@ -49,7 +49,9 @@ define('frontMemberEditControl',
                 deleteMemberAcc: '#deleteMemberAcc',
                 deleteMemberLoc: '/member/annihilate',
                 
-                passwordWasChanged: '#passwordChanged'
+                passwordWasChanged: '#passwordChanged',
+                syncSuccessMessage: 'We will find your events in a few minutes',
+                syncErrorMessage: 'Oooops, something went wrong =/',
             },
 
             self.init = function()
@@ -64,9 +66,6 @@ define('frontMemberEditControl',
                 if ($(self.settings.passwordWasChanged).val() == 1) {
                 	noty({text: 'Your password successfully changed', type: 'success'});
                 }
-
-                //check checkboxes near category names
-                //self.__setCategoriesChecked();
             }
 
             self.__bindClicks = function()
@@ -284,6 +283,7 @@ define('frontMemberEditControl',
              {
             	 $.when(fb.__checkLoginStatus()).then(function(status) {
             		 // status: connected, session_expired, not_logged, unknown
+		 
                      if (status === 'connected') {
                     	 $.when(self.__request('post', self.settings.syncFbAddTaskUrl)).then(function(response) {
                     		 self.__syncFbShowResult(response);
@@ -300,10 +300,11 @@ define('frontMemberEditControl',
              
              self.__syncFbShowResult = function(response)
              {
+console.log(response);            	 
             	 if (response.status == 'OK') {
-        			 noty({text: self.syncSuccessMessage, type: 'warning'});
+        			 noty({text: self.settings.syncSuccessMessage, type: 'success'});
         		 } else {
-        			 noty({text: self.syncErrorMessage, type: 'error'});
+        			 noty({text: self.settings.syncErrorMessage, type: 'error'});
         		 }
              }
 
