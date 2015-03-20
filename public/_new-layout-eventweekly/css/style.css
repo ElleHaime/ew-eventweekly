@@ -3845,7 +3845,7 @@ table.default thead {
 */
 @media only screen and (max-width: 965px) {
     #header .user-bar {
-    position: relative;
+    /*position: relative;*/
   }
 }
 
