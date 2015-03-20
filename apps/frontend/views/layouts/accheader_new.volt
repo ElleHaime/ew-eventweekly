@@ -63,7 +63,7 @@
 						</div>
 					</div>
 
-					<a href="#" class="user-menu-button-open js-user-menu-button-open-trigger">Open Menu</a>
+					<a href="#" class="user-menu-button-open js-user-menu-button-open-trigger" onclick="location.href='/event/edit'">Open Menu</a>
 
 					<div class="clearfix"></div>
 

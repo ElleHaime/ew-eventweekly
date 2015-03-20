@@ -2115,7 +2115,7 @@ margin-bottom: 4px;
 .fa-navicon:before, #header .user-menu-button-open:before,
 .fa-reorder:before,
 .fa-bars:before {
-  content: "";
+  content: "\f0fe";
 }
 
 .fa-list-ul:before {
