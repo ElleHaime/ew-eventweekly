@@ -51,7 +51,7 @@ class IndexController extends \Core\Controller
 						}
 					}
 				}
-        	//} else {
+        	} else {
         		// get last 14 events from current location
         		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
         		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
