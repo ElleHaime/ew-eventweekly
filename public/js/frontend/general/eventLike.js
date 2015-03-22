@@ -13,7 +13,9 @@ define('frontEventLike',
 		        dislikeBtnList: '.eventDislikeBtn',
 		        likeBtnShow: '#event-like-btn',
 		        dislikeBtnShow: '#event-dislike-btn',
-		        eventElem: '.b-list-of-events-g__item.pure-u-1-3.event-list-event'
+		        eventElem: '.b-list-of-events-g__item.pure-u-1-3.event-list-event',
+		        likeClass: 'ew-button',
+		        dislikeClass: 'ew-button-dis',
 		    },
 
 		    self.target = null,
@@ -70,7 +72,7 @@ define('frontEventLike',
 	            var url = self.settings.likeUrl+'/'+eventId+'/'+status;
 	            
 	            if (template == 'list') {
-		            self.target = $(elem).attr('class');	            	
+		            self.target = $(elem).attr('class').replace(/\s+/g, '.');	            	
 	            } else {
 	            	self.target = null;
 	            }
@@ -87,7 +89,6 @@ define('frontEventLike',
 		     * @private
 		     */
 		    self.__responseHandler = function(data) {
-		    	//console.log(data);
 		        if (data.status == true) {
 		        	if (!self.target) {
 			        	if (data.member_like == 1) {
@@ -98,23 +99,13 @@ define('frontEventLike',
 			        		$(self.settings.dislikeBtnShow).hide();
 			        	}
 		        	} else {
-			        	var like = $(self.target + self.settings.likeBtnList + '[data-id=' + data.event_id + ']');
-			        	var dislike = $(self.target + self.settings.dislikeBtnList + '[data-id=' + data.event_id + ']');
-			        	
+			        	var like = $('.' + self.target + '[data-id=' + data.event_id + ']');
+			        	var dislike = $('.' + self.target + '[data-id=' + data.event_id + ']');
+		       		        	
 			        	if (data.member_like == 1) {
-	                        like.blur();
-	                        //alert('liked');
-	                        like.prop('disabled', true);
-			        		dislike.prop('disabled', false);
-	
-	                        $(self.settings.userEventsLiked).text(data.userEventsLiked)
+			        		$(like).find('a').toggleClass(self.settings.dislikeClass);
 			        	} else {
-			        		//alert('disliked');
-			        		$('div' + self.settings.eventElem + '[event-id=' + data.event_id + ']').remove();
-	
-	                        if (data.likeCounter != null) {
-	                            $(self.settings.userEventsLiked).text(data.userEventsLiked);
-	                        }
+			        		$(like).find('a').toggleClass(self.settings.likeClass);
 			        	}
 		        	}
 		        } else {

@@ -33,8 +33,9 @@ trait TCMember {
             	}
             }
         }
-        $this -> view -> setvar('likedEventsIds', $likedEventsIds);
-        $this -> view -> setvar('unlikedEventsIds', $unlikedEventsIds);
+//_U::dump($likedEventsIds);        
+        $this -> view -> setVar('likedEventsIds', $likedEventsIds);
+        $this -> view -> setVar('unlikedEventsIds', $unlikedEventsIds);
     }
 
 

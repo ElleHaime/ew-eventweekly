@@ -27,16 +27,18 @@
 										<div class="like-buttons">  
 										
 											<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
-												<a href="/" class="ew-button" title="Like" >
-													<i class="fa fa-thumbs-up"></i>
-												</a>
+												<a href="#" 
+													{% if event.disabled is defined %}class="ew-button-dis"{% else %}class="ew-button"{% endif %} 
+													title="Like" ><i class="fa fa-thumbs-up"></i></a>
 											</div>
 											<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
 												<a href="#" class="ew-button" title="Dislike">
 													<i class="fa fa-thumbs-down"></i>
 												</a>
 											</div>
+											
 										</div>
+										
 									</div>
 
 									<div class="b-list-of-events-g__info">

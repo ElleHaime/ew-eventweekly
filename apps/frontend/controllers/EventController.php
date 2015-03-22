@@ -138,6 +138,7 @@ class EventController extends \Core\Controllers\CrudController
     public function listLikedAction()
     {
     	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+   	
 		if (!is_null($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
 				$searchEventsId[] = $event['event_id']; 
@@ -434,7 +435,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/delete", methods={"GET", "POST"})
-     * @Route("/event/delete/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/event/delete/{id:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
     public function deleteAction()
@@ -443,19 +444,20 @@ class EventController extends \Core\Controllers\CrudController
         $result['status'] = 'ERROR';
 
         if (isset($data['id']) && !empty($data['id'])) {
-            $event = Event::findFirst((int)$data['id']);
+        	$ev = (new Event()) -> setShardById($data['id']); 
+            $event = $ev::findFirst($data['id']);
             if ($event) {
+            	$event->setShardById($data['id']);
                 $event->event_status = 0;
                 $event->deleted = 1;
                 $event->update();
-             
-                $result = $this -> counters -> setUserCounters();
+
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
             }
         }
 
-        echo json_encode($result);
+        $this -> sendAjax($result);
     }
 
 
@@ -500,7 +502,7 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/publish", methods={"GET", "POST"})
-     * @Route("/event/publish/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/event/publish/{id:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
     public function publishAction()
@@ -519,33 +521,36 @@ class EventController extends \Core\Controllers\CrudController
 
     /**
      * @Route("/event/unpublish", methods={"GET", "POST"})
-     * @Route("/event/unpublish/{id:[0-9]+}", methods={"GET", "POST"})
+     * @Route("/event/unpublish/{id:[0-9_]+}", methods={"GET", "POST"})
      * @Acl(roles={'member'});
      */
     public function unpublishAction()
     {
         $data = $this->request->getPost();
+        
         $result['status'] = 'ERROR';
-
         if (isset($data['id']) && !empty($data['id'])) {
-            if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
-                /* delete sites, event members, send mails etc */
+            if ($res = $this -> updateStatus($data['id'], $data['event_status'])) {
+//TODO!!! delete sites, event members, send mails etc 
                 $result = array_merge($res, array('status' => 'OK'));
             }
-        }
+        } 
 
-        echo json_encode($result);
+        //echo json_encode($result);
+        $this -> sendAjax($result);
     }
 
 
     private function updateStatus($id, $status)
     {
-        $event = Event::findFirst((int)$id);
+    	$ev = (new Event()) -> setShardById($id);
+        $event = $ev::findFirst($id);
         $result = false;
 
         if ($event) {
-            $event->assign(array('event_status' => $status));
-            if ($event->save()) {
+            $event -> assign(array('event_status' => $status));
+            $event -> setShardById($id);
+            if ($event->update()) {
                 $result = array('id' => $event->id,
                     			'event_status' => $event->event_status);
              

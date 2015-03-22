@@ -22,24 +22,24 @@
 											{% if eventListCreatorFlag %}
 												{% if event.event_status == 1 %}
                                                     <div class="pure-u-1-2 unpublishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button" title="Unpublish">Unpublish</a>
+														<a class="ew-button" title="Unpublish">Unpublish</a>
                                                     </div>
                                                 {% else %}
                                                     <div class="pure-u-1-2 publishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button" title="Publish">Unpublish</a>
+														<a class="ew-button" title="Publish">Unpublish</a>
                                                     </div>
 												{% endif %}
 												<div class="pure-u-1-2 like-buttons__item editEvent" id="{{ event.id }}">
-													<a href="/" class="ew-button" title="Edit">Edit</a>
+													<a href="/event/edit/{{event.id}}" class="ew-button" title="Edit">Edit</a>
 												</div>
 												<div class="pure-u-1-2 like-buttons__item deleteEvent" id="{{ event.id }}">
 													<a href="/" class="ew-button" title="Archive">Archive</a>
 												</div>
 											{% else %}
 												<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
-													<a href="/" class="ew-button" title="Like" >
-														<i class="fa fa-thumbs-up"></i>
-													</a>
+													<a href="#" 
+														{% if event.disabled is defined %}class="ew-button-dis"{% else %}class="ew-button"{% endif %} 
+														title="Like" ><i class="fa fa-thumbs-up"></i></a>
 												</div>
 												<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
 													<a href="#" class="ew-button" title="Dislike">

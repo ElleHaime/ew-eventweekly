@@ -17,43 +17,45 @@
 
 						{% for event in list %}
 							<!-- item -->
-							<div class="b-list-of-events-g__item pure-u-1-3 event-list-event" data-event-id={{ event.id}}>
+							<div class="b-list-of-events-g__item pure-u-1-3 event-list-event" data-event-id="{{ event.id }}">
 								<div class="b-list-of-events-g__wrapper">
 									<div class="b-list-of-events-g__picture">
 										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
 											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
 										</a>
 
-										<div class="like-buttons" id="buttons_on_my_events">  
-											{% if eventListCreatorFlag %}
+										{% if eventListCreatorFlag %}
+											<div class="like-buttons" id="buttons_on_my_events">
 												{% if event.event_status == 1 %}
                                                     <div class="unpublishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button ff" title="Unpublish">Unpublish</a>
+														<a class="ew-button ff" title="Unpublish">Unpublish</a>
                                                     </div>
                                                 {% else %}
                                                     <div class="publishEvent" id="{{ event.id }}">
-														<a href="/" class="ew-button ff" title="Publish">Unpublish</a>
+														<a class="ew-button ff" title="Publish">Publish</a>
                                                     </div>
 												{% endif %}
 												<div class="like-buttons__item editEvent" id="{{ event.id }}">
-													<a href="/" class="ew-button" title="Edit">Edit</a>
+													<a href="/event/edit/{{event.id}}" class="ew-button" title="Edit">Edit</a>
 												</div>
 												<div class="like-buttons__item deleteEvent" id="{{ event.id }}">
-													<a href="/" class="ew-button" title="Archive">Archive</a>
+													<a class="ew-button" title="Archive">Archive</a>
 												</div>
-											{% else %}
+											</div>
+										{% else %}
+											<div class="like-buttons">										
 												<div class="pure-u-1-2 like-buttons__item eventLikeBtn" data-id="{{ event.id }}" data-status="1">
-													<a href="/" class="ew-button" title="Like" >
-														<i class="fa fa-thumbs-up"></i>
-													</a>
+													<a href="#" 
+														{% if event.disabled is defined %}class="ew-button-dis"{% else %}class="ew-button"{% endif %} 
+														title="Like" ><i class="fa fa-thumbs-up"></i></a>
 												</div>
 												<div class="pure-u-1-2 like-buttons__item eventDislikeBtn" data-id="{{ event.id }}" data-status="0">
-													<a href="#" class="ew-button" title="Dislike">
+													<a href = "#" class="ew-button" title="Dislike">
 														<i class="fa fa-thumbs-down"></i>
 													</a>
 												</div>
-											{% endif %}
-										</div>
+											</div>												
+										{% endif %}
 									</div>
 
 									<div class="b-list-of-events-g__info">
