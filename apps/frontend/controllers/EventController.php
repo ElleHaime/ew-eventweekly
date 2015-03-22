@@ -66,6 +66,12 @@ class EventController extends \Core\Controllers\CrudController
     	$result = [];
     	$pickFullTemplate = true;
     	
+    	$likedEvents = [];
+    	if ($this->session->has('memberId')) {
+    		$this->fetchMemberLikes();
+    		$likedEvents = $this -> view -> getVar('likedEventsIds'); 
+    	}
+    	
     	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
     				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
@@ -82,6 +88,9 @@ class EventController extends \Core\Controllers\CrudController
 		$results = $eventGrid->getData();
 
 		foreach($results['data'] as $key => $value) {
+			if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+				$value -> disabled = 'disabled'; 
+			}
 			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 		}
 		$countResults = $results['all_count'];
@@ -90,10 +99,6 @@ class EventController extends \Core\Controllers\CrudController
             $this -> view -> setVar('pagination', $results['array_pages']);
             $this -> view -> setVar('pageCurrent', $results['page_now']);
             $this -> view -> setVar('pageTotal', $results['all_page']);
-        }
-    	
-        if ($this->session->has('memberId')) {
-			$this->fetchMemberLikes();
         }
         
         $tagIds = '';
@@ -202,6 +207,11 @@ class EventController extends \Core\Controllers\CrudController
     {
 		$result = [];
     	$pickFullTemplate = true;
+    	$likedEvents = [];
+    	if ($this->session->has('memberId')) {
+    		$this->fetchMemberLikes();
+    		$likedEvents = $this -> view -> getVar('likedEventsIds');
+    	}
     	
     	if (!empty($queryData)) {
 	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
@@ -217,6 +227,9 @@ class EventController extends \Core\Controllers\CrudController
 	    	$results = $eventGrid->getData();
    	
 	    	foreach($results['data'] as $key => $value) {
+	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+	    			$value -> disabled = 'disabled';
+	    		}
 	    		$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 	    	}
 	    	$this -> view -> setVar('list', $result);
