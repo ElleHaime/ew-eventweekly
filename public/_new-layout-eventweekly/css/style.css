@@ -4995,6 +4995,9 @@ table.default thead {
     padding: 8px 20px;
   }
 }
+#js-userBarDropDown {
+  min-width:170px;
+}
 @font-face {
   font-family: "PF Agora Slab Pro Light";
   font-style: normal;
