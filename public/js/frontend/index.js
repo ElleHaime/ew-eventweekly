@@ -68,7 +68,7 @@ require([
 	        mousewheelControl: true,
 	        mousewheelControlForceToAxis: true,
 	        preventLinksPropagation: true,
-	        slidesPerView: 4
+	        slidesPerView: 3
 	    });   
 		
 			
