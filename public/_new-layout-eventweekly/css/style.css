@@ -3566,7 +3566,7 @@ table.default thead {
 #header {
   position: relative;
   width: 100%;
-  z-index: 101;
+  z-index: 1001;
 }
 #header .user-menu-button-open {
   float: left;
@@ -4994,6 +4994,9 @@ table.default thead {
   .dropdown .dropdown-menu li a {
     padding: 8px 20px;
   }
+}
+#js-userBarDropDown {
+  min-width:170px;
 }
 @font-face {
   font-family: "PF Agora Slab Pro Light";
