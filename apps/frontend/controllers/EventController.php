@@ -142,7 +142,7 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
-    	$eventsLiked = EventLike::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	$eventsLiked = EventLike::find(['status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
    	
 		if (!is_null($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
@@ -501,7 +501,6 @@ class EventController extends \Core\Controllers\CrudController
             		}
             	}
 
-                $response = $this -> counters -> setUserCounters();
                 $response['status'] = true;
                 $response['member_like'] = $status;
                 $response['event_id'] = $eventId;
@@ -1064,7 +1063,7 @@ class EventController extends \Core\Controllers\CrudController
         	$this -> sendAjax($res);
         	
 			(new Cron()) -> createUserTask();
-			(new Cron()) -> createCreatorTask();
+			//(new Cron()) -> createCreatorTask();
         }
     }
 

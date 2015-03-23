@@ -39,7 +39,9 @@ class Cron extends CronObject
 	        }
 		}
 		
-		return true;
+		$this -> createCreatorTask();
+		
+		//return true;
 	}
 	
 	public function createCreatorTask()

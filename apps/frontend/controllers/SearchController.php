@@ -29,7 +29,7 @@ class SearchController extends \Core\Controller
     public function searchAction()
     {
 		(new Cron()) -> createUserTask();
-		(new Cron()) -> createCreatorTask();
+		//(new Cron()) -> createCreatorTask();
 		    	
         $form = new SearchForm();
         $this -> view -> form = $form;
@@ -48,7 +48,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData);
+//_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -127,7 +127,7 @@ class SearchController extends \Core\Controller
             	} 
 			}
 	
-			if ($elemExists('searchTags')) {
+			if ($elemExists('searchTags') || $elemExists('searchCategories')) {
 				if ($postData['personalPresetActive'] != 1) {
 					if ($elemExists('searchCategories')) {
 						$userSearchFilters['category'] = $postData['searchCategories'];
