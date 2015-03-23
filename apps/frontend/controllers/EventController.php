@@ -86,7 +86,7 @@ class EventController extends \Core\Controllers\CrudController
 			$eventGrid -> setPage((int)$page);
 		}
 		$results = $eventGrid->getData();
-
+				
 		foreach($results['data'] as $key => $value) {
 			if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 				$value -> disabled = 'disabled'; 
@@ -1062,7 +1062,9 @@ class EventController extends \Core\Controllers\CrudController
 			return $events;
         } else {
         	$this -> sendAjax($res);
+        	
 			(new Cron()) -> createUserTask();
+			(new Cron()) -> createCreatorTask();
         }
     }
 

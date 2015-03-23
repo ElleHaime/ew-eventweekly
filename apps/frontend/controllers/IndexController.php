@@ -42,7 +42,8 @@ class IndexController extends \Core\Controller
 				
 				$evIds = "'" . implode("','", array_keys($featuredId)) . "'";
 				$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
-				$events = $ev::find(['id in(' . implode(",", array_keys($featuredId)) .')']);
+				$events = $ev::find(['id in(' . $evIds .')']);
+				
 				foreach ($events as $ev) {
 					foreach ($resultFe as $key => $val) {
 						if ($featuredId[$ev -> id] == $key) {

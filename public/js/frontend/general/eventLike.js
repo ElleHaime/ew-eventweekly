@@ -70,7 +70,6 @@ define('frontEventLike',
 	            var status = elem.data('status'),
 	                eventId = elem.data('id');
 	            var url = self.settings.likeUrl+'/'+eventId+'/'+status;
-	            
 	            if (template == 'list') {
 		            self.target = $(elem).attr('class').replace(/\s+/g, '.');	            	
 	            } else {
@@ -105,7 +104,9 @@ define('frontEventLike',
 			        	if (data.member_like == 1) {
 			        		$(like).find('a').toggleClass(self.settings.dislikeClass);
 			        	} else {
-			        		$(like).find('a').toggleClass(self.settings.likeClass);
+			        		//$(like).find('a').toggleClass(self.settings.likeClass);
+			        		var elem = $(self.settings.eventElem + '[data-event-id=' + data.event_id + ']');
+			        		$(elem).remove();
 			        	}
 		        	}
 		        } else {

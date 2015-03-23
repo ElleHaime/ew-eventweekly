@@ -29,6 +29,7 @@ class SearchController extends \Core\Controller
     public function searchAction()
     {
 		(new Cron()) -> createUserTask();
+		(new Cron()) -> createCreatorTask();
 		    	
         $form = new SearchForm();
         $this -> view -> form = $form;

@@ -126,7 +126,7 @@ class AuthController extends \Core\Controller
         	$this -> session -> set('user_fb_uid', $uid);
         	
         	if ($access_type == 'sync') {
-				(new Cron()) -> createUserTask();				 
+				(new Cron()) -> createUserTask();
         	} else {
         		$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
         		 

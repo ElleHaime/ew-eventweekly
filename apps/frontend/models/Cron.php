@@ -2,7 +2,8 @@
 
 namespace Frontend\Models;
 
-use Objects\Cron as CronObject;
+use Objects\Cron as CronObject,
+	Core\Utils as _U;
 
 class Cron extends CronObject
 {
@@ -26,7 +27,7 @@ class Cron extends CronObject
 	                $params = ['user_token' => $session -> get('user_token'),
 	                           'user_fb_uid' => $session -> get('user_fb_uid'),
 	                           'member_id' => $session -> get('memberId')];
-	                $task = ['name' => 'extract_facebook_events',
+	                $task = ['name' => parent::FB_USER_TASK,
 	                         'parameters' => serialize($params),
 	                         'state' => 0,
 	                         'member_id' => $session -> get('memberId'),
@@ -38,6 +39,41 @@ class Cron extends CronObject
 	        }
 		}
 		
+		return true;
+	}
+	
+	public function createCreatorTask()
+	{
+		if ($session = $this -> getDI() -> getShared('session')) {
+			if ($session -> has('user_token') && $session -> has('user_fb_uid') && $session -> has('memberId')) {
+	            $newTask = false;
+			
+				$taskSetted = self::find(array('name = "' . parent::FB_CREATOR_TASK . '"'));
+				if ($taskSetted -> count() > 0) {
+					$tsk = $taskSetted -> getLast();
+					if (time()-($tsk -> hash) > 43200) {
+						$newTask = new self();
+					}
+				} else {
+					$newTask = new self();
+				}
+	
+				if ($newTask) {
+					$params = ['user_token' => $session -> get('user_token'),
+								'user_fb_uid' => $session -> get('user_fb_uid'),
+								'member_id' => $session -> get('memberId')];
+					$task = ['name' => parent::FB_CREATOR_TASK,
+								'parameters' => serialize($params),
+								'state' => 0,
+								'member_id' => $session -> get('memberId'),
+								'hash' => time()];
+
+					$newTask -> assign($task);
+					$newTask -> save();
+				}
+			}
+		}
+	
 		return true;
 	}
 }
