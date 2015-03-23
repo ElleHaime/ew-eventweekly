@@ -60,6 +60,9 @@ define('frontFilterPanel',
 				$(this.settings.tagBox).click(function(e) {
 					$this.__tagClicked();
 				});
+				$(window).resize(function(e) {
+					$this.__setFilterPanelButtonLeftPosition();
+				});
 
 			},
 
@@ -92,10 +95,7 @@ define('frontFilterPanel',
 			*/
 			__switchPanel: function() {
 				if (!this.panelState) {
-					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
-					if ($(window).width()<400) {
-						$(this.settings.btnSwitchPanel).css('left', $(window).width()-40);
-					}
+					this.__setFilterPanelButtonLeftPosition();
 					$(this.settings.btnSwitchPanel).css('z-index', "1000");
 					$(this.settings.overlayBlock).show();
 					$(this.settings.filterPanel).show();
@@ -200,6 +200,21 @@ define('frontFilterPanel',
 	            	});
 	            }
 				$(this.settings.personalPresetState).val('0');
+			},
+
+			/*
+			**********************
+			* =set left position of filter button
+			**********************
+			*/
+			__setFilterPanelButtonLeftPosition: function(e) {
+				console.log('window was resized');
+				if (!this.panelState) {
+					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
+					if ($(window).width()<400) {
+						$(this.settings.btnSwitchPanel).css('left', $(window).width()-40);
+					}
+				}
 			},
 			
 			/*

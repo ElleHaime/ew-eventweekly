@@ -3566,7 +3566,7 @@ table.default thead {
 #header {
   position: relative;
   width: 100%;
-  z-index: 101;
+  z-index: 1001;
 }
 #header .user-menu-button-open {
   float: left;
