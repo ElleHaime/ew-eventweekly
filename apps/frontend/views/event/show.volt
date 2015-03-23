@@ -132,18 +132,16 @@
 					
 					{#% if event.memberpart|length or likedEventStatus is defined %}
 						<div class="short-info__item" id="member_attending">
-                            {% if likedEventStatus is defined %}
-                            	{% if likedEventStatus == 1 %}
-                            		<p><div>
-                            			<i class="fa fa-angellist"></i>
-                            			You like this event
-                            		</div></p>
-                            	{% endif %}	
-                            {% endif %}
+                    		<p>
+                        		<div id="status-bar-like" {% if likedEventStatus != 1 %}style="display:none;"{% endif%}>
+                        			<i class="fa fa-angellist"></i>
+                        			You like this event
+                        		</div>
+                    		</p>
 						
 							{% if event.memberpart|length %} 
 								{% if event.memberpart == 1 or event.memberpart == 2 %}
-									<p><div>
+									<p><div id="status-bar-join">
 										<i class="fa fa-users"></i>
 	                                	You're going to this event
 	                                </div></p>

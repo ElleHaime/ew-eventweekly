@@ -13,6 +13,7 @@ define('frontEventLike',
 		        dislikeBtnList: '.eventDislikeBtn',
 		        likeBtnShow: '#event-like-btn',
 		        dislikeBtnShow: '#event-dislike-btn',
+		        likeStatusBar: '#status-bar-like',
 		        eventElem: '.b-list-of-events-g__item.pure-u-1-3.event-list-event',
 		        likeClass: 'ew-button',
 		        dislikeClass: 'ew-button-dis',
@@ -93,9 +94,11 @@ define('frontEventLike',
 			        	if (data.member_like == 1) {
 			        		$(self.settings.likeBtnShow).hide();
 			        		$(self.settings.dislikeBtnShow).show();
+			        		$(self.settings.likeStatusBar).show();
 			        	} else {
 			        		$(self.settings.likeBtnShow).show();
 			        		$(self.settings.dislikeBtnShow).hide();
+			        		$(self.settings.likeStatusBar).hide();
 			        	}
 		        	} else {
 			        	var like = $('.' + self.target + '[data-id=' + data.event_id + ']');

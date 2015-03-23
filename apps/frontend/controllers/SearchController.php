@@ -36,6 +36,7 @@ class SearchController extends \Core\Controller
 
         $result = array();
         $countResults = 0;
+        $likedEvents = $unlikedEvents = [];
 
         $postData = $this->request->getQuery();
         // retrieve data from POST
@@ -48,7 +49,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData, true);
+_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -164,6 +165,16 @@ class SearchController extends \Core\Controller
             	}
             }
             
+	        if ($this->session->has('memberId')) {
+	    		$this->fetchMemberLikes();
+	    		$likedEvents = $this -> view -> getVar('likedEventsIds');
+	    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
+	    		
+	    		if (!empty($unlikedEvents)) {
+	    			$queryData['searchNotId'] = $unlikedEvents;
+	    		}
+	    	}
+            
 //_U::dump($queryData);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			
@@ -178,6 +189,9 @@ class SearchController extends \Core\Controller
 
                     foreach($results['data'] as $id => $event) {
                     	$result[$event -> id] = (array)$event;
+                    	if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+                    		$result[$event -> id]['disabled'] = 'disabled';
+                    	}
 
                     	if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
                     		$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;

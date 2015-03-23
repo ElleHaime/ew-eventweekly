@@ -113,6 +113,7 @@ class Event extends Grid
             'searchCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
             'searchTitle' => new Field\Name("Name"),
             'searchId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_IN),
+        	'searchNotId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_NOTIN),
             'searchMember' => new Field\Standart('MemberID', 'member_id', null, Criteria::CRITERIA_EQ),
             'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
@@ -120,7 +121,8 @@ class Event extends Grid
             'searchEndDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_LESS),
         	'searchLatitude' => new Field\Standart('Latitude', 'latitude', null),
         	'searchLongitude' => new Field\Standart('Longitude', 'longitude', null),
-        	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE)
+        	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE),
+        	'searchStatus' => new Field\Standart('Status', 'event_status', null, Criteria::CRITERIA_EQ)
         ], null, 'get');
     }
 

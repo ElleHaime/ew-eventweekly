@@ -66,15 +66,19 @@ class EventController extends \Core\Controllers\CrudController
     	$result = [];
     	$pickFullTemplate = true;
     	
-    	$likedEvents = [];
+    	$likedEvents = $dislikedEvents = [];
     	if ($this->session->has('memberId')) {
     		$this->fetchMemberLikes();
-    		$likedEvents = $this -> view -> getVar('likedEventsIds'); 
+    		$likedEvents = $this -> view -> getVar('likedEventsIds');
+    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
     	}
-    	
+
     	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
     				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
     				  'searchLocationField' => $this -> session -> get('location') -> id];
+    	if (!empty($unlikedEvents)) {
+    		$queryData['searchNotId'] = $unlikedEvents;
+    	}
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 		$eventGrid->setLimit(9);
 		
@@ -207,10 +211,16 @@ class EventController extends \Core\Controllers\CrudController
     {
 		$result = [];
     	$pickFullTemplate = true;
-    	$likedEvents = [];
+    	$likedEvents = $unlikedEvents = [];
+    	
     	if ($this->session->has('memberId')) {
     		$this->fetchMemberLikes();
     		$likedEvents = $this -> view -> getVar('likedEventsIds');
+    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
+    		
+    		if (!empty($unlikedEvents)) {
+    			$queryData['searchNotId'] = $unlikedEvents;
+    		}
     	}
     	
     	if (!empty($queryData)) {
@@ -278,19 +288,20 @@ class EventController extends \Core\Controllers\CrudController
 
     	$ev = new Event();
     	$ev-> setShardById($eventId);
-    	
     	$event = $ev::findFirst($eventId);
-    	$event -> memberpart = (new EventMember()) -> getMemberpart($ev);
-    	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url); 
     	
     	(new EventRating()) -> addEventRating($event);
     	
+    	$event -> memberpart = $this -> getJoinedStatus($event);
+    	$event -> likedStatus = $this -> getLikedStatus($event);
+    	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url);
+    	 
     	$images = (new EventImageModel()) -> setViewImages($event -> id);
     	$this->view->setVars($images);
+    	
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());
         $this->view->setVar('link_back_to_list', true);
-        $this->fetchMemberLikeForEvent($event -> id);
         
         $eventTags = [];
         foreach ($event->tag as $Tag) {
@@ -363,13 +374,16 @@ class EventController extends \Core\Controllers\CrudController
                     break;
             }
 
-            $eventMember = new EventMember();
+            $eventMember = EventMember::findFirst(['member_id = ' . $this -> session -> get('memberId'). ' AND event_id = "' . $data['event_id']. '"']); 
+            if(!$eventMember) {
+            	$eventMember = new EventMember();
+            }
             $eventMember->assign(array(
                 'member_id' => $member->id,
                 'event_id' => $data['event_id'],
                 'member_status' => $status
             ));
-            if ($eventMember->save()) {
+            if ($eventMember -> save()) {
                 $ret = ['status' => 'OK',
                         'event_member_status' => $data['answer']];
             }
