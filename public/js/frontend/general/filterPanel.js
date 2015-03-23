@@ -60,9 +60,6 @@ define('frontFilterPanel',
 				$(this.settings.tagBox).click(function(e) {
 					$this.__tagClicked();
 				});
-				$(window).resize(function(e) {
-					$this.__setFilterPanelButtonLeftPosition();
-				});
 
 			},
 
@@ -208,13 +205,10 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__setFilterPanelButtonLeftPosition: function(e) {
-				console.log('window was resized');
-				if (!this.panelState) {
 					$(this.settings.btnSwitchPanel).css('left', this.panelWidth);
 					if ($(window).width()<400) {
 						$(this.settings.btnSwitchPanel).css('left', $(window).width()-40);
 					}
-				}
 			},
 			
 			/*
