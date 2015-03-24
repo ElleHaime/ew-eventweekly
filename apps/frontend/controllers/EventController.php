@@ -146,8 +146,9 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listLikedAction()
     {
+    	$queryData = [];
+    	
     	$eventsLiked = EventLike::find(['status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
-   	
 		if (!is_null($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
 				$searchEventsId[] = $event['event_id']; 
@@ -166,14 +167,15 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listJoinedAction()
     {
+    	$queryData = [];
+    	
     	$eventsJoined = EventMember::find(['member_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
     	if (!is_null($eventsJoined)) {
     		foreach ($eventsJoined as $event) {
     			$searchEventsId[] = $event['event_id'];
     		}
-    			
-    		$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
-			    		  'searchId' => $searchEventsId];
+    		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+    		$queryData['searchId'] = $searchEventsId;
     	}
     	
     	$this -> showListResults($queryData, 'joined', 'join', 'Where I am going');
@@ -213,17 +215,17 @@ class EventController extends \Core\Controllers\CrudController
     	$pickFullTemplate = true;
     	$likedEvents = $unlikedEvents = [];
     	
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    		$likedEvents = $this -> view -> getVar('likedEventsIds');
-    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
-    		
-    		if (!empty($unlikedEvents)) {
-    			$queryData['searchNotId'] = $unlikedEvents;
-    		}
-    	}
-    	
     	if (!empty($queryData)) {
+    		if ($this->session->has('memberId')) {
+    			$this->fetchMemberLikes();
+    			$likedEvents = $this -> view -> getVar('likedEventsIds');
+    			$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
+    		
+    			if (!empty($unlikedEvents)) {
+    				$queryData['searchNotId'] = $unlikedEvents;
+    			}
+    		}
+    		
 	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 	    	$eventGrid->setLimit(9);
 	    	
