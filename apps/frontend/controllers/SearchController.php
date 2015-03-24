@@ -205,8 +205,8 @@ _U::dump($postData, true);
                     
                 } else {
                     $eventGrid -> setLimit(9);
-                    $eventGrid -> setParam('order','start_date');
-                    $eventGrid -> setSortDirection('ASC');
+	    			$eventGrid -> setSort('start_date');
+	    			$eventGrid -> setSortDirection('ASC');
                     $results = $eventGrid->getData();
 
                     foreach($results['data'] as $key => $value) {

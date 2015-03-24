@@ -81,7 +81,9 @@ class EventController extends \Core\Controllers\CrudController
     	}
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 		$eventGrid->setLimit(9);
-		
+	    $eventGrid -> setSort('start_date');
+	    $eventGrid -> setSortDirection('ASC');
+				
 		$page = $this->request->getQuery('page');
 		if (empty($page)) {
 			$eventGrid -> setPage(1);
@@ -228,6 +230,8 @@ class EventController extends \Core\Controllers\CrudController
     		
 	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 	    	$eventGrid->setLimit(9);
+	    	$eventGrid -> setSort('start_date');
+	    	$eventGrid -> setSortDirection('ASC');
 	    	
 	    	$page = $this->request->getQuery('page');
 	    	if (empty($page)) {
