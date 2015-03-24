@@ -3566,7 +3566,7 @@ table.default thead {
 #header {
   position: relative;
   width: 100%;
-  z-index: 1001;
+  z-index: 102;
 }
 #header .user-menu-button-open {
   float: left;
@@ -4328,6 +4328,8 @@ table.default thead {
     text-align: center;
   }
 }
+
+
 .list-of-events__title {
   font-family: "Open Sans";
   font-size: 34px;

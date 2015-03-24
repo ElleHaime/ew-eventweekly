@@ -93,7 +93,7 @@ define('frontFilterPanel',
 			__switchPanel: function() {
 				if (!this.panelState) {
 					this.__setFilterPanelButtonLeftPosition();
-					$(this.settings.btnSwitchPanel).css('z-index', "1000");
+					$(this.settings.btnSwitchPanel).css('z-index', "101");
 					$(this.settings.overlayBlock).show();
 					$(this.settings.filterPanel).show();
 					
