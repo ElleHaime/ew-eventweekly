@@ -166,7 +166,7 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function listJoinedAction()
     {
-    	$eventsJoined = EventMember::find(['event_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	$eventsJoined = EventMember::find(['member_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
     	if (!is_null($eventsJoined)) {
     		foreach ($eventsJoined as $event) {
     			$searchEventsId[] = $event['event_id'];
