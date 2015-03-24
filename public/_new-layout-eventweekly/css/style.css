@@ -295,7 +295,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     color: #808080;
 }
 
-#form_signup {
+#form_signup, #change-password-form {
     width: 500px;
     max-width: 98%;
     margin: auto;
@@ -312,6 +312,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
     padding: 20px;
 
 }
+
 #submit_signup {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
