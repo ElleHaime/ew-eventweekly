@@ -11,6 +11,7 @@ use Frontend\Models\MemberFilter, //<---for new filters
     Frontend\Models\Location,
     Frontend\Models\Event,
     Core\Utils as _U,
+    Core\Utils\DateTime as _UDT,
     Frontend\Models\Cron as Cron;
 
 /**
@@ -115,16 +116,14 @@ _U::dump($postData, true);
             if ($elemExists('searchStartDate')) {
                 $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
                 $queryData['searchStartDate'] = $startDate;
-                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime('today +30 days'));
+                $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
                 
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
             }  else {
-            	$startDate = date('Y-m-d H:i:s', strtotime('today -1 minute'));
-            	$queryData['searchStartDate'] = $startDate;
+            	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
             	
             	if ($elemExists('searchTitle', false)) {
-            		$queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime('today +30 days'));
-            		$pageTitle .= 'now and till "' . date('Y-m-d', strtotime('+3 days midnight')) . '" | ';
+            		$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             	} 
 			}
 	
@@ -189,7 +188,7 @@ _U::dump($postData, true);
 
                     foreach($results['data'] as $id => $event) {
                     	$result[$event -> id] = (array)$event;
-                    	if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+                    	if (!empty($likedEvents) && in_array($event -> id, $likedEvents)) {
                     		$result[$event -> id]['disabled'] = 'disabled';
                     	}
 
@@ -210,6 +209,9 @@ _U::dump($postData, true);
                     $results = $eventGrid->getData();
 
                     foreach($results['data'] as $key => $value) {
+						if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+							$value -> disabled = 'disabled';
+						}
                     	$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
                     }
                     

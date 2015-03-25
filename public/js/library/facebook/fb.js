@@ -28,7 +28,9 @@ define('fb',
 				status: true,
 
                 isLogged: '#isLogged',
-                externalLogged: '#external_logged'
+                externalLogged: '#external_logged',
+                
+                pageWasChanged: '#pageWasChanged'
 			};
 			self.eventStatuses = {
 				join: 'JOIN',
@@ -104,6 +106,14 @@ define('fb',
 				$(self.settings.btnEventShare).click(function(e) {
 					self.__shareEvent(this);
 				});
+				
+				$(self.settings.pageWasChanged).change(function(event) {
+		        	$(self.settings.btnEventShare).each(function() {
+           				$(this).unbind('click').bind('click', function() {
+           					self.__shareEvent(this);		
+           				});
+           			});
+		        });
 			}
 			
 			self.__login = function()

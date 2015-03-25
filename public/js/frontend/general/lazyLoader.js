@@ -16,6 +16,7 @@ define('lazyLoader',
                 url: window.location.href,
                 nextPageUrl: '',
                 totalPagesJs: 0,
+                pageWasChanged: '#pageWasChanged'
             },
 
         	self.init = function()
@@ -34,10 +35,8 @@ define('lazyLoader',
         	self.__bindClicks = function() 
         	{
         		$(self.settings.loadMoreButton).click(function() {
-        			//alert('ololo');
         			self.__someFunc();
         		});
-        		//alert('trampampam');
         	},
 
         	self.__someFunc = function()
@@ -68,11 +67,11 @@ define('lazyLoader',
                 $.ajax({url:nextPageUrl,
                 	success: function(result) 
                 	{
-//console.log(result);                		
                 		$(self.settings.divToUpdate).last().html(result);
                 		$(self.settings.divToOverlay).css({'opacity' : 1});
                             //'background-color': 'transparent'
                 		$(self.settings.preloader).css({'display': 'none'});
+                		$(self.settings.pageWasChanged).val(self.settings.pageNumber).trigger('change');
                 	}
                 });
         	}

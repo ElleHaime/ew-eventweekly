@@ -229,7 +229,7 @@ class EventController extends \Core\Controllers\CrudController
     		}
     		
 	    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-	    	$eventGrid->setLimit(9);
+	    	$eventGrid -> setLimit(9);
 	    	$eventGrid -> setSort('start_date');
 	    	$eventGrid -> setSortDirection('ASC');
 	    	
@@ -512,7 +512,6 @@ class EventController extends \Core\Controllers\CrudController
             $eventLike->assign(['event_id' => $eventId,
                 				'member_id' => $memberId,
                 				'status' => $status]);
-            
             if ($eventLike -> save()) {
             	if ($status != 1) {
             		$eventGoing = EventMember::findFirst('event_id = "' . $eventId . '" AND member_id = ' . $memberId);

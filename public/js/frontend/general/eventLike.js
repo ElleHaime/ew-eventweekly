@@ -17,6 +17,7 @@ define('frontEventLike',
 		        eventElem: '.b-list-of-events-g__item.pure-u-1-3.event-list-event',
 		        likeClass: 'ew-button',
 		        dislikeClass: 'ew-button-dis',
+                pageWasChanged: '#pageWasChanged'
 		    },
 
 		    self.target = null,
@@ -58,6 +59,23 @@ define('frontEventLike',
 		        $(self.settings.dislikeBtnShow).click(function(event) {
 		        	event.preventDefault();
 		        	self.__clickHandler($(this), 'show');
+		        });
+		        
+		        $(self.settings.pageWasChanged).change(function(event) {
+		        	$(self.settings.likeBtnList).each(function() {
+           				$(this).unbind('click').bind('click', function() {
+           					event.preventDefault();		
+           					self.__clickHandler($(this), 'list');		
+           				});
+           			});
+		        	
+		        	$(self.settings.dislikeBtnList).each(function() {
+           				$(this).unbind('click').bind('click', function() {
+           					event.preventDefault();		
+           					self.__clickHandler($(this), 'list');		
+           				});
+           				
+           			});
 		        });
 		    },
 
@@ -107,7 +125,6 @@ define('frontEventLike',
 			        	if (data.member_like == 1) {
 			        		$(like).find('a').toggleClass(self.settings.dislikeClass);
 			        	} else {
-			        		//$(like).find('a').toggleClass(self.settings.likeClass);
 			        		var elem = $(self.settings.eventElem + '[data-event-id=' + data.event_id + ']');
 			        		$(elem).remove();
 			        	}
