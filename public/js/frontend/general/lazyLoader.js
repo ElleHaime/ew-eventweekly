@@ -23,8 +23,8 @@ define('lazyLoader',
         	{
         		$(self.settings.loadMoreButton).hide();
                 self.settings.totalPagesJs = document.getElementById("totalPagesJs").textContent;
-    
-                if ( self.settings.totalPagesJs>1 ) {
+
+                if (self.settings.totalPagesJs > 1) {
                     $(self.settings.loadMoreButton).show();
                 }       
                 $("img.lazy").lazyload();

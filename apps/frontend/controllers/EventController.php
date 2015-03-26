@@ -172,6 +172,7 @@ class EventController extends \Core\Controllers\CrudController
     	$queryData = [];
     	
     	$eventsJoined = EventMember::find(['member_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
+    	
     	if (!is_null($eventsJoined)) {
     		foreach ($eventsJoined as $event) {
     			$searchEventsId[] = $event['event_id'];
@@ -241,7 +242,7 @@ class EventController extends \Core\Controllers\CrudController
 	    		$eventGrid -> setPage((int)$page);
 	    	}
 	    	$results = $eventGrid->getData();
-   	
+
 	    	foreach($results['data'] as $key => $value) {
 	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	    			$value -> disabled = 'disabled';

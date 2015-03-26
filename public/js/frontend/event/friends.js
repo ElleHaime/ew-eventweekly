@@ -4,14 +4,16 @@ require([
     'frontEventLike',
     'eventFriendControl',
 	'noty',
+	'lazyLoader',		
 	'utils',
 	'domReady',
 	'underscore',
 	'jCookie'
 	], 
-	function($, fb, frontEventLike, eventFriendControl, noty) {
+	function($, fb, frontEventLike, eventFriendControl, noty, lazyLoader) {
 		fb.init();
         frontEventLike.init();
+        lazyLoader.init();
 
         eventFriendControl.init();
 		

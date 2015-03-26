@@ -154,9 +154,7 @@
 	<img src="../img/preloader.gif" alt="" id='preloader' style="display: none;">
 </div>
 
-<div id="totalPagesJs" style="display: none;">
-    {{ pageTotal }}
-</div>
+<div id="totalPagesJs" style="display: none;">{{ pageTotal }}</div>
 <input id="pageWasChanged" style="display:none;" value="1">
 <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 {% endblock %}

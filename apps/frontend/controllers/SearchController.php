@@ -50,7 +50,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-_U::dump($postData, true);
+//_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -316,4 +316,3 @@ _U::dump($postData, true);
         }
     }
 }
-
