@@ -32,9 +32,9 @@
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/profile">Profile settings</a>
                                 </li>
-                                <li>
+                                <!-- li>
                                 	<a role="menuitem" tabindex="-1" href="/campaign/list">Manage campaigns</a>
-                                </li>
+                                </li -->
                                 <li>
                                 	<a role="menuitem" tabindex="-1" href="/event/list">
                                         <span class="btn-text">My events</span>
