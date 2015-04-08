@@ -5021,3 +5021,30 @@ table.default thead {
       display: block;
     }
 }
+
+/*calendar arrows*/
+ th.prev .icon-arrow-left {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("../../img/glyphicons-halflings.png");
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+  margin-top: 1px;
+  background-position: -240px -96px;
+}
+
+th.next .icon-arrow-right {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("../../img/glyphicons-halflings.png");
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+  margin-top: 1px;
+  background-position: -264px -96px;
+}
