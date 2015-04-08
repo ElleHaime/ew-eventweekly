@@ -53,6 +53,7 @@ class EventController extends \Core\Controllers\CrudController
         $this->session->set('lastFetchedEvent', 0);
         $this->view->setVar('view_action', $this->request->getQuery('_url'));
         $this->view->setVar('link_to_list', true);
+        $this->view->setVar('userSearch', ['searchTypeResult' => 'Map']);        
     }
 
     
@@ -80,7 +81,7 @@ class EventController extends \Core\Controllers\CrudController
     		$queryData['searchNotId'] = $unlikedEvents;
     	}
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-		$eventGrid->setLimit(9);
+		$eventGrid -> setLimit(9);
 	    $eventGrid -> setSort('start_date');
 	    $eventGrid -> setSortDirection('ASC');
 				
@@ -115,6 +116,7 @@ class EventController extends \Core\Controllers\CrudController
         
 		$this->view->setVar('urlParams', 'list');
 		$this->view->setVar('list', $result);
+		$this->view->setVar('userSearch', ['searchTypeResult' => 'List']);
 		if ($pickFullTemplate) {
     		$this->view->pick('event/eventList');
 		} else {

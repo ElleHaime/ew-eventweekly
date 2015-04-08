@@ -164,7 +164,7 @@ require.config({
         } else {
         	moduleName = 'frontend' + fileName;
         };
-console.log(moduleName);
+        //console.log(moduleName);
   		require([moduleName]);
 
         require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 

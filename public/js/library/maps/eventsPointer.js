@@ -34,7 +34,7 @@ define('eventsPointer',
             pointEvents: function(events) {
                 var $this = this;
 
-                if (_.isEmpty(events)) {
+                if (_.isEmpty(events) && $this.settings.pageCurrent == 1) {
                     noty({text: 'No events for your request!', type: 'warning'});
                 } else {
                     _.each(events, function(node) {
@@ -139,7 +139,7 @@ define('eventsPointer',
             	$this.pointEvents(data['data']);
 
             	if (data['stop'] == true) {
-            		console.log('clear interval');
+            		//console.log('clear interval');
                 	$this.settings.pageCurrent = 1;
                     clearInterval(interval);
                 } else {
