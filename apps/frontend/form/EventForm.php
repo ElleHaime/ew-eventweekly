@@ -47,7 +47,13 @@ class EventForm extends Form
         $this -> addElement('text', 'tickets_url', 'tickets_url', array('placeholder' => 'Link to tickets'));
 
 		$this -> addElement('radio', 'recurring', 'Recurring', 
-								array('options' => \Frontend\Models\Event::$eventRecurring));  
+								array('options' => \Frontend\Models\Event::$eventRecurring));
+		$this -> addElement('date', 'recurring_end_date', 'Recurring till',
+								array('data-format' => 'dd/MM/yyyy',
+										'data-type' => 'event_date',
+										'placeholder' => 'Recurring till',
+										'autocomplete' => 'off',
+										'class' => 'input_add_event_date'));
 		
 		$this -> addElement('text', 'location', 'Location',
 								array('placeholder' => 'Choose location', 'autocomplete' => 'off'));

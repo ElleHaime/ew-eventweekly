@@ -74,20 +74,14 @@ class Event extends EventObject
             $eid = $this->id;
             $uid = $session -> get('memberId');
 
-            $eventLike = EventLike::findFirst('event_id = ' . $eid . ' AND member_id = ' . $uid);
+            $eventLike = EventLike::findFirst('event_id = "' . $eid . '" AND member_id = ' . $uid);
             if ($eventLike) {
                 $eventLike->delete();
-
-                $userEventsLiked = EventLike::find( array('member_id = ' . $uid . " AND status = 1") )->count();
-                $session -> set('userEventsLiked', $userEventsLiked);
             }
 
-            $eventGoing = \Frontend\Models\EventMember::findFirst('event_id = ' . $eid . ' AND member_id = ' . $uid);
+            $eventGoing = \Frontend\Models\EventMember::findFirst('event_id = "' . $eid . '" AND member_id = ' . $uid);
             if ($eventGoing) {
                 $eventGoing->delete();
-
-                $userEventsGoing = $session -> get('userEventsGoing') - 1;
-                $session -> set('userEventsGoing', $userEventsGoing);
             }
         }
     }
@@ -130,97 +124,25 @@ class Event extends EventObject
         }
     }
     
-
-    public function setCondition($condition)
+    public function getRecurEvents($parentId)
     {
-        if (!empty($condition)) {
-            $this -> conditions[] = (string)$condition;
-        }
-       
-        return $this;
-    }
-
-    public function setSelector($selector)
-    {
-    	if (!empty($selector)) {
-    		$this -> selector = (string)$selector;
-    	}
-    	 
-    	return $this;
-    }
-
-    /**
-     * Add condition to model for fetching
-     *
-     * @param $condition
-     * @param int $type
-     * @return $this
-     */
-    public function addCondition($condition, $type = self::CONDITION_COMPLEX)
-    {
-	    if (!empty($condition)) {
-            $cond = [
-                'type' => $type,
-                'condition' => (string)$condition
-            ];
-	    	$this -> conditions[] = $cond;
-	    }
-	    
-	    return $this;
-    }
-
-    /**
-     * Add order condition
-     *
-     * @param $orderBy
-     * @return $this
-     */
-    public function addOrder($orderBy)
-    {
-        if (!empty($orderBy)) {
-            $this->order = $orderBy;
-        }
-
-        return $this;
-    }
+    	$result = [];
     
-    public function setStart($start = 0)
-    {
-    	$this -> start = $start;
-    	return $this;
-    }
+    	$shards = $this -> getAvailableShards();
+    	foreach ($shards as $cri) {
+    		$this -> setShard($cri);
+    		$events = self::find(['recurring_parent = " . $parentId . "']);
     
-    public function setOffset($offset = 0)
-    {
-    	$this -> offset = $offset;
-    	return $this;
-    }
-    
-    
-    /**
-     * Set pagination
-     */
-    public function addPagination($pagination = false)
-    {
-    	if ($pagination) {
-    		$this->pagination = true;
+    		if ($events -> count() != 0) {
+    			foreach ($events as $val) {
+   					$result[$val -> id] = $val -> name;
+    			}
+    		}
     	}
     
-    	return $this;
+    	return $result;
     }
-    
-    /**
-     * Set personalization
-     */
-    public function addPersonalization($personalization = false)
-    {
-    	if ($personalization) {
-    		$this->personalization = true;
-    	}
-    
-    	return $this;
-    }
-    
+
     public function setLogo($event, $logo) 
     {
     	$event -> logo = $logo;
@@ -240,157 +162,4 @@ class Event extends EventObject
 		
 		return $this;
 	}
-    
-    
-    public function fetchEvents($fetchType = self::FETCH_OBJECT, $order = self::ORDER_ASC, $pagination = [], $applyPersonalization = false, $limit = [], 
-    								$memberFriend = false, $memberGoing = false, $memberLike = false, $needVenue = false, $needLocation = false, $eventTag = false, $categorySet = [])
-    {
-		$availableShards = $this -> getAvailableShards();
-		if ($this -> destinationTable === false) {
-			$shards = $availableShards;
-		} else {
-			foreach ($availableShards as $index => $shard) {
-				if ($shard['source'] == $this -> destinationTable) {
-					$shards[] = $shard;
-				}
-			}
-		}
-		$eventsTotal = [];
-    
-    	foreach ($shards as $cri) {
-    		$this -> setShard($cri);
-    		
-	        $builder = $this->getModelsManager()->createBuilder();
-	
-	        $builder->from('Frontend\Models\Event');
-	        $builder->leftJoin('Frontend\Models\EventCategory', 'Frontend\Models\Event.id = Frontend\Models\EventCategory.event_id')
-		            ->leftJoin('Frontend\Models\Category', 'Frontend\Models\EventCategory.category_id = Frontend\Models\Category.id');
-	            
-	       	if ($memberFriend) {
-	       		$builder -> leftJoin('Frontend\Models\EventMemberFriend', 'Frontend\Models\EventMemberFriend.event_id = Frontend\Models\Event.id');
-	       	} 
-	       	if ($memberGoing) {
-	       		$builder -> leftJoin('Frontend\Models\EventMember', 'Frontend\Models\EventMember.event_id = Frontend\Models\Event.id');
-	       	}
-	       	if ($memberLike) {
-	       		$builder -> leftJoin('Frontend\Models\EventLike', 'Frontend\Models\EventLike.event_id = Frontend\Models\Event.id');
-	       	} 
-	       	if ($eventTag || $applyPersonalization) {
-	       		$builder -> leftJoin('Frontend\Models\EventTag', 'Frontend\Models\Event.id = Frontend\Models\EventTag.event_id')
-						 -> leftJoin('Frontend\Models\Tag', 'Frontend\Models\Tag.id = Frontend\Models\EventTag.tag_id');
-	       	} 
-
-	        $this->conditions = array_merge($this->conditions, $this->defaultConditions);
-	
-	        if (!empty($this->conditions)) {
-	            foreach ($this->conditions as $condition) {
-	                $prevCondition = $builder->getWhere();
-	
-	                if (!empty($prevCondition)) {
-	                    if ($condition['type'] === self::CONDITION_COMPLEX) {
-	                        $builder->where($prevCondition.' AND '.$condition['condition']);
-	                    }elseif ($condition['type'] === self::CONDITION_SIMPLE) {
-	                        $builder->where($prevCondition.' '.$condition['condition']);
-	                    }
-	                }else {
-	                    $builder->where($condition['condition']);
-	                }
-	            }
-	        }
-
-	        if ($applyPersonalization) {
-	            $di = $this->getDi();
-	            $session = $di->getShared('session');
-	            $uid = $session->get('memberId');
-	
-	            $MemberFilter = new MemberFilter();
-	            
-	            if (empty($categorySet)) {
-	            	$member_categories = $MemberFilter->getbyId($uid);
-	            } else {
-	            	$member_categories = $MemberFilter->compareById($uid, $categorySet);
-	            }
-           
-	            $tagCategories = array();
-	            if (array_key_exists('category', $member_categories) && !empty($member_categories['category']['value'])) {
-	
-		            if (count($member_categories['category']['value']) > 0) {
-		                	$category = new Category();
-		                	$defaultCategories = $category -> getDefaultIdsAsString();
-		                	$extraCats = array_intersect($member_categories['category']['value'], explode(',', $defaultCategories));
-	
-							if (!empty($extraCats)) {
-								if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-									$builder->where($prevCondition. ' AND (Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
-								} else {
-									$builder->where($prevCondition. ' AND Frontend\Models\EventCategory.category_id IN ('.implode(',', $extraCats).')');
-								}
-							} 
-		            }
-					
-					$prevCondition = $builder->getWhere();
-					if (array_key_exists('tag', $member_categories) && !empty($member_categories['tag']['value'])) {
-						if (!empty($extraCats)) {
-							$builder->where($prevCondition . ' OR Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .'))');
-						} else {
-							$builder->where($prevCondition . ' AND Frontend\Models\EventTag.tag_id IN ('.implode(',', $member_categories['tag']['value']) .')');
-						}
-					}
-	            }
-	        }
-
-	        if (empty($this->order)) {
-	            if ($order === self::ORDER_DESC) {
-	                $builder->orderBy('Frontend\Models\Event.start_date DESC');
-	            } elseif ($order === self::ORDER_ASC) {
-	                $builder->orderBy('Frontend\Models\Event.start_date ASC');
-	            }
-	        }else {
-	            $builder->orderBy($this->order);
-	        }
-	        
-			if (!empty($limit)) {
-	        	$builder -> limit($limit['limit'], $limit['start']);
-	        }
-	        $builder->groupBy('Frontend\Models\Event.id');
-
-	        if (!empty($pagination)) {
-	            $paginator = new \Phalcon\Paginator\Adapter\QueryBuilder(array(
-	                'builder' => $builder,
-	                'limit'=> $pagination['limit'],
-	                'page' => $pagination['page']
-	            ));
-
-	            $totalRows = $builder->getQuery()->execute()->count();
-            
-	            if ($totalRows > 0) {
-		            $result = $paginator->getPaginate();
-		            $result->total_pages = (int)ceil($totalRows / $pagination['limit']);
-		            $result->total_items = $totalRows;
-
-		            if ($fetchType === self::FETCH_ARRAY) {
-		                $result->items = $this->resultToArray($result->items);
-		                
-		                $eventsTotal = array_merge($eventsTotal, $result);
-		            } else {
-		            	$eventsTotal[] = $result;
-		            }
-	            }
-	            
-	        } else {
-	            $result = $builder->getQuery()->execute();
-	            if ($result -> count() > 0) {
-		            if ($fetchType === self::FETCH_ARRAY) {
-		                $result = $this -> resultToArray($result);
-		                $eventsTotal = array_merge($eventsTotal, $result);
-		            } else {
-		            	//$eventsTotal[] = $result;
-		            	$eventsTotal[] = json_decode(json_encode($this -> resultToArray($result), JSON_UNESCAPED_UNICODE), FALSE);
-		            }
-	            }
-	        }
-    	}
-
-        return $eventsTotal;
-    }
 } 

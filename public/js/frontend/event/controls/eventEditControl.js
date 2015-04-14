@@ -15,10 +15,13 @@ define('frontEventEditControl',
 
                 inpDateStart: '#date-picker-start',
 				inpDateEnd: '#date-picker-end',
+				inpDateRecur: '#date-picker-recurring',
 				textDateStart: '#start_date',
+				textDateRecur: '#recurring_end_date',
 				textTimeStart: '#start_time',
 				inpTimeStart: '#time-picker-start',
 				inpTimeEnd: '#time-picker-end',
+				inpTimeRecur: '#time-picker-recurring',
 				textDateEnd: '#end_date',
 				textTimeEnd: '#end_time',
 
@@ -147,8 +150,12 @@ define('frontEventEditControl',
 					self.__drawDateLeft(e.date, 'changeLeft');
 				});
 
-				$(self.settings.inpDateEnd).on('changeDate', function(e) {
+				$(self.settings.inpDateRecur).on('changeDate', function(e) {
 					self.__drawDateLeft(e.date);
+				});
+				
+				$(self.settings.inpDateStart).on('changeDate', function(e) {
+					self.__drawDateLeft(e.date, 'changeLeft');
 				});
 
 
@@ -269,6 +276,10 @@ define('frontEventEditControl',
                 });
 
                 var endDate = $(self.settings.textDateEnd).datetimepicker({
+                    autoclose: true,
+                    startDate: new Date()
+                });
+                var recurDate = $(self.settings.textDateRecur).datetimepicker({
                     autoclose: true,
                     startDate: new Date()
                 });

@@ -37,7 +37,7 @@
                                             <div id="content-box">
                                                 <div class="form-center clearfix">
                                                     <div class="input-div clearfix">
-                                                         {{ form.render('name') }} Publish event to facebook
+                                                         {{ form.render('name') }} 
                                                     </div>
 
                                                     <div class="input-div_date clearfix">
@@ -62,9 +62,9 @@
                                                             </label>
 
                                                             {% if event.fb_uid == '' %}
-                                                            <label class="add_event_label_to_checkbox">
-                                                                {{ form.render('event_fb_status') }} Publish event to facebook
-                                                            </label>
+	                                                            <label class="add_event_label_to_checkbox">
+	                                                                {{ form.render('event_fb_status') }} Publish event to facebook
+	                                                            </label>
                                                             {% endif %}
 
                                                         </div>
@@ -216,14 +216,24 @@
                                                 </div>
                                             </div>
 
-                                            <div class="radio-box">
-                                                {#<p> {{ form.label('recurring') }}</p>
-                                                {{ form.render('recurring') }} #}
+                                            {#<div class="radio-box">
+                                                <p> {{ form.label('recurring') }}</p>
+                                                {{ form.render('recurring') }}
+                                                <div class="date-picker_one clearfix">
+                                                	<div id="date-picker-recurring" class="input-div_small">
+                                                			<!-- input type="text" id="recurring_end_date" name="recurring_end_date" data-format="dd/MM/yyyy" data-type="event_date" placeholder="Recurring till" autocomplete="off" class="input_add_event_date" -->
+                                                               {{ form.render('recurring_end_date') }}
+                                                         <span class="add-on"></span>
+                                                          </div>
+                                                     </div>
+                                                 </div>
+                                            </div>
+                                            <div>   
                                                 <div class="checkbox-block">
                                                     {{ form.render('campaign_id') }}
                                                     <input id="hiddenCampaignId" name="hiddenCampaignId" value="{{ event.campaign_id }}" type="hidden"/>
                                                 </div>
-                                            </div>
+                                            </div>#}
                                         </div>
                                         <div class="btn-add_group clearfix">
                                             <button class="ew-button " type="button" id="btn-cancel">Cancel</button>

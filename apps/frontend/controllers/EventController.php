@@ -295,10 +295,9 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> view -> setVar('viewModeUp', true);
     	}
 
-    	$ev = new Event();
-    	$ev-> setShardById($eventId);
+    	$ev = (new Event()) -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
-    	
+
     	(new EventRating()) -> addEventRating($event);
     	
     	$event -> memberpart = $this -> getJoinedStatus($event);
@@ -426,7 +425,7 @@ class EventController extends \Core\Controllers\CrudController
        		$ev = new Event();
     		$ev -> setShardById($id);
     		$event = $ev::findFirst($id);
-       		
+
        		$event -> setExtraRelations($this -> getEditExtraRelations());
        		$event -> getDependencyProperty();
        		$images = (new EventImageModel()) -> setViewImages($event -> id);
@@ -452,9 +451,15 @@ class EventController extends \Core\Controllers\CrudController
        			}
        		}
        	}
-       	
         $this -> view -> setVar('categories', (new Category()) -> getDefaultIdsAsString());
-
+        
+        if (!is_null($event -> recurring)) {
+			$eventRecurring = (new Event()) -> getRecurEvents($event -> id);
+			if (!empty($eventRecurring)) {
+				$this -> view -> setVar('recurring', $eventRecurring);
+			}
+        } 
+        
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
@@ -602,7 +607,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-
+//_U::dump($event);
         $loc = new Location();
         $venue = new Venue();
         $venueId = false;
@@ -723,6 +728,7 @@ class EventController extends \Core\Controllers\CrudController
         } else {
         	$saveEvent = $ev -> save();
         }
+        
         if ($saveEvent) {
             // create event dir if not exists
             if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
@@ -754,16 +760,18 @@ class EventController extends \Core\Controllers\CrudController
             
             if (isset($logo)) {
                 $filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
-                $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
-                $ev->logo = $filename;
-                $ev->update();
+                if (file_exists($this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename)) {
+                	$file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
+                	$ev->logo = $filename;
+                	$ev->update();
+                }
             } else if ($ev->logo != '') {
                 $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
             } else {
                 $ev->logo = '';
                 $ev->update();
             }
-
+			
             list($width, $height, $type, $attr) = getimagesize($file);
             if ($width < 180 || $height < 60) {
                 $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
@@ -818,8 +826,8 @@ class EventController extends \Core\Controllers\CrudController
                 foreach ($aCats as $key => $value) {
                     if (!empty($value)) {
                         $eCats = (new EventCategory())->setShardById($ev -> id);
-                        $eCats->assign(array('event_id' => $ev->id,
-                            				 'category_id' => $value));
+                        $eCats->assign(['event_id' => $ev->id,
+                            			'category_id' => $value]);
                         $eCats->save();
                     }
                 }
@@ -828,21 +836,21 @@ class EventController extends \Core\Controllers\CrudController
             // process poster and flyer
             $addEventImage = function ($image, $imageType) use ($ev) {
             	$img = (new EventImageModel()) -> setShardById($ev -> id); 
-                $eventPoster = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
+                $eventImage = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
 
                 $filename = $this->uploadImageFile(
-                    empty($eventPoster) ? '' : $eventPoster->image,
+                    empty($eventImage) ? '' : $eventImage->image,
                     $image,
                     $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType
                 );
 
-                if ($eventPoster) {
-                    $eventPoster->image = $filename;
+                if ($eventImage) {
+                    $eventImage->image = $filename;
                 } else {
-                    $eventPoster = (new EventImageModel()) -> setShardById($ev -> id);
-                    $eventPoster->event_id = $ev->id;
-                    $eventPoster->image = $filename;
-                    $eventPoster->type = $imageType;
+                    $eventImage = (new EventImageModel()) -> setShardById($ev -> id);
+                    $eventImage->event_id = $ev->id;
+                    $eventImage->image = $filename;
+                    $eventImage->type = $imageType;
                 }
                 $eventPoster->save();
             };
@@ -854,11 +862,21 @@ class EventController extends \Core\Controllers\CrudController
             if (!empty($flyer)) {
                 $addEventImage($flyer, 'flyer');
             }
+            
+            //recurring
+            if (isset($event['recurring']) && $event['recurring'] != 0) {
+            }
         }  
-
+//_U::dump($ev->toArray());        
+        $grid = new \Frontend\Models\Search\Grid\Event(['location' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+        $indexer = new \Frontend\Models\Search\Search\Indexer($grid);
+        $indexer -> setDi($this -> getDI());
+        
         if (!empty($event['id'])) {
+        	$indexer->updateData($ev -> id);
         	return ['id' => $ev -> id, 'type' => 'update'];
         } else {
+        	$indexer->addData($ev -> id);
         	return ['id' => $ev -> id, 'type' => 'new'];
         }
     }
