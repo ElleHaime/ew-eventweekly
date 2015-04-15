@@ -39,13 +39,13 @@ class Indexer extends BaseIndexer
     {
         $grid = clone $this->_grid;
         list($data, $shardCriteria) = $this->_getEventDataById($grid, $id);
-
         if (!$data) {
             return false;
         }
         //$data = $data->toArray();
         $data = (array)$data;
         $response = $this->addItem($data, $grid, $shardCriteria);
+     
         if ($response->hasError()) {
             var_dump($response->getError());
             return false;
@@ -104,7 +104,8 @@ class Indexer extends BaseIndexer
             return false;
         }
 
-        $data = $data->toArray();
+        //$data = $data->toArray();
+        $data = (array)$data;
 
         if (!$this->existItem($data, $grid, $shardCriteria)) {
             return false;
@@ -135,7 +136,8 @@ class Indexer extends BaseIndexer
         if (!$data) {
             return false;
         }
-        $data = $data->toArray();
+        //$data = $data->toArray();
+        $data = (array)$data;
 
         return $this->existItem($data, $grid, $shardCriteria);
     }
@@ -170,19 +172,18 @@ class Indexer extends BaseIndexer
         $grid->setParam($primaryFilterKey, $id);
 
         $params = $grid->getFilterParams();
+        
         $model = $container->getModel();
-        $shardCriteria = $params['location'];
+        $shardCriteria = $params['searchLocationField'];
         $model->setShardByCriteria($shardCriteria);
-
         $dataSource = $container->getDataSource();
-
+        
         foreach ($columns as $column) {
             $column->updateDataSource($dataSource);
         }
-
         $filter = $grid->getFilter();
-        if ($params['location'] == 0) {
-            $params['location'] = null;
+        if ($params['searchLocationField'] == 0) {
+            $params['searchLocationField'] = null;
         }
         $filter->setParams($params);
         $filter->applyFilters($dataSource);
@@ -236,7 +237,13 @@ class Indexer extends BaseIndexer
             return false;
         }
 
-        return ($this->getType()->getDocument($itemDocument->getId())) ? true : false;
+        try {
+        	$this->getType()->getDocument($itemDocument->getId());
+        	return true;
+        } catch (\Exception $e) {
+        	return false;
+        }
+        //return ($this->getType()->getDocument($itemDocument->getId())) ? true : false;
     }
 
     /**

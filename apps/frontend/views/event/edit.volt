@@ -216,7 +216,7 @@
                                                 </div>
                                             </div>
 
-                                            {#<div class="radio-box">
+                                            <div class="radio-box">
                                                 <p> {{ form.label('recurring') }}</p>
                                                 {{ form.render('recurring') }}
                                                 <div class="date-picker_one clearfix">
@@ -228,12 +228,21 @@
                                                      </div>
                                                  </div>
                                             </div>
-                                            <div>   
+                                            {# <div>   
                                                 <div class="checkbox-block">
                                                     {{ form.render('campaign_id') }}
                                                     <input id="hiddenCampaignId" name="hiddenCampaignId" value="{{ event.campaign_id }}" type="hidden"/>
                                                 </div>
-                                            </div>#}
+                                            </div> #}
+                                            {% if eventRecurring is defined %}
+                                            	<div class="checkbox-block">
+                                            		<label>This event is recurring. Change also events:</label>
+                                            		{% for index, event in eventRecurring %}
+                                            			<input type="checkbox" name=recurring[{{index}}] id="recurring_{{index}}" checked>
+                                            				<a href="/{{ toSlugUri(event) }}-{{ index }}">{{event}}</a> 
+                                            		{% endfor %}
+                                            	</div>
+                                            {% endif %}
                                         </div>
                                         <div class="btn-add_group clearfix">
                                             <button class="ew-button " type="button" id="btn-cancel">Cancel</button>

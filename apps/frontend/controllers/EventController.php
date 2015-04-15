@@ -203,6 +203,7 @@ class EventController extends \Core\Controllers\CrudController
 			foreach($results['data'] as $key => $value) {
 				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
             }
+            
     		$this -> view -> setVar('object', $result);
     		$this -> view -> setVar('list', $result);
     	}
@@ -400,7 +401,6 @@ class EventController extends \Core\Controllers\CrudController
         }
 
         echo json_encode($ret);
-        //die;
     }
 
 
@@ -425,14 +425,18 @@ class EventController extends \Core\Controllers\CrudController
        		$ev = new Event();
     		$ev -> setShardById($id);
     		$event = $ev::findFirst($id);
-
-       		$event -> setExtraRelations($this -> getEditExtraRelations());
-       		$event -> getDependencyProperty();
-       		$images = (new EventImageModel()) -> setViewImages($event -> id);
-       		$event -> site = EventSite::find(['event_id = "' . $event -> id . '"']);
-       		$this -> view -> setVars($images);
-       		
-       		$this -> view -> setVar('editEvent', true);       		
+			
+    		if ($event) {
+	       		$event -> setExtraRelations($this -> getEditExtraRelations());
+	       		$event -> getDependencyProperty();
+	       		$images = (new EventImageModel()) -> setViewImages($event -> id);
+	       		$event -> site = EventSite::find(['event_id = "' . $event -> id . '"']);
+	       		$this -> view -> setVars($images);
+	       		
+	       		$this -> view -> setVar('editEvent', true);
+    		} else {
+    			$event = new Event();    			
+    		}       		
        	} else {
        		$event = new Event();
        	}
@@ -456,7 +460,7 @@ class EventController extends \Core\Controllers\CrudController
         if (!is_null($event -> recurring)) {
 			$eventRecurring = (new Event()) -> getRecurEvents($event -> id);
 			if (!empty($eventRecurring)) {
-				$this -> view -> setVar('recurring', $eventRecurring);
+				$this -> view -> setVar('eventRecurring', $eventRecurring);
 			}
         } 
         
@@ -492,6 +496,13 @@ class EventController extends \Core\Controllers\CrudController
                 $event->event_status = 0;
                 $event->deleted = 1;
                 $event->update();
+                
+                $grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+                $indexer = new \Frontend\Models\Search\Search\Indexer($grid);
+                $indexer -> setDi($this -> getDI());
+               	if ($indexer->existsData($event -> id)) {
+               		$indexer->deleteData($event -> id);
+                }
 
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];
@@ -574,8 +585,6 @@ class EventController extends \Core\Controllers\CrudController
                 $result = array_merge($res, array('status' => 'OK'));
             }
         } 
-
-        //echo json_encode($result);
         $this -> sendAjax($result);
     }
 
@@ -730,157 +739,217 @@ class EventController extends \Core\Controllers\CrudController
         }
         
         if ($saveEvent) {
-            // create event dir if not exists
-            if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
-                mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
-            }
-
-            // start prepare params for FB event
-            $fbParams = array(
-                'access_token' => $this->session->get('user_token'),
-                'name' => $newEvent['name'],
-                'description' => $newEvent['description'],
-                'start_time' => date('c', strtotime($newEvent['start_date'])),
-                'privacy_type' => $newEvent['event_status'] == 0 ? 'SECRET' : 'OPEN'
-            );
-            if ($newEvent['start_date'] !== $newEvent['end_date']) {
-            	$fbParams['end_time'] = date('c', strtotime($newEvent['end_date']));
-            }
-
-            if ($event['venue'] != '') {
-                $fbParams['location'] = $event['venue'];
-            } else if ($event['address'] != '') {
-                $fbParams['location'] = $event['address'];
-            } else {
-                $fbParams['location'] = $event['location'];
-            }
-
-            // save image
-            $file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
-            
-            if (isset($logo)) {
-                $filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
-                if (file_exists($this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename)) {
-                	$file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
-                	$ev->logo = $filename;
-                	$ev->update();
-                }
-            } else if ($ev->logo != '') {
-                $file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
-            } else {
-                $ev->logo = '';
-                $ev->update();
-            }
+			$this -> processFormRelatedData($ev, $newEvent, $logo);
 			
-            list($width, $height, $type, $attr) = getimagesize($file);
-            if ($width < 180 || $height < 60) {
-                $fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
-            } else {
-                $fbParams['cover.jpg'] = '@' . $file;
-            }
-            // finish prepare params for FB event
-
-            if ($newEvent['event_fb_status'] == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
-                // add/edit event to facebook
-                if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
-                    $fbEventId = $this->sendToFacebook('me/events', $fbParams);
-
-                    if (!is_null($fbEventId)) {
-                        $ev->fb_uid = $fbEventId;
-                        $ev->update();
-                    }
-                } else {
-                    $this->sendToFacebook('/' . $ev->fb_uid, $fbParams);
-                }
-            }
-
-            // process site
-            $eSites = EventSite::find('event_id = "' . $ev->id . '"');
-            if ($eSites) {
-                foreach ($eSites as $es) {
-                    $es->delete();
-                }
-            }
-            if (!empty($event['event_site'])) {
-                $aSites = explode(',', $event['event_site']);
-                foreach ($aSites as $key => $value) {
-                    if (!empty($value)) {
-                        $eSites = new EventSite();
-                        $eSites->assign(array('event_id' => $ev->id,
-                            				   'url' => $value));
-                        $eSites->save();
-                    }
-                }
-            }
-
-            // process categories
-            $eventCategories = (new EventCategory())->setShardById($ev->id);
-            $eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
-            if ($eCats) {
-                foreach ($eCats as $ec) {
-                    $ec->delete();
-                }
-            }
-            if (!empty($event['category'])) {
-                $aCats = explode(',', $event['category']);
-                foreach ($aCats as $key => $value) {
-                    if (!empty($value)) {
-                        $eCats = (new EventCategory())->setShardById($ev -> id);
-                        $eCats->assign(['event_id' => $ev->id,
-                            			'category_id' => $value]);
-                        $eCats->save();
-                    }
-                }
-            }
-
-            // process poster and flyer
-            $addEventImage = function ($image, $imageType) use ($ev) {
-            	$img = (new EventImageModel()) -> setShardById($ev -> id); 
-                $eventImage = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
-
-                $filename = $this->uploadImageFile(
-                    empty($eventImage) ? '' : $eventImage->image,
-                    $image,
-                    $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType
-                );
-
-                if ($eventImage) {
-                    $eventImage->image = $filename;
-                } else {
-                    $eventImage = (new EventImageModel()) -> setShardById($ev -> id);
-                    $eventImage->event_id = $ev->id;
-                    $eventImage->image = $filename;
-                    $eventImage->type = $imageType;
-                }
-                $eventPoster->save();
-            };
-
-            if (!empty($poster)) {
-                $addEventImage($poster, 'poster');
-            }
-
-            if (!empty($flyer)) {
-                $addEventImage($flyer, 'flyer');
-            }
+			$grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+			$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
+			$indexer -> setDi($this -> getDI());
+			
+			if (!empty($event['id'])) {
+				if ($indexer->existsData($ev -> id)) {
+					$indexer->updateData($ev -> id);
+				} else {
+					$indexer->addData($ev -> id);
+					$indexer->deleteData($event['id']);
+				}
+			} else {
+				$indexer->addData($ev -> id);
+			}
             
             //recurring
             if (isset($event['recurring']) && $event['recurring'] != 0) {
+            	$eventsRecurring = [];
+            	$nextStartDate = strtotime($event['start_date']);
+            	$nextEndDate = strtotime($event['end_date']);
+            	$finalDate = strtotime($event['recurring_end_date']);
+            	
+            	do {
+            		$nextStartDate = strtotime(date('Y-m-d H:i:s', $nextStartDate) . ' + ' . $event['recurring'] . ' day');
+            		$nextEndDate = strtotime(date('Y-m-d H:i:s', $nextEndDate) . ' + ' . $event['recurring'] . ' day');
+            		
+            		$nextEvent = $newEvent;
+					$nextEvent['start_date'] = date('Y-m-d H:i:s', $nextStartDate);
+					$nextEvent['end_date'] = date('Y-m-d H:i:s', $nextEndDate);
+					
+					$evRecurring = (new Event()) -> setShardByCriteria($nextEvent['location_id']);
+					$evRecurring -> assign($nextEvent); 
+					if ($evRecurring -> save()) {
+						$this -> processFormRelatedData($evRecurring, $event);
+						
+						$grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $evRecurring -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+						$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
+						$indexer -> setDi($this -> getDI());
+						
+						$addData = $indexer -> addData($evRecurring -> id);
+					} 
+            	} while($nextStartDate < $finalDate);
+            }
+            
+            if (!empty($event['id'])) {
+            	return ['id' => $ev -> id, 'type' => 'update'];
+            } else {
+            	return ['id' => $ev -> id, 'type' => 'new'];
             }
         }  
-//_U::dump($ev->toArray());        
-        $grid = new \Frontend\Models\Search\Grid\Event(['location' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
-        $indexer = new \Frontend\Models\Search\Search\Indexer($grid);
-        $indexer -> setDi($this -> getDI());
-        
-        if (!empty($event['id'])) {
-        	$indexer->updateData($ev -> id);
-        	return ['id' => $ev -> id, 'type' => 'update'];
-        } else {
-        	$indexer->addData($ev -> id);
-        	return ['id' => $ev -> id, 'type' => 'new'];
-        }
     }
     
+    
+    private function processFormRelatedData($ev, $event, $logo = null)
+    {
+    	// create event dir if not exists
+    	if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
+    		mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
+    	}
+    	
+    	// start prepare params for FB event
+    	$fbParams = array(
+    			'access_token' => $this->session->get('user_token'),
+    			'name' => $ev -> name,
+    			'description' => $ev -> description,
+    			'start_time' => date('c', strtotime($ev -> start_date)),
+    			'privacy_type' => $ev -> event_status == 0 ? 'SECRET' : 'OPEN'
+    	);
+    	if ($ev -> start_date !== $ev -> end_date) {
+    		$fbParams['end_time'] = date('c', strtotime($ev -> end_date));
+    	}
+    	
+    	if ($event['venue'] != '') {
+    		$fbParams['location'] = $event['venue'];
+    	} else if ($event['address'] != '') {
+    		$fbParams['location'] = $event['address'];
+    	} else {
+    		$fbParams['location'] = $event['location'];
+    	}
+    	
+    	// save image
+    	$file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
+    	
+    	if (isset($logo)) {
+    		$filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
+    		if (file_exists($this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename)) {
+    			$file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
+    			$ev->logo = $filename;
+    			$ev->update();
+    		}
+    	} else if ($ev->logo != '') {
+    		$file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $ev->logo;
+    	} else {
+    		$ev->logo = '';
+    		$ev->update();
+    	}
+
+    	// start prepare params for FB event
+    	$fbParams = array(
+    			'access_token' => $this->session->get('user_token'),
+    			'name' => $ev -> name,
+    			'description' => $ev -> description,
+    			'start_time' => date('c', strtotime($ev -> start_date)),
+    			'privacy_type' => $ev -> event_status == 0 ? 'SECRET' : 'OPEN'
+    	);
+    	if ($ev -> start_date !== $ev -> end_date) {
+    		$fbParams['end_time'] = date('c', strtotime($ev -> end_date));
+    	}
+    	 
+    	if ($event['venue'] != '') {
+    		$fbParams['location'] = $event['venue'];
+    	} else if ($event['address'] != '') {
+    		$fbParams['location'] = $event['address'];
+    	} else {
+    		$fbParams['location'] = $event['location'];
+    	}
+    	list($width, $height, $type, $attr) = getimagesize($file);
+    	if ($width < 180 || $height < 60) {
+    		$fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
+    	} else {
+    		$fbParams['cover.jpg'] = '@' . $file;
+    	}
+    	// finish prepare params for FB event
+    	
+    	if ($ev -> event_fb_status == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
+    		// add/edit event to facebook
+    		if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
+    			$fbEventId = $this->sendToFacebook('me/events', $fbParams);
+    	
+    			if (!is_null($fbEventId)) {
+    				$ev->fb_uid = $fbEventId;
+    				$ev->update();
+    			}
+    		} else {
+    			$this->sendToFacebook('/' . $ev->fb_uid, $fbParams);
+    		}
+    	}
+    	
+    	// process site
+    	$eSites = EventSite::find('event_id = "' . $ev->id . '"');
+    	if ($eSites) {
+    		foreach ($eSites as $es) {
+    			$es->delete();
+    		}
+    	}
+    	if (!empty($event['event_site'])) {
+    		$aSites = explode(',', $event['event_site']);
+    		foreach ($aSites as $key => $value) {
+    			if (!empty($value)) {
+    				$eSites = new EventSite();
+    				$eSites->assign(array('event_id' => $ev->id,
+    						'url' => $value));
+    				$eSites->save();
+    			}
+    		}
+    	}
+    	
+    	// process categories
+    	$eventCategories = (new EventCategory())->setShardById($ev->id);
+    	$eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
+    	if ($eCats) {
+    		foreach ($eCats as $ec) {
+    			$ec->delete();
+    		}
+    	}
+    	if (!empty($event['category'])) {
+    		$aCats = explode(',', $event['category']);
+    		foreach ($aCats as $key => $value) {
+    			if (!empty($value)) {
+    				$eCats = (new EventCategory())->setShardById($ev -> id);
+    				$eCats->assign(['event_id' => $ev->id,
+    						'category_id' => $value]);
+    				$eCats->save();
+    			}
+    		}
+    	}
+    	
+    	// process poster and flyer
+    	$addEventImage = function ($image, $imageType) use ($ev) {
+    		$img = (new EventImageModel()) -> setShardById($ev -> id);
+    		$eventImage = $img::findFirst('event_id = "' . $ev->id . '" AND type = "' . $imageType . '"');
+    	
+    		$filename = $this->uploadImageFile(
+    				empty($eventImage) ? '' : $eventImage->image,
+    				$image,
+    				$this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType
+    		);
+    	
+    		if ($eventImage) {
+    			$eventImage->image = $filename;
+    		} else {
+    			$eventImage = (new EventImageModel()) -> setShardById($ev -> id);
+    			$eventImage->event_id = $ev->id;
+    			$eventImage->image = $filename;
+    			$eventImage->type = $imageType;
+    		}
+    		$eventPoster->save();
+    	};
+    	
+    	if (!empty($poster)) {
+    		$addEventImage($poster, 'poster');
+    	}
+    	
+    	if (!empty($flyer)) {
+    		$addEventImage($flyer, 'flyer');
+    	}
+    	
+    	return;
+    }
     
     public function loadRedirect($params = [])
     {
@@ -904,7 +973,6 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> response -> redirect('/event/list');
     	}
     }
-
     
     /**
      * @param $oldFilename string

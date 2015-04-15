@@ -14,9 +14,7 @@
                             <div class="span12">
                                 <div class="event-one-img">
                                     <a href="#">
-                                        {% if event.logo != '' %}
-                                            <img src='/upload/img/event/{{ event.logo }}' width='159px' height='159px'>
-                                        {% endif %}
+                                    	<img src='{{ checkLogo(event) }}' width='159px' height='159px'>
                                     </a>
                                 </div>
 

@@ -185,10 +185,10 @@ class Event extends \Engine\Mvc\Model
         }
     }
 
-    public function getSource()
+    /*public function getSource()
     {
         return "event";
-    }
+    }*/
 
     public function getSearchSource()
     {

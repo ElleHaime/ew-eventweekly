@@ -16,7 +16,12 @@
 								<div class="b-list-of-events-g__wrapper">
 									<div class="b-list-of-events-g__picture">
 										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+											{% if event.logo is defined %}
+												<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+											{% else %}
+												<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
+											{% endif %}
+
 										</a>
 
 										<div class="like-buttons">  

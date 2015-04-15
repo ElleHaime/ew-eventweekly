@@ -4,6 +4,8 @@
  */
 namespace Frontend\Models\Search\Model;
 
+use Sharding\Core\Env\Phalcon as Sharding;
+
 /**
  * Class event.
  *
@@ -13,6 +15,7 @@ namespace Frontend\Models\Search\Model;
  */
 class EventCategory extends \Engine\Mvc\Model
 {
+	use Sharding;
     /**
      * Default name column
      * @var string

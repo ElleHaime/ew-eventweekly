@@ -5,6 +5,7 @@
 namespace Frontend\Models\Search\Model;
 
 use Sharding\Core\Env\Phalcon as Sharding;
+
 /**
  * Class event.
  *
@@ -12,15 +13,14 @@ use Sharding\Core\Env\Phalcon as Sharding;
  * @package    Event
  * @subpackage Model
  */
-class EventTag extends \Engine\Mvc\Model
+class EventImage extends \Engine\Mvc\Model
 {
 	use Sharding;
-	
     /**
      * Default name column
      * @var string
      */
-    protected $_nameExpr = 'tag_id';
+    protected $_nameExpr = 'event_id';
 
     /**
      * Default order column
@@ -42,16 +42,25 @@ class EventTag extends \Engine\Mvc\Model
      
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $tag_id;
+    public $image;
+    
+    
+    /**
+     *
+     * @var string
+     */
+    public $type;
+    
 
     /**
      * Initialize method for model.
      */
-    public function initialize()
-    {
-        $this->belongsTo("event_id", "Frontend\Models\Search\Model\Event", "id", ['alias' => 'Event']);
-        $this->belongsTo("tag_id", "Frontend\Models\Search\Model\Tag", "id", ['alias' => 'Tag']);
-    }
+	public function initialize()
+	{
+		parent::initialize();
+				
+		$this -> belongsTo('event_id', '\Frontend\Models\Event', 'id', array('alias' => 'event'));
+	}
 }

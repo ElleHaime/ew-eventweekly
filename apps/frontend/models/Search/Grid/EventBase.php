@@ -7,7 +7,8 @@ namespace Frontend\Models\Search\Grid;
 use
     Engine\Crud\Grid,
     Engine\Crud\Grid\Column,
-    Engine\Crud\Grid\Filter\Search\Elasticsearch as Filter,
+    //Engine\Crud\Grid\Filter\Search\Elasticsearch as Filter,
+    Engine\Crud\Grid\Filter as Filter,    
     Engine\Crud\Grid\Filter\Field,
     Engine\Filter\SearchFilterInterface as Criteria;
 
@@ -18,13 +19,13 @@ use
  * @package    Event
  * @subpackage Grid
  */
-class Event extends Grid
+class EventBase extends Grid
 {
     /**
      * Container adapter class name
      * @var string
      */
-    protected $_containerAdapter = 'Mysql\Elasticsearch';
+    protected $_containerAdapter = 'Mysql';
 
     /**
      * Grid title
@@ -114,7 +115,8 @@ class Event extends Grid
             'searchLocationField' => new Field\Join("Location", "\Frontend\Models\Search\Model\Location"),
             'searchCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
             'searchTitle' => new Field\Name("Name"),
-            'searchId' => new Field\Primary("Id", 'id', null, Criteria::CRITERIA_IN),
+            //'searchId' => new Field\Primary("Id", 'id', null, Criteria::CRITERIA_IN),
+        	'searchId' => new Field\Primary("Id", 'id'),
         	'searchNotId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_NOTIN),
             'searchMember' => new Field\Standart('MemberI', 'member_id', null, Criteria::CRITERIA_EQ),
             'searchDesc' => new Field\Standart("Desc", "description"),
@@ -127,15 +129,5 @@ class Event extends Grid
         	'searchStatus' => new Field\Standart('Status', 'event_status', null, Criteria::CRITERIA_EQ),
         	'searchLogo' => new Field\Standart('Logo', 'logo')
         ], null, 'get');
-    }
-
-    /**
-     * Setup container
-     *
-     * @return void
-     */
-    protected function _setupContainer()
-    {
-        $this->_container->useIndexData();
     }
 }

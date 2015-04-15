@@ -29,6 +29,7 @@ class Event extends EventObject
 {
     use \Core\Traits\ModelConverter;
     use \Sharding\Core\Env\Phalcon;
+    use \Core\Traits\Facebook;
 
     const FETCH_OBJECT = 1;
     const FETCH_ARRAY = 2;
@@ -124,14 +125,14 @@ class Event extends EventObject
         }
     }
     
-    public function getRecurEvents($parentId)
+    public function getRecurEvents($id)
     {
     	$result = [];
     
     	$shards = $this -> getAvailableShards();
     	foreach ($shards as $cri) {
     		$this -> setShard($cri);
-    		$events = self::find(['recurring_parent = " . $parentId . "']);
+    		$events = self::find(['recurring = "' . $id . '" AND id != "' . $id. '"']);
     
     		if ($events -> count() != 0) {
     			foreach ($events as $val) {
@@ -161,5 +162,10 @@ class Event extends EventObject
 		} 
 		
 		return $this;
+	}
+	
+#!TODO	
+	public function prepareForFacebook($data)
+	{
 	}
 } 
