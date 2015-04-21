@@ -234,7 +234,7 @@
                                                     <input id="hiddenCampaignId" name="hiddenCampaignId" value="{{ event.campaign_id }}" type="hidden"/>
                                                 </div>
                                             </div> #}
-                                            {% if eventRecurring is defined %}
+                                            {#% if eventRecurring is defined %}
                                             	<div class="checkbox-block">
                                             		<label>This event is recurring. Change also events:</label>
                                             		{% for index, event in eventRecurring %}
@@ -242,7 +242,7 @@
                                             				<a href="/{{ toSlugUri(event) }}-{{ index }}">{{event}}</a> 
                                             		{% endfor %}
                                             	</div>
-                                            {% endif %}
+                                            {% endif %#}
                                         </div>
                                         <div class="btn-add_group clearfix">
                                             <button class="ew-button " type="button" id="btn-cancel">Cancel</button>
