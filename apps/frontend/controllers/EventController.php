@@ -497,7 +497,7 @@ class EventController extends \Core\Controllers\CrudController
                 $event->deleted = 1;
                 $event->update();
                 
-                $grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+                $grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
                 $indexer = new \Frontend\Models\Search\Search\Indexer($grid);
                 $indexer -> setDi($this -> getDI());
                	if ($indexer->existsData($event -> id)) {
@@ -741,7 +741,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($saveEvent) {
 			$this -> processFormRelatedData($ev, $newEvent, $logo);
 			
-			$grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+			$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
 			$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
 			$indexer -> setDi($this -> getDI());
 			
@@ -776,7 +776,7 @@ class EventController extends \Core\Controllers\CrudController
 					if ($evRecurring -> save()) {
 						$this -> processFormRelatedData($evRecurring, $event);
 						
-						$grid = new \Frontend\Models\Search\Grid\EventBase(['searchLocationField' => $evRecurring -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+						$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $evRecurring -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
 						$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
 						$indexer -> setDi($this -> getDI());
 						

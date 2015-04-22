@@ -174,7 +174,7 @@ class Indexer extends BaseIndexer
         $params = $grid->getFilterParams();
         
         $model = $container->getModel();
-        $shardCriteria = $params['searchLocationField'];
+        $shardCriteria = $params['location'];
         $model->setShardByCriteria($shardCriteria);
         $dataSource = $container->getDataSource();
         
@@ -182,8 +182,8 @@ class Indexer extends BaseIndexer
             $column->updateDataSource($dataSource);
         }
         $filter = $grid->getFilter();
-        if ($params['searchLocationField'] == 0) {
-            $params['searchLocationField'] = null;
+        if ($params['location'] == 0) {
+            $params['location'] = null;
         }
         $filter->setParams($params);
         $filter->applyFilters($dataSource);
