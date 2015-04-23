@@ -116,53 +116,57 @@ class SearchController extends \Core\Controller
             if ($elemExists('searchStartDate')) {
                 $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
                 $queryData['searchStartDate'] = $startDate;
-                $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+                if (!$elemExists('searchTitle')) {
+                	$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+                }
                 
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
             }  else {
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
             	
-            	if ($elemExists('searchTitle', false)) {
+            	if (!$elemExists('searchTitle')) {
             		$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             	} 
 			}
 	
-			if ($elemExists('searchTags') || $elemExists('searchCategories')) {
-				if ($postData['personalPresetActive'] != 1) {
-					if ($elemExists('searchCategories')) {
-						$userSearchFilters['category'] = $postData['searchCategories'];
-						$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+			if (!$elemExists('searchTitle')) {
+				if ($elemExists('searchTags') || $elemExists('searchCategories')) {
+					if ($postData['personalPresetActive'] != 1) {
+						if ($elemExists('searchCategories')) {
+							$userSearchFilters['category'] = $postData['searchCategories'];
+							$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+						} else {
+							$userSearchFilters['category'] = [];
+						}
+						if ($elemExists('searchTags')) {
+							$userSearchFilters['tag'] = $postData['searchTags'];
+							$queryData['searchTag'] = array_keys($postData['searchTags']);
+						} else {
+							$userSearchFilters['tag'] = [];
+						}
+						$this -> session -> set('userSearchFilters', $userSearchFilters);
+						$this -> filters -> loadUserFilters(false);
 					} else {
-						$userSearchFilters['category'] = [];
+						$searchTags = $this -> filters -> getActiveTags();
+						$searchCategories = $this -> filters -> getActiveCategories();
+						if (!empty($searchTags)) {
+							$queryData['searchTag'] = $searchTags;
+						}
+						if (!empty($searchCategories)) {
+							$queryData['searchCategory'] = $searchCategories;
+						}
 					}
-					if ($elemExists('searchTags')) {
-						$userSearchFilters['tag'] = $postData['searchTags'];
-						$queryData['searchTag'] = array_keys($postData['searchTags']);
-					} else {
-						$userSearchFilters['tag'] = [];
-					}
-					$this -> session -> set('userSearchFilters', $userSearchFilters);
-					$this -> filters -> loadUserFilters(false);
-				} else {
-					$searchTags = $this -> filters -> getActiveTags();
-					$searchCategories = $this -> filters -> getActiveCategories();
-					if (!empty($searchTags)) {
-						$queryData['searchTag'] = $searchTags;
-					}
-					if (!empty($searchCategories)) {
-						$queryData['searchCategory'] = $searchCategories;
-					}
-				}
-            } else {
-            	$filterTags = $this -> filters -> getActiveTags();
-            	if (!empty($filterTags)) {
-            		$queryData['searchTag'] = $filterTags;
-            	} 
-            	$filterCategories = $this -> filters -> getActiveCategories();
-            	if (!empty($filterCategories)) {
-            		$queryData['searchCategory'] = $filterCategories;
-            	}
-            }
+	            } else {
+	            	$filterTags = $this -> filters -> getActiveTags();
+	            	if (!empty($filterTags)) {
+	            		$queryData['searchTag'] = $filterTags;
+	            	} 
+	            	$filterCategories = $this -> filters -> getActiveCategories();
+	            	if (!empty($filterCategories)) {
+	            		$queryData['searchCategory'] = $filterCategories;
+	            	}
+	            }
+			}
             
 	        if ($this->session->has('memberId')) {
 	    		$this->fetchMemberLikes();

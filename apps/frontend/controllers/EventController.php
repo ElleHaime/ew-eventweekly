@@ -616,7 +616,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-//_U::dump($event);
+
         $loc = new Location();
         $venue = new Venue();
         $venueId = false;
@@ -739,7 +739,7 @@ class EventController extends \Core\Controllers\CrudController
         }
         
         if ($saveEvent) {
-			$this -> processFormRelatedData($ev, $newEvent, $logo);
+			$this -> processFormRelatedData($ev, $newEvent, $logo, $poster, $flyer);
 			
 			$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
 			$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
@@ -774,7 +774,7 @@ class EventController extends \Core\Controllers\CrudController
 					$evRecurring = (new Event()) -> setShardByCriteria($nextEvent['location_id']);
 					$evRecurring -> assign($nextEvent); 
 					if ($evRecurring -> save()) {
-						$this -> processFormRelatedData($evRecurring, $event);
+						$this -> processFormRelatedData($evRecurring, $event, $logo, $poster, $flyer);
 						
 						$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $evRecurring -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
 						$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
@@ -794,7 +794,7 @@ class EventController extends \Core\Controllers\CrudController
     }
     
     
-    private function processFormRelatedData($ev, $event, $logo = null)
+    private function processFormRelatedData($ev, $event, $logo = null, $poster = null, $flyer = null)
     {
     	// create event dir if not exists
     	if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
@@ -937,7 +937,7 @@ class EventController extends \Core\Controllers\CrudController
     			$eventImage->image = $filename;
     			$eventImage->type = $imageType;
     		}
-    		$eventPoster->save();
+    		$eventImage->save();
     	};
     	
     	if (!empty($poster)) {
