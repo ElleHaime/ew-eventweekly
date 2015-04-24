@@ -123,9 +123,10 @@ define('frontEventLike',
 			        	var dislike = $('.' + self.target + '[data-id=' + data.event_id + ']');
 		       		        	
 			        	if (data.member_like == 1) {
-			        		$(like).find('a').toggleClass(self.settings.dislikeClass);
+			        		$(like).find('a').addClass(self.settings.dislikeClass);
 			        	} else {
 			        		var elem = $(self.settings.eventElem + '[data-event-id=' + data.event_id + ']');
+			        		$(like).find('a').removeClass(self.settings.dislikeClass);
 			        		$(elem).remove();
 			        	}
 		        	}
