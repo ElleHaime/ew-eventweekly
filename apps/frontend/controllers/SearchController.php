@@ -50,7 +50,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData, true);
+//_U::dump($postData);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -129,18 +129,25 @@ class SearchController extends \Core\Controller
             	} 
 			}
 	
+			if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
+				$postData['personalPresetActive'] = 1;
+				$this -> filters -> loadUserFilters();
+			}
+			
 			if (!$elemExists('searchTitle')) {
 				if ($elemExists('searchTags') || $elemExists('searchCategories')) {
 					if ($postData['personalPresetActive'] != 1) {
 						if ($elemExists('searchCategories')) {
 							$userSearchFilters['category'] = $postData['searchCategories'];
-							$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+							//$queryData['searchCategory'] = array_keys($postData['searchCategories']);
+							$queryData['compoundCategory'] = array_keys($postData['searchCategories']);
 						} else {
 							$userSearchFilters['category'] = [];
 						}
 						if ($elemExists('searchTags')) {
 							$userSearchFilters['tag'] = $postData['searchTags'];
-							$queryData['searchTag'] = array_keys($postData['searchTags']);
+							//$queryData['searchTag'] = array_keys($postData['searchTags']);
+							$queryData['compoundTag'] = array_keys($postData['searchTags']);
 						} else {
 							$userSearchFilters['tag'] = [];
 						}
@@ -149,25 +156,27 @@ class SearchController extends \Core\Controller
 					} else {
 						$searchTags = $this -> filters -> getActiveTags();
 						$searchCategories = $this -> filters -> getActiveCategories();
+						
 						if (!empty($searchTags)) {
-							$queryData['searchTag'] = $searchTags;
+							$queryData['compoundTag'] = $searchTags;
 						}
 						if (!empty($searchCategories)) {
-							$queryData['searchCategory'] = $searchCategories;
+							$queryData['compoundCategory'] = $searchCategories;
 						}
+
 					}
 	            } else {
 	            	$filterTags = $this -> filters -> getActiveTags();
 	            	if (!empty($filterTags)) {
-	            		$queryData['searchTag'] = $filterTags;
+	            		$queryData['compoundTag'] = $filterTags;
 	            	} 
 	            	$filterCategories = $this -> filters -> getActiveCategories();
 	            	if (!empty($filterCategories)) {
-	            		$queryData['searchCategory'] = $filterCategories;
+	            		$queryData['compoundCategory'] = $filterCategories;
 	            	}
 	            }
 			}
-            
+			            
 	        if ($this->session->has('memberId')) {
 	    		$this->fetchMemberLikes();
 	    		$likedEvents = $this -> view -> getVar('likedEventsIds');

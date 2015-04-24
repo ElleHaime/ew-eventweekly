@@ -13,8 +13,12 @@
                         <div class="eventListing events-list music-category clearfix" id="element_{{ event.id }}">
                             <div class="span12">
                                 <div class="event-one-img">
-                                    <a href="#">
-                                    	<img src='{{ checkLogo(event) }}' width='159px' height='159px'>
+                                    <a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
+                                		{% if event.logo is defined %}
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+										{% else %}
+											<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
+										{% endif %}
                                     </a>
                                 </div>
 
