@@ -29,8 +29,10 @@
 							{% else %}
 								{% if cover is defined %}
 									<img src="{{ checkCover(cover) }}" alt="{{ event.name }}">
-								{% else %}
+								{% elseif event.logo is defined %}
 									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+								{% else %}
+									<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
 								{% endif %}
 							{% endif %}
 						</div>
