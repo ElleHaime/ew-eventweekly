@@ -223,7 +223,11 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         });
         
         $compiler -> addFunction('checkLogo', function($resolvedArgs) {
-        	return "file_exists(ROOT_APP . 'public/upload/img/event/' . $resolvedArgs -> id . '/' . $resolvedArgs ->logo) ? '/upload/img/event/' . $resolvedArgs ->id . '/' . $resolvedArgs ->logo : '/img/logo200.png'";
+        	if (!is_null($resolvedArgs -> logo)) {
+       			return "file_exists(ROOT_APP . 'public/upload/img/event/' . $resolvedArgs -> id . '/' . $resolvedArgs ->logo) ? '/upload/img/event/' . $resolvedArgs ->id . '/' . $resolvedArgs ->logo : '/img/logo200.png'";
+        	} else {
+        		return "'/img/logo200.png'";
+        	}
         });
 
         $compiler -> addFunction('checkCover', function($resolvedArgs) {
