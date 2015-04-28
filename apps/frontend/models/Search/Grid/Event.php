@@ -120,7 +120,7 @@ class Event extends Grid
             'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
             'searchStartDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_MORE),
-            'searchEndDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_LESS),
+            'searchEndDate' => new Field\Date('Event start', 'end_date', null, Criteria::CRITERIA_LESS),
         	'searchLatitude' => new Field\Standart('Latitude', 'latitude', null),
         	'searchLongitude' => new Field\Standart('Longitude', 'longitude', null),
         	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE),
