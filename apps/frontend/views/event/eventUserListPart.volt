@@ -18,7 +18,7 @@
 											{% if event.logo is defined %}
 												<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
 											{% else %}
-												<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
+												<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/img/logo200.png">
 											{% endif %}
 										</a>
 

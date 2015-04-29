@@ -50,7 +50,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData);
+//_U::dump($postData, true);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -116,9 +116,9 @@ class SearchController extends \Core\Controller
             if ($elemExists('searchStartDate')) {
                 $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
                 $queryData['searchStartDate'] = $startDate;
-                if (!$elemExists('searchTitle')) {
+                /*if (!$elemExists('searchTitle')) {
                 	$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
-                }
+                }*/
                 
                 $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
             }  else {
