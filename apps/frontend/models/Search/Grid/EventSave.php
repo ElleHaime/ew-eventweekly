@@ -9,7 +9,8 @@ use
     Engine\Crud\Grid\Column,
     Engine\Crud\Grid\Filter as Filter,
     Engine\Crud\Grid\Filter\Field,
-    Engine\Filter\SearchFilterInterface as Criteria;
+    Engine\Filter\SearchFilterInterface as Criteria,
+    Engine\Search\Elasticsearch\Filter\AbstractFilter;
 
 /**
  * Class Events.
