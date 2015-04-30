@@ -132,7 +132,7 @@ class EventController extends \Core\Controllers\CrudController
     public function listFriendAction()
     {
     	$eventsFriend = EventMemberFriend::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
-    	if (!is_null($eventsFriend)) {
+    	if (!empty($eventsFriend)) {
     		foreach ($eventsFriend as $event) {
     			$searchEventsId[] = $event['event_id'];
     		}
@@ -153,7 +153,7 @@ class EventController extends \Core\Controllers\CrudController
     	$queryData = [];
     	
     	$eventsLiked = EventLike::find(['status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
-		if (!is_null($eventsLiked)) {
+		if (!empty($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
 				$searchEventsId[] = $event['event_id']; 
 			}
@@ -175,7 +175,7 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$eventsJoined = EventMember::find(['member_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
     	
-    	if (!is_null($eventsJoined)) {
+    	if (!empty($eventsJoined)) {
     		foreach ($eventsJoined as $event) {
     			$searchEventsId[] = $event['event_id'];
     		}
@@ -729,7 +729,7 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-
+//_U::dump($newEvent);
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
         if ($ev -> id) {
