@@ -35,6 +35,12 @@ class EventImage extends EventImageObject
 		
 		return $result;
 	}
+	
+	public function getCover($eventId)
+	{
+		$this -> setShardById($eventId);
+		return $cover = self::findFirst('event_id = "' . $eventId . '" and type = "cover"');
+	}
 
 }
 
