@@ -27,7 +27,7 @@
 
 		<div class="row-fluid link-about">
 	        <div class="span12">
-	            <a href="#">about us</a>
+	            <a href="/ew/about#">about us</a>
 	        </div>
 	    </div>
 
@@ -40,7 +40,7 @@
 	        <div class="span2"><p>Sign in:</p></div>
 	        <div class="span1"> <button class="btn">twitter </button></div>
 	        <div class="span1">  <button class="btn">g+ </button></div>
-	        <div class="span3"> <button class="btn" onclick="location.href='/login'">e-mail</button></div>
+	        <div class="span3"> <button class="btn" onclick="location.href='/auth/login'">e-mail</button></div>
 	        <div class="span1"><span>or</span></div>
 	        <div class="span4"><button class="btn" onclick="location.href='/map'">Register later</button></div>
     	</div>

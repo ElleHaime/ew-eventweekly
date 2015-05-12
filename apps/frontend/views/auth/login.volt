@@ -36,7 +36,7 @@
 	
 	                            <div class="control-group" >
 	                                <div class="input-labels" >
-	                                    <div class="controls"><a href="/restore">Forgot password?</a></div>
+	                                    <div class="controls"><a href="/auth/restore">Forgot password?</a></div>
 	                                </div>
 	                            </div>
 		                        

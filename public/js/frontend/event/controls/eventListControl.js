@@ -53,7 +53,7 @@ define('frontEventListControl',
 				});
 
                 if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
-                    noty({text: 'To see your facebook events please login using facebook or syncronise your <a href="/profile">Profile</a> with facebook account', type: 'warning'});
+                    noty({text: 'To see your facebook events please login using facebook or syncronise your <a href="/member/profile">Profile</a> with facebook account', type: 'warning'});
                 }
 			},
 

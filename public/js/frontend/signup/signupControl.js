@@ -27,6 +27,7 @@ define('signupControl',
 			self.__bindClicks = function()
 			{
 				$(self.settings.btnSubmit).click(function() {
+					alert(123);
                     if (!self.__checkEmail()) {
                         return false;
                     }
@@ -100,7 +101,7 @@ define('signupControl',
 
 			self.__initError = function(msg)
 			{
-				//console.log(msg);
+				console.log(msg);
 				return false;
 			}
 		};

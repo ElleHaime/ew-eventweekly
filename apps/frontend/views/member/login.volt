@@ -22,14 +22,6 @@
         {% endif %}
     {% endif %}
 
-    {% if searchResult is defined %}
-        {% if list is defined %}
-            <script type="text/javascript">
-                window.searchResults = {{ list }};
-            </script>
-        {% endif %}
-    {% endif %}
-
     {{ stylesheet_link('/_new-layout-eventweekly/css/style.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/bootstrap/bootstrap.css') }}
@@ -55,7 +47,7 @@
                                     <a href="#" onclick="return false;" id="fb-login" class="ew-button">Login with <i class="fa fa-facebook-square" ></i> </a>
 
                                     <p>Don't have an account? Create new via e-mail only:</p>
-                                    <a href="/signup" class="ew-button" id="createAcc">
+                                    <a href="/auth/signup" class="ew-button" id="createAcc">
                                         <i class="fa fa-sign-in"></i> Sign Up
                                     </a>
                                 
@@ -94,6 +86,7 @@
             </div>
         </div>
     </div>
+
 
 {% include 'layouts/stuff.volt' %}
 </body>

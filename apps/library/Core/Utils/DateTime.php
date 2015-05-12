@@ -69,7 +69,7 @@ class DateTime {
      */
     protected static $_time = null;
     
-    public static $defaultStartDate = 'today -1 minute';
+    public static $defaultStartDate = 'today midnight';
     public static $defaultEndDate = 'today +3 days';
     
     

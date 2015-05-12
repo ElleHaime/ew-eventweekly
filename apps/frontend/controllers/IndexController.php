@@ -27,9 +27,7 @@ class IndexController extends \Core\Controller
 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 	    }
 
-        if ($this -> session -> has('member')) {
-            $this -> response -> redirect('/list');
-        } else {
+
 			// get featured events
         	$featuredId = $trendingId = $resultFe = [];
         	$featuredEvents = Featured::find(['object_type="event" and location_id=' . $this -> session -> get('location') -> id]);
@@ -87,7 +85,6 @@ class IndexController extends \Core\Controller
 				
 				$this -> view -> setVar('trendingEvents', $trendingEvents);
 			}
-        }
     }
 
 

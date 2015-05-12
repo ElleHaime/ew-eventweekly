@@ -1,6 +1,7 @@
 require.config({
 	baseUrl: '/js',
     urlArgs: "bust=" + (new Date()).getTime(),
+    waitSeconds: 240,
 	paths: {
 		// plugins
 		'async': 'requirePlugins/async',
@@ -14,6 +15,7 @@ require.config({
 
 		// vendors
 		'jquery': 'https://code.jquery.com/jquery',
+		'fbSdk': 'http://connect.facebook.net/en_US/sdk',
         'lazyload': 'library/vendors/lazyload',
 		'jCookie': 'library/vendors/jquery.cookie',
 		'jTruncate': 'library/vendors/jquery.truncate',
@@ -148,11 +150,18 @@ require.config({
         var moduleName, fileName = '',
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
-            restoreRel = /\/reset\/.+/;
+            restoreRel = /\/auth\/reset\/.+/,
+            trendingRel = /\/[a-zA-Z\-]+\/trending/,
+        	featuredRel = /^\/[a-zA-Z\-]+$/;
+       
         if (restoreRel.test(location.pathname)) {
-            fileName = '/restore'
+            fileName = '/auth/restore'
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
+        } else if (featuredRel.test(location.pathname)) {
+        	fileName = '/event/featured';
+        } else if (trendingRel.test(location.pathname)) {
+        	fileName = '/event/trending';
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {
@@ -164,20 +173,22 @@ require.config({
         } else {
         	moduleName = 'frontend' + fileName;
         };
-        //console.log(moduleName);
+
   		require([moduleName]);
 
-        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
-      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
-      		{
-	            $('.tooltip-text').tooltip();
-	            
-	            frontSearchPanel.init();
-	            frontFilterPanel.init();
-	            frontTopPanel.init({
-	                searchCityBlock: '.searchCityBlock'
-	            });
-        	}
-       );
+  		if (moduleName != 'frontend/member/login' && moduleName != 'frontend/auth/fbauthresponse') {
+	        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
+	      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
+	      		{
+		            $('.tooltip-text').tooltip();
+		            
+		            frontSearchPanel.init();
+		            frontFilterPanel.init();
+		            frontTopPanel.init({
+		                searchCityBlock: '.searchCityBlock'
+		            });
+	        	}
+	       );
+  		}
     }	
 });

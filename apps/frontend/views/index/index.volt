@@ -62,7 +62,7 @@
 							<a style="text-decoration:none;">Featured events</a>
 						</h2>
 	
-						<a href="/list" class="header__link-show-more">Show more What’s on in {{ location.city }}</a>
+						<a href="/{{ location.city|lower }}" class="header__link-show-more">Show more what’s on in {{ location.city }}</a>
 					</div>
 	
 					<div class="clearfix"></div>
@@ -119,7 +119,7 @@
 						<a style="text-decoration:none;">Trending events</a> 
 					</h2>
 
-					<!-- a href="/list" class="header__link-show-more"> {{ location.city }}</a -->
+					<a href="/{{ location.city|lower }}/trending" class="header__link-show-more">Trending events in {{ location.city }}</a>
 				</div>
 
 				<div class="clearfix"></div>

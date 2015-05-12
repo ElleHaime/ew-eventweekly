@@ -30,7 +30,6 @@ class SearchController extends \Core\Controller
     public function searchAction()
     {
 		(new Cron()) -> createUserTask();
-		//(new Cron()) -> createCreatorTask();
 		    	
         $form = new SearchForm();
         $this -> view -> form = $form;
@@ -119,8 +118,6 @@ class SearchController extends \Core\Controller
                 if (!$elemExists('searchTitle')) {
                 	$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
                 }
-                
-                $pageTitle .= 'from "'.$postData['searchStartDate'].'"  and later | ';
             }  else {
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
             	
@@ -128,6 +125,7 @@ class SearchController extends \Core\Controller
             		$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             	} 
 			}
+			$pageTitle .= 'from '. date('jS F', strtotime($queryData['searchStartDate'])).'  and later | ';
 	
 			if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
 				$postData['personalPresetActive'] = 1;

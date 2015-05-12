@@ -2,28 +2,29 @@ require([
     'jquery',
     'fb',
     'noty',
+    'fbSdk',
     'utils',
     'domReady',
     'underscore',
     'jCookie'
 ],
-    function($, fb, noty) {
+    function($, fb, noty, fbSdk) {
         fb.init();
 
         if (window.opener) {
             $("#createAcc").click(function(){
-                window.opener.location.href = "/signup";
+                window.opener.location.href = "/auth/signup";
                 window.close();
             });
 
             $("#restorePass").click(function(){
-                window.opener.location.href = "/restore";
+                window.opener.location.href = "/auth/restore";
                 window.close();
             });
         }
 
         $("#loginBtn").click(function(){
-            $.post( "/login", { email: $("input[name=email]").val(), password: $("input[name=password]").val() })
+            $.post( "/auth/login", { email: $("input[name=email]").val(), password: $("input[name=password]").val() })
                 .done(function( data ) {
                     data = JSON.parse(data);
 
@@ -32,11 +33,11 @@ require([
                     } else if (data.success != undefined) {
                         if (window.opener) {
                             //window.opener.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
-                        	window.opener.location.href = '/map';
+                        	window.opener.location.href = '';
                             window.close();
                         } else {
                             //window.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
-                            window.location.href = '/map';
+                            window.location.href = '';
                         }
                     }
                 });

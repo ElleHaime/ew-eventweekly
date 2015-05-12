@@ -5,7 +5,7 @@ namespace Frontend\Controllers;
 class AboutController extends \Core\Controller
 {
 	/**
-	 * @Route("/about", methods={"GET", "POST"})
+	 * @Route("/ew/about", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 
 	 */
 	public function indexAction()
@@ -14,7 +14,7 @@ class AboutController extends \Core\Controller
 	}
 
 	/**
-	 * @Route("/contact", methods={"GET", "POST"})
+	 * @Route("/ew/contact", methods={"GET", "POST"})
 	 * @Acl(roles={'guest', 'member'});   	 
 	 */
 	public function contactAction()

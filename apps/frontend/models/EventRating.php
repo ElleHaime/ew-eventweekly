@@ -24,4 +24,19 @@ class EventRating extends EventRatingObject
 		
 		return;
 	}
+	
+	
+	public function getTrendingIds($locationId)
+	{
+		$trendingEvents = EventRating::find(['object_type="event" and priority = 0 and location_id=' . $locationId]);
+		
+		if ($trendingEvents -> count() != 0) {
+			foreach ($trendingEvents as $event) {
+				$searchEventsId[] = $event -> event_id;
+			}
+			return $searchEventsId;
+		} else {
+			return false;
+		}
+	}
 }

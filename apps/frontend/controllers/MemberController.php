@@ -21,7 +21,7 @@ use Core\Utils as _U,
 class MemberController extends \Core\Controllers\CrudController
 {
 	/**
-	 * @Route("/profile", methods={"GET", "POST"})
+	 * @Route("/member/profile", methods={"GET", "POST"})
 	 * @Acl(roles={'member'});   	 
 	 */
 	public function listAction()
@@ -138,7 +138,7 @@ class MemberController extends \Core\Controllers\CrudController
 	
 	public function loadRedirect($params = [])
 	{
-		$this -> response -> redirect('/profile');
+		$this -> response -> redirect('/member/profile');
 	}
 
 	
@@ -413,6 +413,6 @@ class MemberController extends \Core\Controllers\CrudController
     	$member = Member::findFirst($this -> session -> get('memberId'));
 		$member -> fullDelete();
 
-		$this -> response -> redirect('/logout');
+		$this -> response -> redirect('/auth/logout');
     }
 }

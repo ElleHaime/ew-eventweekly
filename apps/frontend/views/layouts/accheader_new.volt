@@ -30,7 +30,7 @@
 							<ul class="dropdown-menu" role="menu" aria-labelledby="js-userBarDropDown">
 								
                                 <li>
-                                	<a role="menuitem" tabindex="-1" href="/profile">Profile settings</a>
+                                	<a role="menuitem" tabindex="-1" href="/member/profile">Profile settings</a>
                                 </li>
                                 <!-- li>
                                 	<a role="menuitem" tabindex="-1" href="/campaign/list">Manage campaigns</a>
@@ -57,7 +57,7 @@
                                 </li>
 
 								<li>
-									<a role="menuitem" tabindex="-1" href="/logout">Logout</a>
+									<a role="menuitem" tabindex="-1" href="/auth/logout">Logout</a>
 								</li>
 							</ul>
 						</div>
@@ -105,7 +105,7 @@
 					
 					<div class="top-line__item top-line__item--text">Never miss <strong>events</strong> in Dublin!</div>
 					<div class="top-line__item">
-						<a href="/signup" class="top-line__button">
+						<a href="/auth/signup" class="top-line__button">
 							<i class="fa fa-sign-in"></i> Sign Up today
 						</a>
 					</div>

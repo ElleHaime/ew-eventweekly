@@ -24,7 +24,8 @@ use Core\Utils as _U,
     Frontend\Models\EventImage as EventImageModel,
 	Thirdparty\Facebook\Extractor,
 	Categoryzator\Core\Inflector,
-	\Frontend\Models\Search\Grid\Event as EventGrid;
+	Frontend\Models\Search\Grid\Event as EventGrid,
+	Frontend\Models\Featured;
 
 /**
  * @RouteRule(useCrud = true)
@@ -45,83 +46,48 @@ class EventController extends \Core\Controllers\CrudController
 
     
     /**
-     * @Route("/map", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
+     * @Route("/{location:[A-Za-z\-]+}", methods={"GET", "POST"})
+     * @Acl(roles={'guest','member'});
      */
-    public function mapAction()
+    public function featuredAction($location)
     {
-        $this->session->set('lastFetchedEvent', 0);
-        $this->view->setVar('view_action', $this->request->getQuery('_url'));
-        $this->view->setVar('link_to_list', true);
-        $this->view->setVar('userSearch', ['searchTypeResult' => 'Map']);        
+    	$featuredLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
+  	
+    	if ($featuredLoc) {
+    		$searchEventsId = (new Featured()) -> getFeaturedIds($featuredLoc -> id);
+   		
+    		if ($searchEventsId) {
+    			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+						  	  'searchId' => $searchEventsId];
+    			$this -> showListResults($queryData, $location, 'featured', 'Events in ' . $featuredLoc -> city);
+    		} else {
+    			// redirect to default search by selected search 
+    			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
+    			return $this->response->redirect($searchLink);
+    		}
+    	}
     }
-
+    
     
     /**
-     * @Route("/list", methods={"GET", "POST"})
-     * @Route("/list&page={[0-9]+}", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
+     * @Route("/{location:[A_Za-z\-]+}/trending", methods={"GET", "POST"})
+     * @Acl(roles={'guest','member'});
      */
-    public function eventlistAction()
+    public function trendingAction($location)
     {
-    	$result = [];
-    	$pickFullTemplate = true;
-    	
-    	$likedEvents = $dislikedEvents = [];
-    	if ($this->session->has('memberId')) {
-    		$this->fetchMemberLikes();
-    		$likedEvents = $this -> view -> getVar('likedEventsIds');
-    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
+    	$trendingLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
+    	if ($trendingLoc) {
+    		$searchEventsId = (new EventRating()) -> getTrendingIds($trendingLoc -> id);
+    		if ($searchEventsId -> count() != 0) {
+    			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
+    						  'searchId' => $searchEventsId];
+    			$this -> showListResults($queryData, $location, 'trending', 'Trending events in ' . $trendingLoc -> city);
+    		} else {
+    			// redirect to default search by selected search
+    			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
+    			return $this->response->redirect($searchLink);
+    		}
     	}
-
-    	$queryData = ['searchStartDate' =>  _UDT::getDefaultStartDate(),
-    				  'searchEndDate' =>  _UDT::getDefaultEndDate(),
-    				  'searchLocationField' => $this -> session -> get('location') -> id];
-    	if (!empty($unlikedEvents)) {
-    		$queryData['searchNotId'] = $unlikedEvents;
-    	}
-    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-		$eventGrid -> setLimit(9);
-	    $eventGrid -> setSort('start_date');
-	    $eventGrid -> setSortDirection('ASC');
-				
-		$page = $this->request->getQuery('page');
-		if (empty($page)) {
-			$eventGrid -> setPage(1);
-		} else {
-			$pickFullTemplate = false;
-			$eventGrid -> setPage((int)$page);
-		}
-		$results = $eventGrid->getData();
-				
-		foreach($results['data'] as $key => $value) {
-			if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
-				$value -> disabled = 'disabled'; 
-			}
-			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
-		}
-		$countResults = $results['all_count'];
-		
-    	if ($results['all_page'] > 1) {
-            $this -> view -> setVar('pagination', $results['array_pages']);
-            $this -> view -> setVar('pageCurrent', $results['page_now']);
-            $this -> view -> setVar('pageTotal', $results['all_page']);
-        }
-        
-        $tagIds = '';
-        $member_categories = (new MemberFilter())->getbyId();
-        if (isset($member_categories['tag'])) {
-        	$tagIds = implode(',', $member_categories['tag']['value']);
-        }
-        
-		$this->view->setVar('urlParams', 'list');
-		$this->view->setVar('list', $result);
-		$this->view->setVar('userSearch', ['searchTypeResult' => 'List']);
-		if ($pickFullTemplate) {
-    		$this->view->pick('event/eventList');
-		} else {
-			$this->view->pick('event/eventListPart');
-		}
     }
     
     
@@ -132,7 +98,7 @@ class EventController extends \Core\Controllers\CrudController
     public function listFriendAction()
     {
     	$eventsFriend = EventMemberFriend::find(['member_id = ' . $this -> session -> get('memberId')])->toArray();
-    	if (!is_null($eventsFriend)) {
+    	if (!empty($eventsFriend)) {
     		foreach ($eventsFriend as $event) {
     			$searchEventsId[] = $event['event_id'];
     		}
@@ -153,7 +119,7 @@ class EventController extends \Core\Controllers\CrudController
     	$queryData = [];
     	
     	$eventsLiked = EventLike::find(['status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
-		if (!is_null($eventsLiked)) {
+		if (!empty($eventsLiked)) {
 			foreach ($eventsLiked as $event) {
 				$searchEventsId[] = $event['event_id']; 
 			}
@@ -175,7 +141,7 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$eventsJoined = EventMember::find(['member_status = 1 and member_id = ' . $this -> session -> get('memberId')])->toArray();
     	
-    	if (!is_null($eventsJoined)) {
+    	if (!empty($eventsJoined)) {
     		foreach ($eventsJoined as $event) {
     			$searchEventsId[] = $event['event_id'];
     		}
@@ -1002,6 +968,7 @@ class EventController extends \Core\Controllers\CrudController
             if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
                 unlink($path . '/' . $oldFilename);
             }
+//TODO: unlink uploaded files from temp dir             
         }
 
         return $filename;

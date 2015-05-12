@@ -2,22 +2,15 @@ require([
     'jquery',
     'fb',
     'noty',
+    'fbSdk',
     'utils',
     'domReady',
     'underscore',
-    'jCookie',
-    'http://connect.facebook.net/en_US/all.js'
+    'jCookie'
 ],
-    function($, fb, noty) {
+    function($, fb, noty, fbSdk) {
         fb.init();
-        
-        /*FB.Event.subscribe('auth.authResponseChange', function(response) {
-        	alert('123');
-        	response.relocate = true;
-        	
-        	fb.__getLoginResponse(response);
-        }); */
-        
+
         FB.Event.subscribe('auth.statusChange', function(response) {
         	if (response.authResponse != null) {
             	response.relocate = true;
@@ -26,7 +19,7 @@ require([
         	} else {
         		alert('You are not logged in');
         		window.close();
-        		window.opener.location.href = "/map";
+        		window.opener.location.href = "/";
         	}
         });
     }

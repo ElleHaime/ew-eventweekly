@@ -1,18 +1,19 @@
 define('fb',
-	['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/sdk.js'],
-	function($, utils, noty) {
+	//['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/sdk.js'],
+	['jquery', 'utils', 'noty', 'fbSdk'],
+	function($, utils, noty, fbSdk) {
 
 		function fb($, utils, noty)
 		{
 			var self = this;
 
             self.permissions = 'email,user_likes,user_location,user_events,' +
-					            'user_friends,friends_events,publish_actions,publish_stream,' +
-					            'create_event,rsvp_event,read_friendlists,read_insights,manage_pages';
+					            'user_friends,publish_actions,' +
+					            'rsvp_event,read_custom_friendlists,read_insights,manage_pages';
             
-            self.basicPermList = ['basic_info', 'email', 'friends_events', 'installed', 'public_profile', 'read_friendlists', 'user_events', 'user_friends', 'user_likes', 'user_location'];
-            self.publishPermList = ['create_note', 'photo_upload', 'publish_actions', 'publish_checkins', 'publish_stream', 'share_item', 'status_update', 'video_upload'];
-            self.managePermList = ['create_event', 'manage_pages', 'read_insights', 'rsvp_event'];
+            self.basicPermList = ['email', 'public_profile', 'user_events', 'user_location', 'user_likes', 'user_friends'];
+            self.publishPermList = ['publish_actions'];
+            self.managePermList = ['manage_pages', 'read_insights', 'rsvp_event'];
 
 			self.settings = {
                 userEventsGoing: '#userEventsGoing',
@@ -44,7 +45,8 @@ define('fb',
 			self.relocateAfterLogin = true;
 
 			self.shareImg = '/img/logo200.png';
-			self.firstPage = '/map';
+			//self.firstPage = '/map';
+			self.firstPage = '/';
 			self.demoPage = '/search/map?searchTitle=&searchLocationField=Dublin%2C+Ireland&searchLocationLatMin=51.4221955&searchLocationLngMin=-10.6694501&searchLocationLatMax=55.3884899&searchLocationLngMax=-5.99471&searchLocationType=country&&searchStartDate=&searchEndDate=&searchCategory%5B%5D=2&searchTag=racing&searchCategoriesType=global&searchType=in_map';
 			self.reDemo = /.*\/motologin$/;
 			self.demoLat = '53.34460075';
@@ -131,7 +133,7 @@ define('fb',
 				params.uid = self.accessUid;
 				params.token = self.accessToken;
 
-                $.when(self.__request('post', '/fbregister', params)).then(function(response) {
+                $.when(self.__request('post', '/auth/fbregister', params)).then(function(response) {
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
                 		self.__checkPermissions();
@@ -163,7 +165,7 @@ define('fb',
          			   		   access_token: self.accessToken,
          			   		   access_type: self.accessType };
 
-		        $.when(self.__request('post', '/fblogin', authParams)).then(function(data) {
+		        $.when(self.__request('post', '/auth/fblogin', authParams)).then(function(data) {
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
 		         			if (self.accessType == 'login') {
@@ -220,19 +222,24 @@ define('fb',
 	               		permission_base = 1;
 	               		permission_publish = 1;
 	               		permission_manage = 1;
-	               		
+	               		permGranted = [];
+	               	
+						permData.data.forEach(function(perm) {
+							permGranted.push(perm.permission);
+						});
+	               	
 	               		self.basicPermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
+	    					if ($.inArray(item, permGranted) == -1) {
 	    						permission_base = 0;
 	    					}
 	    				});
 	               		self.publishPermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
+	    					if ($.inArray(item, permGranted) == -1) {
 	    						permission_publish = 0;
 	    					}
 	    				});
 	               		self.managePermList.forEach(function(item) {
-	    					if (!(item in permData.data[0])) {
+	    					if ($.inArray(item, permGranted) == -1) {
 	    						permission_manage = 0;
 	    					}
 	    				});
@@ -241,7 +248,7 @@ define('fb',
 	               				  'permission_publish': permission_publish,
 	               				  'permission_manage': permission_manage};
 
-	               		$.when(self.__request('post', '/fbpermissions', params)).then(function(response) {
+	               		$.when(self.__request('post', '/auth/fbpermissions', params)).then(function(response) {
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {
 	                    		if (self.reDemo.test(location.pathname) == true) {

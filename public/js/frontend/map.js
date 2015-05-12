@@ -31,7 +31,7 @@ require([
         fb.init();
 
         if ($('#conflict_location').length > 0) {
-            noty({text: 'Your current location does not match with your facebook profile location. Set your <a href="/profile">default location</a> for Eventweekly', type: 'warning'});
+            noty({text: 'Your current location does not match with your facebook profile location. Set your <a href="/member/profile">default location</a> for Eventweekly', type: 'warning'});
         }
 
         if ($('#splash_messages').length > 0) {

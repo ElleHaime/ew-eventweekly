@@ -34,7 +34,7 @@ class AuthController extends \Core\Controller
     
 
     /**
-     * @Route("/login", methods={"GET", "POST"})
+     * @Route("/auth/login", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function loginAction()
@@ -61,7 +61,7 @@ class AuthController extends \Core\Controller
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
                     if (!$this->request->isAjax()) {
-                        $this -> response -> redirect('/map');
+                        $this -> response -> redirect('');
                     } else {
                         echo json_encode(array('success' => 'true'));
                         exit();
@@ -75,8 +75,8 @@ class AuthController extends \Core\Controller
 
 
     /**
-     * @Route("/signup", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
+     * @Route("/auth/signup", methods={"GET", "POST"})
+     * @Acl(roles={'guest'});
      */
     public function signupAction()
     {
@@ -100,7 +100,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this -> response -> redirect('/map');
+                    $this -> response -> redirect('');
                 } 
                     
                 $this -> flash -> error($member -> getMessages());
@@ -112,7 +112,7 @@ class AuthController extends \Core\Controller
 
 
     /**
-     * @Route("/fblogin", methods={"GET", "POST"})
+     * @Route("/auth/fblogin", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function fbloginAction()
@@ -148,7 +148,7 @@ class AuthController extends \Core\Controller
     }
 
     /**
-     * @Route("/fbregister", methods={"GET", "POST"})
+     * @Route("/auth/fbregister", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function fbregisterAction()
@@ -235,7 +235,7 @@ class AuthController extends \Core\Controller
     }
     
     /**
-     * @Route("/fbpermissions", methods={"GET", "POST"})
+     * @Route("/auth/fbpermissions", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function fbpermissionsAction()
@@ -273,7 +273,7 @@ class AuthController extends \Core\Controller
 
 
     /**
-     * @Route("/restore", methods={"GET", "POST"})
+     * @Route("/auth/restore", methods={"GET", "POST"})
      * @Acl(roles={'guest', 'member'});
      */
     public function restoreAction()
@@ -343,7 +343,7 @@ class AuthController extends \Core\Controller
                                 $this -> session -> remove('reset_uri');
                                 $this -> session -> remove('reset_member');
 
-                                $this -> response -> redirect('/login');
+                                $this -> response -> redirect('/auth/login');
                             }
                         }
                     }
@@ -379,7 +379,7 @@ class AuthController extends \Core\Controller
     }
 
     /**
-     * @Route("/logout", methods={"GET", "POST"})
+     * @Route("/auth/logout", methods={"GET", "POST"})
      * @Acl(roles={'guest','member'});
      */
     public function logoutAction()
