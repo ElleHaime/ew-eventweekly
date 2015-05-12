@@ -205,6 +205,7 @@ class SearchController extends \Core\Controller
                     		$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
                     	}
                     	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
+                    	$result[$event -> id]['description'] = trim($event -> description);
                     }
                    	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
 

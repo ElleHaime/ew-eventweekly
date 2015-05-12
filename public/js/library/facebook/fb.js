@@ -164,7 +164,7 @@ define('fb',
 				authParams = { uid: self.accessUid, 
          			   		   access_token: self.accessToken,
          			   		   access_type: self.accessType };
-
+		   
 		        $.when(self.__request('post', '/auth/fblogin', authParams)).then(function(data) {
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {

@@ -33,7 +33,7 @@ require([
                     } else if (data.success != undefined) {
                         if (window.opener) {
                             //window.opener.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';
-                        	window.opener.location.href = '';
+                        	window.opener.location.href = '/';
                             window.close();
                         } else {
                             //window.location.href = '/search/map?searchTitle=&searchLocationField=&searchLocationLatMin=&searchLocationLngMin=&searchLocationLatMax=&searchLocationLngMax=&searchLocationType=country&searchStartDate=&searchEndDate=&searchCategoriesType=private&searchType=in_map';

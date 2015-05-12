@@ -283,16 +283,18 @@ define('frontMemberEditControl',
              {
             	 $.when(fb.__checkLoginStatus()).then(function(status) {
             		 // status: connected, session_expired, not_logged, unknown
-		 
                      if (status === 'connected') {
                     	 $.when(self.__request('post', self.settings.syncFbAddTaskUrl)).then(function(response) {
                     		 self.__syncFbShowResult(response);
                     	 });
                      } else {
                     	 fb.accessType = 'sync';
-                    	 $.when(fb.__login()).then(function(response) {
+                    	 fb.__login();
+                    	 syncResponse = {'status': data.status};
+                    	 self.__syncFbShowResult(syncResponse);
+                    	 /*$.when(fb.__login()).then(function(response) {
                     		 self.__syncFbShowResult(response);
-                    	 });
+                    	 });*/
                      }
             	 });
              }
