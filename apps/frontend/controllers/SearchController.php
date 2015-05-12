@@ -202,13 +202,13 @@ class SearchController extends \Core\Controller
                     	}
 
                     	if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
-                    		//$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
+                    		$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
                     	} else {
-                    		//$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
+                    		$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
                     	}
                     	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     	$result[$event -> id]['description'] = trim($event -> description);
-                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event -> id);
+//                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event -> id);
                     }
                    	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
 
