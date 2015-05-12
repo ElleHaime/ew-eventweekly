@@ -695,7 +695,7 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-
+//_U::dump($newEvent);
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
         if ($ev -> id) {

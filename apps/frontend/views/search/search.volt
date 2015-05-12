@@ -64,13 +64,13 @@
                                 <div class="span12">
                                     <div class="event-one clearfix">
                                         <div class="event-one-img">
-                                            <a href="/event/{{ event.id }}">
-                                                {% if event.logo is defined %}
-                                                    <img src="/upload/img/event/{{ event.logo }}" width="132px" height ="132px">
-                                                {% else %}
-                                                    <img src="{{ event.pic_big }}">
-                                                {% endif %}
-                                            </a>
+											<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
+												{% if event.logo is defined %}
+													<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+												{% else %}
+													<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/img/logo200.png">
+												{% endif %}
+											</a>
                                         </div>
 
                                         <div class="event-one-text">

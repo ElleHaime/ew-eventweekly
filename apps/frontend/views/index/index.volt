@@ -78,7 +78,13 @@
 						<!-- item start -->
 							<div class="list-of-events__item pure-u-1-3">
 								<div class="list-of-events__picture">
-									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+									<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
+										{% if event.logo is defined %}
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+										{% else %}
+											<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
+										{% endif %}
+									</a>
 								</div>				
 		
 								<div class="list-of-events__info">
@@ -136,7 +142,13 @@
 						<!-- item start -->
 							<div class="list-of-events__item pure-u-1-4">
 								<div class="list-of-events__picture">
-									<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+									<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
+										{% if event.logo is defined %}
+											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+										{% else %}
+											<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
+										{% endif %}
+									</a>
 								</div>				
 		
 								<div class="list-of-events__info">

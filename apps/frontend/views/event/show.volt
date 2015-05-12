@@ -103,14 +103,14 @@
 									<li class="contact-info__item">
 										<i class="fa fa-facebook"></i>
 										<div class="contact-info__text">
-											{{ event.name }} <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}">on facebook</a>
+											{{ event.name }} <a target="_blank" href="https://www.facebook.com/events/{{ event.fb_uid }}"> on facebook</a>
 										</div>
 									</li>
 								{% elseif event.eb_url is defined and event.eb_url != '' %}
 									<li class="contact-info__item">
 										<i class="fa fa-globe"></i>
 										<div class="contact-info__text">
-											{{ event.name }} {{ event.eb_url }}
+											{{ event.name }} <a target="_blank" href="{{ event.eb_url }}"> on eventbrite</a>
 										</div>
 									</li>
 								{% endif %}

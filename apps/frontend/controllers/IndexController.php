@@ -58,7 +58,9 @@ class IndexController extends \Core\Controller
         		
         		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
         		$eventGrid -> setLimit(14);
-        		$eventGrid -> setParam('order', 'ASC');
+        		$eventGrid -> setSort('start_date');
+	    		$eventGrid -> setSortDirection('ASC');
+	    		
         		$results = $eventGrid->getData();
         		
         		foreach($results['data'] as $ev) {
@@ -80,6 +82,8 @@ class IndexController extends \Core\Controller
 				$queryData['searchId'] = array_keys($trendingId);
 	
 				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+				$eventGrid -> setSort('start_date');
+				$eventGrid -> setSortDirection('ASC');
 				$results = $eventGrid->getData();
 				$trendingEvents = $results['data'];
 				

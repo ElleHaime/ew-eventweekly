@@ -5060,3 +5060,26 @@ th.next .icon-arrow-right {
       float: none !important;
     }
 }
+
+
+/*main page slider blocks*/
+.swiper-container .list-of-events__item {
+  padding: 0 0 0 10px;
+}
+.swiper-container .list-of-events__title {
+  font-size: 27px;
+}
+.swiper-container .b-gallery__arrow {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.swiper-container .list-of-events__picture img {
+  width: 100%;
+}
+
+.list-of-events.col-4 .list-of-events__item {
+  margin-bottom: 0 !important;
+}
+
+a#loginBtn {
+  margin-bottom: 20px;
+}
