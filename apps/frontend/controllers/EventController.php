@@ -65,6 +65,8 @@ class EventController extends \Core\Controllers\CrudController
     			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
     			return $this->response->redirect($searchLink);
     		}
+    	} else {
+    		return $this->response->redirect();
     	}
     }
     
@@ -76,9 +78,10 @@ class EventController extends \Core\Controllers\CrudController
     public function trendingAction($location)
     {
     	$trendingLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
+    	
     	if ($trendingLoc) {
     		$searchEventsId = (new EventRating()) -> getTrendingIds($trendingLoc -> id);
-    		if ($searchEventsId -> count() != 0) {
+    		if ($searchEventsId) {
     			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
     						  'searchId' => $searchEventsId];
     			$this -> showListResults($queryData, $location, 'trending', 'Trending events in ' . $trendingLoc -> city);
@@ -87,6 +90,8 @@ class EventController extends \Core\Controllers\CrudController
     			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
     			return $this->response->redirect($searchLink);
     		}
+    	} else {
+    		return $this->response->redirect();
     	}
     }
     
