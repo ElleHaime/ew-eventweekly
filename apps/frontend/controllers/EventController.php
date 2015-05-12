@@ -221,6 +221,7 @@ class EventController extends \Core\Controllers\CrudController
 	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	    			$value -> disabled = 'disabled';
 	    		}
+	    		$value -> cover = (new EventImageModel()) -> getCover($value -> id);
 	    		$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 	    	}
 	    	$this -> view -> setVar('list', $result);

@@ -23,9 +23,8 @@
 										<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
 											{% if event.logo is defined %}
 												<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
-											{#% elseif event.cover is defined %}
+											{% elseif event.cover is defined %}
 												<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
-											#}	
 											{% else %}
 												<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/img/logo200.png">
 											{% endif %}

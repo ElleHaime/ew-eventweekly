@@ -208,7 +208,7 @@ class SearchController extends \Core\Controller
                     	}
                     	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     	$result[$event -> id]['description'] = trim($event -> description);
-//                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event -> id);
+                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event -> id);
                     }
                    	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
 
@@ -223,6 +223,7 @@ class SearchController extends \Core\Controller
 						if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 							$value -> disabled = 'disabled';
 						}
+						$value -> cover = (new EventImage()) -> getCover($value -> id);
                     	$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
                     }
                     
