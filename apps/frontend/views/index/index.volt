@@ -13,7 +13,7 @@
 		
 									<div class="b-slide__picture">
 										{% if event.cover is defined %}
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}">
 										{% else %}
 											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
 										{% endif%}

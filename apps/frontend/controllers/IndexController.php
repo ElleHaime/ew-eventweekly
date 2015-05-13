@@ -45,7 +45,7 @@ class IndexController extends \Core\Controller
 				foreach ($events as $ev) {
 					foreach ($resultFe as $key => $val) {
 						if ($featuredId[$ev -> id] == $key) {
-							$ev -> getCover();
+							$ev -> cover = (new EventImage()) -> getCover($ev -> id);
 							$resultFe[$key][] = $ev;
 						}
 					}
@@ -64,6 +64,7 @@ class IndexController extends \Core\Controller
         		$results = $eventGrid->getData();
         		
         		foreach($results['data'] as $ev) {
+        			$ev -> cover = (new EventImage()) -> getCover($ev -> id);
         			$resultFe[1][] = $ev;
         		} 
         	}
@@ -74,20 +75,23 @@ class IndexController extends \Core\Controller
 												'order' => 'rank DESC']);
 			
 			if ($trendingEvents -> count() != 0) {
+				$resultTre = [];
 				foreach ($trendingEvents as $te) {
 					$trendingId[$te -> event_id] = $te -> rank;
 				}
 				
-				$queryData = [];				
-				$queryData['searchId'] = array_keys($trendingId);
-	
+				$queryData = ['searchId' => array_keys($trendingId),
+							  'searchStartDate' => _UDT::getDefaultStartDate()];				
 				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 				$eventGrid -> setSort('start_date');
 				$eventGrid -> setSortDirection('ASC');
 				$results = $eventGrid->getData();
-				$trendingEvents = $results['data'];
+				foreach($results['data'] as $ev) {
+					$ev -> cover = (new EventImage()) -> getCover($ev -> id);
+					$resultTre[] = $ev;
+				}
 				
-				$this -> view -> setVar('trendingEvents', $trendingEvents);
+				$this -> view -> setVar('trendingEvents', $resultTre);
 			}
     }
 
