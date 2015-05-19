@@ -57,7 +57,7 @@
 							</div>
 							
 							<!-- events dropdown -->
-							<div class="filters-form__item">
+							{#<div class="filters-form__item">
 								<div class="dropdown">
 									<!-- button -->
 									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
@@ -75,20 +75,35 @@
 										</li -->
 									</ul>
 								</div>
-							</div>
+							</div> #}
 							
 							<!-- datetime dropdown -->
 							<div class="filters-form__item">
 								<div class="dropdown">
-								  <a class="filters-form__dropdown" id="js-selectDateTime">
+								  <a class="filters-form__dropdown" id="js-selectDateTimeStart">
 								  	<i class="fa fa-calendar"></i>
 								  	 {% if  userSearch is defined and userSearch['searchStartDate'] is defined %}
 						                {% set searchStartDate = userSearch['searchStartDate'] %}
 						            {% else %}
-						                {% set searchStartDate = date('Y-m-d') %}
+						                {% set searchStartDate = getDefaultStartDate() %}
 						            {% endif %}
 						            <span id="searchPanel-startDate" name="start_date">{{ searchStartDate }}</span>
 								  	{{ searchForm.render('searchStartDate', {'value': searchStartDate}) }}
+								  </a>
+								</div>
+							</div>
+							
+							<div class="filters-form__item">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" id="js-selectDateTimeEnd">
+								  	<i class="fa fa-calendar"></i>
+								  	 {% if  userSearch is defined and userSearch['searchEndDate'] is defined %}
+						                {% set searchEndDate = userSearch['searchEndDate'] %}
+						            {% else %}
+						                {% set searchEndDate = getDefaultEndDate() %}
+						            {% endif %}
+						            <span id="searchPanel-endDate" name="end_date">{{ searchEndDate }}</span>
+								  	{{ searchForm.render('searchEndDate', {'value': searchEndDate}) }}
 								  </a>
 								</div>
 							</div>

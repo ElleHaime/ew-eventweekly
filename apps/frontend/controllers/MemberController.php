@@ -384,7 +384,7 @@ class MemberController extends \Core\Controllers\CrudController
     {
     	$response['error'] = '';
     	
-    	if ((new Cron()) -> createUserTask()) {
+    	if ((new Cron()) -> createUserTask(true)) {
     		$response['status'] = 'OK';
     	} else {
     		$response['status'] = 'FAIL';

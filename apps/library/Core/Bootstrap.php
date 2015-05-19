@@ -237,6 +237,14 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         $compiler -> addFunction('checkTmpCover', function($resolvedArgs) {
         	return "file_exists(ROOT_APP . 'public/upload/img/event/tmp/' . $resolvedArgs ->image) ? '/upload/img/event/tmp/' . $resolvedArgs ->image : '/img/logo200.png'";
         });
+        
+        $compiler -> addFunction('getDefaultStartDate', function() {
+        	return '\Core\Utils\DateTime::getDefaultStartDate(true)';
+        });
+        
+        $compiler -> addFunction('getDefaultEndDate', function() {
+        	return '\Core\Utils\DateTime::getDefaultEndDate(true)';
+        });
     }
 
     public function initCoreTag($di)

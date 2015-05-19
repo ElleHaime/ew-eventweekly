@@ -19,9 +19,12 @@ define('frontSearchPanel',
             searchTypeResult: '#searchTypeResult',
             searchTypeResultMenu: '#searchTypeResultMenu',
             searchTypeResultCurrent: '#searchTypeResultCurrent',
-            startDatePicker: '#js-selectDateTime',
+            startDatePicker: '#js-selectDateTimeStart',
             startDateField: '#searchPanel-startDate',
             startDateInput: '#searchStartDate',
+            endDatePicker: '#js-selectDateTimeEnd',
+            endDateField: '#searchPanel-endDate',
+            endDateInput: '#searchEndDate',
             isLoggedUser: '#isLogged'
         },
 
@@ -107,6 +110,13 @@ define('frontSearchPanel',
                 autoclose: true,
                 minView: 2
             });
+
+            var endDate = $($this.settings.endDatePicker).datetimepicker({
+                format: 'yyyy-mm-dd',
+                pickDate: false,
+                autoclose: true,
+                minView: 2
+            }); 
             
             startDate.on('changeDate', function(e) {
             	selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
@@ -117,6 +127,16 @@ define('frontSearchPanel',
             	$($this.settings.startDateInput).val(selectedDate);
             	
             });
+
+            endDate.on('changeDate', function(e) {
+                selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
+                selDay = (0+(e.date.getDate()).toString()).slice(-2);
+                
+                selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
+                $($this.settings.endDateField).html(selectedDate);
+                $($this.settings.endDateInput).val(selectedDate);
+                
+            }); 
             
             $($this.settings.searchTypeResultMenu + ' li').click(function(e) {
             	$this.__switchResultTypeHandler(this);

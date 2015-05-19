@@ -11,7 +11,11 @@
 
                     <form class="form-horizontal" method="post" id="form_signup">
                     
+						<p>Use your facebook account:</p>
+                        <a href="#" onclick="return false;" id="fb-login" class="ew-button">Login with <i class="fa fa-facebook-square" ></i> </a>
 
+                        <p>Don't have an account? Create new via e-mail only:</p>
+						
                         <div id="signup-labels">
 
                             <div class="control-group" >

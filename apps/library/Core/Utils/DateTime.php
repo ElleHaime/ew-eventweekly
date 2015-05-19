@@ -70,18 +70,26 @@ class DateTime {
     protected static $_time = null;
     
     public static $defaultStartDate = 'today midnight';
-    public static $defaultEndDate = 'today +3 days';
+    public static $defaultEndDate = '+1 week';
     
     
-    public static function getDefaultStartDate()
+    public static function getDefaultStartDate($skipTime = false)
     {
-		return date('Y-m-d H:i:s', self::fromString(self::$defaultStartDate));
+    	if (!$skipTime) {
+			return date('Y-m-d H:i:s', self::fromString(self::$defaultStartDate));
+    	} else {
+    		return date('Y-m-d', self::fromString(self::$defaultStartDate));
+    	}
     }
     
     
-    public static function getDefaultEndDate()
+    public static function getDefaultEndDate($skipTime = false)
     {
-        return date('Y-m-d H:i:s', self::fromString(self::$defaultEndDate));
+    	if (!$skipTime) {
+        	return date('Y-m-d H:i:s', self::fromString(self::$defaultEndDate));
+    	} else {
+    		return date('Y-m-d', self::fromString(self::$defaultEndDate));
+    	}
     }
     
     

@@ -184,9 +184,7 @@ require.config({
 		            
 		            frontSearchPanel.init();
 		            frontFilterPanel.init();
-		            frontTopPanel.init({
-		                searchCityBlock: '.searchCityBlock'
-		            });
+		            frontTopPanel.init();
 	        	}
 	       );
   		}

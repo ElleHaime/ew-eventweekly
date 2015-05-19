@@ -24,6 +24,9 @@ class SearchForm extends Form
         // start date
         $this->addElement('hidden', 'searchStartDate', 'Start Date');
         
+        // end date
+        $this->addElement('hidden', 'searchEndDate', 'End Date');
+        
         // search result: map or list
         $this->addElement('hidden', 'searchTypeResult', 'Show result');
         $this -> view -> setVar('searchTypes', ['Map', 'List']);

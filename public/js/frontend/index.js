@@ -3,16 +3,14 @@ require([
         'fb',
         'noty',
         'eventSliderControl',
-        'frontEventLike',
         'idangerous',
         'utils',
         'domReady',
         'underscore',
         'jCookie'
     ],
-    function($, fb, noty, eventSliderControl, frontEventLike) {
+    function($, fb, noty, eventSliderControl) {
         fb.init();
-        frontEventLike.init();
 
         // initials slides per view
         var slidesPerViewFeatured = 3;

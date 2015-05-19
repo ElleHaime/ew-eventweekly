@@ -76,6 +76,17 @@ class SearchController extends \Core\Controller
         $pageTitle = 'Search results: ';
         $queryData = [];
         
+        if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
+            $postData['personalPresetActive'] = 1;
+            $this -> filters -> loadUserFilters();
+        }
+
+        if (isset($postData['personalPresetActive']) && $postData['personalPresetActive'] == 1) {
+            $pageTitle = 'Personalized events ';
+        } else {
+            $pageTitle = 'All events ';
+        }
+
         // if income data not empty
         if (!empty($postData)) {
         	$this -> view -> setVar('userSearch', $postData);
@@ -83,20 +94,17 @@ class SearchController extends \Core\Controller
             // add search condition by title
             if ($elemExists('searchTitle')) {
                 $queryData['searchTitle'] = $postData['searchTitle'];
-                $pageTitle .= 'by title - "'.$postData['searchTitle'].'" | ';
+                $pageTitle .= 'for "'.$postData['searchTitle'].'" ';
             }
 
             // add search condition by location
         	// if no location specify - set from user location
         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
         	{
-        		if ($elemExists('searchTitle', false)) {
-            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
-	        	}
-            	
+           		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+                $pageTitle .= 'in ' . $this -> session -> get('location') -> alias . ' ';
         	} else {
-        		
-                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '') && $elemExists('searchTitle', false))
+                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))
                 {
                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
@@ -109,69 +117,61 @@ class SearchController extends \Core\Controller
                     $this->cookies->get('lastLat')->delete();
                     $this->cookies->get('lastLng')->delete();
 
-                    $pageTitle .= 'by location - "'.$newLocation->alias.'" | ';
+                    $pageTitle .= 'in '.$newLocation->alias.' ';
                 }
             } 
 
             // add search condition by dates
             if ($elemExists('searchStartDate')) {
-                $startDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
-                $queryData['searchStartDate'] = $startDate;
+                $queryData['searchStartDate'] = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
             }  else {
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 			}
-/*			if (!$elemExists('searchTitle')) {
-				$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
-			} */
-			$pageTitle .= 'from '. date('jS F', strtotime($queryData['searchStartDate'])).'  and later | ';
-	
-			if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
-				$postData['personalPresetActive'] = 1;
-				$this -> filters -> loadUserFilters();
-			}
+            if ($elemExists('searchEndDate')) {
+                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate']));
+            }  else {
+                $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
+            } 
+			$pageTitle .= 'from '. date('jS F', strtotime($queryData['searchStartDate'])).'  to ' . date('jS F', strtotime($queryData['searchEndDate'])) . ' ';
 			
-			if (!$elemExists('searchTitle')) {
-				if ($elemExists('searchTags') || $elemExists('searchCategories')) {
-					if ($postData['personalPresetActive'] != 1) {
-						if ($elemExists('searchCategories')) {
-							$userSearchFilters['category'] = $postData['searchCategories'];
-							//$queryData['searchCategory'] = array_keys($postData['searchCategories']);
-							$queryData['compoundCategory'] = array_keys($postData['searchCategories']);
-						} else {
-							$userSearchFilters['category'] = [];
-						}
-						if ($elemExists('searchTags')) {
-							$userSearchFilters['tag'] = $postData['searchTags'];
-							//$queryData['searchTag'] = array_keys($postData['searchTags']);
-							$queryData['compoundTag'] = array_keys($postData['searchTags']);
-						} else {
-							$userSearchFilters['tag'] = [];
-						}
-						$this -> session -> set('userSearchFilters', $userSearchFilters);
-						$this -> filters -> loadUserFilters(false);
+			if ($elemExists('searchTags') || $elemExists('searchCategories')) {
+				if ($postData['personalPresetActive'] != 1) {
+					if ($elemExists('searchCategories')) {
+						$userSearchFilters['category'] = $postData['searchCategories'];
+						$queryData['compoundCategory'] = array_keys($postData['searchCategories']);
 					} else {
-						$searchTags = $this -> filters -> getActiveTags();
-						$searchCategories = $this -> filters -> getActiveCategories();
-						
-						if (!empty($searchTags)) {
-							$queryData['compoundTag'] = $searchTags;
-						}
-						if (!empty($searchCategories)) {
-							$queryData['compoundCategory'] = $searchCategories;
-						}
-
+						$userSearchFilters['category'] = [];
 					}
-	            } else {
-	            	$filterTags = $this -> filters -> getActiveTags();
-	            	if (!empty($filterTags)) {
-	            		$queryData['compoundTag'] = $filterTags;
-	            	} 
-	            	$filterCategories = $this -> filters -> getActiveCategories();
-	            	if (!empty($filterCategories)) {
-	            		$queryData['compoundCategory'] = $filterCategories;
-	            	}
-	            }
-			}
+					if ($elemExists('searchTags')) {
+						$userSearchFilters['tag'] = $postData['searchTags'];
+						$queryData['compoundTag'] = array_keys($postData['searchTags']);
+					} else {
+						$userSearchFilters['tag'] = [];
+					}
+					$this -> session -> set('userSearchFilters', $userSearchFilters);
+					$this -> filters -> loadUserFilters(false);
+				} else {
+					$searchTags = $this -> filters -> getActiveTags();
+					$searchCategories = $this -> filters -> getActiveCategories();
+					
+					if (!empty($searchTags)) {
+						$queryData['compoundTag'] = $searchTags;
+					}
+					if (!empty($searchCategories)) {
+						$queryData['compoundCategory'] = $searchCategories;
+					}
+
+				}
+            } else {
+            	$filterTags = $this -> filters -> getActiveTags();
+            	if (!empty($filterTags)) {
+            		$queryData['compoundTag'] = $filterTags;
+            	} 
+            	$filterCategories = $this -> filters -> getActiveCategories();
+            	if (!empty($filterCategories)) {
+            		$queryData['compoundCategory'] = $filterCategories;
+            	}
+            }
 			            
 	        if ($this->session->has('memberId')) {
 	    		$this->fetchMemberLikes();

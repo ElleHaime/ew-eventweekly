@@ -7,7 +7,7 @@ use Objects\Cron as CronObject,
 
 class Cron extends CronObject
 {
-	public function createUserTask()
+	public function createUserTask($skipTimeCheck = false)
 	{
 		if ($session = $this -> getDI() -> getShared('session')) {
 			if ($session -> has('user_token') && $session -> has('user_fb_uid') && $session -> has('memberId')) {
@@ -16,7 +16,7 @@ class Cron extends CronObject
 	            $taskSetted = self::find(array('member_id = ' . $session -> get('memberId') . ' and name =  "' . parent::FB_USER_TASK . '"'));
 	            if ($taskSetted -> count() > 0) {
 	                $tsk = $taskSetted -> getLast();
-	                if (time()-($tsk -> hash) > $this -> getConfig() -> application -> pingFbPeriod) {
+	                if ((time()-($tsk -> hash) > $this -> getConfig() -> application -> pingFbPeriod) || $skipTimeCheck) {
 	                    $newTask = new self();
 	                }
 	            } else {
