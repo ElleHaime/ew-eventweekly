@@ -165,24 +165,26 @@ class EventController extends \Core\Controllers\CrudController
     public function listAction()
     {
     	$result = [];
-    	$queryData = ['searchMember' => (int)$this -> session -> get('memberId')];
-		   	
-    	$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-		$results = $eventGrid->getData();
-		
-		if ($results['all_count'] > 0) {
-			foreach($results['data'] as $key => $value) {
-				$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
-            }
-            
-    		$this -> view -> setVar('object', $result);
-    		$this -> view -> setVar('list', $result);
-    	}
+    	$model = new Event();
+    	$shards = $model -> getAvailableShards();
     	
-    	$this -> view -> setVar('listTitle', 'Created');
-    	$this -> view -> pick('event/eventUserList');
-    
-    	return array('eventListCreatorFlag' => true);
+		foreach ($shards as $cri) {
+			$e = new Event();
+			$e -> setShard($cri);
+			$events = $e::find(['member_id = ' . $this -> session -> get('memberId'), 
+								'order' => 'start_date ASC']);
+			if ($events -> count()) {
+				foreach($events as $object) {
+					$result[] = json_decode(json_encode($object -> toArray(), JSON_UNESCAPED_UNICODE), FALSE);
+				}
+			}
+		} 
+		$this -> view -> setVar('object', $result);
+		$this -> view -> setVar('list', $result);
+		$this -> view -> setVar('listTitle', 'Created');
+		$this -> view -> pick('event/eventUserList');
+		
+		return array('eventListCreatorFlag' => true);
     }
     
     
@@ -439,6 +441,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
+        $this -> view -> setVar('hostName', 'http://' . $_SERVER['HTTP_HOST']);
     }
     
     
@@ -570,10 +573,22 @@ class EventController extends \Core\Controllers\CrudController
         if ($event) {
             $event -> assign(array('event_status' => $status));
             $event -> setShardById($id);
-            if ($event->update()) {
+            if ($event -> update()) {
+            	$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
+            	$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
+            	$indexer -> setDi($this -> getDI());
+            	if ($status == 1) {
+	            	if (!$indexer->existsData($event -> id)) {
+	            		$indexer->addData($event -> id);
+	            	}
+            	} else {
+            		if ($indexer->existsData($event -> id)) {
+            			$indexer->deleteData($event -> id);
+            		}
+            	}
+            	 
                 $result = array('id' => $event->id,
                     			'event_status' => $event->event_status);
-             
             }
         }
 
@@ -588,7 +603,7 @@ class EventController extends \Core\Controllers\CrudController
     public function processForm($form)
     {
         $event = $form->getFormValues();
-
+//_U::dump($event);
         $loc = new Location();
         $venue = new Venue();
         $venueId = false;
@@ -597,12 +612,14 @@ class EventController extends \Core\Controllers\CrudController
         if (!empty($event['id'])) {
         	$e = (new Event()) -> setShardById($event['id']);
             $ev = $e::findFirst($event['id']);
+            $eventExists = true;
         } else {
             $ev = new Event();
             if ($this -> session -> get('member') -> network) {
                 $newEvent['fb_creator_uid'] = $this -> session -> get('member') -> network -> account_uid;
             }
             $newEvent['member_id'] = $this -> session -> get('memberId');
+            $eventExists = false;
         }
 
         // process name and descirption
@@ -721,8 +738,8 @@ class EventController extends \Core\Controllers\CrudController
 				if ($indexer->existsData($ev -> id)) {
 					$indexer->updateData($ev -> id);
 				} else {
+					$indexer->deleteData($event['id']);					
 					$indexer->addData($ev -> id);
-					$indexer->deleteData($event['id']);
 				}
 			} else {
 				$indexer->addData($ev -> id);

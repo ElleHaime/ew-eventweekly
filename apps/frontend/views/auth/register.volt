@@ -1,4 +1,4 @@
-{% extends "layouts/base.volt" %}
+{% extends "layouts/base_new.volt" %}
 
 {% block content %}
     <div class="container-fluid content">

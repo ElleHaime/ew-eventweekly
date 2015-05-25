@@ -22,6 +22,16 @@ class AboutController extends \Core\Controller
 		
 	}
 
+	
+	/**
+	 * @Route("/ew/privacy", methods={"GET", "POST"})
+	 * @Acl(roles={'guest', 'member'});
+	 */
+	public function privacyAction()
+	{
+	
+	}
+	
 }
 
 ?>

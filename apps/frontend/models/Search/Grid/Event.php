@@ -126,11 +126,14 @@ class Event extends Grid
         	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE),
         	'searchStatus' => new Field\Standart('Status', 'event_status', null, Criteria::CRITERIA_EQ),
         	'searchLogo' => new Field\Standart('Logo', 'logo'),
-        	'searchCategoryOrTag' => new Field\Compound('bububu', 'bububu', 
+        	'searchCompound' => new Field\Compound('bububu', 'bububu', 
         			['compoundTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, 
         													["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
+        			
         			 'compoundCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, 
-        			 										["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"])]), 
+        			 										["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
+        			
+        			 'compoundTitle' => new Field\Name("Name", 'name', Criteria::CRITERIA_LIKE)]), 
         ], null, 'get');
     }
 

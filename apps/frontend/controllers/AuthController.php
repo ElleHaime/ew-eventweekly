@@ -132,7 +132,10 @@ class AuthController extends \Core\Controller
         		 
         		if ($memberNetwork) {
         			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			$res['member_session_id'] = $this -> session -> get('memberId');
         			(new Cron()) -> createUserTask();
+        		} else {
+        			$res['member_id'] = 'member_not_found';
         		}
         		$this -> session -> set('role', Acl::ROLE_MEMBER);
         		$this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
@@ -158,7 +161,7 @@ class AuthController extends \Core\Controller
         $res = [];
         
         if (!$this -> session -> has('member')) {
-       		$memberNetwork = MemberNetwork::findFirst('account_id = "' .  $userData['uid'] . '"');
+       		$memberNetwork = MemberNetwork::findFirst('account_uid = "' .  $userData['uid'] . '"');
        		if ($memberNetwork) {
        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
         		(new Cron()) -> createUserTask();
@@ -244,7 +247,7 @@ class AuthController extends \Core\Controller
     	$res = [];
     
     	if (!empty($data)) {
-    		$memberNetwork = MemberNetwork::findFirst('member_id = "' . $this -> session -> get('memberId') . '"');
+    		$memberNetwork = MemberNetwork::findFirst('member_id = ' . $this -> session -> get('memberId'));
     
     		if ($memberNetwork) {
     			$memberNetwork -> permission_base = $data['permission_base'];

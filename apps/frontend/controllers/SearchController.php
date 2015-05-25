@@ -51,7 +51,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData, true);
+//_U::dump($postData);
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -91,12 +91,6 @@ class SearchController extends \Core\Controller
         if (!empty($postData)) {
         	$this -> view -> setVar('userSearch', $postData);
 
-            // add search condition by title
-            if ($elemExists('searchTitle')) {
-                $queryData['searchTitle'] = $postData['searchTitle'];
-                $pageTitle .= 'for "'.$postData['searchTitle'].'" ';
-            }
-
             // add search condition by location
         	// if no location specify - set from user location
         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
@@ -134,7 +128,7 @@ class SearchController extends \Core\Controller
             } 
 			$pageTitle .= 'from '. date('jS F', strtotime($queryData['searchStartDate'])).'  to ' . date('jS F', strtotime($queryData['searchEndDate'])) . ' ';
 			
-			if ($elemExists('searchTags') || $elemExists('searchCategories')) {
+			if (($elemExists('searchTags') || $elemExists('searchCategories')) && empty($postData['searchTitle'])) {
 				if ($postData['personalPresetActive'] != 1) {
 					if ($elemExists('searchCategories')) {
 						$userSearchFilters['category'] = $postData['searchCategories'];
@@ -155,7 +149,9 @@ class SearchController extends \Core\Controller
 					$searchCategories = $this -> filters -> getActiveCategories();
 					
 					if (!empty($searchTags)) {
-						$queryData['compoundTag'] = $searchTags;
+						if (isset($postData['searchTitle'])) {
+							$queryData['compoundTag'] = $searchTags;
+						}
 					}
 					if (!empty($searchCategories)) {
 						$queryData['compoundCategory'] = $searchCategories;
@@ -163,12 +159,40 @@ class SearchController extends \Core\Controller
 
 				}
             } else {
+            	// add search condition by title or tag
+            	if ($elemExists('searchTitle')) {
+            		$searchTags = [];
+            		$tags = Tag::find(['name like "%' . $postData['searchTitle'] . '%"']);
+            		if ($tags) {
+            			foreach ($tags as $searchTag) {
+            				$searchTags[] = (int)$searchTag -> id;
+            			}
+            			$queryData['compoundTitle'] = $postData['searchTitle'];
+            		} else {
+            			$queryData['searchTitle'] = $postData['searchTitle'];
+            		}
+            		$pageTitle .= 'for "'.$postData['searchTitle'].'" ';
+            	}
+            	
             	$filterTags = $this -> filters -> getActiveTags();
             	if (!empty($filterTags)) {
-            		$queryData['compoundTag'] = $filterTags;
-            	} 
+					if ($postData['personalPresetActive'] == 1 && !empty($searchTags)) {            		
+            			$queryData['compoundTag'] = array_intersect($filterTags, $searchTags);
+					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags)) {
+						$queryData['compoundTag'] = $filterTags;						
+					} else if (!$postData['personalPresetActive'] == 1 && !empty($searchTags)) {
+						$userSearchFilters['tag'] = $searchTags;
+						$userSearchFilters['category'] = [];
+						$queryData['compoundTag'] = $searchTags;
+						$this -> session -> set('userSearchFilters', $userSearchFilters);
+					} 
+            	} else {
+            		if (!empty($searchTags)) {
+            			$queryData['compoundTag'] = $searchTags;
+            		}
+            	}
             	$filterCategories = $this -> filters -> getActiveCategories();
-            	if (!empty($filterCategories)) {
+            	if (!empty($filterCategories) && empty($searchTags)) {
             		$queryData['compoundCategory'] = $filterCategories;
             	}
             }

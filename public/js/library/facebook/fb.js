@@ -7,9 +7,7 @@ define('fb',
 		{
 			var self = this;
 
-            self.permissions = 'email,user_likes,user_location,user_events,' +
-					            'user_friends,publish_actions,' +
-					            'rsvp_event,read_custom_friendlists,read_insights,manage_pages';
+            self.permissions = 'email,user_likes,user_location,user_events,user_friends,publish_actions,rsvp_event,read_custom_friendlists,read_insights,manage_pages';
             
             self.basicPermList = ['email', 'public_profile', 'user_events', 'user_location', 'user_likes', 'user_friends'];
             self.publishPermList = ['publish_actions'];
@@ -72,7 +70,7 @@ define('fb',
 			{
 				$(self.settings.btnLogin).click(function(e) {
 					if (window.opener) {
-						window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id="+window.fbAppId+"&scope=" + self.permissions + "&redirect_uri=http://" + window.location.host + "/auth/fbauthresponse&response_type=token");
+						window.location = encodeURI("https://www.facebook.com/dialog/oauth?client_id="+window.fbAppId+"&scope=" + self.permissions + "&return_scopes=true&redirect_uri=http://" + window.location.host + "/auth/fbauthresponse&response_type=token");
 					} else {
 						self.__login();
 					} 
@@ -121,9 +119,11 @@ define('fb',
 			self.__login = function()
 			{
 			 	FB.login(function(response) {
+//console.log(response);
+//return false;
 			 		self.__getLoginResponse(response);
 			 	}, 
-			 	{scope: self.permissions});
+			 	{scope: self.permissions, return_scopes: true});
 			}
 
 
@@ -146,6 +146,8 @@ define('fb',
 			
 			self.__getLoginResponse = function(response)
 			{
+//console.log(response);
+//return false;
 				if (response.status === 'connected') {
 					 self.accessToken = response.authResponse.accessToken;
 					 self.accessUid = response.authResponse.userID;
@@ -223,7 +225,7 @@ define('fb',
 	               		permission_publish = 1;
 	               		permission_manage = 1;
 	               		permGranted = [];
-	               	
+//console.log(permData);	               	
 						permData.data.forEach(function(perm) {
 							permGranted.push(perm.permission);
 						});
@@ -247,7 +249,8 @@ define('fb',
 	               		params = {'permission_base': permission_base,
 	               				  'permission_publish': permission_publish,
 	               				  'permission_manage': permission_manage};
-
+//console.log(params);
+//return false;
 	               		$.when(self.__request('post', '/auth/fbpermissions', params)).then(function(response) {
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {
