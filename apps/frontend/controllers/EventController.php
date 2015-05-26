@@ -171,7 +171,7 @@ class EventController extends \Core\Controllers\CrudController
 		foreach ($shards as $cri) {
 			$e = new Event();
 			$e -> setShard($cri);
-			$events = $e::find(['member_id = ' . $this -> session -> get('memberId'), 
+			$events = $e::find(['deleted != 1 and member_id = ' . $this -> session -> get('memberId'), 
 								'order' => 'start_date ASC']);
 			if ($events -> count()) {
 				foreach($events as $object) {
@@ -624,6 +624,7 @@ class EventController extends \Core\Controllers\CrudController
 
         // process name and descirption
         $newEvent['name'] = $event['name'];
+        $newEvent['deleted'] = '0';
         $newEvent['description'] = $event['description'];
         $newEvent['tickets_url'] = $event['tickets_url'];
         $newEvent['event_status'] = !is_null($event['event_status']) ? 1 : 0;
@@ -718,9 +719,10 @@ class EventController extends \Core\Controllers\CrudController
                 $flyer = $file;
             }
         }
-//_U::dump($newEvent);
+
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
+
         if ($ev -> id) {
         	$saveEvent = $ev -> update();  
         } else {
@@ -785,11 +787,6 @@ class EventController extends \Core\Controllers\CrudController
     
     private function processFormRelatedData($ev, $event, $logo = null, $poster = null, $flyer = null)
     {
-    	// create event dir if not exists
-    	if (!is_dir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id)) {
-    		mkdir($this -> config -> application -> uploadDir . 'img/event/' . $ev -> id, 0777, true);
-    	}
-    	
     	// start prepare params for FB event
     	$fbParams = array(
     			'access_token' => $this->session->get('user_token'),
@@ -915,8 +912,7 @@ class EventController extends \Core\Controllers\CrudController
     		$filename = $this->uploadImageFile(
     				empty($eventImage) ? '' : $eventImage->image,
     				$image,
-    				$this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType
-    		);
+    				$this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType);
     	
     		if ($eventImage) {
     			$eventImage->image = $filename;
@@ -930,11 +926,11 @@ class EventController extends \Core\Controllers\CrudController
     	};
     	
     	if (!empty($poster)) {
-    		$addEventImage($poster, 'poster');
+    		$addEventImage($poster, 'poster', $unlinkOriginalImage);
     	}
     	
     	if (!empty($flyer)) {
-    		$addEventImage($flyer, 'flyer');
+    		$addEventImage($flyer, 'flyer', $unlinkOriginalImage);
     	}
     	
     	return;
@@ -978,20 +974,18 @@ class EventController extends \Core\Controllers\CrudController
             mkdir($path, 0777, true);
         }
 
-        $imgExts = array('image/jpeg', 'image/png', 'image/jpg');
-
         $filename = '';
-        if (in_array($file->getType(), $imgExts)) {
+        if (in_array($file -> getType(), ['image/jpeg', 'image/png', 'image/jpg'])) {
             $parts = pathinfo($file->getName());
 
             $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
-            $file->moveTo($path . '/' . $filename);
+            copy($file -> getTempName(), $path . '/' . $filename);
+            //$file -> moveTo($path . '/' . $filename);
             chmod($path . '/' . $filename, 0777);
 
             if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
                 unlink($path . '/' . $oldFilename);
             }
-//TODO: unlink uploaded files from temp dir             
         }
 
         return $filename;
