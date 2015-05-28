@@ -5083,3 +5083,16 @@ th.next .icon-arrow-right {
 a#loginBtn {
   margin-bottom: 20px;
 }
+
+
+.filters .filters-form__dropdown{
+  min-width: 109px;
+}
+
+.filters .filters-form__item .dropdown-menu{
+  min-width: 109px;
+}
+
+.container.page.page-main .swiper-wrapper{
+  min-width: 9999999999px;
+}
