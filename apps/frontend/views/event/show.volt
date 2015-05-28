@@ -96,9 +96,21 @@
 								{% if event.tickets_url != '' %}
 									<li class="contact-info__item">
 										<i class="fa fa-ticket"></i>
-										<div class="contact-info__text"><a href="{{ event.tickets_url }}" target="_blank">Buy tickets</a></div>
+										{% if event.fb_uid is defined  and event.fb_uid != '' %}
+											<div class="contact-info__text"><a href="{{ event.tickets_url }}" target="_blank">Buy tickets</a></div>
+										{% else %}
+											<div class="contact-info__text">Buy tickets {{ event.tickets_url }}</div>
+										{% endif %}
 									</li>
                                 {% endif %}
+                                
+                                {% if sites|length > 0 %}
+                                	<i class="fa fa-external-link"></i>
+                                	{% for site in sites %}
+                                		<div class="contact-info__text"><a href="{{ site.url }}" target="_blank">{{ site.url }}</a></div>
+                                	{% endfor %}
+                                {% endif %}
+                                
 								{% if event.fb_uid is defined  and event.fb_uid != '' %}
 									<li class="contact-info__item">
 										<i class="fa fa-facebook"></i>

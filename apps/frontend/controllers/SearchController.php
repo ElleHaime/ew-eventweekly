@@ -167,19 +167,27 @@ class SearchController extends \Core\Controller
             			foreach ($tags as $searchTag) {
             				$searchTags[] = (int)$searchTag -> id;
             			}
-            			$queryData['compoundTitle'] = $postData['searchTitle'];
-            		} else {
-            			$queryData['searchTitle'] = $postData['searchTitle'];
-            		}
+            		} 
+            		$queryData['compoundTitle'] = $postData['searchTitle'];
             		$pageTitle .= 'for "'.$postData['searchTitle'].'" ';
             	}
             	
             	$filterTags = $this -> filters -> getActiveTags();
+            	$filterCategories = $this -> filters -> getActiveCategories();
+
             	if (!empty($filterTags)) {
+            		
 					if ($postData['personalPresetActive'] == 1 && !empty($searchTags)) {            		
             			$queryData['compoundTag'] = array_intersect($filterTags, $searchTags);
-					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags)) {
-						$queryData['compoundTag'] = $filterTags;						
+
+					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags) && !$elemExists('searchTitle')) {
+						$queryData['compoundTag'] = $filterTags;
+						$queryData['compoundCategory'] = $filterCategories;
+						
+					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags) && $elemExists('searchTitle')) {
+						$queryData['compoundTag'] = $filterTags;
+						$queryData['compoundCategory'] = $filterCategories;
+						
 					} else if (!$postData['personalPresetActive'] == 1 && !empty($searchTags)) {
 						$userSearchFilters['tag'] = $searchTags;
 						$userSearchFilters['category'] = [];
@@ -192,7 +200,7 @@ class SearchController extends \Core\Controller
             		}
             	}
             	$filterCategories = $this -> filters -> getActiveCategories();
-            	if (!empty($filterCategories) && empty($searchTags)) {
+            	if (!empty($filterCategories) && empty($searchTags) && !$elemExists('searchTitle')) {
             		$queryData['compoundCategory'] = $filterCategories;
             	}
             }

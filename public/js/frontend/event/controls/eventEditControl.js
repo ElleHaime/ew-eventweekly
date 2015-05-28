@@ -94,8 +94,6 @@ define('frontEventEditControl',
 
                 inpTicketsUrl: '#tickets_url',
                 inpSites: '#sites',
-                
-                fbPublishUrl: '/event/eventsave',
 
                 urlPattern: new RegExp('(http|ftp|https)://[\\w-]+(\\.[\\w-]+)+([\\w-.,@?^=%&:/~+#-]*[\\w@?^=%&;/~+#-])?')
 			},
@@ -121,7 +119,6 @@ define('frontEventEditControl',
                 $(self.settings.btnPreview).change();
 
 				self.bindEvents();
-                self.__initFacebookPublish();
 			}
 
 			self.bindEvents = function()
@@ -449,10 +446,8 @@ define('frontEventEditControl',
 			        if (url.indexOf('http', 0) < 0) {
 			            url = 'http://' + url;
 			        }
-			        //var link = '<div><a target="_blank" href="' + url + '">' + url + '</a>' +
-			        //			'<a href="#" class="icon-remove"></a></div>';
 			        var link = '<div class = "ecat_elem"><a target="_blank" href="' + url + '">' + url + '</a>' +
-			        			'<a href="#" class="icon-remove"><i class="fa fa-close"></i></a></div>'; 
+			         			        			'<a href="#" class="icon-remove"><i class="fa fa-close"></i></a></div>'; 
 
 			        self.settings.listSite.append(link);
 			        self.settings.listSite.show();
@@ -467,7 +462,6 @@ define('frontEventEditControl',
 				elem.parent('div').remove();
 		        elem.remove();
 				self.settings.inpSiteReal.val(self.settings.inpSiteReal.val().replace(url + ',', ''));
-//console.log(self.settings.inpSiteReal.val());
 		        if (self.settings.listSite.children('div').length == 0) {
 		        	self.settings.listSite.hide();
 		        }
@@ -639,23 +633,6 @@ service.getDetails(request,
                 }
 
                 return isValid;
-            }
-
-            self.__initFacebookPublish = function()
-            {
-                if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
-                    $(self.settings.eventFbStatus).parent().append(
-                        '<br/><span>To publish events on facebook link or sync with your Facebook account at <a href="/member/profile">profile</a></span>'
-                    );
-                    $(self.settings.eventFbStatus).prop('checked', false);
-                    $(self.settings.eventFbStatus).attr('disabled', true);
-                } else if ($(self.settings.permissionPublish).val() != '1' || $(self.settings.permissionManage).val() != '1') {
-                	$(self.settings.eventFbStatus).parent().append(
-                        '<br/><span style="color:red;">You are about to create an event on EW site. If you want it published to facebook, please synchronize your account with facebook <a href="/member/profile">here</a> and allow all required permissions for EW application.<br> We respect your privacy and will not be posting any information from your behalf, unless you approve it.</span>'
-                    );
-                    $(self.settings.eventFbStatus).prop('checked', false);
-                    $(self.settings.eventFbStatus).attr('disabled', true);
-                }
             }
 
             self.__checkEnablePreviewBtn = function()
