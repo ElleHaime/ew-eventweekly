@@ -60,13 +60,6 @@
                                                             <label class="add_event_label_to_checkbox">
                                                                 {{ form.render('event_status') }} Publish event immediately
                                                             </label>
-
-                                                            {% if event.fb_uid == '' %}
-	                                                            <label class="add_event_label_to_checkbox">
-	                                                                {{ form.render('event_fb_status') }} Publish event to facebook
-	                                                            </label>
-                                                            {% endif %}
-
                                                         </div>
 
                                                         <div class="date-box" id="time-string" style="display:none;">
@@ -145,15 +138,16 @@
                                                 {% if event.site|length %}
 
                                                     {% for site in event.site %}
-                                                        <div class = "esite_elem">
-                                                            <a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
-                                                            <a href="#" class="icon-remove" siteid={{ site.id }}><i class="fa fa-close"></i></a>
+														<div class = "ecat_elem">
+                                                             <a target="_blank" href="{{ site.url }}">{{ site.url }}</a>
+                                                             <a href="#" class="icon-remove" siteid={{ site.id }}><i class="fa fa-close"></i></a>
                                                         </div>
                                                     {% endfor %}
                                                     
                                                 {% endif %}
                                             </div>
 
+				
                                             {{ form.render('event_category') }}
 
                                             <div id="defaultCategories" style="display: none">{{ categories }}</div>

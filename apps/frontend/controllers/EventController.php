@@ -277,10 +277,15 @@ class EventController extends \Core\Controllers\CrudController
     	
     	$event -> memberpart = $this -> getJoinedStatus($event);
     	$event -> likedStatus = $this -> getLikedStatus($event);
-    	$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url);
+    	if (!empty($event -> fb_uid)) {
+    		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url);
+    	} 
     	 
     	$images = (new EventImageModel()) -> setViewImages($event -> id);
     	$this->view->setVars($images);
+    	
+    	$sites = EventSite::find('event_id = "' . $event -> id . '"');
+    	$this -> view -> setVar('sites', $sites);
     	
         $this->view->setVar('event', $event);
         $this->view->setVar('categories', Category::find() -> toArray());
@@ -385,16 +390,6 @@ class EventController extends \Core\Controllers\CrudController
      */
     public function editAction($id = false)
     {
-    	if ($this->session->has('user_token') && $this->session->has('user_fb_uid') && $this -> session -> has('memberId')) {
-    		$isSessionActive = $this -> checkFacebookExpiration();
-
-    		if (!$isSessionActive) {
-    			$this -> view -> setVar('flashMsgText', 'Your facebook authorization has expired =/ <br>Please <a href=&quot;#&quot; class=&quot;fb-login-popup&quot; onclick=&quot;return false;&quot;>re-auth via Facebook</a> to be able to publish events there');
-    			$this -> view -> setVar('flashMsgType', 'warning');
-    		}
-    	}
-
-       	//parent::editAction();
        	if ($id) {
        		$ev = new Event();
     		$ev -> setShardById($id);
@@ -405,6 +400,9 @@ class EventController extends \Core\Controllers\CrudController
 	       		$event -> getDependencyProperty();
 	       		$images = (new EventImageModel()) -> setViewImages($event -> id);
 	       		$event -> site = EventSite::find(['event_id = "' . $event -> id . '"']);
+	       		if (!empty($event -> tickets_url)) {
+	       			$event -> tickets_url = preg_replace('/<a[^>]*>((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.#?=-]*)*\/?)<\/a>/ui', '$1', $event -> tickets_url);
+	       		} 
 	       		$this -> view -> setVars($images);
 	       		
 	       		$this -> view -> setVar('editEvent', true);
@@ -730,7 +728,7 @@ class EventController extends \Core\Controllers\CrudController
         }
         
         if ($saveEvent) {
-			$this -> processFormRelatedData($ev, $newEvent, $logo, $poster, $flyer);
+			$this -> processFormRelatedData($ev, $event, $logo, $poster, $flyer);
 			
 			$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $ev -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
 			$indexer = new \Frontend\Models\Search\Search\Indexer($grid);
@@ -787,26 +785,6 @@ class EventController extends \Core\Controllers\CrudController
     
     private function processFormRelatedData($ev, $event, $logo = null, $poster = null, $flyer = null)
     {
-    	// start prepare params for FB event
-    	$fbParams = array(
-    			'access_token' => $this->session->get('user_token'),
-    			'name' => $ev -> name,
-    			'description' => $ev -> description,
-    			'start_time' => date('c', strtotime($ev -> start_date)),
-    			'privacy_type' => $ev -> event_status == 0 ? 'SECRET' : 'OPEN'
-    	);
-    	if ($ev -> start_date !== $ev -> end_date) {
-    		$fbParams['end_time'] = date('c', strtotime($ev -> end_date));
-    	}
-    	
-    	if ($event['venue'] != '') {
-    		$fbParams['location'] = $event['venue'];
-    	} else if ($event['address'] != '') {
-    		$fbParams['location'] = $event['address'];
-    	} else {
-    		$fbParams['location'] = $event['location'];
-    	}
-    	
     	// save image
     	$file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
     	
@@ -824,47 +802,6 @@ class EventController extends \Core\Controllers\CrudController
     		$ev->update();
     	}
 
-    	// start prepare params for FB event
-    	$fbParams = array(
-    			'access_token' => $this->session->get('user_token'),
-    			'name' => $ev -> name,
-    			'description' => $ev -> description,
-    			'start_time' => date('c', strtotime($ev -> start_date)),
-    			'privacy_type' => $ev -> event_status == 0 ? 'SECRET' : 'OPEN'
-    	);
-    	if ($ev -> start_date !== $ev -> end_date) {
-    		$fbParams['end_time'] = date('c', strtotime($ev -> end_date));
-    	}
-    	 
-    	if ($event['venue'] != '') {
-    		$fbParams['location'] = $event['venue'];
-    	} else if ($event['address'] != '') {
-    		$fbParams['location'] = $event['address'];
-    	} else {
-    		$fbParams['location'] = $event['location'];
-    	}
-    	list($width, $height, $type, $attr) = getimagesize($file);
-    	if ($width < 180 || $height < 60) {
-    		$fbParams['cover.jpg'] = '@' . ROOT_APP . 'public' . $this->config->application->defaultLogo;
-    	} else {
-    		$fbParams['cover.jpg'] = '@' . $file;
-    	}
-    	// finish prepare params for FB event
-    	
-    	if ($ev -> event_fb_status == 1 || (isset($ev->fb_uid) && $ev->fb_uid != '')) {
-    		// add/edit event to facebook
-    		if (!isset($ev->fb_uid) || $ev->fb_uid == '') {
-    			$fbEventId = $this->sendToFacebook('me/events', $fbParams);
-    	
-    			if (!is_null($fbEventId)) {
-    				$ev->fb_uid = $fbEventId;
-    				$ev->update();
-    			}
-    		} else {
-    			$this->sendToFacebook('/' . $ev->fb_uid, $fbParams);
-    		}
-    	}
-    	
     	// process site
     	$eSites = EventSite::find('event_id = "' . $ev->id . '"');
     	if ($eSites) {
@@ -874,11 +811,12 @@ class EventController extends \Core\Controllers\CrudController
     	}
     	if (!empty($event['event_site'])) {
     		$aSites = explode(',', $event['event_site']);
+   		
     		foreach ($aSites as $key => $value) {
     			if (!empty($value)) {
     				$eSites = new EventSite();
-    				$eSites->assign(array('event_id' => $ev->id,
-    						'url' => $value));
+    				$eSites->assign(['event_id' => $ev->id,
+    									'url' => $value]);
     				$eSites->save();
     			}
     		}
@@ -887,6 +825,7 @@ class EventController extends \Core\Controllers\CrudController
     	// process categories
     	$eventCategories = (new EventCategory())->setShardById($ev->id);
     	$eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
+//_U::dump($eCats -> count());    	
     	if ($eCats) {
     		foreach ($eCats as $ec) {
     			$ec->delete();

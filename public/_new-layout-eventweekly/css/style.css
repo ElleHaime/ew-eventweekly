@@ -5083,3 +5083,37 @@ th.next .icon-arrow-right {
 a#loginBtn {
   margin-bottom: 20px;
 }
+
+
+.filters .filters-form__dropdown{
+  min-width: 109px;
+}
+
+.filters .filters-form__item .dropdown-menu{
+  min-width: 109px;
+}
+
+.container.page.page-main .swiper-wrapper{
+  min-width: 9999999999px;
+}
+
+#event-site-selected .ecat_elem{
+  margin-bottom: 15px;
+}
+
+.sidebar-box #event_category{
+  margin-top: 15px;
+}
+
+.radio-box label.radio{
+  padding-left: 20px;
+}
+
+.radio-box p label{
+  margin-top: 30px;
+}
+
+#recurring_end_date{
+  width: 250px;
+  margin-bottom: 70px;
+}

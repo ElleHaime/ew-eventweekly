@@ -173,7 +173,7 @@ require.config({
         } else {
         	moduleName = 'frontend' + fileName;
         };
-
+        
   		require([moduleName]);
 
   		if (moduleName != 'frontend/member/login' && moduleName != 'frontend/auth/fbauthresponse') {
