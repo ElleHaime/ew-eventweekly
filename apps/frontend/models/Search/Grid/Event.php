@@ -113,7 +113,7 @@ class Event extends Grid
             ], null, 280, null, 255, false),
             'searchLocationField' => new Field\Join("Location", "\Frontend\Models\Search\Model\Location"),
             'searchCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
-            'searchTitle' => new Field\Name("Name", 'name', Criteria::CRITERIA_LIKE),
+            'searchTitle' => new Field\Name("Name", null, Criteria::CRITERIA_LIKE),
             'searchId' => new Field\Primary("Id", null, Criteria::CRITERIA_IN),
         	'searchNotId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_NOTIN),
             'searchMember' => new Field\Standart('MemberI', 'member_id', null, Criteria::CRITERIA_EQ),
@@ -126,14 +126,18 @@ class Event extends Grid
         	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE),
         	'searchStatus' => new Field\Standart('Status', 'event_status', null, Criteria::CRITERIA_EQ),
         	'searchLogo' => new Field\Standart('Logo', 'logo'),
-        	'searchCompound' => new Field\Compound('bububu', 'bububu', 
-        			['compoundTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, 
-        													["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
-        			
-        			 'compoundCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, 
-        			 										["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
-        			
-        			 'compoundTitle' => new Field\Name("Name", 'name', Criteria::CRITERIA_LIKE)]), 
+        	'searchCompound' => new Field\Compound('bububu', 'bububu', [
+                'compoundTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
+        		'compoundCategory' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
+        		'compoundTitle' => new Field\Name("Name", 'name', Criteria::CRITERIA_LIKE)
+            ]),
+            'searchCompoundUser' => new Field\Compound('bububu2', 'bububu2', [
+                'compoundTag2' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
+                'searchCompound3' => new Field\Compound('bububu3', 'bububu3', [
+                    'compoundCategory3' => new Field\Join("Category", "\Frontend\Models\Search\Model\Category", false, null, ["\Frontend\Models\Search\Model\EventCategory", "\Frontend\Models\Search\Model\Category"]),
+                    'compoundTitle3' => new Field\Name("Name", 'name', Criteria::CRITERIA_LIKE)
+                ])
+            ], Field\Compound::OPERATOR_AND),
         ], null, 'get');
     }
 

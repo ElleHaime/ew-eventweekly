@@ -1,6 +1,6 @@
 {
     "require": {
-        "tieste-group/phalcon-core": "0.10.1",
+        "tieste-group/phalcon-core": "0.10.6",
         "vendor/sharding": "dev-master"
     }
 }
