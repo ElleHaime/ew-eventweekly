@@ -1,5 +1,4 @@
 define('fb',
-	//['jquery', 'utils', 'noty', 'http://connect.facebook.net/en_US/sdk.js'],
 	['jquery', 'utils', 'noty', 'fbSdk'],
 	function($, utils, noty, fbSdk) {
 
@@ -7,11 +6,11 @@ define('fb',
 		{
 			var self = this;
 
-            self.permissions = 'email,user_likes,user_location,user_events,user_friends,publish_actions,rsvp_event,read_custom_friendlists,read_insights,manage_pages';
+            self.permissions = 'email,user_likes,user_location,user_events,user_friends,rsvp_event,public_profile';
             
             self.basicPermList = ['email', 'public_profile', 'user_events', 'user_location', 'user_likes', 'user_friends'];
-            self.publishPermList = ['publish_actions'];
-            self.managePermList = ['manage_pages', 'read_insights', 'rsvp_event'];
+            self.publishPermList = [];
+            self.managePermList = ['rsvp_event'];
 
 			self.settings = {
                 userEventsGoing: '#userEventsGoing',
@@ -119,8 +118,6 @@ define('fb',
 			self.__login = function()
 			{
 			 	FB.login(function(response) {
-//console.log(response);
-//return false;
 			 		self.__getLoginResponse(response);
 			 	}, 
 			 	{scope: self.permissions, return_scopes: true});
@@ -146,8 +143,6 @@ define('fb',
 			
 			self.__getLoginResponse = function(response)
 			{
-//console.log(response);
-//return false;
 				if (response.status === 'connected') {
 					 self.accessToken = response.authResponse.accessToken;
 					 self.accessUid = response.authResponse.userID;
@@ -225,7 +220,7 @@ define('fb',
 	               		permission_publish = 1;
 	               		permission_manage = 1;
 	               		permGranted = [];
-//console.log(permData);	               	
+	               	
 						permData.data.forEach(function(perm) {
 							permGranted.push(perm.permission);
 						});
@@ -233,11 +228,6 @@ define('fb',
 	               		self.basicPermList.forEach(function(item) {
 	    					if ($.inArray(item, permGranted) == -1) {
 	    						permission_base = 0;
-	    					}
-	    				});
-	               		self.publishPermList.forEach(function(item) {
-	    					if ($.inArray(item, permGranted) == -1) {
-	    						permission_publish = 0;
 	    					}
 	    				});
 	               		self.managePermList.forEach(function(item) {
@@ -249,8 +239,6 @@ define('fb',
 	               		params = {'permission_base': permission_base,
 	               				  'permission_publish': permission_publish,
 	               				  'permission_manage': permission_manage};
-//console.log(params);
-//return false;
 	               		$.when(self.__request('post', '/auth/fbpermissions', params)).then(function(response) {
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {

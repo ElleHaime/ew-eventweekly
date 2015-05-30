@@ -184,7 +184,7 @@ class EventController extends \Core\Controllers\CrudController
 		$this -> view -> setVar('listTitle', 'Created');
 		$this -> view -> pick('event/eventUserList');
 		
-		return array('eventListCreatorFlag' => true);
+		return array('eventListCreatorFlag' => true); 
     }
     
     
@@ -429,16 +429,10 @@ class EventController extends \Core\Controllers\CrudController
        	}
         $this -> view -> setVar('categories', (new Category()) -> getDefaultIdsAsString());
         
-        if (!is_null($event -> recurring)) {
-			$eventRecurring = (new Event()) -> getRecurEvents($event -> id);
-			if (!empty($eventRecurring)) {
-				$this -> view -> setVar('eventRecurring', $eventRecurring);
-			}
-        } 
-        
         if ($this -> dispatcher -> wasForwarded()) {
         	$this -> view -> setVar('viewMode', true); 
         }
+        
         $this -> view -> setVar('hostName', 'http://' . $_SERVER['HTTP_HOST']);
     }
     
