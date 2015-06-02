@@ -14,8 +14,8 @@ define('eventFriendControl',
             self.init = function()
             {
                 self.bindEvents();
-            }
-/
+            },
+
             self.bindEvents = function()
             {
                 if ($(self.settings.externalLogged).length != 1 && $(self.settings.accSynced).val() !== '1') {
