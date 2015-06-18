@@ -144,11 +144,6 @@ class Event extends EventObject
     	return $result;
     }
 
-    public function setLogo($event, $logo) 
-    {
-    	$event -> logo = $logo;
-    }
-    
     public function getCover()
     {
     	$this -> cover = false;
@@ -162,10 +157,5 @@ class Event extends EventObject
 		} 
 		
 		return $this;
-	}
-	
-#!TODO	
-	public function prepareForFacebook($data)
-	{
 	}
 } 

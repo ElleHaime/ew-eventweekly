@@ -33,7 +33,7 @@ class MemberFilter extends MemberFilterObject
         }
 
         if ($id) {
-            $result = self::find('member_id = '.$id) -> toArray();
+            $result = MemberFilterObject::find('member_id = '.$id) -> toArray();
 
             if ($result) {
 	            foreach ($result as $node) {

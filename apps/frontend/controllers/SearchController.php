@@ -73,7 +73,7 @@ class SearchController extends \Core\Controller
             return $answer;
         };
         
-        $pageTitle = 'Search results: ';
+        $pageTitle['type'] = 'Search results';
         $queryData = [];
         
         if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
@@ -82,9 +82,9 @@ class SearchController extends \Core\Controller
         }
 
         if (isset($postData['personalPresetActive']) && $postData['personalPresetActive'] == 1) {
-            $pageTitle = 'Personalized events ';
+            $pageTitle['type'] = 'Personalized events';
         } else {
-            $pageTitle = 'All events ';
+            $pageTitle['type'] = 'All events';
         }
 
         // if income data not empty
@@ -96,7 +96,7 @@ class SearchController extends \Core\Controller
         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
         	{
            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
-                $pageTitle .= 'in ' . $this -> session -> get('location') -> alias . ' ';
+                $pageTitle['location'] = 'in ' . $this -> session -> get('location') -> alias;
         	} else {
                 if (($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))
                 {
@@ -111,7 +111,7 @@ class SearchController extends \Core\Controller
                     $this->cookies->get('lastLat')->delete();
                     $this->cookies->get('lastLng')->delete();
 
-                    $pageTitle .= 'in '.$newLocation->alias.' ';
+                    $pageTitle['location'] = 'in '.$newLocation->alias;
                 }
             } 
 
@@ -122,13 +122,28 @@ class SearchController extends \Core\Controller
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 			}
             if ($elemExists('searchEndDate')) {
-                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate']));
+                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate'] . '+1 day'));
             }  else {
                 $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             } 
-			$pageTitle .= 'from '. date('jS F', strtotime($queryData['searchStartDate'])).'  to ' . date('jS F', strtotime($queryData['searchEndDate'])) . ' ';
+			$pageTitle['date'] = 'from '. date('jS F', strtotime($queryData['searchStartDate'])).' to ' . date('jS F', strtotime($queryData['searchEndDate']));
+
 			
-			if (($elemExists('searchTags') || $elemExists('searchCategories')) && empty($postData['searchTitle'])) {
+			
+			// add search condition by title or tag
+			$searchTitleTags = [];
+			if ($elemExists('searchTitle')) {
+				$tags = Tag::find(['name like "%' . $postData['searchTitle'] . '%"']);
+				if ($tags) {
+					foreach ($tags as $searchTag) {
+						$searchTitleTags[] = (int)$searchTag -> id;
+					}
+				}
+				$queryData['compoundTitle'] = $postData['searchTitle'];
+				$pageTitle['title'] = 'for "'.$postData['searchTitle'].'"';
+			}
+			
+			if (($elemExists('searchTags') || $elemExists('searchCategories'))) {
 				if ($postData['personalPresetActive'] != 1) {
 					if ($elemExists('searchCategories')) {
 						$userSearchFilters['category'] = $postData['searchCategories'];
@@ -136,75 +151,39 @@ class SearchController extends \Core\Controller
 					} else {
 						$userSearchFilters['category'] = [];
 					}
+					
 					if ($elemExists('searchTags')) {
 						$userSearchFilters['tag'] = $postData['searchTags'];
-						$queryData['compoundTag'] = array_keys($postData['searchTags']);
+						$queryData['compoundTag'] = array_merge(array_keys($postData['searchTags']), $searchTitleTags);
 					} else {
 						$userSearchFilters['tag'] = [];
 					}
-					$this -> session -> set('userSearchFilters', $userSearchFilters);
-					$this -> filters -> loadUserFilters(false);
+					$this -> filters -> setSessionFilters($userSearchFilters)
+									 -> loadUserFilters(false);
 				} else {
 					$searchTags = $this -> filters -> getActiveTags();
 					$searchCategories = $this -> filters -> getActiveCategories();
-					
+			
 					if (!empty($searchTags)) {
-						if (isset($postData['searchTitle'])) {
+						if (!empty($searchTitleTags)) {
+							$postData['personalPresetActive'] = 0;
+							$pageTitle['type'] = 'All events';
+								
+							$queryData['compoundTag'] = $searchTitleTags;
+						} else {
 							$queryData['compoundTag'] = $searchTags;
 						}
 					}
 					if (!empty($searchCategories)) {
-						$queryData['compoundCategory'] = $searchCategories;
+						if ($postData['personalPresetActive'] != 0) {
+							$queryData['compoundCategory'] = $searchCategories;
+						}
 					}
-
 				}
-            } else {
-            	// add search condition by title or tag
-            	if ($elemExists('searchTitle')) {
-            		$searchTags = [];
-            		$tags = Tag::find(['name like "%' . $postData['searchTitle'] . '%"']);
-            		if ($tags) {
-            			foreach ($tags as $searchTag) {
-            				$searchTags[] = (int)$searchTag -> id;
-            			}
-            		} 
-            		$queryData['compoundTitle'] = $postData['searchTitle'];
-            		$pageTitle .= 'for "'.$postData['searchTitle'].'" ';
-            	}
-            	
-            	$filterTags = $this -> filters -> getActiveTags();
-            	$filterCategories = $this -> filters -> getActiveCategories();
+			} else {
+				$this -> filters -> loadUserFilters(false);
+			}
 
-            	if (!empty($filterTags)) {
-            		
-					if ($postData['personalPresetActive'] == 1 && !empty($searchTags)) {            		
-            			$queryData['compoundTag'] = array_intersect($filterTags, $searchTags);
-
-					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags) && !$elemExists('searchTitle')) {
-						$queryData['compoundTag'] = $filterTags;
-						$queryData['compoundCategory'] = $filterCategories;
-						
-					} else if ($postData['personalPresetActive'] == 1 && empty($searchTags) && $elemExists('searchTitle')) {
-						$queryData['compoundTag'] = $filterTags;
-						$queryData['compoundCategory'] = $filterCategories;
-						
-					} else if (!$postData['personalPresetActive'] == 1 && !empty($searchTags)) {
-						$userSearchFilters['tag'] = $searchTags;
-						$userSearchFilters['category'] = [];
-						$queryData['compoundTag'] = $searchTags;
-						$this -> session -> set('userSearchFilters', $userSearchFilters);
-					} 
-            	} else {
-            		if (!empty($searchTags)) {
-            			$queryData['compoundTag'] = $searchTags;
-            		}
-            	}
-            	$filterCategories = $this -> filters -> getActiveCategories();
-            	if (!empty($filterCategories) && empty($searchTags) && !$elemExists('searchTitle')) {
-            		$queryData['compoundCategory'] = $filterCategories;
-            	}
-            }
-			            
 	        if ($this->session->has('memberId')) {
 	    		$this->fetchMemberLikes();
 	    		$likedEvents = $this -> view -> getVar('likedEventsIds');
@@ -268,7 +247,7 @@ class SearchController extends \Core\Controller
             }
             $countResults = $results['all_count'];
         }
-        
+
 //_U::dump($results);        
 
         if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
@@ -288,7 +267,7 @@ class SearchController extends \Core\Controller
         if ($this->session->has('memberId')) {
             $this->fetchMemberLikes();
         }
-        $this->view->setVar('listTitle', $pageTitle);
+        $this->view->setVar('listTitle', implode($pageTitle, ' '));
      
         $urlParams = http_build_query($postData);
         $urlParamsPaginate = $urlParams;
@@ -348,6 +327,7 @@ class SearchController extends \Core\Controller
         		$this->view->pick('event/map');
         	}
         } else {
+        	
             if ($page >1 ) {
                 $this->view->setVar('searchResultList', true);
                 $this->view->pick('event/eventListPart');

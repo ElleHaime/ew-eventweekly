@@ -15,7 +15,7 @@ class EventImage extends EventImageObject
 		$result = [];
 		
 		$this -> setShardById($eventId); 
-	 	if ($images = self::find('event_id = "' . $eventId . '"')) {
+	 	if ($images = EventImageObject::find('event_id = "' . $eventId . '"')) {
             foreach ($images as $img) {
                 if ($img -> type == 'poster') {
                     $posters[] = $img;
@@ -39,7 +39,7 @@ class EventImage extends EventImageObject
 	public function getCover($eventId)
 	{
 		$this -> setShardById($eventId);
-		return $cover = self::findFirst('event_id = "' . $eventId . '" and type = "cover"');
+		return $cover = EventImageObject::findFirst('event_id = "' . $eventId . '" and type = "cover"');
 	}
 
 }

@@ -247,14 +247,7 @@ class AuthController extends \Core\Controller
     	$res = [];
     
     	if (!empty($data)) {
-    		$memberNetwork = MemberNetwork::findFirst('member_id = ' . $this -> session -> get('memberId'));
-    
-    		if ($memberNetwork) {
-    			$memberNetwork -> permission_base = $data['permission_base'];
-    			$memberNetwork -> permission_publish = $data['permission_publish'];
-    			$memberNetwork -> permission_manage = $data['permission_manage'];
-    			$memberNetwork -> update();
-    			
+    		if ((new MemberNetwork()) -> addPermissions($data['permission_base'], $data['permission_publish'], $data['permission_manage'])) {
     			$this -> session -> set('permission_base', $data['permission_base']);
     			$this -> session -> set('permission_publish', $data['permission_publish']);
     			$this -> session -> set('permission_manage', $data['permission_manage']);

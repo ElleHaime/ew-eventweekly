@@ -10,17 +10,18 @@ use \Core\Utils as _U,
 class Bootstrap extends \Core\Bootstrap
 {
 	protected $_moduleName = 'frontend';
-
-	public function registerAutoloaders()
+	
+	public function registerAutoloaders(\Phalcon\DiInterface $dependencyInjector = NULL)
 	{
-		parent::registerAutoloaders();
+		parent::registerAutoloaders($dependencyInjector);
 	}
 	
-	public function registerServices($di)
+	public function registerServices(\Phalcon\DiInterface $dependencyInjector)
 	{
-		parent::registerServices($di);
-		$this -> _initCounters($di);
-		$this -> _initFilters($di);
+		parent::registerServices($dependencyInjector);
+		
+		$this -> _initCounters($dependencyInjector);
+		$this -> _initFilters($dependencyInjector);
 	}
 
     public function _initFilters($di)

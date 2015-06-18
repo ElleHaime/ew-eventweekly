@@ -180,7 +180,7 @@ require.config({
 	        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
 	      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
 	      		{
-		            $('.tooltip-text').tooltip();
+		            //$('.tooltip-text').tooltip();
 		            
 		            frontSearchPanel.init();
 		            frontFilterPanel.init();

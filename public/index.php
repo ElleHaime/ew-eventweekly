@@ -1,10 +1,10 @@
 <?php
-
+//echo '<pre>'; print_r(get_loaded_extensions()); echo '</pre>'; die();
 error_reporting(E_ALL & ~E_NOTICE);
 
 (new \Phalcon\Debug) -> listen();
 
-//die(Phalcon\Version::get());
+//die(\Phalcon\Version::get());
 
 if (!defined('SEP')) {
 	define('SEP', DIRECTORY_SEPARATOR);

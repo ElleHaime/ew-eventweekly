@@ -13,21 +13,21 @@ class Cron extends CronObject
 			if ($session -> has('user_token') && $session -> has('user_fb_uid') && $session -> has('memberId')) {
 	            $newTask = false;
 	
-	            $taskSetted = self::find(array('member_id = ' . $session -> get('memberId') . ' and name =  "' . parent::FB_USER_TASK . '"'));
+	            $taskSetted = CronObject::find(array('member_id = ' . $session -> get('memberId') . ' and name =  "' . CronObject::FB_USER_TASK . '"'));
 	            if ($taskSetted -> count() > 0) {
 	                $tsk = $taskSetted -> getLast();
 	                if ((time()-($tsk -> hash) > $this -> getConfig() -> application -> pingFbPeriod) || $skipTimeCheck) {
-	                    $newTask = new self();
+	                    $newTask = new CronObject();
 	                }
 	            } else {
-	                $newTask = new self();
+	                $newTask = new CronObject();
 	            }
 	
 	            if ($newTask) {
 	                $params = ['user_token' => $session -> get('user_token'),
 	                           'user_fb_uid' => $session -> get('user_fb_uid'),
 	                           'member_id' => $session -> get('memberId')];
-	                $task = ['name' => parent::FB_USER_TASK,
+	                $task = ['name' => CronObject::FB_USER_TASK,
 	                         'parameters' => serialize($params),
 	                         'state' => 0,
 	                         'member_id' => $session -> get('memberId'),
@@ -51,21 +51,21 @@ class Cron extends CronObject
 			if ($session -> has('user_token') && $session -> has('user_fb_uid') && $session -> has('memberId')) {
 	            $newTask = false;
 			
-				$taskSetted = self::find(array('name = "' . parent::FB_CREATOR_TASK . '"'));
+				$taskSetted = CronObject::find(array('name = "' . CronObject::FB_CREATOR_TASK . '"'));
 				if ($taskSetted -> count() > 0) {
 					$tsk = $taskSetted -> getLast();
 					if (time()-($tsk -> hash) > 43200) {
-						$newTask = new self();
+						$newTask = new CronObject();
 					}
 				} else {
-					$newTask = new self();
+					$newTask = new CronObject();
 				}
 	
 				if ($newTask) {
 					$params = ['user_token' => $session -> get('user_token'),
 								'user_fb_uid' => $session -> get('user_fb_uid'),
 								'member_id' => $session -> get('memberId')];
-					$task = ['name' => parent::FB_CREATOR_TASK,
+					$task = ['name' => CronObject::FB_CREATOR_TASK,
 								'parameters' => serialize($params),
 								'state' => 0,
 								'member_id' => $session -> get('memberId'),
@@ -87,21 +87,21 @@ class Cron extends CronObject
 			if ($session -> has('user_token') && $session -> has('user_fb_uid') && $session -> has('memberId')) {
 				$newTask = false;
 					
-				$taskSetted = self::find(array('name = "' . parent::FB_GET_ID_TASK_NAME . '"'));
+				$taskSetted = CronObject::find(array('name = "' . CronObject::FB_GET_ID_TASK_NAME . '"'));
 				if ($taskSetted -> count() > 0) {
 					$tsk = $taskSetted -> getLast();
 					if (time()-($tsk -> hash) > 80200) {
-						$newTask = new self();
+						$newTask = new CronObject();
 					}
 				} else {
-					$newTask = new self();
+					$newTask = new CronObject();
 				}
 	
 				if ($newTask) {
 					$params = ['user_token' => $session -> get('user_token'),
 						'user_fb_uid' => $session -> get('user_fb_uid'),
 						'member_id' => $session -> get('memberId')];
-					$task = ['name' => parent::FB_GET_ID_TASK_NAME,
+					$task = ['name' => CronObject::FB_GET_ID_TASK_NAME,
 						'parameters' => serialize($params),
 						'state' => 0,
 						'member_id' => $session -> get('memberId'),

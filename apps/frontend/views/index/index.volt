@@ -182,7 +182,10 @@
 
 		</section>
 
-
+	    <input type="hidden" id="trending_events" value="{% if trendingEvents is defined %}1{% else %}0{%endif%}">
+		<input type="hidden" id="featured_simple_events" value="{% if featuredEvents[1] is defined %}1{% else %}0{%endif%}">
+		<input type="hidden" id="featured_paid_events" value="{% if featuredEvents[0] is defined %}1{% else %}0{%endif%}">
+		
 		<!-- <div class="ew-filter-link">
 			<a href="#" class="Show Filter">Show Filter</a>	
 		</div> -->

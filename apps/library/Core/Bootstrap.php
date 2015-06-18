@@ -30,22 +30,22 @@ abstract class Bootstrap implements ModuleDefinitionInterface
 
         DTime::setConfig($this -> _config);
 	}
-		
-	public function registerAutoloaders()
+	
+	public function registerAutoloaders(\Phalcon\DiInterface $dependencyInjector = NULL)
 	{
 	}
-
-	public function registerServices($di)
+		
+	public function registerServices(\Phalcon\DiInterface $dependencyInjector)
 	{
-		$this -> _initView($di);
-		$this -> _initDispatcher($di);
-		$this -> _initAuth($di);
-		$this -> _initGeoApi($di);
-		$this -> _initMail($di);
-		$this -> _initSession($di);
-		$this -> _initModels($di);
-        $this -> initCoreTag($di);
-        $this -> _initHttp($di);
+		$this -> _initView($dependencyInjector);
+		$this -> _initDispatcher($dependencyInjector);
+		$this -> _initAuth($dependencyInjector);
+		$this -> _initGeoApi($dependencyInjector);
+		$this -> _initMail($dependencyInjector);
+		$this -> _initSession($dependencyInjector);
+		$this -> _initModels($dependencyInjector);
+        $this -> initCoreTag($dependencyInjector);
+        $this -> _initHttp($dependencyInjector);
 	}
 
 	protected function _initView($di)

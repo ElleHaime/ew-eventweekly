@@ -9,13 +9,15 @@ class EventRating extends EventRatingObject
 {
 	public function addEventRating($event)
 	{
-		$rating = self::findFirst(['event_id = "' . $event -> id . '"']);
+		$rating = EventRatingObject::findFirst(['event_id = "' . $event -> id . '"']);
 
 		if ($rating) {
 			$rating -> rank = (int)$rating -> rank + 1;
 			$rating -> update();
 		} else {
-			$rating = new self();
+			$rating = new EventRatingObject();
+			$metaData = $rating->getModelsMetaData();
+
 			$rating -> assign(['event_id' => $event -> id,
 								'location_id' => $event -> location_id,
 								'rank' => 1]);

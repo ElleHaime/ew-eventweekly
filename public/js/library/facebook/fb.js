@@ -126,11 +126,15 @@ define('fb',
 
 			self.__register = function(data)
 			{
+//console.log('register::data');				
+//console.log(data);				
 				params = self.userData;
 				params.uid = self.accessUid;
 				params.token = self.accessToken;
 
                 $.when(self.__request('post', '/auth/fbregister', params)).then(function(response) {
+//console.log('register::server response');
+//console.log(response);
                 	data = $.parseJSON(response);
                 	if (data.status == 'OK') {
                 		self.__checkPermissions();
@@ -143,6 +147,8 @@ define('fb',
 			
 			self.__getLoginResponse = function(response)
 			{
+//console.log('getLoginResponse');				
+//console.log(response);				
 				if (response.status === 'connected') {
 					 self.accessToken = response.authResponse.accessToken;
 					 self.accessUid = response.authResponse.userID;
@@ -161,8 +167,11 @@ define('fb',
 				authParams = { uid: self.accessUid, 
          			   		   access_token: self.accessToken,
          			   		   access_type: self.accessType };
-		   
+//console.log('getLoginData::authParams');				
+//console.log(authParams);		   
 		        $.when(self.__request('post', '/auth/fblogin', authParams)).then(function(data) {
+//console.log('getLoginData::server response');		        	
+//console.log(data);		        	
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
 		         			if (self.accessType == 'login') {
@@ -239,7 +248,12 @@ define('fb',
 	               		params = {'permission_base': permission_base,
 	               				  'permission_publish': permission_publish,
 	               				  'permission_manage': permission_manage};
+//console.log('checkPermissions::params');
+//console.log(params);
+	               		
 	               		$.when(self.__request('post', '/auth/fbpermissions', params)).then(function(response) {
+//console.log('checkPermissions::server response');
+//console.log(response);
 	               			data = $.parseJSON(response);
 	                    	if (data.status == 'OK') {
 	                    		if (self.reDemo.test(location.pathname) == true) {

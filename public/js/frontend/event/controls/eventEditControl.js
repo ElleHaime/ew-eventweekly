@@ -1,8 +1,8 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'normalDatePicker', 'noty', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
-	function($, utils, normalDatePicker, noty) {
+	['jquery', 'utils', 'fb', 'normalDatePicker', 'noty', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+	function($, utils, fb, normalDatePicker, noty) {
 
-		function frontEventEditControl($, utils, normalDatePicker, noty)
+		function frontEventEditControl($, utils, fb, normalDatePicker, noty)
 		{
 			var self = this;
 
@@ -83,7 +83,6 @@ define('frontEventEditControl',
                 defaultCategories: '#defaultCategories',
 
                 memberExtUid: '#member_ext_uid',
-                eventFbStatus: '#event_fb_status',
                 accSynced: '#acc_synced',
                 externalLogged: '#external_logged',
                 permissionBase: '#permission_base',
@@ -662,6 +661,6 @@ service.getDetails(request,
 
 		};
 
-		return new frontEventEditControl($, utils, normalDatePicker, noty);
+		return new frontEventEditControl($, utils, fb, normalDatePicker, noty);
 	}
 );

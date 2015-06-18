@@ -104,7 +104,14 @@ class Filter extends Component
 		
 		return;
 	}
-
+	
+	
+	public function setSessionFilters(array $filters)
+	{
+		$this -> session -> set('userSearchFilters', $filters);
+		return $this;
+	}
+	
 	
 	public function getActiveTags()
 	{

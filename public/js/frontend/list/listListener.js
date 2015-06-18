@@ -42,12 +42,8 @@ define('listListener' ,['jquery','noty','SingleEvent','utils','domReady','unders
 	                
 	                $.each(data.events, function(index,event) {
 	                	newEventHtml = composeElement(event);
-	                    //var newEventHtml = new SingleEvent(event);
-	                    //newEventHtml = newEventHtml.getHtml();
-//console.log(newEventHtml);	                	
 	                    eventsBlock.append(newEventHtml);
 	                });
-	                //$('.tooltip-text').tooltip(); 
 	            }
 	            
 	            if (data.stop == true) {

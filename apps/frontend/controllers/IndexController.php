@@ -26,8 +26,6 @@ class IndexController extends \Core\Controller
 	    if ($this -> session -> has('eventsTotal')) {
 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 	    }
-
-
 			// get featured events
         	$featuredId = $trendingId = $resultFe = [];
         	$featuredEvents = Featured::find(['object_type="event" and location_id=' . $this -> session -> get('location') -> id]);
@@ -86,12 +84,15 @@ class IndexController extends \Core\Controller
 				$eventGrid -> setSort('start_date');
 				$eventGrid -> setSortDirection('ASC');
 				$results = $eventGrid->getData();
-				foreach($results['data'] as $ev) {
-					$ev -> cover = (new EventImage()) -> getCover($ev -> id);
-					$resultTre[] = $ev;
+
+				if ($results['all_count'] > 0) {
+					foreach($results['data'] as $ev) {
+						$ev -> cover = (new EventImage()) -> getCover($ev -> id);
+						$resultTre[] = $ev;
+					}
+					
+					$this -> view -> setVar('trendingEvents', $resultTre);
 				}
-				
-				$this -> view -> setVar('trendingEvents', $resultTre);
 			}
     }
 

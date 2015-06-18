@@ -10,23 +10,57 @@ use Core\Model,
 class MemberNetwork extends Model
 {
 	const FACEBOOK		= 1;
-	
+
+	/**
+	 * @Primary
+	 * @Identity
+	 * @Column(type="integer", nullable=false)
+	 */
 	public $id;
+	
+	/**
+	 * @Column(type="integer")
+	 */
 	public $member_id;
+	
+	/**
+	 * @Column(type="integer")
+	 */
 	public $network_id;
+
+	/**
+	 * @Column(type="varchar", nullable=false, length=30)
+	 */
 	public $account_uid;
+	
+	/**
+	 * @Column(type="varchar", nullable=false, length=50)
+	 */
 	public $account_id;
+	
+	/**
+	 * @Column(type="integer")
+	 */
 	public $permission_base;
+	
+	/**
+	 * @Column(type="integer")
+	 */
 	public $permission_publish;
+	
+	/**
+	 * @Column(type="integer")
+	 */
 	public $permission_manage;
 	
-	public $needCache = true;
 	
 	public function initialize()
 	{
 		parent::initialize();
 				
-		$this -> belongsTo('member_id', '\Objects\Member', 'id', array('alias' => 'member'));
-		$this -> belongsTo('network_id', '\Objects\Network', 'id', array('alias' => 'network'));
+		$this -> useDynamicUpdate(true);
+		
+		$this -> hasOne('member_id', '\Objects\Member', 'id', ['alias' => 'member']);
+		//$this -> hasOne('network_id', '\Objects\Network', 'id', ['alias' => 'network']);
 	}
 }

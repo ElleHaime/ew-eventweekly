@@ -211,7 +211,6 @@ class Application extends BaseApplication
 				function () use ($config, $adapter) {
 
                     $eventsManager = new EventsManager();
-
                     $logger = new FileAdapter(ROOT_APP.'var/logs/sql.log');
 
                     //Listen all the database events
@@ -231,7 +230,6 @@ class Application extends BaseApplication
                               'options' => $config->options->toArray()
 						)
 					);
-
                     $connection->setEventsManager($eventsManager);
 
 					return $connection;
@@ -260,7 +258,6 @@ class Application extends BaseApplication
 				function () use ($config, $adapter) {
 
                     $eventsManager = new EventsManager();
-
                     $logger = new FileAdapter(ROOT_APP.'var/logs/sql.log');
 
                     //Listen all the database events
@@ -280,7 +277,7 @@ class Application extends BaseApplication
                               'options' => $config->options->toArray()
 						)
 					);
-
+					
                     $connection->setEventsManager($eventsManager);
 					return $connection;
 				} 

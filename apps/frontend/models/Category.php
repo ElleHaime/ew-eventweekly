@@ -8,7 +8,7 @@ class Category extends CategoryObject
 {
     public function getDefaultIdsAsString()
     {
-        $result = $this->find('is_default = 1');
+        $result = CategoryObject::find('is_default = 1');
 
         $categories = array();
         foreach ($result as $category) {

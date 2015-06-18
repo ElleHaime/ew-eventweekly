@@ -272,7 +272,6 @@ class EventController extends \Core\Controllers\CrudController
 
     	$ev = (new Event()) -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
-
     	(new EventRating()) -> addEventRating($event);
     	
     	$event -> memberpart = $this -> getJoinedStatus($event);
@@ -714,7 +713,7 @@ class EventController extends \Core\Controllers\CrudController
 
         $ev -> assign($newEvent);
         $ev -> setShardByCriteria($newEvent['location_id']);
-
+//_U::dump($ev -> getShardTable());
         if ($ev -> id) {
         	$saveEvent = $ev -> update();  
         } else {
@@ -970,20 +969,16 @@ class EventController extends \Core\Controllers\CrudController
 
         if (!empty($post['event_poster'])) {
             $this->view->setVar('eventPreviewPosterReal', $post['event_poster']);
-        } else {
-        	if (!empty($post['poster'])) {
-        		$this->view->setVar('previewPoster', $post['poster']);
-        		$this->view->setVar('eventPreviewPoster', $post['poster']);
-        	}	
+        } elseif (!empty($post['poster'])) {
+       		$this->view->setVar('previewPoster', $post['poster']);
+       		$this->view->setVar('eventPreviewPoster', $post['poster']);
         } 
 
         if (!empty($post['event_flyer'])) {
             $this->view->setVar('eventPreviewFlyerReal', $post['event_flyer']);
-        } else {
-        	if (!empty($post['flyer'])) {
-        		$this->view->setVar('previewFlyer', $post['flyer']);
-        		$this->view->setVar('eventPreviewFlyer', $post['flyer']);
-        	}	
+        } elseif (!empty($post['flyer'])) {
+        	$this->view->setVar('previewFlyer', $post['flyer']);
+        	$this->view->setVar('eventPreviewFlyer', $post['flyer']);
         }
 
         $Event = new \stdClass();
