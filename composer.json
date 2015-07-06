@@ -1,6 +1,10 @@
 {
+	"repositories": [
+	    { "type": "vcs", "url": "https://bitbucket.org/tieste/phalconcore.git" },
+	    { "type": "vcs", "url": "https://bitbucket.org/tieste/shardingtrait.git" }
+  	],
     "require": {
-        "tieste-group/phalcon-core": "0.10.6",
-        "vendor/sharding": "dev-master"
+        "tieste/phalcon-core": "0.11.3",
+    	"tieste/sharding": "0.6.0"
     }
 }

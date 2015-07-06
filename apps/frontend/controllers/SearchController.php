@@ -139,25 +139,39 @@ class SearchController extends \Core\Controller
 						$searchTitleTags[] = (int)$searchTag -> id;
 					}
 				}
-				$queryData['compoundTitle'] = $postData['searchTitle'];
+				if (!empty($searchTitleTags)) {
+					$queryData['compoundTitle'] = $postData['searchTitle'];
+				} else {
+					$queryData['searchTitle'] = $postData['searchTitle'];
+				}
 				$pageTitle['title'] = 'for "'.$postData['searchTitle'].'"';
 			}
-			
+
 			if (($elemExists('searchTags') || $elemExists('searchCategories'))) {
 				if ($postData['personalPresetActive'] != 1) {
-					if ($elemExists('searchCategories')) {
-						$userSearchFilters['category'] = $postData['searchCategories'];
-						$queryData['compoundCategory'] = array_keys($postData['searchCategories']);
-					} else {
-						$userSearchFilters['category'] = [];
-					}
-					
+				
 					if ($elemExists('searchTags')) {
 						$userSearchFilters['tag'] = $postData['searchTags'];
-						$queryData['compoundTag'] = array_merge(array_keys($postData['searchTags']), $searchTitleTags);
+						if (!$elemExists('searchTitle')) {
+							$queryData['compoundTag'] = array_keys($postData['searchTags']);
+						} else {
+							if (!empty($searchTitleTags)) {
+								$queryData['compoundTag'] = $searchTitleTags;
+							}
+						}
 					} else {
 						$userSearchFilters['tag'] = [];
 					}
+					
+					if ($elemExists('searchCategories')) {
+						$userSearchFilters['category'] = $postData['searchCategories'];
+						if (!$elemExists('searchTitle')) {
+							$queryData['compoundCategory'] = array_keys($postData['searchCategories']);
+						}
+					} else {
+						$userSearchFilters['category'] = [];
+					}
+						
 					$this -> filters -> setSessionFilters($userSearchFilters)
 									 -> loadUserFilters(false);
 				} else {
@@ -165,16 +179,18 @@ class SearchController extends \Core\Controller
 					$searchCategories = $this -> filters -> getActiveCategories();
 			
 					if (!empty($searchTags)) {
-						if (!empty($searchTitleTags)) {
-							$postData['personalPresetActive'] = 0;
-							$pageTitle['type'] = 'All events';
-								
-							$queryData['compoundTag'] = $searchTitleTags;
+						if ($elemExists('searchTitle')) {
+							if (!empty($searchTitleTags)) {
+								$postData['personalPresetActive'] = 0;
+								$pageTitle['type'] = 'All events';
+									
+								$queryData['compoundTag'] = $searchTitleTags;
+							}
 						} else {
 							$queryData['compoundTag'] = $searchTags;
 						}
 					}
-					if (!empty($searchCategories)) {
+					if (!empty($searchCategories) && !$elemExists('searchTitle')) {
 						if ($postData['personalPresetActive'] != 0) {
 							$queryData['compoundCategory'] = $searchCategories;
 						}
@@ -193,7 +209,6 @@ class SearchController extends \Core\Controller
 	    			$queryData['searchNotId'] = $unlikedEvents;
 	    		}
 	    	}
-            
 //_U::dump($queryData);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			
