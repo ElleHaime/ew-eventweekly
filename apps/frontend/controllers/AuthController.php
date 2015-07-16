@@ -221,6 +221,12 @@ class AuthController extends \Core\Controller
                     		'token' => $userData['token']));
                 (new Cron()) -> createUserTask();                
             }
+        } else {
+        	if (empty($this -> session -> get('member') -> logo)) {
+        		$member = Member::findFirst($this -> session -> memberId);
+        		$member -> assign(['logo' => $userData['logo']]);
+        		$member -> save();
+        	}
         }
 
         $res['status'] = 'OK';
