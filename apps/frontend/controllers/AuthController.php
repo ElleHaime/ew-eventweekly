@@ -226,6 +226,8 @@ class AuthController extends \Core\Controller
         		$member = Member::findFirst($this -> session -> memberId);
         		$member -> assign(['logo' => $userData['logo']]);
         		$member -> save();
+        		
+        		$this -> session -> member -> logo = $userData['logo'];
         	}
         }
 
