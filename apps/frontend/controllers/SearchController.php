@@ -122,7 +122,7 @@ class SearchController extends \Core\Controller
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 			}
             if ($elemExists('searchEndDate')) {
-                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate'] . '+1 day'));
+                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate']));
             }  else {
                 $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             } 

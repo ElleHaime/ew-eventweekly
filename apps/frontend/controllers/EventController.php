@@ -218,7 +218,7 @@ class EventController extends \Core\Controllers\CrudController
 	    		$eventGrid -> setPage((int)$page);
 	    	}
 	    	$results = $eventGrid->getData();
-
+_U::dump($results);
 	    	foreach($results['data'] as $key => $value) {
 	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	    			$value -> disabled = 'disabled';

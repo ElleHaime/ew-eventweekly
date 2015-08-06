@@ -61,7 +61,7 @@ class AuthController extends \Core\Controller
                     $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
 
                     if (!$this->request->isAjax()) {
-                        $this -> response -> redirect('');
+                        $this -> response -> redirect('/');
                     } else {
                         echo json_encode(array('success' => 'true'));
                         exit();
@@ -100,7 +100,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this -> response -> redirect('');
+                    $this -> response -> redirect('/');
                 } 
                     
                 $this -> flash -> error($member -> getMessages());
@@ -297,7 +297,7 @@ class AuthController extends \Core\Controller
                 $resetUri =  md5(rand(0, 500) . '+' . $member -> id . '+' . microtime());
                 $this -> session -> set('reset_uri', $resetUri);
                 $this -> session -> set('reset_member', $member);
-                $resetLink = $_SERVER['SERVER_NAME'] . '/reset/' . $resetUri;
+                $resetLink = $_SERVER['SERVER_NAME'] . '/auth/reset/' . $resetUri;
 
                 $template = "Here is your link for new password: http://" . $resetLink. "\n\nDon't lose it again";
                 $subject = 'EventWeekly::Reset password';
@@ -325,13 +325,13 @@ class AuthController extends \Core\Controller
 
 
     /**
-     * @Route("/reset/{hash}", methods={"GET"})
+     * @Route("/auth/reset/{hash}", methods={"GET"})
      * @Acl(roles={'guest', 'member'});
      */
     public function resetAction($hash = false)
     {
-        /*if ($hash) {
-            if ($hash == $this -> session -> get('reset_uri')) { */
+        if ($hash) {
+            if ($hash == $this -> session -> get('reset_uri')) { 
                 $form = new ResetForm();
 
                 if ($this -> request -> isPost()) {
@@ -353,11 +353,11 @@ class AuthController extends \Core\Controller
                     }
                 }
                 $this -> view -> form = $form;
-            //} else {
-//				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
-				//$this -> view -> setVar('flashMsgType', 'error');
-            //}
-        //} 
+            } else {
+				$this -> view -> setVar('flashMsgText', 'Your session is deprecated or you has logged from another device');
+				$this -> view -> setVar('flashMsgType', 'error');
+            }
+        } 
     }
 
    /**

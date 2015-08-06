@@ -27,7 +27,6 @@ define('signupControl',
 			self.__bindClicks = function()
 			{
 				$(self.settings.btnSubmit).click(function() {
-					alert(123);
                     if (!self.__checkEmail()) {
                         return false;
                     }
