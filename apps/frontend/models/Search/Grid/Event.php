@@ -116,7 +116,7 @@ class Event extends Grid
             'searchTitle' => new Field\Name("Name", null, Criteria::CRITERIA_LIKE),
             'searchId' => new Field\Primary("Id", null, Criteria::CRITERIA_IN),
         	'searchNotId' => new Field\Standart("Id", 'id', null, Criteria::CRITERIA_NOTIN),
-            'searchMember' => new Field\Standart('MemberI', 'member_id', null, Criteria::CRITERIA_EQ),
+            'searchMember' => new Field\Standart('MemberId', 'member_id', null, Criteria::CRITERIA_EQ),
             'searchDesc' => new Field\Standart("Desc", "description"),
             'searchTag' => new Field\Join("Tags", "\Frontend\Models\Search\Model\Tag", false, null, ["\Frontend\Models\Search\Model\EventTag", "\Frontend\Models\Search\Model\Tag"]),
             'searchStartDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_MORE),

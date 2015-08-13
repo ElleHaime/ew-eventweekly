@@ -1,5 +1,5 @@
 define('frontSearchPanel', 
-        ['jquery', 'noty', 'utils', 'normalDatePicker', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+        ['jquery', 'noty', 'utils', 'normalDatePicker', 'underscore', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
         function($, noty, utils, normalDatePicker) {
 
     return {

@@ -209,7 +209,7 @@ class EventController extends \Core\Controllers\CrudController
 	    	$eventGrid -> setLimit(9);
 	    	$eventGrid -> setSort('start_date');
 	    	$eventGrid -> setSortDirection('ASC');
-	    	
+
 	    	$page = $this->request->getQuery('page');
 	    	if (empty($page)) {
 	    		$eventGrid -> setPage(1);
@@ -218,7 +218,7 @@ class EventController extends \Core\Controllers\CrudController
 	    		$eventGrid -> setPage((int)$page);
 	    	}
 	    	$results = $eventGrid->getData();
-_U::dump($results);
+	    	
 	    	foreach($results['data'] as $key => $value) {
 	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	    			$value -> disabled = 'disabled';
