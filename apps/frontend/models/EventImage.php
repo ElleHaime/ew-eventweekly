@@ -2,20 +2,20 @@
 
 namespace Frontend\Models;
 
-use Objects\EventImage as EventImageObject;
+use Objects\EventImage as EventImageObject,
+ 	Core\Utils as _U;
 
 class EventImage extends EventImageObject
 {
 	use \Sharding\Core\Env\Phalcon;
 	
 	
-	public function setViewImages($eventId)
+	public function setViewImages($event)
 	{
 		$posters = $flyers = $gallery = $cover = null;
 		$result = [];
-		
-		$this -> setShardById($eventId); 
-	 	if ($images = EventImageObject::find('event_id = "' . $eventId . '"')) {
+
+	 	if ($images = $event -> image) {
             foreach ($images as $img) {
                 if ($img -> type == 'poster') {
                     $posters[] = $img;
@@ -27,7 +27,7 @@ class EventImage extends EventImageObject
                     $cover = $img;
                 }
             }
-		}
+		} 
 		if(isset($posters[0])) { $result['poster'] = $posters; }
 		if(isset($flyers[0])) { $result['flyer'] = $flyers; }
 		if(isset($cover)) { $result['cover'] = $cover; }

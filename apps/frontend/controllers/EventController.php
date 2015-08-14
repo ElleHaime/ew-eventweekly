@@ -165,20 +165,26 @@ class EventController extends \Core\Controllers\CrudController
     public function listAction()
     {
     	$result = [];
+    	
     	$model = new Event();
     	$shards = $model -> getAvailableShards();
     	
 		foreach ($shards as $cri) {
-			$e = new Event();
-			$e -> setShard($cri);
-			$events = $e::find(['deleted != 1 and member_id = ' . $this -> session -> get('memberId'), 
-								'order' => 'start_date ASC']);
-			if ($events -> count()) {
+			$e = (new Event()) -> setShard($cri);
+			/*$events = $e::find(['deleted != 1 and member_id = ' . $this -> session -> get('memberId'), 
+								'order' => 'start_date ASC']); */ 
+			$events = $e -> strictSqlQuery()
+						 -> addQueryCondition('member_id = ' . $this -> session -> get('memberId'))
+						 -> addQueryFetchStyle('\Frontend\Models\Event')
+						 -> select();
+
+			if ($events) {
 				foreach($events as $object) {
 					$result[] = json_decode(json_encode($object -> toArray(), JSON_UNESCAPED_UNICODE), FALSE);
 				}
-			}
-		} 
+			} 
+		}
+		
 		$this -> view -> setVar('object', $result);
 		$this -> view -> setVar('list', $result);
 		$this -> view -> setVar('listTitle', 'Created');
@@ -280,7 +286,7 @@ class EventController extends \Core\Controllers\CrudController
     		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url);
     	} 
     	 
-    	$images = (new EventImageModel()) -> setViewImages($event -> id);
+    	$images = (new EventImageModel()) -> setViewImages($event);
     	$this->view->setVars($images);
     	
     	$sites = EventSite::find('event_id = "' . $event -> id . '"');
@@ -526,13 +532,13 @@ class EventController extends \Core\Controllers\CrudController
         $data = $this->request->getPost();
         $result['status'] = 'ERROR';
 
-        if (isset($data['id']) && !empty($data['id'])) {
+ 		if (isset($data['id']) && !empty($data['id'])) {
             if ($res = $this->updateStatus($data['id'], $data['event_status'])) {
                 $result = array_merge($res, array('status' => 'OK'));
             }
         }
 
-        echo json_encode($result);
+        $this -> sendAjax($result);
     }
 
     /**
@@ -564,6 +570,7 @@ class EventController extends \Core\Controllers\CrudController
         if ($event) {
             $event -> assign(array('event_status' => $status));
             $event -> setShardById($id);
+            
             if ($event -> update()) {
             	$grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
             	$indexer = new \Frontend\Models\Search\Search\Indexer($grid);

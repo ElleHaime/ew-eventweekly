@@ -171,8 +171,9 @@ class Indexer extends BaseIndexer
         $primaryFilterKey = $primaryFilterField->getKey();
         $grid->setParam($primaryFilterKey, $id);
 
-        $params = $grid->getFilterParams();
-        
+        //$params = $grid->getFilterParams();
+        $params = $grid->getParams();
+
         $model = $container->getModel();
         $shardCriteria = $params['location'];
         $model->setShardByCriteria($shardCriteria);
