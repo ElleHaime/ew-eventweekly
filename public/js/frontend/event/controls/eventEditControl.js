@@ -513,20 +513,7 @@ define('frontEventEditControl',
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.lat();
 			                var lng = locs.getPlace().geometry.location.lng();
-			                
-/*console.log(locs.getPlace());
 
-var request = {
-	reference: locs.getPlace().reference
-};
-var service = new google.maps.places.PlacesService($(self.settings.inpLocation)[0]);
-service.getDetails(request, 
-		function (place, status) {
-			if (status == google.maps.places.PlacesServiceStatus.OK) {
-				console.log(place);
-			}
-		}
-);*/
 			                $(self.settings.coordsLocationLat).val(lat);
 			                $(self.settings.coordsLocationLng).val(lng);
 			            });

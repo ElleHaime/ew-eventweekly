@@ -147,7 +147,7 @@ require.config({
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
         
-        var moduleName, fileName = '',
+        var moduleName, fileName = '', isPreview = 0,
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/auth\/reset\/.+/,
@@ -174,9 +174,13 @@ require.config({
         	moduleName = 'frontend' + fileName;
         };
         
+        if (moduleName == 'frontend/event/preview') {
+        	isPreview = 1;
+        }
+
   		require([moduleName]);
 
-  		if (moduleName != 'frontend/member/login' && moduleName != 'frontend/auth/fbauthresponse') {
+  		if (moduleName != 'frontend/member/login' && moduleName != 'frontend/auth/fbauthresponse' && isPreview != 1) {
 	        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
 	      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
 	      		{

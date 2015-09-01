@@ -376,7 +376,8 @@
                         <h3 id="myModalLabel" >Event Preview</h3>
                     </div>
                     <div class="modal-body" style="height:80%;">
-                        <iframe name="eventPreview_iframe" src="{{ hostName }}" style="width: 100%; height: 100%;"></iframe>
+                        <!-- iframe name="eventPreview_iframe" src="{{ hostName }}" style="width: 100%; height: 100%;"></iframe -->
+                        <iframe name="eventPreview_iframe" style="width: 100%; height: 100%;"></iframe>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

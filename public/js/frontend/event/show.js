@@ -15,7 +15,7 @@ require([
 	function($, fb, googleMap, noty, frontEventInviteFriend, eventSliderControl, frontEventLike) {
     	var eCoords = $('#map_canvas');
     	var eAddress = $('#map_info');
-		
+	
 		var map = new googleMap({
 		    mapCenter: {
 		        lat: eCoords.attr('latitude'),

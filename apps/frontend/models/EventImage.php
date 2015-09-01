@@ -17,13 +17,13 @@ class EventImage extends EventImageObject
 
 	 	if ($images = $event -> image) {
             foreach ($images as $img) {
-                if ($img -> type == 'poster') {
+                if ($img -> type == 'poster' && !empty($img -> image)) {
                     $posters[] = $img;
-                } else if ($img -> type == 'flyer') {
+                } else if ($img -> type == 'flyer' && !empty($img -> image)) {
                     $flyers[] = $img;
-                } else if ($img -> type == 'gallery') {
+                } else if ($img -> type == 'gallery' && !empty($img -> image)) {
                     $gallery[] = $img;
-                } else if ($img -> type == 'cover') {
+                } else if ($img -> type == 'cover' && !empty($img -> image)) {
                     $cover = $img;
                 }
             }
