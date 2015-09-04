@@ -174,7 +174,7 @@ class EventController extends \Core\Controllers\CrudController
 			/*$events = $e::find(['deleted != 1 and member_id = ' . $this -> session -> get('memberId'), 
 								'order' => 'start_date ASC']); */ 
 			$events = $e -> strictSqlQuery()
-						 -> addQueryCondition('member_id = ' . $this -> session -> get('memberId'))
+						 -> addQueryCondition('deleted != 1 AND member_id = ' . $this -> session -> get('memberId'))
 						 -> addQueryFetchStyle('\Frontend\Models\Event')
 						 -> selectRecords();
 
@@ -463,6 +463,7 @@ class EventController extends \Core\Controllers\CrudController
         if (isset($data['id']) && !empty($data['id'])) {
         	$ev = (new Event()) -> setShardById($data['id']); 
             $event = $ev::findFirst($data['id']);
+            
             if ($event) {
             	$event->setShardById($data['id']);
                 $event->event_status = 0;
@@ -472,9 +473,7 @@ class EventController extends \Core\Controllers\CrudController
                 $grid = new \Frontend\Models\Search\Grid\EventSave(['location' => $event -> location_id], $this -> getDI(), null, ['adapter' => 'dbMaster']);
                 $indexer = new \Frontend\Models\Search\Search\Indexer($grid);
                 $indexer -> setDi($this -> getDI());
-               	if ($indexer->existsData($event -> id)) {
-               		$indexer->deleteData($event -> id);
-                }
+               	$indexer -> deleteData($event -> id);
 
                 $result['status'] = 'OK';
                 $result['id'] = $data['id'];

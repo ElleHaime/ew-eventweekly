@@ -197,7 +197,20 @@ class SearchController extends \Core\Controller
 					}
 				}
 			} else {
-				$this -> filters -> loadUserFilters(false);
+				$this -> filters -> loadUserFilters();
+				
+				$searchCategories = $this -> filters -> getActiveCategories();
+				if (!empty($searchCategories)) {
+					$queryData['compoundCategory'] = $searchCategories;
+				}
+				$searchTags = $this -> filters -> getActiveTags();
+				if (!empty($searchTags)) {
+					$queryData['compoundTag'] = $searchTags;
+				}
+				
+				if ($this -> session -> has('memberId') && !$elemExists('searchTitle')) {
+					$pageTitle['type'] = 'Personalized events';
+				}
 			}
 
 	        if ($this->session->has('memberId')) {

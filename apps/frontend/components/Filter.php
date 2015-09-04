@@ -28,16 +28,14 @@ class Filter extends Component
 			$this -> userFilters[$obj['category_id']]['tags'][$obj['id']] = $obj;
 		}
 
-		if ($applyPersonalization) {
-			if ($this -> session -> has('memberId')) {
-				$memberPreset = (new MemberFilter()) -> getbyId($this -> session -> get('memberId'));
-				
-				if (!empty($memberPreset)) {
-					$this -> applyMemberPersonalization($memberPreset);
-					$this -> view -> setVar('personalPresetActive', 1);
-				} else {
-					$this -> applySessionFilters();
-				}
+		if ($applyPersonalization && $this -> session -> has('memberId')) {
+			$memberPreset = (new MemberFilter()) -> getbyId($this -> session -> get('memberId'));
+			
+			if (!empty($memberPreset)) {
+				$this -> applyMemberPersonalization($memberPreset);
+				$this -> view -> setVar('personalPresetActive', 1);
+			} else {
+				$this -> applySessionFilters();
 			}
 		} else {
 			$this -> applySessionFilters();
