@@ -51,7 +51,8 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-//_U::dump($postData);
+// _U::dump($postData, true);
+// _U::dump($this -> session -> get('userSearch'));
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -76,12 +77,28 @@ class SearchController extends \Core\Controller
         $pageTitle['type'] = 'Search results';
         $queryData = [];
         
-        if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
-            $postData['personalPresetActive'] = 1;
-            $this -> filters -> loadUserFilters();
+//         if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
+//         	$postData['personalPresetActive'] = 1;
+//         	$this -> filters -> loadUserFilters();
+//         }
+        
+        if (!isset($postData['personalPresetActive'])) {
+        	$postData['personalPresetActive'] = 0;
+        	$prevSearch = [];
+        	if ($this -> session -> has('userSearch')) $prevSearch = $this -> session -> get('userSearch');
+        		 
+        	if (isset($prevSearch['personalPresetActive'])) {
+        		$postData['personalPresetActive'] = $prevSearch['personalPresetActive'];
+        	}
+
+// 	        if ($this -> session -> has('member') && $postData['personalPresetActive'] == 1) {
+// 	            $this -> filters -> loadUserFilters();
+// 	        }  else {
+// 	        	$this -> filters -> loadUserFilters(false);
+// 	        }
         }
 
-        if (isset($postData['personalPresetActive']) && $postData['personalPresetActive'] == 1) {
+        if (isset($postData['personalPresetActive']) && $postData['personalPresetActive'] == 1 && $this -> session -> has('memberId')) {
             $pageTitle['type'] = 'Personalized events';
         } else {
             $pageTitle['type'] = 'All events';
@@ -197,7 +214,11 @@ class SearchController extends \Core\Controller
 					}
 				}
 			} else {
-				$this -> filters -> loadUserFilters();
+				if ($postData['personalPresetActive'] == 1) {
+					$this -> filters -> loadUserFilters();
+				} else {
+					$this -> filters -> loadUserFilters(false);
+				}
 				
 				$searchCategories = $this -> filters -> getActiveCategories();
 				if (!empty($searchCategories)) {
@@ -208,7 +229,7 @@ class SearchController extends \Core\Controller
 					$queryData['compoundTag'] = $searchTags;
 				}
 				
-				if ($this -> session -> has('memberId') && !$elemExists('searchTitle')) {
+				if ($this -> session -> has('memberId') && !$elemExists('searchTitle') && $postData['personalPresetActive'] == 1) {
 					$pageTitle['type'] = 'Personalized events';
 				}
 			}
@@ -247,7 +268,7 @@ class SearchController extends \Core\Controller
                     	}
                     	$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
                     	$result[$event -> id]['description'] = trim($event -> description);
-                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event -> id);
+                    	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event);
                     }
                    	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
 
@@ -262,7 +283,7 @@ class SearchController extends \Core\Controller
 						if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 							$value -> disabled = 'disabled';
 						}
-						$value -> cover = (new EventImage()) -> getCover($value -> id);
+						$value -> cover = (new EventImage()) -> getCover($value);
                     	$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
                     }
                     
@@ -278,9 +299,9 @@ class SearchController extends \Core\Controller
 
 //_U::dump($results);        
 
-        if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
+        //if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
             $this->session->set('userSearch', $postData);
-        }
+        //}
 
         $this->view->setVar('list', $result);
         $this->view->setVar('eventsTotal', $countResults);

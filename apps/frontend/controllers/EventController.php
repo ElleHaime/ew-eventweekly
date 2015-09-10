@@ -229,7 +229,7 @@ class EventController extends \Core\Controllers\CrudController
 	    		if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	    			$value -> disabled = 'disabled';
 	    		}
-	    		$value -> cover = (new EventImageModel()) -> getCover($value -> id);
+	    		$value -> cover = (new EventImageModel()) -> getCover($value);
 	    		$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 	    	}
 	    	$this -> view -> setVar('list', $result);
@@ -822,11 +822,15 @@ class EventController extends \Core\Controllers\CrudController
     	}
     	
     	// process categories
-    	$eventCategories = (new EventCategory())->setShardById($ev->id);
-    	$eCats = $eventCategories::find('event_id = "' . $ev->id . '"');
-    	if ($eCats) {
+    	$eventCategories = (new EventCategory()) -> setShardById($ev->id);
+    	$eCats = $eventCategories -> strictSqlQuery()
+								   -> addQueryCondition('event_id = "' . $ev -> id . '"')
+								   -> addQueryFetchStyle('\Frontend\Models\EventCategory')
+								   -> selectRecords();
+    	if (!empty($eCats)) {
     		foreach ($eCats as $ec) {
-    			$ec->delete();
+    			$ec -> setShardById($ev -> id);
+    			$ec -> delete();
     		}
     	}
     	if (!empty($event['category'])) {
@@ -835,7 +839,7 @@ class EventController extends \Core\Controllers\CrudController
     			if (!empty($value)) {
     				$eCats = (new EventCategory())->setShardById($ev -> id);
     				$eCats->assign(['event_id' => $ev->id,
-    						'category_id' => $value]);
+    								'category_id' => $value]);
     				$eCats->save();
     			}
     		}

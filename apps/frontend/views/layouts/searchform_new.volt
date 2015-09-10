@@ -7,7 +7,12 @@
 							<!-- search by event name -->
 							<div class="filters-form__item filters-form__item--input-with-icon">
 								<i class="fa fa-search"></i>
-						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'Event or venue...', 'value': '' }) }}
+								{% if userSearch is defined and userSearch['searchTitle'] is defined %}
+									{% set searchTitle = userSearch['searchTitle'] %}
+								{% else %}
+									{% set searchTitle = '' %}
+								{% endif %}
+						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'Event or venue...', 'value': searchTitle }) }}
 							</div>
 							
 							<!-- search by location -->

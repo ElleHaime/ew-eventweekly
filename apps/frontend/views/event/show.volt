@@ -2,6 +2,7 @@
 
 {% block content %}
 		<div style="display:none; visibility:hidden;" id="current_event_id"  event="{{ event.id }}"></div>
+
 		<section id="content" class="container page page-event col-2">
 
 			<!-- breadcrumbs -->
@@ -281,7 +282,9 @@
 					</div>
 				</div>
 
+
 				<div class="clearfix"></div>
+				
 			</div>
 
 			<!-- div class="b-user-widgets-container">

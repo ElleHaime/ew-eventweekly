@@ -43,7 +43,7 @@ class IndexController extends \Core\Controller
 				foreach ($events as $ev) {
 					foreach ($resultFe as $key => $val) {
 						if ($featuredId[$ev -> id] == $key) {
-							$ev -> cover = (new EventImage()) -> getCover($ev -> id);
+							$ev -> cover = (new EventImage()) -> getCover($ev);
 							$resultFe[$key][] = $ev;
 						}
 					}
@@ -62,7 +62,7 @@ class IndexController extends \Core\Controller
         		$results = $eventGrid->getData();
         		
         		foreach($results['data'] as $ev) {
-        			$ev -> cover = (new EventImage()) -> getCover($ev -> id);
+        			$ev -> cover = (new EventImage()) -> getCover($ev);
         			$resultFe[1][] = $ev;
         		} 
         	}
@@ -87,7 +87,7 @@ class IndexController extends \Core\Controller
 
 				if ($results['all_count'] > 0) {
 					foreach($results['data'] as $ev) {
-						$ev -> cover = (new EventImage()) -> getCover($ev -> id);
+						$ev -> cover = (new EventImage()) -> getCover($ev);
 						$resultTre[] = $ev;
 					}
 					
@@ -96,6 +96,17 @@ class IndexController extends \Core\Controller
 			}
     }
 
+    
+    /**
+     * @Route("/freelisting", methods={"GET", "POST"})
+     * @Acl(roles={'guest','member'});
+     */
+    public function freelistingAction()
+    {
+    	$this -> view -> setVar('hideYouAreNotLoggedInBtn', true);
+    	$this -> view -> pick('index/promologin');
+    }
+    	
 
     /**
 	 * @Get('ooops')

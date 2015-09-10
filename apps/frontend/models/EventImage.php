@@ -36,10 +36,22 @@ class EventImage extends EventImageObject
 		return $result;
 	}
 	
-	public function getCover($eventId)
+	public function getCover($event)
 	{
-		$this -> setShardById($eventId);
-		return $cover = EventImageObject::findFirst('event_id = "' . $eventId . '" and type = "cover"');
+		$cover = false;
+		$images = $this -> setShardById($event -> id)
+						-> strictSqlQuery()
+					    -> addQueryCondition('event_id = "' . $event -> id . '" and type = "cover"')
+					    -> addQueryFetchStyle('\Frontend\Models\EventImage')
+					    -> selectRecords();
+		
+		if (!empty($images)) {
+			foreach ($images as $img) {
+				$cover = $img;
+			}
+		}
+
+		return $cover;
 	}
 
 }
