@@ -50,7 +50,6 @@ class MemberListener {
             $this->subject->session->set('member', $params);
             $this->subject->session->set('role', $params->role);
             $this->subject->session->set('memberId', $params->id);
-            $this->subject->session->set('lastFetched', 0);
         } 
     }
     

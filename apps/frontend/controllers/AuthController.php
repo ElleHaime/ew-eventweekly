@@ -132,6 +132,9 @@ class AuthController extends \Core\Controller
         		 
         		if ($memberNetwork) {
         			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			$this->session->remove('userSearch');
+        			$userSearch = ['personalPresetActive' => 1];
+        			$this->session->set('userSearch', $userSearch);
         			$res['member_session_id'] = $this -> session -> get('memberId');
         			(new Cron()) -> createUserTask();
         		} else {

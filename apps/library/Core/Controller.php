@@ -77,11 +77,11 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->view->setVar('userSearch', $this->session->get('userSearch'));
         }
 
-        if ($this->session->has('userSearchTab')) {
-            $this->view->setVar('userSearchTab', $this->session->get('userSearchTab'));
-        } else {
-            $this->view->setVar('userSearchTab', 'global');
-        }
+//         if ($this->session->has('userSearchTab')) {
+//             $this->view->setVar('userSearchTab', $this->session->get('userSearchTab'));
+//         } else {
+//             $this->view->setVar('userSearchTab', 'global');
+//         }
 
         $CountEvent = new CountEvent;
         $eventsInCategories = $CountEvent->countEvents();
