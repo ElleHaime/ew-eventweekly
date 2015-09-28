@@ -139,11 +139,11 @@ class SearchController extends \Core\Controller
             	$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 			}
             if ($elemExists('searchEndDate')) {
-                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate']));
+                $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate'] . ' +1 day'));
             }  else {
                 $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
             } 
-			$pageTitle['date'] = 'from '. date('jS F', strtotime($queryData['searchStartDate'])).' to ' . date('jS F', strtotime($queryData['searchEndDate']));
+			$pageTitle['date'] = 'from '. date('jS F', strtotime($queryData['searchStartDate'])).' to ' . date('jS F', strtotime($queryData['searchEndDate'] . ' -1 day'));
 
 			
 			

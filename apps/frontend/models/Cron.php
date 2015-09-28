@@ -7,6 +7,19 @@ use Objects\Cron as CronObject,
 
 class Cron extends CronObject
 {
+	public static function getLastActiveToken()
+	{
+		$result = false;
+		 
+		$lastTask = CronObject::findFirst(['name =  "' . CronObject::FB_USER_TASK . '" order by id desc']);
+		if ($lastTask) {
+			$params = unserialize($lastTask -> parameters);
+			$result = $params['user_token']; 
+		}
+		
+		return $result;
+	}	
+	
 	public function createUserTask($skipTimeCheck = false)
 	{
 		if ($session = $this -> getDI() -> getShared('session')) {

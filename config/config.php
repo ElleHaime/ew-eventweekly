@@ -49,6 +49,7 @@ $cfg_settings = array(
 			'Objects' => ROOT_APP . 'apps/objects/',
 			'Thirdparty\Geo' => ROOT_APP . 'apps/library/Thirdparty/SxGeo/',
 			'Thirdparty\Facebook' => ROOT_APP . 'apps/library/Thirdparty/Facebook/',
+			'Thirdparty\FacebookGraph' => ROOT_APP . 'apps/library/Thirdparty/FacebookGraph/',
 			'Categoryzator' => ROOT_APP . 'apps/library/Thirdparty/Categoryzator/',
 			'Sharding' => ROOT_APP . 'apps/library/Thirdparty/Sharding/',
             'Thirdparty\MobileDetect' => ROOT_APP . 'apps/library/Thirdparty/MobileDetect/',

@@ -283,7 +283,7 @@ class EventController extends \Core\Controllers\CrudController
     	$event -> memberpart = $this -> getJoinedStatus($event);
     	$event -> likedStatus = $this -> getLikedStatus($event);
     	if (!empty($event -> fb_uid)) {
-    		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fbUid, $event -> tickets_url);
+    		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fb_uid, $event -> tickets_url);
     	} 
     	 
     	$images = (new EventImageModel()) -> setViewImages($event);
