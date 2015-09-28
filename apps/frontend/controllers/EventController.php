@@ -285,6 +285,10 @@ class EventController extends \Core\Controllers\CrudController
     	if (!empty($event -> fb_uid)) {
     		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fb_uid, $event -> tickets_url);
     	} 
+    	if (!empty($event -> eb_uid)) {
+    		$site_url = preg_replace('/<a[^>]*>((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.#?=-]*)*\/?)<\/a>/ui', '$1', $event -> eb_url);
+    		$event -> eb_url = $site_url; 
+    	}
     	 
     	$images = (new EventImageModel()) -> setViewImages($event);
     	$this->view->setVars($images);
