@@ -132,6 +132,10 @@ class Location extends Model
 				if (isset($argument['latitude'])) {
 					$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
 				}
+				if (isset($argument['fullname'])) {
+					$argument['fullname'] = explode(',', $argument['fullname'])[0];
+					$query[] = 'city like "%' . $argument['fullname'] . '%"';
+				}
 				$query = implode(' and ', $query);
 
 		        if (!empty($query)) {

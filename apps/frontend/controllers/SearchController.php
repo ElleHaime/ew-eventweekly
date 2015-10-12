@@ -51,7 +51,7 @@ class SearchController extends \Core\Controller
         }
 
 //_U::dump($this -> view -> getVar('userFilters'));        
-// _U::dump($postData, true);
+//_U::dump($postData);
 // _U::dump($this -> session -> get('userSearch'));
 
         // delete url url and page params from income data
@@ -110,27 +110,45 @@ class SearchController extends \Core\Controller
 
             // add search condition by location
         	// if no location specify - set from user location
-        	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
-        	{
-           		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
-                $pageTitle['location'] = 'in ' . $this -> session -> get('location') -> alias;
-        	} else {
-                if (($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))
-                {
-                    $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
-                    $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+        	if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '')) {
+        		$lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
+				$lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+				
+				$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 'longitude' => $lng, 'fullname' => $postData['searchLocationField']]);
 
-                    $newLocation = (new Location()) -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-                    if ($newLocation) {
-                    	$queryData['searchLocationField'] = $newLocation -> id;
-                    } 
-                    $this->session->set('location', $newLocation);
-                    $this->cookies->get('lastLat')->delete();
-                    $this->cookies->get('lastLng')->delete();
+				if ($newLocation) {
+					$queryData['searchLocationField'] = $newLocation -> id;
+				}
+				$this->session->set('location', $newLocation);
+				$this->cookies->get('lastLat')->delete();
+				$this->cookies->get('lastLng')->delete();
 
-                    $pageTitle['location'] = 'in '.$newLocation->alias;
-                }
-            } 
+				$pageTitle['location'] = 'in ' . $newLocation->alias;
+        	}
+        		
+        	
+        	
+//         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
+//         	{
+//            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
+//                 $pageTitle['location'] = 'in ' . $this -> session -> get('location') -> alias;
+//         	} else {
+//                 if (($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))
+//                 {
+//                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
+//                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+
+//                     $newLocation = (new Location()) -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
+//                     if ($newLocation) {
+//                     	$queryData['searchLocationField'] = $newLocation -> id;
+//                     } 
+//                     $this->session->set('location', $newLocation);
+//                     $this->cookies->get('lastLat')->delete();
+//                     $this->cookies->get('lastLng')->delete();
+
+//                     $pageTitle['location'] = 'in '.$newLocation->alias;
+//                 }
+//             } 
 
             // add search condition by dates
             if ($elemExists('searchStartDate')) {
