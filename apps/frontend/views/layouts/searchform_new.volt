@@ -54,6 +54,14 @@
 						            {% set searchLocationLngMax = '' %}
 						        {% endif %}
 						        {{ searchForm.render('searchLocationLngMax', {'value': searchLocationLngMax}) }}
+						        
+						        {{ searchForm.render('searchLocationPlaceId', {'value': ''}) }}
+						        {% if  userSearch is defined and userSearch['searchLocationFormattedAddress'] is defined %}
+						            {% set searchLocationFormattedAddress = userSearch['searchLocationFormattedAddress'] %}
+						        {% else %}
+						            {% set searchLocationFormattedAddress = '' %}
+						        {% endif %}
+						        {{ searchForm.render('searchLocationFormattedAddress', {'value': searchLocationFormattedAddress}) }}
 							</div>
 							
 							<!-- events dropdown -->

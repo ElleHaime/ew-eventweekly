@@ -141,84 +141,161 @@ class Geo extends Plugin
 					 'longitude' => $this -> _locLonCur);
 	}
 
+// 	public function getLocation($coordinates = array())
+// 	{
+// 		if (empty($coordinates)) {
+// 			if ($location = $this -> getFromCache()) {
+// 				return $location;
+// 			} else {
+// 				$this -> setUserLocation();
+// 				if ($this -> _isLocationDefault) {
+// 					return $this -> setDefaultLocation();
+// 				}		
+// 			}
+// 		}
+
+// 		if (empty($coordinates)) {
+// 			$queryParams = $this -> _buildQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode);
+// 		} else {
+// 			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']);
+// 		}
+
+// 		if ($queryParams != '') {
+// 			$units = array();
+
+// 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
+// _U::dump($url, true);			
+// 			$result = json_decode(file_get_contents($url));
+// _U::dump($result, true);
+// 			if ($result -> status == 'OK' && count($result -> results) > 0) {
+// 				foreach ($result -> results as $object => $details) {
+// 					$units[$details -> types[0]] = $object;
+// 				}
+// _U::dump($units, true);		
+// 				if (!isset($units['locality'])) {
+// 					$newArgs = $result -> results[0];
+			
+// 					foreach ($newArgs -> address_components as $objNew => $lvlNew) {
+// 						if ($lvlNew -> types[0] == 'locality' || $lvlNew -> types[0] == 'postal_town') {
+// 							$newRequestLoc = str_replace(' ', '+', $lvlNew -> short_name);
+// 							$newComponents[] = 'locality:' . $newRequestLoc;
+// 						}
+// 						if ($lvlNew -> types[0] == 'administrative_area_level_1') {
+// 							$newRequestArea = str_replace(' ', '+', $lvlNew -> short_name);
+// 							$newComponents[] = 'administrative_area:' . $newRequestArea;
+// 						}
+// 						if ($lvlNew -> types[0] == 'country') {
+// 							$newComponents[] = 'country:' . str_replace(' ', '+', $lvlNew -> short_name);
+// 						}
+// 					}
+// 					if (!isset($newRequestLoc) && isset($newRequestArea)) {
+// 						$newComponents[] = 'locality:' . $newRequestArea;
+// 					}
+// _U::dump($newComponents);
+// 					$url = 'http://maps.googleapis.com/maps/api/geocode/json?components=' . implode('|', $newComponents) . '&sensor=false&language=en';
+// 					$result = json_decode(file_get_contents($url));
+
+// 					if ($result -> status == 'OK' && count($result -> results) > 0) {
+// 						foreach ($result -> results as $object => $details) {
+// 							$units[$details -> types[0]] = $object;
+// 						}
+// 					} else {
+// 						return $this -> setDefaultLocation();						
+// 					}
+// 				}
+
+// 				if (isset($units['locality'])) {
+// 					$scope = $result -> results[$units['locality']];
+// 					$baseType = 'locality';
+// 				} elseif (isset($units['administrative_area_level_3'])) {
+// 					$scope = $result -> results[$units['administrative_area_level_3']];
+// 					$baseType = 'administrative_area_level_3';
+// 				} elseif (isset($units['administrative_area_level_2'])) {
+// 					$scope = $result -> results[$units['administrative_area_level_2']];
+// 					$baseType = 'administrative_area_level_2';
+// 				} 
+// _U::dump($scope); 
+// 				if (isset($scope)) {			
+// 					foreach ($scope -> address_components as $obj => $lvl) {
+	
+// 						if ($lvl -> types[0] == $baseType) {
+// 							$location['alias'] = $lvl -> long_name;
+// 							$location['city'] = $lvl -> long_name;
+// 						}
+// 						if ($lvl -> types[0] == 'administrative_area_level_1') {
+// 							$location['state'] = $lvl -> long_name;
+// 						}
+// 						if ($lvl -> types[0] == 'country') {
+// 							$location['country'] = $lvl -> long_name;
+// 						}
+// 					}
+   
+// 					if (isset($location['city']) && isset($location['country'])) {
+// 						if (!empty($coordinates)) {
+// 							$location['latitude'] = (float)$coordinates['latitude'];
+// 							$location['longitude'] = (float)$coordinates['longitude'];
+// 						} else {
+// 							$location['ip'] = $this -> getUserIp();
+// 							$location['latitude'] = (float)$this -> _locLatCur ;
+// 							$location['longitude'] = (float)$this -> _locLonCur;
+// 						}
+
+// 						if (!empty($result -> results[0] -> geometry)) {
+// 							$location['latitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lat;
+// 							$location['longitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lng;
+// 							$location['latitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lat;
+// 							$location['longitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lng;
+// 						}						
+
+// 						return $location;
+// 					} 
+// 				} else {
+// 					return false;
+// 				}
+				
+// 			} else {
+// 			 	$return = $result -> status;
+// 			}
+// 		} 
+// 	}
+
+	
 	public function getLocation($coordinates = array())
 	{
 		if (empty($coordinates)) {
-			
 			if ($location = $this -> getFromCache()) {
 				return $location;
 			} else {
 				$this -> setUserLocation();
 				if ($this -> _isLocationDefault) {
 					return $this -> setDefaultLocation();
-				}		
+				}
 			}
 		}
-
+	
 		if (empty($coordinates)) {
-			$queryParams = $this -> _buildQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode); 
+			$queryParams = $this -> _buildQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode);
 		} else {
-			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']); 
+			$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']);
 		}
-
+	
+		$localityLevel = false;
 		if ($queryParams != '') {
-			$units = array();
-
 			$url = 'http://maps.googleapis.com/maps/api/geocode/json?' . $queryParams. '&sensor=false&language=en';
+_U::dump($url, true);
 			$result = json_decode(file_get_contents($url));
+//_U::dump($result);
 
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
-				foreach ($result -> results as $object => $details) {
-					$units[$details -> types[0]] = $object;
-				}
-		
-				if (!isset($units['locality'])) {
-					$newArgs = $result -> results[0];
-			
-					foreach ($newArgs -> address_components as $objNew => $lvlNew) {
-						if ($lvlNew -> types[0] == 'locality' || $lvlNew -> types[0] == 'postal_town') {
-							$newRequestLoc = str_replace(' ', '+', $lvlNew -> short_name);
-							$newComponents[] = 'locality:' . $newRequestLoc;
-						}
-						if ($lvlNew -> types[0] == 'administrative_area_level_1') {
-							$newRequestArea = str_replace(' ', '+', $lvlNew -> short_name);
-							$newComponents[] = 'administrative_area:' . $newRequestArea;
-						}
-						if ($lvlNew -> types[0] == 'country') {
-							$newComponents[] = 'country:' . str_replace(' ', '+', $lvlNew -> short_name);
-						}
-					}
-					if (!isset($newRequestLoc) && isset($newRequestArea)) {
-						$newComponents[] = 'locality:' . $newRequestArea;
-					}
-
-					$url = 'http://maps.googleapis.com/maps/api/geocode/json?components=' . implode('|', $newComponents) . '&sensor=false&language=en';
-					$result = json_decode(file_get_contents($url));
-
-					if ($result -> status == 'OK' && count($result -> results) > 0) {
-						foreach ($result -> results as $object => $details) {
-							$units[$details -> types[0]] = $object;
-						}
-					} else {
-						return $this -> setDefaultLocation();						
+				foreach ($result -> results as $index => $scope) {
+					if ($localityLevel = $this -> compareAddressComponents($coordinates['formattedAddress'], $scope -> address_components)) {
+						break;
 					}
 				}
-
-				if (isset($units['locality'])) {
-					$scope = $result -> results[$units['locality']];
-					$baseType = 'locality';
-				} elseif (isset($units['administrative_area_level_3'])) {
-					$scope = $result -> results[$units['administrative_area_level_3']];
-					$baseType = 'administrative_area_level_3';
-				} elseif (isset($units['administrative_area_level_2'])) {
-					$scope = $result -> results[$units['administrative_area_level_2']];
-					$baseType = 'administrative_area_level_2';
-				} 
- 
-				if (isset($scope)) {			
-					foreach ($scope -> address_components as $obj => $lvl) {
-	
-						if ($lvl -> types[0] == $baseType) {
+//_U::dump($localityLevel);				
+				if ($localityLevel) {
+					foreach ($localityLevel as $obj => $lvl) {
+						if ($lvl -> types[0] == 'locality') {
 							$location['alias'] = $lvl -> long_name;
 							$location['city'] = $lvl -> long_name;
 						}
@@ -229,7 +306,7 @@ class Geo extends Plugin
 							$location['country'] = $lvl -> long_name;
 						}
 					}
-   
+					 
 					if (isset($location['city']) && isset($location['country'])) {
 						if (!empty($coordinates)) {
 							$location['latitude'] = (float)$coordinates['latitude'];
@@ -239,30 +316,30 @@ class Geo extends Plugin
 							$location['latitude'] = (float)$this -> _locLatCur ;
 							$location['longitude'] = (float)$this -> _locLonCur;
 						}
-
+	
 						if (!empty($result -> results[0] -> geometry)) {
 							$location['latitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lat;
 							$location['longitudeMin'] = (float)$scope -> geometry -> viewport -> southwest -> lng;
 							$location['latitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lat;
 							$location['longitudeMax'] = (float)$scope -> geometry -> viewport -> northeast -> lng;
-						}						
-
+						}
+//_U::dump($location);	
 						return $location;
-					} 
+					}
 				} else {
 					return false;
 				}
-				
+	
 			} else {
-			 	$return = $result -> status;
+				$return = $result -> status;
 			}
-		} 
-	} 
+		}
+	}
+	
 	
 	protected function _buildQuery($lat, $lon, $countryCode = false)
 	{
 		$result = array();
-
 
 		if ($countryCode) {
 			$result[] = 'region=' . $this -> _countryCode;
@@ -277,5 +354,26 @@ class Geo extends Plugin
 	public function getErrors()
 	{
 		return $this -> _errors;
+	}
+	
+	
+	protected function compareAddressComponents($origin, $response)
+	{
+		$result = false;
+		$intersections = 0;
+		
+		foreach ($response as $respKey => $respVal) {
+			if ($intersections < count($origin)) {
+				foreach ($origin as $origKey => $origVal) {
+					if ($respVal -> types[0] == $origKey && $respVal -> long_name == $origVal) {
+						$intersections++;
+					}
+				}
+			} else {
+				$result = $response;
+			}
+		}
+		
+		return $result;
 	}
 }

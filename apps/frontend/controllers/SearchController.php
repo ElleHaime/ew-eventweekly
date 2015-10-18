@@ -52,7 +52,7 @@ class SearchController extends \Core\Controller
 
 //_U::dump($this -> view -> getVar('userFilters'));        
 //_U::dump($postData);
-// _U::dump($this -> session -> get('userSearch'));
+//_U::dump($this -> session -> get('userSearch'));
 
         // delete url url and page params from income data
         unset($postData['_url']);
@@ -77,11 +77,6 @@ class SearchController extends \Core\Controller
         $pageTitle['type'] = 'Search results';
         $queryData = [];
         
-//         if ($this -> session -> has('member') && !isset($postData['personalPresetActive'])) {
-//         	$postData['personalPresetActive'] = 1;
-//         	$this -> filters -> loadUserFilters();
-//         }
-        
         if (!isset($postData['personalPresetActive'])) {
         	$postData['personalPresetActive'] = 0;
         	$prevSearch = [];
@@ -90,12 +85,6 @@ class SearchController extends \Core\Controller
         	if (isset($prevSearch['personalPresetActive'])) {
         		$postData['personalPresetActive'] = $prevSearch['personalPresetActive'];
         	}
-
-// 	        if ($this -> session -> has('member') && $postData['personalPresetActive'] == 1) {
-// 	            $this -> filters -> loadUserFilters();
-// 	        }  else {
-// 	        	$this -> filters -> loadUserFilters(false);
-// 	        }
         }
 
         if (isset($postData['personalPresetActive']) && $postData['personalPresetActive'] == 1 && $this -> session -> has('memberId')) {
@@ -113,12 +102,13 @@ class SearchController extends \Core\Controller
         	if (($elemExists('searchLocationField') && $postData['searchLocationField'] != '')) {
         		$lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
 				$lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
+				$formattedAddress = get_object_vars(json_decode($postData['searchLocationFormattedAddress'])); 				
 				
-				$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 'longitude' => $lng, 'fullname' => $postData['searchLocationField']]);
+				$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 'longitude' => $lng, 'formattedAddress' => $formattedAddress]);
 
-				if ($newLocation) {
+				if (isset($newLocation -> id)) {
 					$queryData['searchLocationField'] = $newLocation -> id;
-				}
+				} 
 				$this->session->set('location', $newLocation);
 				$this->cookies->get('lastLat')->delete();
 				$this->cookies->get('lastLng')->delete();
@@ -126,30 +116,6 @@ class SearchController extends \Core\Controller
 				$pageTitle['location'] = 'in ' . $newLocation->alias;
         	}
         		
-        	
-        	
-//         	if ($elemExists('searchLocationLatMin', false) || $elemExists('searchLocationLatMax', false) || $elemExists('searchLocationLngMin', false) || $elemExists('searchLocationLngMax', false)) 
-//         	{
-//            		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
-//                 $pageTitle['location'] = 'in ' . $this -> session -> get('location') -> alias;
-//         	} else {
-//                 if (($elemExists('searchLocationField') && $postData['searchLocationField'] != ''))
-//                 {
-//                     $lat = ($postData['searchLocationLatMin'] + $postData['searchLocationLatMax']) / 2;
-//                     $lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
-
-//                     $newLocation = (new Location()) -> createOnChange(array('latitude' => $lat, 'longitude' => $lng));
-//                     if ($newLocation) {
-//                     	$queryData['searchLocationField'] = $newLocation -> id;
-//                     } 
-//                     $this->session->set('location', $newLocation);
-//                     $this->cookies->get('lastLat')->delete();
-//                     $this->cookies->get('lastLng')->delete();
-
-//                     $pageTitle['location'] = 'in '.$newLocation->alias;
-//                 }
-//             } 
-
             // add search condition by dates
             if ($elemExists('searchStartDate')) {
                 $queryData['searchStartDate'] = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
@@ -317,9 +283,7 @@ class SearchController extends \Core\Controller
 
 //_U::dump($results);        
 
-        //if ($elemExists('searchCategoriesType') && $postData['searchCategoriesType'] == 'global') {
-            $this->session->set('userSearch', $postData);
-        //}
+		$this->session->set('userSearch', $postData);
 
         $this->view->setVar('list', $result);
         $this->view->setVar('eventsTotal', $countResults);

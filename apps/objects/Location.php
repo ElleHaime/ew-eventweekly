@@ -132,10 +132,10 @@ class Location extends Model
 				if (isset($argument['latitude'])) {
 					$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
 				}
-				if (isset($argument['fullname'])) {
-					$argument['fullname'] = explode(',', $argument['fullname'])[0];
-					$query[] = 'city like "%' . $argument['fullname'] . '%"';
+				if (isset($argument['formattedAddress'])) {
+					$query[] = 'city like "%' . $argument['formattedAddress']['locality'] . '%"';
 				}
+				
 				$query = implode(' and ', $query);
 
 		        if (!empty($query)) {
@@ -171,28 +171,48 @@ class Location extends Model
 							$newIp = new LocationIp();
 							$newIp -> saveNewIp($isLocationExists -> id, $newLoc['ip']);
 						}
+						$isLocationExists -> latitude = $newLoc['latitude'];
+						$isLocationExists -> longitude = $newLoc['longitude'];
+					} else {
+						$isLocationExists -> latitude = (float)$argument['latitude'];
+						$isLocationExists -> longitude = (float)$argument['longitude'];
+							
+						$isLocationExists -> id = 0;
+						if (isset($argument['formattedAddress'])) {
+							$isLocationExists -> city = $argument['formattedAddress']['locality'];
+							$isLocationExists -> alias = $argument['formattedAddress']['locality'];
+						}
 					}
 				} else {
 					if ($saveIp !== false) {
 						$newIp = new LocationIp();
 						$newIp -> saveNewIp($isLocationExists -> id, $geo -> getUserIp());
 					} 
-				}
-
-				if (!empty($newLoc)) {
-					$isLocationExists -> latitude = $newLoc['latitude'];
-					$isLocationExists -> longitude = $newLoc['longitude'];
-				} else {
+					
 					$isLocationExists -> latitude = (float)$argument['latitude'];
 					$isLocationExists -> longitude = (float)$argument['longitude'];
 				}
+
+// 				if (!empty($newLoc)) {
+// 					$isLocationExists -> latitude = $newLoc['latitude'];
+// 					$isLocationExists -> longitude = $newLoc['longitude'];
+// 				} else {
+// 					$isLocationExists -> latitude = (float)$argument['latitude'];
+// 					$isLocationExists -> longitude = (float)$argument['longitude'];
+					
+// 					$isLocationExists -> id = 0;
+// 					if (isset($argument['formattedAddress'])) {
+// 						$isLocationExists -> city = $argument['formattedAddress']['locality'];
+// 						$isLocationExists -> alias = $argument['formattedAddress']['locality'];
+// 					}
+// 				}
 				$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
 				$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
 				$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
 				$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
 
 				$this -> addToCache($isLocationExists);
-			}
+			} 
 		}
 	
 		return $isLocationExists;

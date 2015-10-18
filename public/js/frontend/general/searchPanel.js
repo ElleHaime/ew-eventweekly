@@ -16,6 +16,8 @@ define('frontSearchPanel',
             searchLocationLngMin: '#searchLocationLngMin',
             searchLocationLatMax: '#searchLocationLatMax',
             searchLocationLngMax: '#searchLocationLngMax',
+            searchLocationPlaceId: '#searchLocationPlaceId',
+            searchLocationFormattedAddress: '#searchLocationFormattedAddress',
             searchTypeResult: '#searchTypeResult',
             searchTypeResultMenu: '#searchTypeResultMenu',
             searchTypeResultCurrent: '#searchTypeResultCurrent',
@@ -91,13 +93,20 @@ define('frontSearchPanel',
             var list = utils.addressAutocomplete($($this.settings.searchLocation)[0]);
 
             google.maps.event.addListener(list, 'place_changed', function() {
+//console.log(list.getPlace());            	
                 var latMax = list.getPlace().geometry.viewport.getNorthEast().lat();
                 var lngMax = list.getPlace().geometry.viewport.getNorthEast().lng();
-
                 var latMin = list.getPlace().geometry.viewport.getSouthWest().lat();
                 var lngMin = list.getPlace().geometry.viewport.getSouthWest().lng();
                 
-                $this.__setSearchLocation(latMin, lngMin, latMax, lngMax);
+                var placeId = list.getPlace().place_id;
+                
+                var formattedAddress = {}; 
+                $.each(list.getPlace().address_components, function(index, val) {
+                	formattedAddress[val.types[0]] = val.long_name;
+                });
+                formattedAddress = JSON.stringify(formattedAddress);
+                $this.__setSearchLocation(latMin, lngMin, latMax, lngMax, placeId, formattedAddress);
             });
 
             // add date picker
@@ -355,7 +364,7 @@ define('frontSearchPanel',
             });
         },
         
-        __setSearchLocation: function(latMin, lngMin, latMax, lngMax) {
+        __setSearchLocation: function(latMin, lngMin, latMax, lngMax, placeId, formattedAddress) {
         	var $this = this;
         	
             $($this.settings.searchLocationLatMin).val(latMin);
@@ -363,8 +372,14 @@ define('frontSearchPanel',
 
             $($this.settings.searchLocationLatMax).val(latMax);
             $($this.settings.searchLocationLngMax).val(lngMax);
+            
+            $($this.settings.searchLocationPlaceId).val(placeId);
+            $($this.settings.searchLocationFormattedAddress).val(formattedAddress);
+            
+//console.log($($this.settings.searchLocationFormattedAddress).val());
 
             $($this.settings.searchLocation).attr('data-location-chosen', true);
+            
             $this.__locationChosen = true;
         },
         
