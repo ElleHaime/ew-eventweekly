@@ -77,18 +77,11 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->view->setVar('userSearch', $this->session->get('userSearch'));
         }
 
-//         if ($this->session->has('userSearchTab')) {
-//             $this->view->setVar('userSearchTab', $this->session->get('userSearchTab'));
-//         } else {
-//             $this->view->setVar('userSearchTab', 'global');
+//         $CountEvent = new CountEvent;
+//         $eventsInCategories = $CountEvent->countEvents();
+//         if (!empty($eventsInCategories)) {
+//             $this->view->setVar('eventsInCategories', $eventsInCategories);
 //         }
-
-        $CountEvent = new CountEvent;
-        $eventsInCategories = $CountEvent->countEvents();
-
-        if (!empty($eventsInCategories)) {
-            $this->view->setVar('eventsInCategories', $eventsInCategories);
-        }
 
         if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
             $this->memberId = $this->session->get('memberId');

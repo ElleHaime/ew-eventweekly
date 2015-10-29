@@ -104,7 +104,7 @@ class SearchController extends \Core\Controller
 				$lng = ($postData['searchLocationLngMin'] + $postData['searchLocationLngMax']) / 2;
 				$formattedAddress = get_object_vars(json_decode($postData['searchLocationFormattedAddress'])); 				
 				
-				$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 'longitude' => $lng, 'formattedAddress' => $formattedAddress]);
+				$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 'longitude' => $lng, 'city' => $formattedAddress['locality'], 'country' => $formattedAddress['country']]);
 
 				if (isset($newLocation -> id)) {
 					$queryData['searchLocationField'] = $newLocation -> id;

@@ -133,8 +133,16 @@ class AuthController extends \Core\Controller
         		if ($memberNetwork) {
         			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
         			$this->session->remove('userSearch');
-        			$userSearch = ['personalPresetActive' => 1];
+        			
+        			$userSearch = ['personalPresetActive' => 1,
+        							'searchLocationField' => $this -> session -> get('location') -> city,
+        							'searchLocationLatMin' => $this -> session -> get('location') -> latitudeMin,
+        							'searchLocationLatMax' => $this -> session -> get('location') -> latitudeMax,
+        							'searchLocationLngMin' => $this -> session -> get('location') -> longitudeMin,
+        							'searchLocationLngMax' => $this -> session -> get('location') -> longitudeMax,
+        						   ];
         			$this->session->set('userSearch', $userSearch);
+        			
         			$res['member_session_id'] = $this -> session -> get('memberId');
         			(new Cron()) -> createUserTask();
         		} else {

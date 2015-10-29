@@ -92,6 +92,7 @@ class Location extends Model
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
+//_U::dump($argument);		
 		$isLocationExists = false;
 		$saveIp = false;
 		
@@ -132,8 +133,8 @@ class Location extends Model
 				if (isset($argument['latitude'])) {
 					$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
 				}
-				if (isset($argument['formattedAddress'])) {
-					$query[] = 'city like "%' . $argument['formattedAddress']['locality'] . '%"';
+				if (isset($argument['city'])) {
+					$query[] = 'city like "%' . $argument['city'] . '%"';
 				}
 				
 				$query = implode(' and ', $query);
@@ -162,10 +163,17 @@ class Location extends Model
 					}
 					
 					if (!empty($newLoc)) {
-						$this -> assign($newLoc);
-						$this -> save();
-
-						$isLocationExists = $this;
+						$checkExistense = self::findFirst('city like "%' . $newLoc['city']. '%" and country like "%' . $newLoc['country']. '%"
+								and latitudeMin = ' . $newLoc['latitudeMin'] . ' and longitudeMin = ' . $newLoc['longitudeMin'] . '
+								and latitudeMax = ' . $newLoc['latitudeMax'] . ' and longitudeMax = ' . $newLoc['longitudeMax']);
+						
+						if ($checkExistense) {
+							$isLocationExists = $checkExistense;
+						} else {
+							$this -> assign($newLoc);
+							$this -> save();
+							$isLocationExists = $this;
+						}
 
 						if (isset($newLoc['ip'])) {
 							$newIp = new LocationIp();
@@ -193,19 +201,6 @@ class Location extends Model
 					$isLocationExists -> longitude = (float)$argument['longitude'];
 				}
 
-// 				if (!empty($newLoc)) {
-// 					$isLocationExists -> latitude = $newLoc['latitude'];
-// 					$isLocationExists -> longitude = $newLoc['longitude'];
-// 				} else {
-// 					$isLocationExists -> latitude = (float)$argument['latitude'];
-// 					$isLocationExists -> longitude = (float)$argument['longitude'];
-					
-// 					$isLocationExists -> id = 0;
-// 					if (isset($argument['formattedAddress'])) {
-// 						$isLocationExists -> city = $argument['formattedAddress']['locality'];
-// 						$isLocationExists -> alias = $argument['formattedAddress']['locality'];
-// 					}
-// 				}
 				$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
 				$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
 				$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;

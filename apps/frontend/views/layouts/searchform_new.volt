@@ -18,14 +18,24 @@
 							<!-- search by location -->
 							<div class="filters-form__item filters-form__item--input-with-icon">
 								<i class="fa fa-map-marker"></i>
-								{% if userSearch is defined and userSearch['searchLocation'] is defined %}
-						            {% set searchLocation = userSearch['searchLocation'] %}
-						            {% set searchLocationPlaceholder = userSearch['searchLocation'] %}
+						        {% if userSearch is defined %}
+						        	{% if userSearch['searchLocationField'] is defined %}
+							        	{% set searchLocation = userSearch['searchLocationField'] %}
+							            {% set searchLocationPlaceholder = userSearch['searchLocationField'] %}
+							        {% else %}
+							        	{% set searchLocation = '' %}
+						        		{% set searchLocationPlaceholder = '' %}
+						        	{% endif %}
 						        {% else %}
-						            {% set searchLocation = '' %}
-						            {% set searchLocationPlaceholder = '' %}
+						        	{% if location is defined %}
+						        		{% set searchLocation = location.city %}
+						        		{% set searchLocationPlaceholder = location.city %}
+						        	{% else %}
+						        		{% set searchLocation = '' %}
+						        		{% set searchLocationPlaceholder = '' %}
+						        	{% endif %}
 						        {% endif %}
-						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ location.city }}"/>
+						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ searchLocation }}"/>
 						        
 				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
 						            {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}
