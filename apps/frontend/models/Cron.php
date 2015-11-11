@@ -52,8 +52,8 @@ class Cron extends CronObject
 	        }
 		}
 		
-		$this -> createCreatorTask();
-		$this -> createCustomTask();
+// 		$this -> createCreatorTask();
+// 		$this -> createCustomTask();
 		
 		return true;
 	}

@@ -77,12 +77,6 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->view->setVar('userSearch', $this->session->get('userSearch'));
         }
 
-//         $CountEvent = new CountEvent;
-//         $eventsInCategories = $CountEvent->countEvents();
-//         if (!empty($eventsInCategories)) {
-//             $this->view->setVar('eventsInCategories', $eventsInCategories);
-//         }
-
         if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
             $this->memberId = $this->session->get('memberId');
             $this->view->member = $this->session->get('member');

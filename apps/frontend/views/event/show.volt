@@ -92,6 +92,13 @@
 											<p>{{ event.location.alias|striptags }}</p>
 										</div>
 									</li>
+								{% elseif event.address is defined %}
+									<li class="contact-info__item">
+										<i class="fa fa-map-marker"></i>
+										<div class="contact-info__text">
+											<p>{{ event.address|striptags }}</p>
+										</div>
+									</li>
 								{% endif %}
 								
 								{% if event.tickets_url != '' %}

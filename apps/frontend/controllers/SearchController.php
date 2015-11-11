@@ -126,24 +126,42 @@ class SearchController extends \Core\Controller
                 $queryData['searchEndDate'] = date('Y-m-d H:i:s', strtotime($postData['searchEndDate'] . ' +1 day'));
             }  else {
                 $queryData['searchEndDate'] = _UDT::getDefaultEndDate();
-            } 
-			$pageTitle['date'] = 'from '. date('jS F', strtotime($queryData['searchStartDate'])).' to ' . date('jS F', strtotime($queryData['searchEndDate'] . ' -1 day'));
+            }
+        	$pageTitle['date'] = 'from '. date('jS F', strtotime($queryData['searchStartDate'])).' to ' . date('jS F', strtotime($queryData['searchEndDate'] . ' -1 day'));
+
+//             if ($elemExists('searchStartDate')) {
+//             	$searchStartDate = date('Y-m-d H:i:s', strtotime($postData['searchStartDate']));
+//             }  else {
+//             	$searchStartDate = _UDT::getDefaultStartDate();
+//             }
+//             if ($elemExists('searchEndDate')) {
+//             	$searchEndDate = date('Y-m-d H:i:s', strtotime($postData['searchEndDate'] . ' +1 day'));
+//             }  else {
+//             	$searchEndDate = _UDT::getDefaultEndDate();
+//             }
+//             $queryData['searchStartDate'] = [$searchStartDate, $searchEndDate];
+//             //$queryData['searchEndDate'] = ['min' => $searchStartDate, 'max' => $searchEndDate];
+// 			$pageTitle['date'] = 'from '. date('jS F', strtotime($searchStartDate)).' to ' . date('jS F', strtotime($searchEndDate . ' -1 day'));
 
 			
 			
 			// add search condition by title or tag
 			$searchTitleTags = [];
 			if ($elemExists('searchTitle')) {
-				$tags = Tag::find(['name like "%' . $postData['searchTitle'] . '%"']);
+				$searchTitleSanitized = (new \Phalcon\Filter()) -> sanitize($postData['searchTitle'], 'string');
+				
+				$tags = Tag::find(['name like "%' . $searchTitleSanitized . '%"']);
 				if ($tags) {
 					foreach ($tags as $searchTag) {
 						$searchTitleTags[] = (int)$searchTag -> id;
 					}
 				}
+
+				// :, \\, {, }, " 
 				if (!empty($searchTitleTags)) {
-					$queryData['compoundTitle'] = $postData['searchTitle'];
+					$queryData['compoundTitle'] = preg_replace('/([\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
 				} else {
-					$queryData['searchTitle'] = $postData['searchTitle'];
+					$queryData['searchTitle'] = preg_replace('/([\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
 				}
 				$pageTitle['title'] = 'for "'.$postData['searchTitle'].'"';
 			}
@@ -227,6 +245,7 @@ class SearchController extends \Core\Controller
 	    			$queryData['searchNotId'] = $unlikedEvents;
 	    		}
 	    	}
+	    	
 //_U::dump($queryData);
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			
@@ -255,8 +274,6 @@ class SearchController extends \Core\Controller
                     	$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event);
                     }
                    	$result = json_encode($result, JSON_UNESCAPED_UNICODE);
-
-                    
                 } else {
                     $eventGrid -> setLimit(9);
 	    			$eventGrid -> setSort('start_date');
