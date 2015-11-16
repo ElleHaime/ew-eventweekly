@@ -9,7 +9,8 @@
     
     <link type="image/ico" href="/img/128.ico" rel="icon">
 
-    {{ stylesheet_link('/freelisting-css/css/style.css') }}    
+    {{ stylesheet_link('/freelisting-css/css/style.css') }}
+    {{ stylesheet_link('/freelisting-css/css/restore.css') }}    
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' rel='stylesheet' type='text/css'>

@@ -159,9 +159,9 @@ class SearchController extends \Core\Controller
 
 				// :, \\, {, }, " 
 				if (!empty($searchTitleTags)) {
-					$queryData['compoundTitle'] = preg_replace('/([\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
+					$queryData['compoundTitle'] = preg_replace('/([\(\)\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
 				} else {
-					$queryData['searchTitle'] = preg_replace('/([\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
+					$queryData['searchTitle'] = preg_replace('/([\(\)\[\]\{\}\\:\!]+)/i', ' ', $searchTitleSanitized);
 				}
 				$pageTitle['title'] = 'for "'.$postData['searchTitle'].'"';
 			}
