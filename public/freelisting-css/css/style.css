@@ -1,0 +1,118 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  min-height: 100%;
+  padding-top: 150px;
+  background: url("../../_new-layout-eventweekly/i/bg.png");
+}
+@media only screen and (max-width: 470px) {
+  .container {
+    padding-top: 40px;
+  }
+}
+.container .free-listing-page {
+  background: #404040;
+  margin: 0 auto;
+  width: 435px;
+  border-radius: 3px;
+  padding: 52px 0 15px 0;
+  position: relative;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page {
+    width: 100%;
+  }
+}
+.container .free-listing-page-log-in {
+  text-align: center;
+}
+.container .free-listing-page-log-in-link {
+  color: #ffffff;
+  font-size: 24px;
+  font-family: 'Arial', sans-serif;
+  padding: 17px 24px;
+  display: inline-block;
+  border-radius: 5px;
+  text-align: left;
+  background: #4e6cab;
+  text-decoration: none;
+  font-weight: bold;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page-log-in-link {
+    font-size: 18px;
+    padding: 12px 24px;
+  }
+}
+.container .free-listing-page-log-in-link .fa-facebook-square {
+  margin: 0 18px 0 0;
+  vertical-align: sub;
+}
+.container .free-listing-page-log-in-link .fa-facebook-square:before {
+  font-size: 40px;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page-log-in-link .fa-facebook-square:before {
+    font-size: 35px;
+  }
+}
+.container .free-listing-page-img {
+  margin: 0 auto;
+  display: block;
+  padding-top: 20px;
+}
+.container .free-listing-page-img.fb {
+  position: absolute;
+  left: 45px;
+  top: -110px;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page-img.fb {
+    left: 50%;
+    top: -65px;
+    width: 240px;
+    margin-left: -120px;
+  }
+}
+.container .free-listing-page-text {
+  color: #ffffff;
+  font-size: 21px;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  margin: 15px;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page-text {
+    font-size: 16px;
+  }
+}
+.container .free-listing-page-title-block {
+  text-align: center;
+  margin: 20px 0;
+}
+.container .free-listing-page-title-block-link {
+  color: #ffffff;
+  font-size: 41px;
+  font-family: 'Rockwell', serif;
+  padding: 20px 67px;
+  display: inline-block;
+  border-radius: 5px;
+  background: #d97e00;
+  text-decoration: none;
+}
+@media only screen and (max-width: 480px) {
+  .container .free-listing-page-title-block-link {
+    font-size: 30px;
+    padding: 20px 50px;
+  }
+}
+.container .free-listing-page-title-block-link-bold {
+  font-weight: 500;
+}

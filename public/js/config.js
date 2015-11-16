@@ -148,13 +148,16 @@ require.config({
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
         
         var moduleName, fileName = '', isPreview = 0,
+        	freelisting = /\/freelisting/,
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/auth\/reset\/.+/,
             trendingRel = /\/[a-zA-Z\-]+\/trending/,
         	featuredRel = /^\/[a-zA-Z\-]+$/;
        
-        if (restoreRel.test(location.pathname)) {
+        if (freelisting.test(location.pathname)) {
+        	fileName = '/motologin'
+        } else if (restoreRel.test(location.pathname)) {
             fileName = '/auth/restore'
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
@@ -177,7 +180,7 @@ require.config({
         if (moduleName == 'frontend/event/preview') {
         	isPreview = 1;
         }
-
+console.log(moduleName);
   		require([moduleName]);
 
   		if (moduleName != 'frontend/member/login' && moduleName != 'frontend/auth/fbauthresponse' && isPreview != 1) {
