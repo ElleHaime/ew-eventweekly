@@ -3,11 +3,10 @@
 {% block content %}
 			<section id="content" class="container page page-main">
 
-			 {% if featuredEvents is defined %}
-			 	{% if featuredEvents[0] is defined %}
+			 {% if paidEvents is defined %}
 					<div class="b-popular-events-slider">
 						<div class="js-main-popular-events-slider">
-							{% for index, event in featuredEvents[0] %}
+							{% for index, event in paidEvents %}
 								<!-- start slider item -->
 								<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
 		
@@ -52,7 +51,7 @@
 				</div>
 			  {% endif %}
 
-			  {% if featuredEvents[1] is defined %}
+			  {% if featuredEvents is defined %}
 				<div class="list-of-events col-3 container">
 	
 					<div class="header">
@@ -74,7 +73,7 @@
 		                <a class="b-gallery__arrow b-gallery__arrow--next js-b-gallery-arrow-next" id="list-of-events-featured-next">
 		                	<i class="fa fa-chevron-right"></i>
 		                </a>
-					{% for index, event in featuredEvents[1] %}
+					{% for index, event in featuredEvents %}
 						<!-- item start -->
 							<div class="list-of-events__item pure-u-1-3">
 								<div class="list-of-events__picture">
@@ -114,7 +113,7 @@
 	
 				</div>
 			{% endif %}
-		  {% endif %}
+
 
 
 		  {% if trendingEvents is defined %}
@@ -183,8 +182,8 @@
 		</section>
 
 	    <input type="hidden" id="trending_events" value="{% if trendingEvents is defined %}1{% else %}0{%endif%}">
-		<input type="hidden" id="featured_simple_events" value="{% if featuredEvents[1] is defined %}1{% else %}0{%endif%}">
-		<input type="hidden" id="featured_paid_events" value="{% if featuredEvents[0] is defined %}1{% else %}0{%endif%}">
+		<input type="hidden" id="featured_simple_events" value="{% if featuredEvents is defined %}1{% else %}0{%endif%}">
+		<input type="hidden" id="featured_paid_events" value="{% if paidEvents is defined %}1{% else %}0{%endif%}">
 		
 		<!-- <div class="ew-filter-link">
 			<a href="#" class="Show Filter">Show Filter</a>	

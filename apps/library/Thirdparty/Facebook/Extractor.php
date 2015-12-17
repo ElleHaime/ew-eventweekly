@@ -67,4 +67,29 @@ class Extractor
     	
     	return $ticketsUrl;
     }
+    
+    
+    public function getUserLocation($uToken)
+    {
+    	$request = '/me?fields=location&access_token=' . $uToken;
+    	try {
+    		$request = new FacebookRequest($this -> facebook, 'GET', $request);
+    		$data = $request -> execute() -> getGraphObject() -> asArray();
+    	
+    		if (isset($data['id'])) {
+    			$request = '/' . $data['id'] . '&access_token=' . $uToken;
+    			try {
+	    			$request = new FacebookRequest($this -> facebook, 'GET', $request);
+	    			$location = $request -> execute() -> getGraphObject() -> asArray();
+	    			
+	    			return $location;
+	    			
+    			} catch (FacebookRequestException $ex) {
+		    		$error = json_decode($ex -> getRawResponse() -> error -> code);
+		    	}
+    		}
+    	} catch (FacebookRequestException $ex) {
+    		$error = json_decode($ex -> getRawResponse() -> error -> code);
+    	}
+    }
 }

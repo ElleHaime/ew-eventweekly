@@ -14,6 +14,9 @@ use Core\Utils as _U,
  */
 class IndexController extends \Core\Controller
 {
+	use \Core\Traits\Sliders;
+	
+	
 	/**
 	 * @Get('')
 	 * @Get('home')
@@ -26,74 +29,8 @@ class IndexController extends \Core\Controller
 	    if ($this -> session -> has('eventsTotal')) {
 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 	    }
-			// get featured events
-        	$featuredId = $trendingId = $resultFe = [];
-        	$featuredEvents = Featured::find(['object_type="event" and location_id=' . $this -> session -> get('location') -> id]);
-        	
-        	if ($featuredEvents -> count() != 0) {
-				foreach ($featuredEvents as $fe) {
-					$featuredId[$fe -> object_id] = $fe -> priority;
-					$resultFe[$fe -> priority] = [];
-				}
-				
-				$evIds = "'" . implode("','", array_keys($featuredId)) . "'";
-				$ev = (new Event()) -> setShardByCriteria($this -> session -> get('location') -> id);
-				$events = $ev::find(['id in(' . $evIds .')']);
-				
-				foreach ($events as $ev) {
-					foreach ($resultFe as $key => $val) {
-						if ($featuredId[$ev -> id] == $key) {
-							$ev -> cover = (new EventImage()) -> getCover($ev);
-							$resultFe[$key][] = $ev;
-						}
-					}
-				}
-        	} else {
-        		// get last 14 events from current location
-        		$queryData['searchLocationField'] = $this -> session -> get('location') -> id;
-        		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
-        		$queryData['searchEndDate'] = _UDT::getDefaultEndDate();
-        		
-        		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-        		$eventGrid -> setLimit(14);
-        		$eventGrid -> setSort('start_date');
-	    		$eventGrid -> setSortDirection('ASC');
-	    		
-        		$results = $eventGrid->getData();
-        		
-        		foreach($results['data'] as $ev) {
-        			$ev -> cover = (new EventImage()) -> getCover($ev);
-        			$resultFe[1][] = $ev;
-        		} 
-        	}
-        	$this -> view -> setVar('featuredEvents', $resultFe);
-
-        	// get trending events
-			$trendingEvents = EventRating::find(['location_id = ' . $this -> session -> get('location') -> id,
-												'order' => 'rank DESC']);
-			
-			if ($trendingEvents -> count() != 0) {
-				$resultTre = [];
-				foreach ($trendingEvents as $te) {
-					$trendingId[$te -> event_id] = $te -> rank;
-				}
-				
-				$queryData = ['searchId' => array_keys($trendingId),
-							  'searchStartDate' => _UDT::getDefaultStartDate()];				
-				$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-				$eventGrid -> setSort('start_date');
-				$eventGrid -> setSortDirection('ASC');
-				$results = $eventGrid->getData();
-
-				if ($results['all_count'] > 0) {
-					foreach($results['data'] as $ev) {
-						$ev -> cover = (new EventImage()) -> getCover($ev);
-						$resultTre[] = $ev;
-					}
-					
-					$this -> view -> setVar('trendingEvents', $resultTre);
-				}
-			}
+	    
+	    $this -> composeSliders($this -> session -> get('location') -> id);
     }
 
     
@@ -143,7 +80,6 @@ class IndexController extends \Core\Controller
     {	
     	$this -> view -> pick('index/denied');
     }
-
     
 }
 

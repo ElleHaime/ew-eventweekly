@@ -64,16 +64,13 @@ class MemberListener {
         $token = $data['token'];
         $di = $params -> getDi();
 
-        $fbE = new Extractor($di);
-        $res = $fbE->getFQL(array('me' => 'SELECT current_location FROM user WHERE uid = '.$fbUId), $token);
-
-        if (isset($res['MESSAGE'][0]['fql_result_set'][0])) {
-            $fblocation = $res['MESSAGE'][0]['fql_result_set'][0]['current_location'];
+        $fblocation = (new Extractor($di)) -> getUserLocation($token);
+        if (isset($fblocation['city']) && isset($fblocation['country'])) {
             $memberLocation = $params->location;
 
             if ((strtolower($fblocation['country']) != strtolower($memberLocation->country)) || (strtolower($fblocation['city']) != strtolower($memberLocation->city))) {
-                $this->subject->session->set('location_conflict', true);
-                $this->subject->session->set('location_conflict_profile_flag', true);
+                $this -> subject -> session -> set('location_conflict', true);
+                $this -> subject -> session -> set('location_conflict_profile_flag', true);
             }
         }
     }

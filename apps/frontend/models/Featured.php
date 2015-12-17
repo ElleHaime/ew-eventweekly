@@ -2,19 +2,25 @@
 
 namespace Frontend\Models;
 
-use Objects\Featured as FeaturedObject;
+use Objects\Featured as FeaturedObject,
+	Core\Utils as _U;
 
 class Featured extends FeaturedObject
 {
-	public function getFeaturedIds($locationId)
+	const PRIORIY_HIGH = 0;
+	const PRIORIY_LOW = 1;
+	
+	
+	public function getFeatured($locationId, $priority = [self::PRIORIY_HIGH, self::PRIORIY_LOW])
 	{
-		$featuredEvents = Featured::find(['object_type="event" and priority in (0,1) and location_id=' . $locationId]);
-		
+		$result = [];
+		$featuredEvents = self::find(['object_type="event" and priority in (' . $priority . ') and location_id=' . $locationId]);
+	
 		if ($featuredEvents -> count() != 0) {
 			foreach ($featuredEvents as $event) {
-				$searchEventsId[] = $event -> object_id;
+				$result[$event -> object_id] = $event -> priority;
 			}
-			return $searchEventsId; 
+			return $result; 
 		} else {
 			return false;
 		}

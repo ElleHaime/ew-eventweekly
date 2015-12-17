@@ -35,38 +35,51 @@ class EventController extends \Core\Controllers\CrudController
 
     use \Core\Traits\TCMember;
     use \Core\Traits\Facebook;
+    use \Core\Traits\Sliders;
     use \Sharding\Core\Env\Converter\Phalcon;
 
-    protected $friendsUid = array();
-    protected $friendsGoingUid = array();
-    protected $userGoingUid = array();
-    protected $userPagesUid = array();
-    protected $pagesUid = array();
-    protected $actualQuery = false;
+    protected $friendsUid 		= [];
+    protected $friendsGoingUid 	= [];
+    protected $userGoingUid 	= [];
+    protected $userPagesUid 	= [];
+    protected $pagesUid 		= [];
+    protected $actualQuery 		= false;
+
+    
+    
+    /**
+     * @Route("/whats-on-in-{city:[A-Za-z\-]+}-{country:[A-Za-z\-]+}", methods={"GET", "POST"})
+     * @Acl(roles={'guest','member'});
+     */
+    public function whatsonAction($city, $country)
+    {
+//     	_U::dump($city, true);
+//     	_U::dump($country, true);
+//     	_U::dump($this -> session -> get('location') -> id);
+    	
+    	$this -> composeSliders(4);
+    }
 
     
     /**
-     * @Route("/{location:[A-Za-z\-]+}", methods={"GET", "POST"})
+     * @Route("/(?!whats-on-in){location:[A-Za-z\-]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest','member'});
      */
-    public function featuredAction($location)
+    public function featuredAction()
     {
+		$location = substr($this -> request -> getURI(), 1);
     	$featuredLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
-  	
+	
     	if ($featuredLoc) {
     		$searchEventsId = (new Featured()) -> getFeaturedIds($featuredLoc -> id);
-   		
     		if ($searchEventsId) {
-    			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
-						  	  'searchId' => $searchEventsId];
-    			$this -> showListResults($queryData, $location, 'featured', 'Events in ' . $featuredLoc -> city);
-    		} else {
-    			// redirect to default search by selected search 
-    			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
-    			return $this->response->redirect($searchLink);
-    		}
+    			$queryData['searchId'] = array_keys($searchEventsId);
+    		} 
+    		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+    		$queryData['searchLocationField'] = $featuredLoc -> id;
+    		$this -> showListResults($queryData, $location, 'featured', 'Events in ' . $featuredLoc -> city);
     	} else {
-    		return $this->response->redirect();
+    		return $this -> response -> redirect();
     	}
     }
     
@@ -82,16 +95,13 @@ class EventController extends \Core\Controllers\CrudController
     	if ($trendingLoc) {
     		$searchEventsId = (new EventRating()) -> getTrendingIds($trendingLoc -> id);
     		if ($searchEventsId) {
-    			$queryData = ['searchStartDate' => _UDT::getDefaultStartDate(),
-    						  'searchId' => $searchEventsId];
-    			$this -> showListResults($queryData, $location, 'trending', 'Trending events in ' . $trendingLoc -> city);
-    		} else {
-    			// redirect to default search by selected search
-    			$searchLink = 'search/list?searchTitle=&searchLocationField=' . $featuredLoc -> city . '%2C+' . $featuredLoc -> country . '&searchLocationLatMin=' . $featuredLoc -> latitudeMin . '&searchLocationLngMin=' . $featuredLoc -> longitudeMin . '&searchLocationLatMax=' . $featuredLoc -> latitudeMax . '&searchLocationLngMax=' . $featuredLoc -> longitudeMax . '&searchTypeResult=List';
-    			return $this->response->redirect($searchLink);
+    			$queryData['searchId'] = $searchEventsId;
     		}
+    		$queryData['searchLocationField'] = $trendingLoc -> id;
+    		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+    		$this -> showListResults($queryData, $location, 'trending',  'Trending events in ' . $trendingLoc -> city);
     	} else {
-    		return $this->response->redirect();
+    		return $this -> response -> redirect();
     	}
     }
     

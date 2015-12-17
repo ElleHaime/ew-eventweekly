@@ -30,14 +30,14 @@ class EventRating extends EventRatingObject
 	
 	public function getTrendingIds($locationId)
 	{
-		$trendingEvents = EventRating::find(['location_id=' . $locationId,
-											 'order' => 'rank DESC']);
+		$result = [];
+		$trendingEvents = EventRating::find(['location_id=' . $locationId, 'order' => 'rank DESC']);
 		
 		if ($trendingEvents -> count() != 0) {
 			foreach ($trendingEvents as $event) {
-				$searchEventsId[] = $event -> event_id;
+				$result[] = $event -> event_id;
 			}
-			return $searchEventsId;
+			return $result;
 		} else {
 			return false;
 		}
