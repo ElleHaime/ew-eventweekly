@@ -14,7 +14,8 @@ class Featured extends FeaturedObject
 	public function getFeatured($locationId, $priority = [self::PRIORITY_HIGH, self::PRIORITY_LOW])
 	{
 		$result = [];
-		$featuredEvents = self::find(['object_type="event" and priority in (' . implode(',', $priority) . ') and location_id=' . $locationId]);
+		if (is_array($priority)) $priority = implode(',', $priority);
+		$featuredEvents = self::find(['object_type="event" and priority in (' . $priority . ') and location_id=' . $locationId]);
 	
 		if ($featuredEvents -> count() != 0) {
 			foreach ($featuredEvents as $event) {
