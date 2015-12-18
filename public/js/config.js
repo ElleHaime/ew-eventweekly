@@ -153,10 +153,12 @@ require.config({
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/auth\/reset\/.+/,
             trendingRel = /\/[a-zA-Z\-]+\/trending/,
-        	featuredRel = /^\/[a-zA-Z\-]+$/;
+        	featuredRel = /^\/[a-zA-Z\-]+$/,
+        	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/;
        
-        if (freelisting.test(location.pathname)) {
-        	fileName = '/motologin'
+        if (whatsonRel.test(location.pathname)) {
+		} else if (freelisting.test(location.pathname)) {
+        	fileName = '/'
         } else if (restoreRel.test(location.pathname)) {
             fileName = '/auth/restore'
         } else if (re1.test(location.pathname) == true) {
