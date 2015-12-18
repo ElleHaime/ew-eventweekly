@@ -17,7 +17,7 @@ trait Sliders {
 		$paid = $featured = $trending = [];
 		
 		$queryData['searchLocationField'] = $locationId;
-		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
+		//$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 		
 		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORIY_HIGH);
 		if ($paidEventIds) {
@@ -76,5 +76,7 @@ trait Sliders {
 			}
 		
 		}
+		
+		return;
 	}
 }
