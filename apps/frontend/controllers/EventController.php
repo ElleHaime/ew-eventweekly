@@ -72,7 +72,7 @@ class EventController extends \Core\Controllers\CrudController
     	$featuredLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
 	
     	if ($featuredLoc) {
-    		$searchEventsId = (new Featured()) -> getFeaturedIds($featuredLoc -> id);
+    		$searchEventsId = (new Featured()) -> getFeatured($featuredLoc -> id);
     		if ($searchEventsId) {
     			$queryData['searchId'] = array_keys($searchEventsId);
     		} 
