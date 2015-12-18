@@ -19,7 +19,7 @@ trait Sliders {
 		$queryData['searchLocationField'] = $locationId;
 		//$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 		
-		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORIY_HIGH);
+		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_HIGH);
 		if ($paidEventIds) {
 			$queryData['searchId'] = $paidEventIds;
 		
@@ -37,7 +37,7 @@ trait Sliders {
 			}
 		}
 		 
-		$featuredEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORIY_LOW);
+		$featuredEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_LOW);
 		if ($featuredEventIds) {
 			$queryData['searchId'] = $featuredEventIds;
 		}

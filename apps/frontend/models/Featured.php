@@ -7,11 +7,11 @@ use Objects\Featured as FeaturedObject,
 
 class Featured extends FeaturedObject
 {
-	const PRIORIY_HIGH = 0;
-	const PRIORIY_LOW = 1;
+	const PRIORITY_HIGH = 0;
+	const PRIORITY_LOW = 1;
 	
 	
-	public function getFeatured($locationId, $priority = [self::PRIORIY_HIGH, self::PRIORIY_LOW])
+	public function getFeatured($locationId, $priority = [self::PRIORITY_HIGH, self::PRIORITY_LOW])
 	{
 		$result = [];
 		$featuredEvents = self::find(['object_type="event" and priority in (' . $priority . ') and location_id=' . $locationId]);
