@@ -152,8 +152,8 @@ require.config({
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/auth\/reset\/.+/,
-            trendingRel = /\/[a-zA-Z\-]+\/trending/,
-        	featuredRel = /^\/[a-zA-Z\-]+$/,
+            trendingRel = /\/[a-zA-Z\-\s]+\/trending/,
+        	featuredRel = /^\/[a-zA-Z\-\s]+$/,
         	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/;
        
         if (whatsonRel.test(location.pathname)) {
@@ -163,9 +163,9 @@ require.config({
             fileName = '/auth/restore'
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
-        } else if (featuredRel.test(location.pathname)) {
+        } else if (featuredRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/featured';
-        } else if (trendingRel.test(location.pathname)) {
+        } else if (trendingRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/trending';
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');

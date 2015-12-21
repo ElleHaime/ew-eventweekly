@@ -152,7 +152,7 @@
 						</div>
 					{% endif %}
 					
-					{#% if event.memberpart|length or likedEventStatus is defined %}
+					{#% if event.memberStatus|length or likedEventStatus is defined %}
 						<div class="short-info__item" id="member_attending">
                     		<p>
                         		<div id="status-bar-like" {% if likedEventStatus != 1 %}style="display:none;"{% endif%}>
@@ -161,8 +161,8 @@
                         		</div>
                     		</p>
 						
-							{% if event.memberpart|length %} 
-								{% if event.memberpart == 1 or event.memberpart == 2 %}
+							{% if event.memberStatus|length %} 
+								{% if event.memberStatus == 1 or event.memberStatus == 2 %}
 									<p><div id="status-bar-join">
 										<i class="fa fa-users"></i>
 	                                	You're going to this event
@@ -175,7 +175,7 @@
 					
 					<!-- actions buttons  -->
 						<div class="actions">
-							<div class="actions__button pure-u-1-2" id='event-decline' {% if not (event.memberpart|length) or event.memberpart == 3 %} style="display:none;"{% endif %}>
+							<div class="actions__button pure-u-1-2" id='event-decline' {% if not (event.memberStatus|length) or event.memberStatus == 3 %} style="display:none;"{% endif %}>
 								<a class="ew-button">
 									<i class="fa fa-minus-circle"></i> Will not go
 								</a>
@@ -183,7 +183,7 @@
 							
 							<div class="actions__button pure-u-1-2" id='event-join' data-event-source="/{{ toSlugUri(event.name) }}-{{ event.id }}"
 											   data-image-source="{{ checkLogo(event) }}"
-								{% if event.memberpart|length and (event.memberpart == 1 or event.memberpart == 2) %} style="display:none;"{% endif %}>
+								{% if event.memberStatus|length and (event.memberStatus == 1 or event.memberStatus == 2) %} style="display:none;"{% endif %}>
 								<a class="ew-button">
 									<i class="fa fa-arrow-circle-right"></i> Join
 								</a>

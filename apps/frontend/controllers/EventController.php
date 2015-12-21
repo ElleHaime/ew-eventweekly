@@ -292,9 +292,10 @@ class EventController extends \Core\Controllers\CrudController
     	$ev = (new Event()) -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
     	(new EventRating()) -> addEventRating($event);
-    	
-    	$event -> memberpart = $this -> getJoinedStatus($event);
+
+    	$event -> memberStatus = $this -> getJoinedStatus($event);
     	$event -> likedStatus = $this -> getLikedStatus($event);
+    	
     	if (!empty($event -> fb_uid)) {
     		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fb_uid, $event -> tickets_url);
     	} 
