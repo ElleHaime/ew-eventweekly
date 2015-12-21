@@ -312,8 +312,10 @@ class EventController extends \Core\Controllers\CrudController
         $this->view->setVar('link_back_to_list', true);
         
         $eventTags = [];
-        foreach ($event->tag as $Tag) {
-            $eventTags[] = $Tag->name;
+        if ($event->tag) {
+	        foreach ($event->tag as $Tag) {
+	            $eventTags[] = $Tag->name;
+	        }
         }
 
         return array(
