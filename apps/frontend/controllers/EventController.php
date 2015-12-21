@@ -291,41 +291,45 @@ class EventController extends \Core\Controllers\CrudController
 
     	$ev = (new Event()) -> setShardById($eventId);
     	$event = $ev::findFirst($eventId);
-    	(new EventRating()) -> addEventRating($event);
-
-    	$event -> memberStatus = $this -> getJoinedStatus($event);
-    	$event -> likedStatus = $this -> getLikedStatus($event);
-    	
-    	if (!empty($event -> fb_uid)) {
-    		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fb_uid, $event -> tickets_url);
-    	} 
-    	if (!empty($event -> eb_uid)) {
-    		$site_url = preg_replace('/<a[^>]*>((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.#?=-]*)*\/?)<\/a>/ui', '$1', $event -> eb_url);
-    		$event -> eb_url = $site_url; 
-    	}
-    	 
-    	$images = (new EventImageModel()) -> setViewImages($event);
-    	$this->view->setVars($images);
-    	
-    	$sites = EventSite::find('event_id = "' . $event -> id . '"');
-    	$this -> view -> setVar('sites', $sites);
-    	
-        $this->view->setVar('event', $event);
-        $this->view->setVar('categories', Category::find() -> toArray());
-        $this->view->setVar('link_back_to_list', true);
-        
-        $eventTags = [];
-        if ($event->tag) {
-	        foreach ($event->tag as $Tag) {
-	            $eventTags[] = $Tag->name;
+    	if ($event) {
+	    	(new EventRating()) -> addEventRating($event);
+	
+	    	$event -> memberStatus = $this -> getJoinedStatus($event);
+	    	$event -> likedStatus = $this -> getLikedStatus($event);
+	    	
+	    	if (!empty($event -> fb_uid)) {
+	    		$event -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($event -> fb_uid, $event -> tickets_url);
+	    	} 
+	    	if (!empty($event -> eb_uid)) {
+	    		$site_url = preg_replace('/<a[^>]*>((https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.#?=-]*)*\/?)<\/a>/ui', '$1', $event -> eb_url);
+	    		$event -> eb_url = $site_url; 
+	    	}
+	    	 
+	    	$images = (new EventImageModel()) -> setViewImages($event);
+	    	$this->view->setVars($images);
+	    	
+	    	$sites = EventSite::find('event_id = "' . $event -> id . '"');
+	    	$this -> view -> setVar('sites', $sites);
+	    	
+	        $this->view->setVar('event', $event);
+	        $this->view->setVar('categories', Category::find() -> toArray());
+	        $this->view->setVar('link_back_to_list', true);
+	        
+	        $eventTags = [];
+	        if ($event->tag) {
+		        foreach ($event->tag as $Tag) {
+		            $eventTags[] = $Tag->name;
+		        }
 	        }
-        }
-
-        return array(
-            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
-            'eventMetaData' => $event,
-            'eventTags' => array_unique($eventTags)
-        );
+	
+	        return array(
+	            'currentWindowLocation' => urlencode('http://' . $_SERVER['HTTP_HOST'] . '/' . SUri::slug($event->name) . '-' . $event->id),
+	            'eventMetaData' => $event,
+	            'eventTags' => array_unique($eventTags)
+	        );
+    	} else {
+    		$this -> response -> redirect('/');
+    	}
     }
 
     /**
