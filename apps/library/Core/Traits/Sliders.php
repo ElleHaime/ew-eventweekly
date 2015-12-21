@@ -21,7 +21,7 @@ trait Sliders {
 		
 		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_HIGH);
 		if ($paidEventIds) {
-			$queryData['searchId'] = $paidEventIds;
+			$queryData['searchId'] = array_keys($paidEventIds);
 		
 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
 			$eventGrid -> setSort('start_date');
@@ -36,12 +36,13 @@ trait Sliders {
 				$this -> view -> setVar('paidEvents', $paid);
 			}
 		}
+		unset($queryData['searchId']);
 		 
 		$featuredEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_LOW);
 		if ($featuredEventIds) {
-			$queryData['searchId'] = $featuredEventIds;
+			$queryData['searchId'] = array_keys($featuredEventIds);
 		}
-		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this -> getDi(), null, ['adapter' => 'dbMaster']);
 		$eventGrid -> setSort('start_date');
 		$eventGrid -> setSortDirection('ASC');
 		if (!$featuredEventIds) {
@@ -56,25 +57,27 @@ trait Sliders {
 			}
 			$this -> view -> setVar('featuredEvents', $featured);
 		}
+		unset($queryData['searchId']);
 		 
 		
 		$trendingEventIds = (new EventRating()) -> getTrendingIds($locationId);
-		if ($trendingEventIds) {
+		if ($trendingEventIds && count($trendingEventIds) > 3) {
 			$queryData['searchId'] = $trendingEventIds;
-			 
-			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-			$eventGrid -> setSort('start_date');
-			$eventGrid -> setSortDirection('ASC');
-			$resultsTrending = $eventGrid -> getData();
-		
-			if ($resultsTrending['all_count'] > 0) {
-				foreach ($resultsTrending['data'] as $ev) {
-					$ev -> cover = (new EventImage()) -> getCover($ev);
-					$trending[] = $ev;
-				}
-				$this -> view -> setVar('trendingEvents', $trending);
+		}			 
+		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+		$eventGrid -> setSort('start_date');
+		$eventGrid -> setSortDirection('ASC');
+		if (!$trendingEventIds || count($trendingEventIds) < 3) {
+			$eventGrid -> setLimit(4);
+		}
+		$resultsTrending = $eventGrid -> getData();
+	
+		if ($resultsTrending['all_count'] > 0) {
+			foreach ($resultsTrending['data'] as $ev) {
+				$ev -> cover = (new EventImage()) -> getCover($ev);
+				$trending[] = $ev;
 			}
-		
+			$this -> view -> setVar('trendingEvents', $trending);
 		}
 		
 		return;

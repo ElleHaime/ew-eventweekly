@@ -22,4 +22,5 @@ var/cache/*
 apps/library/Thirdparty/Sharding/config.php
 composer.lock
 vendor/*
-
+sitemap.xml
+sitemap/*

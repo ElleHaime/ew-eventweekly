@@ -5286,7 +5286,7 @@ a#loginBtn {
 .is-landing-page-title {
     float: none;
     color: #ffffff;
-    font-size: 32px;
+    font-size: 15px;
     padding: 0 0 45px 0;
     font-weight: 600
 
@@ -5294,7 +5294,7 @@ a#loginBtn {
 
 .is-landing-page-title.is-align-center {
     margin: 0 auto;
-    width: 60%;
+    width: 80%;
     text-align: center;
 }
 
