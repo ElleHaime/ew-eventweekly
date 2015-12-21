@@ -56,8 +56,10 @@ class EventController extends \Core\Controllers\CrudController
 //     	_U::dump($city, true);
 //     	_U::dump($country, true);
 //     	_U::dump($this -> session -> get('location') -> id);
-    	
-    	$this -> composeSliders(4);
+
+    	$location = Location::findFirst(4);
+    	$this -> session -> set('location', $location);
+    	$this -> composeSliders($location -> id);
     	$this -> view -> pick('event/whatson');
     }
 
