@@ -4,8 +4,8 @@
     <title>EventWeekly</title>
     <meta charset="utf-8"/>
     <meta name="keywords" content=""/>
-    <meta name="title" content="EventWeekly Personalised Whats On Event Listings"/>
-    <meta name="description" content="Never miss an event again with our whats on event guide. Promoters list your event for free. Thousands of local and international events listed weekly."/>
+    <meta name="title" content="What’s on in {{ location.city }} - Never Miss an event again."/>
+    <meta name="description" content="Find out whats on in {{ location.city }} by day,  week  or month. Add your event and get listed its free. We enjoy helping you find great events. Thousands of local and international events listed weekly."/>
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">  
 
     <link type="image/ico" href="/img/128.ico" rel="icon">
