@@ -52,6 +52,10 @@
     <input id="isMobile" type="hidden" value="{{ isMobile }}" />
 {% endif %}
 
+{% if seoMode is defined %}
+    <input id="seoMode" type="hidden" value="1" />
+{% endif %}
+
 {% if fbAppId is defined %}
     <input id="fbAppId" type="hidden" value="{{ fbAppId }}" />
 {% endif %}

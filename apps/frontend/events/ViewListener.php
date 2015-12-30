@@ -31,6 +31,10 @@ class ViewListener {
 
         $this->view->setVar('fbAppId', $facebook_config->facebook->appId);
         $this->view->setVar('fbAppSecret', $facebook_config->facebook->appSecret);
+        $this->view->setVar('fbAddId', $facebook_config->facebook->addId);
+        if ($facebook_config -> seo_mode) {
+        	$this->view->setVar('seoMode', true);
+        }
 
         $params = $this->dispatcher->getReturnedValue();
         if (!empty($params) && is_array($params)) {

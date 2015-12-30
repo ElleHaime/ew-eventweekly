@@ -328,7 +328,7 @@ class EventController extends \Core\Controllers\CrudController
 	            'eventTags' => array_unique($eventTags)
 	        );
     	} else {
-    		$this -> response -> redirect('/');
+    		$this -> view -> pick('event/eventPast');
     	}
     }
 
