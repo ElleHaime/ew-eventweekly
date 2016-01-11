@@ -6,9 +6,10 @@
     <meta name="keywords" content=""/>
     {% if seoMode is defined  %}
     	<meta name="google-site-verification" content="Rj42T-NtSwTkThqdAHd7cP2yG891RcCCviHpImE04GQ" />
+    	<meta name="msvalidate.01" content="0801D34D3C48528B8EA854F6A73C95EA" />
     {% endif %}	
     <meta name="title" content="EventWeekly Personalised Whats On Event Listings"/>
-    <meta name="description" content="Never miss an event again with our whats on event guide. Promoters list your event for free. Thousands of local and international events listed weekly."/>
+    <meta name="description" content="Never miss an event again with our whats on event and things to do guide. Promoters list your event for free. Thousands of local and international events listed weekly on EventWeekly.com"/>
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">  
     <link type="image/ico" href="/img/128.ico" rel="icon">
 

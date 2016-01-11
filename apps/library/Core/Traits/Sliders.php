@@ -19,26 +19,26 @@ trait Sliders {
 		$queryData['searchLocationField'] = $locationId;
 		//$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
 		
-		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_HIGH);
-		if ($paidEventIds) {
-			$queryData['searchId'] = array_keys($paidEventIds);
+// 		$paidEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_HIGH);
+// 		if ($paidEventIds) {
+// 			$queryData['searchId'] = array_keys($paidEventIds);
 		
-			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
-			$eventGrid -> setSort('start_date');
-			$eventGrid -> setSortDirection('ASC');
-			$resultsPaid = $eventGrid -> getData();
+// 			$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this->getDi(), null, ['adapter' => 'dbMaster']);
+// 			$eventGrid -> setSort('start_date');
+// 			$eventGrid -> setSortDirection('ASC');
+// 			$resultsPaid = $eventGrid -> getData();
 				
-			if ($resultsPaid['all_count'] > 0) {
-				foreach ($resultsPaid['data'] as $ev) {
-					$ev -> cover = (new EventImage()) -> getCover($ev);
-					$paid[] = $ev;
-				}
-				$this -> view -> setVar('paidEvents', $paid);
-			}
-		}
-		unset($queryData['searchId']);
+// 			if ($resultsPaid['all_count'] > 0) {
+// 				foreach ($resultsPaid['data'] as $ev) {
+// 					$ev -> cover = (new EventImage()) -> getCover($ev);
+// 					$paid[] = $ev;
+// 				}
+// 				$this -> view -> setVar('paidEvents', $paid);
+// 			}
+// 		}
+// 		unset($queryData['searchId']);
 		 
-		$featuredEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_LOW);
+		$featuredEventIds = (new Featured()) -> getFeatured($locationId);
 		if ($featuredEventIds) {
 			$queryData['searchId'] = array_keys($featuredEventIds);
 		}
@@ -55,7 +55,8 @@ trait Sliders {
 				$ev -> cover = (new EventImage()) -> getCover($ev);
 				$featured[] = $ev;
 			}
-			$this -> view -> setVar('featuredEvents', $featured);
+			//$this -> view -> setVar('featuredEvents', $featured);
+			$this -> view -> setVar('paidEvents', $featured);
 		}
 		unset($queryData['searchId']);
 		 

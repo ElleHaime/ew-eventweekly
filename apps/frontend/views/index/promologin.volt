@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <title>EventWeekly</title>
-    <meta charset="utf-8"/>
-    <meta name="keywords" content=""/>
-    <meta name="description" content=""/>
+	<meta charset="utf-8"/>
+	<meta name="title" content="Free Event Listings with EventWeekly.com"/>
+    <meta name="description" content="List your events for free. If your event is all ready listed on Facebook then will automatically list it. Register to day and get listed. http://eventweekly.com/freelisting"/>
+
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
     
     <link type="image/ico" href="/img/128.ico" rel="icon">
