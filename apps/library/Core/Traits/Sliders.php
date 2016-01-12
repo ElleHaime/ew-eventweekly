@@ -38,7 +38,7 @@ trait Sliders {
 // 		}
 // 		unset($queryData['searchId']);
 		 
-		$featuredEventIds = (new Featured()) -> getFeatured($locationId);
+		$featuredEventIds = (new Featured()) -> getFeatured($locationId, Featured::PRIORITY_LOW);
 		if ($featuredEventIds) {
 			$queryData['searchId'] = array_keys($featuredEventIds);
 		}
