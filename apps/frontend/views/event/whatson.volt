@@ -189,6 +189,32 @@
 			<section id="content" class="container page page-main">
 
 			 {% if paidEvents is defined %}
+			 <div class="list-of-events col-3 container">
+	
+					<div class="header">
+						<h2 class="is-landing-page-title is-align-center">
+													Our goal is to bring all events into one place. We all have different taste in events we like and there are a huge amount events happening every week all over the world form Cake Sales to Rock Festivals. Our software gathers events from many different sources and using Artificial Intelligence sorts them into categories. This allows you to browse and personalise the listings you want to see.<br /><br />
+EventWeekly.com plan to release a mobile app in early 2016 making finding great events locally or world wide a lot easer. We already have thousands of events listed form all over the world and are expanding every day.<br />
+There are over 1,000 events happing every week in London alone and with eventweekly's what's on in London page you are sure to find something you like.<br /><br />
+As a promoter you can sign up with your Facebook account and have all your Facebook events added automatically. You can also add events straight to our site including recurring events.<br /><br />
+We are also open to suggestions for upcoming features,<br />
+Would you like a weekly email personalised to your tastes?<br />
+Would you like a weekly email suggesting events you may like?<br />
+Would you like a weekly email of events advertising to you?<br />
+There are other features we are considering including showing who is going, what the % Male to Female attending, a scale displaying how much chatter the event is getting, ticket link to purchase tickets, Rep button so you can earn points for promoting the events and reward system that rewards you for promoting and attending events. These are just some of the features we are looking into for future development and are open to your Ideas.<br /><br />
+We are looking forward to the next 12 months and adding more and more events and features to our site.<br /><br />
+Welcome to EventWeekly.com and our what's on in London page enjoy finding great events to attend.<br />
+						</h2>
+						<h2 class="header__title">
+							<strong>What’s on in {{ location.city }}</strong>
+							<span class="divider"></span> 
+							<a style="text-decoration:none;">Featured events</a>
+						</h2>
+	
+						<a href="/{{ location.city|lower }}" class="header__link-show-more">Show more what’s on in {{ location.city }}</a>
+					</div>
+	
+					<div class="clearfix"></div>
 					<div class="b-popular-events-slider">
 						<div class="js-main-popular-events-slider">
 							{% for index, event in paidEvents %}
@@ -233,6 +259,7 @@
 						<div class="b-popular-events-slider__dots js-main-popular-events-slider-dots"></div>
 	
 					</div>
+				</div>
 				</div>
 			  {% endif %}
 

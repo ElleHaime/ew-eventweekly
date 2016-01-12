@@ -4,7 +4,8 @@
 			<section id="content" class="container page page-main">
 
 			 {% if paidEvents is defined %}
-			 		<!-- div class="header">
+			 <div class="list-of-events col-3 container">
+			 		<div class="header">
 						<h2 class="header__title">
 							<strong>What’s on in {{ location.city }}</strong>
 							<span class="divider"></span> 
@@ -14,7 +15,7 @@
 						<a href="/{{ location.city|lower }}" class="header__link-show-more">Show more what’s on in {{ location.city }}</a>
 					</div>
 	
-					<div class="clearfix"></div -->
+					<div class="clearfix"></div>
 					
 					<div class="b-popular-events-slider">
 						<div class="js-main-popular-events-slider">
@@ -60,6 +61,7 @@
 						<div class="b-popular-events-slider__dots js-main-popular-events-slider-dots"></div>
 	
 					</div>
+				</div>
 				</div>
 			  {% endif %}
 
