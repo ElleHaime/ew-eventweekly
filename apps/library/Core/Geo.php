@@ -156,7 +156,7 @@ class Geo extends Plugin
 	
 	public function getLocation($coordinates = array())
 	{
-//_U::dump($coordinates);
+// _U::dump($coordinates, true);
 		$localityScope = [];
 		$units = [];
 		$baseType = 'locality';
@@ -178,8 +178,9 @@ class Geo extends Plugin
 		{
 			$queryParams = ['locality:' . urlencode($coordinates['city']), 'country:' . urlencode($coordinates['country'])];
 			$url = $this -> _apiUrl . 'components=' . implode('|', $queryParams);
+//_U::dump($url, true);
 			$result = json_decode(file_get_contents($url));
-//_U::dump($result);			
+//_U::dump($result, true);
 			if ($result -> status == 'OK' && count($result -> results) > 0)
 			{
 				if (count($result -> results) == 1)
@@ -189,16 +190,20 @@ class Geo extends Plugin
 				} else {
 					foreach ($result -> results as $key => $scope) {
 						if ($this -> isInGeometry($coordinates['latitude'], $coordinates['longitude'], $scope -> geometry -> viewport)) {
-							$localityScope = $scope;
-							$baseType = 'locality';
-			
-							break;
+							foreach ($scope -> address_components as $area) {
+								if (in_array('locality', $area -> types) && $area -> long_name == $coordinates['city']) {
+									$localityScope = $scope;
+									$baseType = 'locality';
+									
+									break;
+								}
+							}
 						}
 					}
 				}
 			}
 		}
-
+//_U::dump($localityScope, true);
 		if (empty($localityScope)) 
 		{
 			if (!empty($coordinates['latitude']) && !empty($coordinates['longitude'])) {

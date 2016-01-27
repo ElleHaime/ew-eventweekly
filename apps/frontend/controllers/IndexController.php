@@ -24,14 +24,14 @@ class IndexController extends \Core\Controller
 	 */
     public function indexAction()
     {
-//         $this -> view -> setVar('hideYouAreNotLoggedInBtn', true);
+        $this -> view -> setVar('hideYouAreNotLoggedInBtn', true);
 
-// 	    if ($this -> session -> has('eventsTotal')) {
-// 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
-// 	    }
+	    if ($this -> session -> has('eventsTotal')) {
+		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
+	    }
 	    
-// 	    $this -> composeSliders($this -> session -> get('location') -> id);
-		$this -> view -> pick('index/techworks');
+	    $this -> composeSliders($this -> session -> get('location') -> id);
+// 		$this -> view -> pick('index/techworks');
     }
 
     
