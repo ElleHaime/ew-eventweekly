@@ -29,9 +29,8 @@ class IndexController extends \Core\Controller
 	    if ($this -> session -> has('eventsTotal')) {
 		    $this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 	    }
-	    
 	    $this -> composeSliders($this -> session -> get('location') -> id);
-		//$this -> view -> pick('index/techworks');
+// 		$this -> view -> pick('index/techworks');
     }
 
     
