@@ -6,7 +6,6 @@ use Objects\Location as LocationObject;
 
 class Location extends LocationObject
 {
-	
 	public function resetLocation($lat = null, $lng = null, $city = null)
     {
     	$session = $this -> getDI() -> get('session');
@@ -23,5 +22,11 @@ class Location extends LocationObject
         }
 
         return $newLocation;
+    }
+    
+    
+    public function wasChanged($city, $country)
+    {
+    	$session = $this -> getDI() -> get('session');
     }
 } 

@@ -53,6 +53,37 @@ class EventImage extends EventImageObject
 
 		return $cover;
 	}
-
+	
+	/**
+	 * @param $oldFilename string
+	 * @param $file \Phalcon\Http\Request\FileInterface
+	 * @param $path string
+	 *
+	 * Upload Image of type jpeg, png
+	 *
+	 * @return string
+	 */
+	public function uploadImageFile($oldFilename, $file, $path)
+	{
+		if (!is_dir($path)) {
+			mkdir($path, 0777, true);
+		}
+	
+		$filename = false;
+		if (in_array($file -> getType(), ['image/jpeg', 'image/png', 'image/jpg'])) {
+			$parts = pathinfo($file->getName());
+	
+			$filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
+			copy($file -> getTempName(), $path . '/' . $filename);
+			//$file -> moveTo($path . '/' . $filename);
+			chmod($path . '/' . $filename, 0777);
+	
+			if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
+				unlink($path . '/' . $oldFilename);
+			}
+		}
+	
+		return $filename;
+	}
 }
 

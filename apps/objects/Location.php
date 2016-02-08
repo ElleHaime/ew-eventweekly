@@ -14,6 +14,9 @@ class Location extends Model
 	public $state;
 	public $country;
 	public $alias;
+	public $serviceCity;
+	public $serviceState;
+	public $serviceCountry;
 	public $latitude;
 	public $longitude;
 	public $latitudeMin;

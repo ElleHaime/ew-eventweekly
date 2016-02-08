@@ -98,10 +98,10 @@ require([
 	        $(window).resize(function() {
 	            var browserWidthResize = $(window).width();
 	            if (browserWidthResize < 800) {
-	                sliderFeatured.params.slidesPerView=1;
+	                //sliderFeatured.params.slidesPerView=1;
 	                sliderTrending.params.slidesPerView=1;
 	            } else {
-	                sliderFeatured.params.slidesPerView=3;
+	                //sliderFeatured.params.slidesPerView=3;
 	                sliderTrending.params.slidesPerView=4;
 	            }
 	        });

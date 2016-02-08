@@ -2,6 +2,7 @@
 
 namespace Frontend\Controllers;
 
+
 class AboutController extends \Core\Controller
 {
 	/**
@@ -10,7 +11,6 @@ class AboutController extends \Core\Controller
 	 */
 	public function indexAction()
 	{
-		
 	}
 
 	/**
@@ -19,7 +19,6 @@ class AboutController extends \Core\Controller
 	 */
 	public function contactAction()
 	{
-		
 	}
 
 	
@@ -29,9 +28,5 @@ class AboutController extends \Core\Controller
 	 */
 	public function privacyAction()
 	{
-	
 	}
-	
 }
-
-?>

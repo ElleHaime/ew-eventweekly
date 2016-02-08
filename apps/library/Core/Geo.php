@@ -38,11 +38,11 @@ class Geo extends Plugin
 	protected $_locLatMax				= false;
 	protected $_cityCur 				= false;
 	protected $_aliasCur 				= false;
-	protected $_countryCur 				= false;
+	protected $_countryCur 			= false;
 	protected $_stateCur 				= false;
 	protected $_countryCode 			= false;	
-	protected $_userIp 					= false;
-	protected $_config 					= false;
+	protected $_userIp 				= false;
+	protected $_config 				= false;
 	protected $_isLocationDefault 		= false;
 	protected $di 						= false;
 	protected $_errors					= array();
@@ -108,8 +108,6 @@ class Geo extends Plugin
 		$this -> _countryCur = $dublin -> country;
 		$this -> _isLocationDefault = true;
 		
-		$this -> _di -> get('session') -> set('isLocationDefined', false);
-
 		$location['ip'] = $this -> _userIp;
 		$location['latitude'] = (float)$this -> _locLatCur ;
 		$location['longitude'] = (float)$this -> _locLonCur;

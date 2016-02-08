@@ -60,24 +60,4 @@ class VenueController extends \Core\Controllers\CrudController
 		$res['MESSAGE'] = $data;
 		echo json_encode($res);
 	}
-
-	/**
-	 * @Route("/venue/getVenue/{text}", methods={"GET","POST"})*
-	 * @Acl(roles={'member'});
-	 */
-	public function getVenueAction($text = null)
-	{
-		$query[] = 'name like "%' . trim($text) . '%" group by name';
-		$venues = Venue::find($query);
-
-		$data = array();
-
-		foreach ($venues as $venue){
-			$data[$venue -> id] = $venue -> name;
-		}
-
-		$res['STATUS'] = 'OK';
-		$res['MESSAGE'] = $data;
-		echo json_encode($res);
-	}
 }

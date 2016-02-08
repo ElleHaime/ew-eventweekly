@@ -11,7 +11,6 @@ define('frontSearchPanel',
             searchFormId: 'topSearchForm',
             searchForm: '#topSearchForm',
             searchSubmit: '#searchSubmit',
-            searchTitle: '#searchTitle',
             searchLocation: '#searchLocationField',
             searchLocationLatMin: '#searchLocationLatMin',
             searchLocationLngMin: '#searchLocationLngMin',
@@ -28,8 +27,7 @@ define('frontSearchPanel',
             endDatePicker: '#js-selectDateTimeEnd',
             endDateField: '#searchPanel-endDate',
             endDateInput: '#searchEndDate',
-            isLoggedUser: '#isLogged',
-            addSearchParamUrl: '/search/addSearchParam'
+            isLoggedUser: '#isLogged'
         },
 
         /**
@@ -95,6 +93,7 @@ define('frontSearchPanel',
             var list = utils.addressAutocomplete($($this.settings.searchLocation)[0]);
 
             google.maps.event.addListener(list, 'place_changed', function() {
+//console.log(list.getPlace());            	
                 var latMax = list.getPlace().geometry.viewport.getNorthEast().lat();
                 var lngMax = list.getPlace().geometry.viewport.getNorthEast().lng();
                 var latMin = list.getPlace().geometry.viewport.getSouthWest().lat();
@@ -202,24 +201,17 @@ define('frontSearchPanel',
                 if ($this.__formFilled === false) {
                     noty({text: 'Please choose at least one option!', type: 'error'});
                 } else {
-                    searchParams = form.serialize();
-    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
-    	                if (response.status == 'OK') {
-    	                	nativeForm.action = response.actionUrl;
-    	                	console.log(nativeForm.action);
-    	                } else {
-    	                	console.log('Oooops, problems');
-    	                }
-    	            });
+                    if ($($this.settings.searchTypeResult).val().toLowerCase() == 'map') {
+                        //nativeForm.searchType.value = "in_map";
+                        nativeForm.action = nativeForm.action+'/map';
+                    } else {
+                        nativeForm.action = nativeForm.action+'/list';
+                    }
+
                     nativeForm.submit();
                 }
             }
         },
-        
-        __submitSelectedParam: function()
-        {
-        },
-
 
         /**
          * Click on category handler. Toggle active statement.
@@ -389,6 +381,8 @@ define('frontSearchPanel',
         	var $this = this;
             $($this.settings.searchLocation).val(city + ', ' + country);
         }
+
+
     };
 
 });

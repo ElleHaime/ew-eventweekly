@@ -36,10 +36,6 @@ class Controller extends \Phalcon\Mvc\Controller
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
-        
-        if (!$this -> session -> has('isLocationDefined')) {
-        	$this -> session -> set('isLocationDefined', true);
-        }
 
         $this -> plugSearch();
         $this -> checkCache();
@@ -48,9 +44,7 @@ class Controller extends \Phalcon\Mvc\Controller
 
         $member = $this->session->get('member');
 
-        //$this->session->set('location', Location::findFirst(['id=1']));
         $loc = $this->session->get('location');
-
         if ($loc === null) {
             $locModel = new Location();
             $loc = $locModel->createOnChange();
@@ -107,13 +101,6 @@ class Controller extends \Phalcon\Mvc\Controller
         }
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
-
-        if($this -> session -> get('isLocationDefined') === false) {
-        	$this -> view -> setVar('flashMsgText', 'Sorry, we can\'t define your current location by your IP');
-        	$this -> view -> setVar('flashMsgType', 'info');
-        	
-        	$this -> session -> set('isLocationDefined', true);
-        }
 
         $detect = new MobileDetect();
         if ($detect->isMobile() || $detect->isTablet()) {
@@ -232,15 +219,5 @@ class Controller extends \Phalcon\Mvc\Controller
     	/*$this->cacheData->delete('acl.cache');
         $keys = $this -> cacheData -> get('acl.cache');
         _U::dump($keys);*/ 
-    }
-    
-    public function flushCache()
-    {
-    	$keys = $this -> cacheData -> queryKeys();
-    	foreach ($keys as $key) {
-    		$this -> cacheData -> delete($key);
-    	}
-    	
-    	echo 'Cache cleared';
     }
 }

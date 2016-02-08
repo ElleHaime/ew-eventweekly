@@ -46,69 +46,6 @@ class EventController extends \Core\Controllers\CrudController
     protected $actualQuery 		= false;
 
     
-    
-    /**
-     * @Route("/whats-on-in-{city:[A-Za-z\-]+}-{country:[A-Za-z\-]+}", methods={"GET", "POST"})
-     * @Acl(roles={'guest','member'});
-     */
-    public function whatsonAction($city, $country)
-    {
-//     	_U::dump($city, true);
-//     	_U::dump($country, true);
-//     	_U::dump($this -> session -> get('location') -> id);
-
-    	$location = Location::findFirst(4);
-    	$this -> session -> set('location', $location);
-    	$this -> composeSliders($location -> id);
-    	$this -> view -> pick('event/whatson');
-    }
-
-    
-    /**
-     * @Route("/(?!whats-on-in){location:[A-Za-z\-]+}", methods={"GET", "POST"})
-     * @Acl(roles={'guest','member'});
-     */
-    public function featuredAction()
-    {
-		$location = substr($this -> request -> getURI(), 1);
-    	$featuredLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
-	
-    	if ($featuredLoc) {
-    		$searchEventsId = (new Featured()) -> getFeatured($featuredLoc -> id, [Featured::PRIORITY_HIGH, Featured::PRIORITY_LOW]);
-    		if ($searchEventsId) {
-    			$queryData['searchId'] = array_keys($searchEventsId);
-    		} 
-    		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
-    		$queryData['searchLocationField'] = $featuredLoc -> id;
-    		$this -> showListResults($queryData, $location, 'featured', 'Events in ' . $featuredLoc -> city);
-    	} else {
-    		return $this -> response -> redirect();
-    	}
-    }
-    
-    
-    /**
-     * @Route("/{location:[A_Za-z\-]+}/trending", methods={"GET", "POST"})
-     * @Acl(roles={'guest','member'});
-     */
-    public function trendingAction($location)
-    {
-    	$trendingLoc = Location::findFirst('city="' . ucfirst(strtolower($location)) . '"');
-    	
-    	if ($trendingLoc) {
-    		$searchEventsId = (new EventRating()) -> getTrendingIds($trendingLoc -> id);
-    		if ($searchEventsId) {
-    			$queryData['searchId'] = $searchEventsId;
-    		}
-    		$queryData['searchLocationField'] = $trendingLoc -> id;
-    		$queryData['searchStartDate'] = _UDT::getDefaultStartDate();
-    		$this -> showListResults($queryData, $location, 'trending',  'Trending events in ' . $trendingLoc -> city);
-    	} else {
-    		return $this -> response -> redirect();
-    	}
-    }
-    
-    
     /**
      * @Route("/event/friends", methods={"GET", "POST"})
      * @Acl(roles={'member'});
@@ -812,7 +749,7 @@ class EventController extends \Core\Controllers\CrudController
     	$file = ROOT_APP . 'public' . $this->config->application->defaultLogo;
     	
     	if (!is_null($logo)) {
-    		$filename = $this -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
+    		$filename = (new EventImageModel()) -> uploadImageFile($ev->logo, $logo, $this->config->application->uploadDir . 'img/event/' . $ev->id);
     		if (file_exists($this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename)) {
     			$file = $this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $filename;
     			$ev->logo = $filename;
@@ -881,7 +818,7 @@ class EventController extends \Core\Controllers\CrudController
 				$eventImage = $img[0];
 			}
 	
-    		$filename = $this->uploadImageFile(
+    		$filename = (new EventImageModel()) -> uploadImageFile(
     				$eventImage ? '' : $eventImage->image,
     				$image,
     				$this->config->application->uploadDir . 'img/event/' . $ev->id . '/' . $imageType);
@@ -932,40 +869,6 @@ class EventController extends \Core\Controllers\CrudController
     		$this -> response -> redirect('/event/list');
     	}
     }
-    
-    /**
-     * @param $oldFilename string
-     * @param $file \Phalcon\Http\Request\FileInterface
-     * @param $path string
-     *
-     * Upload Image of type jpeg, png
-     *
-     * @return string
-     */
-    protected function uploadImageFile($oldFilename, $file, $path)
-    {
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-        }
-
-        $filename = false;
-        if (in_array($file -> getType(), ['image/jpeg', 'image/png', 'image/jpg'])) {
-            $parts = pathinfo($file->getName());
-
-            $filename = $parts['filename'] . '_' . md5($file->getName() . date('YmdHis')) . '.' . $parts['extension'];
-            copy($file -> getTempName(), $path . '/' . $filename);
-            //$file -> moveTo($path . '/' . $filename);
-            chmod($path . '/' . $filename, 0777);
-
-            if (!is_dir($path . '/' . $oldFilename) && file_exists($path . '/' . $oldFilename)) {
-                unlink($path . '/' . $oldFilename);
-            }
-        }
-
-        return $filename;
-    }
-
-
 
     /**
      * @Route("/event/preview", methods={"POST"})

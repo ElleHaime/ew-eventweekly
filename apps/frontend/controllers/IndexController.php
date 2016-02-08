@@ -53,26 +53,6 @@ class IndexController extends \Core\Controller
     {	
     }
 
-
-    /**
-     * @Route("/flush", methods={"GET", "POST"})
-     * @Acl(roles={'guest', 'member'});
-     */
-    public function flushAction()
-    {
-    	$this -> flushCache();
-    }    
-    
-    
-    /**
-     * @Route("/syncounters", methods={'POST', 'GET'})
-     * @Acl(roles={'guest', 'member'});
-     */
-    public function syncountersAction()
-    {
-    	$this -> syncTotalCounters();
-    }
-
     /**
 	 * @Acl(roles={'guest', 'member'}); 
 	 */
