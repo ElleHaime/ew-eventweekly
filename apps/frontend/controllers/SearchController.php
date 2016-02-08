@@ -48,7 +48,7 @@ class SearchController extends \Core\Controller
    								   'location' => '',
    								   'title' => ''];
    	
-   	protected $postData		= [];
+   	protected $postData			= [];
    	protected $queryData		= [];
    	protected $actionUrl		= '';
    	
@@ -143,12 +143,33 @@ class SearchController extends \Core\Controller
     public function searchAction()
     {
     	_U::dump($this -> session -> get('userPreparedSearch'));
-    	
-    	(new Cron()) -> createUserTask();
-    	 
+
     	$this -> view -> form = new SearchForm();
+    	$likedEvents = $unlikedEvents = [];
     	$postData = $this -> session -> get('userPreparedSearch');
-    }
+    	$this -> queryData = $postData;
+
+    	if ($postData['personalActivePreset'] == 1 && $this -> session -> has('memberId')) {
+    		$this -> pageTitle['type'] = 'Personalised events';
+    		
+    		$this -> fetchMemberLikes();
+    		$likedEvents = $this -> view -> getVar('likedEventsIds');
+    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
+    		 
+    		if (!empty($unlikedEvents)) {
+    			$this -> queryData['searchNotId'] = $unlikedEvents;
+    		}
+    	}
+    	
+    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($postData['searchStartDate'])).' to ' . date('jS F', strtotime($postData['searchEndDate'] . ' -1 day'));
+    	
+    	if (isset($postData['searchTitle'])) {
+    		$searchTitle = (new \Phalcon\Filter()) -> sanitize($postData['searchTitle'], 'string');
+    		$this -> pageTitle['title'] = 'for "' . $postData['searchTitle'] . '"';
+    		$this -> queryData['compoundTitle'] = preg_replace('/([\(\)\[\]\{\}\\:\!]+)/i', ' ', $searchTitle);
+    	}
+    	
+     }
 
     
     protected function showList()
@@ -169,7 +190,10 @@ class SearchController extends \Core\Controller
     private function postElemExists($elem) 
     {
     	$resut = false;
-    	if (array_key_exists($elem, $this -> postData) && !is_array($this -> postData[$elem]) && in_array($elem, $this -> postSearchVariables)) 
+    	if (array_key_exists($elem, $this -> postData) 
+    						&& !is_array($this -> postData[$elem]) 
+    						&& in_array($elem, $this -> postSearchVariables)
+    						&& !empty($this -> postData[$elem])) 
     		$result = trim(strip_tags($this -> postData[$elem]));
     		
     	return $result;
@@ -202,6 +226,8 @@ class SearchController extends \Core\Controller
     	$this -> session -> set('location', $newLocation);
     	$this -> cookies -> get('lastLat') -> delete();
     	$this -> cookies -> get('lastLng') -> delete();
+    	
+    	$this -> upSessionArray('userPreparedSearch', 'searchLocationField', $newLocation -> id);
     }
     
     
@@ -262,11 +288,8 @@ class SearchController extends \Core\Controller
 						    	];
     	 
     	if (isset($dateSearchVariables[$key])) {
-    		$prepared = $this -> session -> get('userPreparedSearch');
-    		$prepared['searchStartDate'] = $dateSearchVariables[$key]['start'];
-    		$prepared['searchEndDate'] = $dateSearchVariables[$key]['end'];
-    		
-    		$this -> session -> set('userPreparedSearch', $prepared);
+    		$this -> upSessionArray('userPreparedSearch', 'searchStartDate', $dateSearchVariables[$key]['start']);
+    		$this -> upSessionArray('userPreparedSearch', 'searchEndDate', $dateSearchVariables[$key]['end']);
     		
     		return;
     	} else {
@@ -277,24 +300,18 @@ class SearchController extends \Core\Controller
     
     private function setSearchDateCustom($start, $end = '')
     {
-    	$prepared = $this -> session -> get('userPreparedSearch');
 		$pattern = '/^([0-9]{1,2})(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec){1}/i'; 
 
 		preg_match($pattern, $start, $matches);
-		if (!empty($matches)) {
-			$prepared['searchStartDate'] = date('Y-m-d H:i:s', strtotime($matches[0]));
-		} else {
-			$prepared['searchStartDate'] = _UDT::getDefaultStartDate();
-		}
+		!empty($matches) ? $startDate = date('Y-m-d H:i:s', strtotime($matches[0])) 
+						 : $starttDate = _UDT::getDefaultStartDate();
 
 		preg_match($pattern, $end, $matches);
-		if (!empty($matches)) {
-			$prepared['searchEndDate'] = date('Y-m-d H:i:s', strtotime($matches[0] . '+ 1 day'));
-		} else {
-			$prepared['searchEndDate'] = date('Y-m-d H:i:s', strtotime($prepared['searchStartDate'] . '+ 1 day'));
-		}
+		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0] . '+ 1 day'))
+						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate . '+ 1 day'));
 
-		$this -> session -> set('userPreparedSearch', $prepared);
+		$this -> upSessionArray('userPreparedSearch', 'searchStartDate', $startDate);
+		$this -> upSessionArray('userPreparedSearch', 'searchEndDate', $startEnd);
 		
 		return;
     } 	
@@ -302,10 +319,9 @@ class SearchController extends \Core\Controller
     
     private function setSearchPersonalised($isActive = true)
     {
-    	$prepared = $this -> session -> get('userPreparedSearch');
-    	$isActive ? $prepared['personalPresetActive'] = 1 : $prepared['personalPresetActive'] = 0;
-    	$this -> session -> set('userPreparedSearch', $prepared);
-    	
+    	$isActive ? $this -> upSessionArray('userPreparedSearch', 'personalPresetActive', 1)
+   				  : $this -> upSessionArray('userPreparedSearch', 'personalPresetActive', 0);
+   	
     	return;
     }
 }

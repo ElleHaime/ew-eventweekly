@@ -9,6 +9,7 @@ use Phalcon\Filter,
     Frontend\Models\Location,
     Frontend\Models\Event,
     Frontend\Models\Venue,
+    Frontend\Models\Cron,
     Frontend\Models\EventMember,
     Frontend\Models\EventMemberFriend,
     Frontend\Models\MemberNetwork,
@@ -110,6 +111,8 @@ class Controller extends \Phalcon\Mvc\Controller
         }
         isset($this -> getDI() -> get('facebook_config') -> facebook -> version) ? $fbAppVersion = $this -> getDI() -> get('facebook_config') -> facebook -> version : $fbAppVersion = 'v2.0'; 
         $this -> view -> setVar('fbAppVersion', $this -> getDI() -> get('facebook_config') -> facebook -> version);
+        
+        (new Cron()) -> createUserTask();
     }
 
 
@@ -202,6 +205,21 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->response->setJsonContent($data);
         $this->response->send();
     }
+    
+    
+    public function upSessionArray($sessName, $varName, $varValue)
+    {
+    	if ($this -> session -> has($sessName)) {
+    		$var = $this -> session -> get($sessName);
+    		$var[$varName] = $varValue;
+    		$this -> session -> set($sessName, $var);
+    		
+    		return true;
+    	} 
+    	
+    	return false;
+    }
+    
 
     public function checkCache()
     {
