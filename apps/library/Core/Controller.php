@@ -41,7 +41,6 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> plugSearch();
         $this -> checkCache();
         $this -> counters -> setUserCounters();
-        $this -> filters -> loadUserFilters();
 
         $member = $this->session->get('member');
 
@@ -67,34 +66,6 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->view->setVar('location_conflict', $this->session->get('location_conflict'));
             $this->session->remove('location_conflict');
         }
-
-        if ($this->session->has('userSearch')) {
-            $this->view->setVar('userSearch', $this->session->get('userSearch'));
-        }
-
-        if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
-            $this->memberId = $this->session->get('memberId');
-            $this->view->member = $this->session->get('member');
-
-            if ($this->session->has('user_token')) {
-                $this->view->setVar('external_logged', 'facebook');
-                                    
-                $this->view->setVar('permission_base', $this->session->get('permission_base'));
-                $this->view->setVar('permission_publish', $this->session->get('permission_publish'));
-                $this->view->setVar('permission_manage', $this->session->get('permission_manage'));
-                
-                if (isset($this->view->member->network)) {
-                    $this->view->setVar('acc_external', $this->view->member->network);
-                }
-            }
-
-            if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
-                $this->view->setVar('acc_external', $member->network);
-            }
-           
-        } else {
-            $this->session->set('role', Acl::ROLE_GUEST);
-        }
         $this->view->setVar('location', $this->session->get('location'));
 
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
@@ -102,6 +73,8 @@ class Controller extends \Phalcon\Mvc\Controller
         }
 
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
+        
+        $this -> filtersBuilder -> load();
 
         $detect = new MobileDetect();
         if ($detect->isMobile() || $detect->isTablet()) {
@@ -121,11 +94,13 @@ class Controller extends \Phalcon\Mvc\Controller
         return $this->obj;
     }
 
+    
     public function getModel()
     {
         return $this->model;
     }
 
+    
     protected function _parseQueryVals()
     {
         foreach ($this->dispatcher->getParams() as $param => $value) {
@@ -139,6 +114,7 @@ class Controller extends \Phalcon\Mvc\Controller
         }
     }
 
+    
     protected function  _setObj($obj)
     {
         $this->obj = $obj;
@@ -168,6 +144,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->_setObj($modelClass);
     }
 
+    
     public function getModelPath()
     {
         $module = $this->module;
@@ -175,6 +152,7 @@ class Controller extends \Phalcon\Mvc\Controller
         return '\\' . $this->config->modules->$module->defaultNameSpace . '\Models\\';
     }
 
+    
     public function getFormPath()
     {
         $module = $this->module;
@@ -182,6 +160,7 @@ class Controller extends \Phalcon\Mvc\Controller
         return '\\' . $this->config->modules->$module->formNamespace . '\\';
     }
 
+    
     public function plugSearch()
     {
         $searchForm = new SearchForm();
@@ -192,6 +171,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $this->view->setVar('formCategories', $categories);
     }
 
+    
     protected function setFlash($text = '', $type = 'info')
     {
         $this->session->set('flashMsgText', $text);
@@ -199,11 +179,40 @@ class Controller extends \Phalcon\Mvc\Controller
         return $this;
     }
 
+    
     protected function sendAjax($data)
     {
         $this->response->setContentType('application/json', 'UTF-8');
         $this->response->setJsonContent($data);
         $this->response->send();
+    }
+    
+    
+    public function setPermissions()
+    {
+    	if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
+    		$this->memberId = $this->session->get('memberId');
+    		$this->view->member = $this->session->get('member');
+    	
+    		if ($this->session->has('user_token')) {
+    			$this->view->setVar('external_logged', 'facebook');
+    	
+    			$this->view->setVar('permission_base', $this->session->get('permission_base'));
+    			$this->view->setVar('permission_publish', $this->session->get('permission_publish'));
+    			$this->view->setVar('permission_manage', $this->session->get('permission_manage'));
+    	
+    			if (isset($this->view->member->network)) {
+    				$this->view->setVar('acc_external', $this->view->member->network);
+    			}
+    		}
+    	
+    		if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
+    			$this->view->setVar('acc_external', $member->network);
+    		}
+    		 
+    	} else {
+    		$this->session->set('role', Acl::ROLE_GUEST);
+    	}
     }
     
     
@@ -227,15 +236,5 @@ class Controller extends \Phalcon\Mvc\Controller
     		$event = new Event();
     		$event -> setCacheTotal();
     	}
-
-        /*$keys = $this -> cacheData -> queryKeys();
-        foreach ($keys as $key) {
-           _U::dump($key, true);
-        }
-        die(); */ 
-
-    	/*$this->cacheData->delete('acl.cache');
-        $keys = $this -> cacheData -> get('acl.cache');
-        _U::dump($keys);*/ 
     }
 }

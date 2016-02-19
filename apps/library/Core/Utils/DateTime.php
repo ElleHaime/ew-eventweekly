@@ -70,7 +70,7 @@ class DateTime {
     protected static $_time = null;
     
     public static $defaultStartDate = 'today midnight';
-    public static $defaultEndDate = '+1 week';
+    public static $defaultEndDate = 'today midnight +1 week';
     
     
     public static function getDefaultStartDate($skipTime = false)
@@ -571,6 +571,19 @@ class DateTime {
     public static function toUnix($dateString, $timezone = null) {
         return self::fromString($dateString, $timezone);
     }
+    
+    
+    /**
+     * Returns a UNIX timestamp from a textual datetime description + number of days. Wrapper for PHP function strtotime().
+     *
+     * @param integer|string|DateTime $dateString UNIX timestamp, strtotime() valid string or DateTime object
+     * @param string|\DateTimeZone $timezone Timezone string or \DateTimeZone object
+     * @return integer Unix timestamp
+     */
+    public static function toUnixPlusDays($dateString, $days, $timezone = null) {
+    	return self::fromString($dateString . ' + ' . $days . ' days', $timezone);
+    }
+    
 
     /**
      * Returns a formatted date in server's timezone.
@@ -1100,6 +1113,32 @@ class DateTime {
             }
         }
         return false;
+    }
+    
+    
+    public static function getDatesVars()
+    {
+    	$dateSearchVariables = ['today' =>
+							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
+							    	 'end' => date('Y-m-d H:i:s', strtotime('tomorrow'))],
+						    	'tomorrow' =>
+							    	['start' => date('Y-m-d H:i:s', strtotime('tomorrow')),
+							    	 'end' => date('Y-m-d H:i:s', strtotime('tomorrow + 1 day'))],
+						    	'this-week' =>
+							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
+							    	 'end' => date('Y-m-d H:i:s', strtotime('today + 7 days'))],
+						    	'this-weekend' =>
+							    	['start' => date('Y-m-d H:i:s', strtotime('next Saturday')),
+							    	 'end' => date('Y-m-d H:i:s', strtotime('next Monday'))],
+						    	'whats-on-in' =>
+							    	['start' => self::getDefaultStartDate(),
+							    	 'end' => self::getDefaultEndDate()],
+						    	'things-to-do-in' =>
+							    	['start' => self::getDefaultStartDate(),
+							    	 'end' => self::getDefaultEndDate()]
+							    	];
+    	
+		return $dateSearchVariables;    	 
     }
 
 } 

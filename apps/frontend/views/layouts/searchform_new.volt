@@ -37,6 +37,7 @@
 						        {% endif %}
 						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ searchLocation }}"/>
 						        
+						   {#     
 				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
 						            {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}
 						        {% else %}
@@ -66,6 +67,7 @@
 						        {{ searchForm.render('searchLocationLngMax', {'value': searchLocationLngMax}) }}
 						        
 						        {{ searchForm.render('searchLocationPlaceId', {'value': ''}) }}
+						   #}     
 						        {% if  userSearch is defined and userSearch['searchLocationFormattedAddress'] is defined %}
 						            {% set searchLocationFormattedAddress = userSearch['searchLocationFormattedAddress'] %}
 						        {% else %}

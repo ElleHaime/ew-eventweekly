@@ -29,33 +29,19 @@ class SearchController extends \Core\Controller
     public static $week	 	= 'this-week';
     public static $weekend	 	= 'this-weekend';
     
-    public $postSearchVariables = ['searchLocationField',
-							    	'searchLocationLatMin',
-							    	'searchLocationLatMax',
-							    	'searchLocationLngMin',
-							    	'searchLocationLngMax',
-							    	'searchLocationFormattedAddress',
-							    	'personalPresetActive',
-							    	'searchStartDate',
-							    	'searchEndDate',
-							    	'searchTitle',
-							    	'searchTypeResult', 	// map, list
-							    	'searchTags',
-							    	'searchCategories'];
-    
    	protected $pageTitle		= ['type' => 'All events',
    								   'date' => '',
    								   'location' => '',
    								   'title' => ''];
    	
-   	protected $postData			= [];
+   	protected $postData		= [];
    	protected $queryData		= [];
    	protected $actionUrl		= '';
    	
    	
     
 	/**
-	 * @Route('/search/addSearchParam', methods={'POST'})
+	 * @Route('/search/addSearchParam', methods={'POST','GET'})
 	 * @Acl(roles={'guest', 'member'})
 	 */    
     public function addSearchParamAction()
@@ -63,17 +49,30 @@ class SearchController extends \Core\Controller
     	$result = ['errors' => '',
     			   'actionUrl' => '',
     			   'status' => 'error'];
+    	$this -> postData = $this -> request -> getPost();
+    	
+//     	$this -> postData = ['searchTitle' => 'Bububu',
+//     						 'searchLocationFormattedAddress' => ['locality' => 'Dublin',
+//     						 									  'administrative_area_level_2' => 'Dublin City',
+//     						 									  'administrative_area_level_1' => 'Dublin',
+//     						 									  'country' => 'Ireland'],
+//     						 'searchStartDate' => '2016-02-17',
+//     						 'searchEndDate' => '2016-02-25',
+//     						 'searchTypeResult' => 'List',
+//     						 'searchCategories' => ['6' => 'on'],
+//     						 'searchTags' => ['1' => 'on', '2' => 'on',  '3' => 'on',  '5' => 'on',  '83' => 'on',  '84' => 'on', '85' => 'on']];
+
 		foreach ($this -> postData as $key => $val) {
 			if ($value = $this -> postElemExists($key)) {
-				$userPreparedSearch[$key] = $value;
+				$this -> filtersBuilder -> addFilter($key, $val);
 			} 
 		}
-		
-		$this -> session -> set('userPreparedSearch', $userPreparedSearch);
-		if ($this -> composeActionUrl()) { 
-			$result['status'] = 'OK';
-			$result['actionUrl'] = $this -> actionUrl;
-		}
+ 		$this -> filtersBuilder -> applyFilters();
+ 		
+ 		if ($this -> composeActionUrl()) { 
+ 			$result['status'] = 'OK';
+ 			$result['actionUrl'] = $this -> actionUrl;
+ 		}
 		    	 
 		$this -> sendAjax($result);
     }
@@ -133,43 +132,125 @@ class SearchController extends \Core\Controller
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
     	$this -> setLocationByCity($location);
-    	$this -> setSearchPersonalised();
+    	$this -> filtersBuilder -> addFilter('personalPresetActive', 1);
     	if (!$this -> setSearchDateVars($arg1)) $this -> setSearchDateCustom($arg1, $arg2);
     
     	$this -> searchAction();
     }
     
 
-    public function searchAction()
+    protected function searchAction()
     {
-    	_U::dump($this -> session -> get('userPreparedSearch'));
-
-    	$this -> view -> form = new SearchForm();
+    	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
-    	$postData = $this -> session -> get('userPreparedSearch');
-    	$this -> queryData = $postData;
+    	$this -> view -> form = new SearchForm();
+// _U::dump($this -> request -> getQuery());
+// _U::dump($this -> filtersBuilder -> getFormFilters()['searchTitle']);    	
+// _U::dump($this -> filtersBuilder -> getFormFilters());
 
-    	if ($postData['personalActivePreset'] == 1 && $this -> session -> has('memberId')) {
+    	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
+    		if ($this -> session -> has('unlikedEvents')) {
     		$this -> fetchMemberLikes();
-    		$likedEvents = $this -> view -> getVar('likedEventsIds');
-    		$unlikedEvents = $this -> view -> getVar('unlikedEventsIds');
-    		 
-    		if (!empty($unlikedEvents)) {
-    			$this -> queryData['searchNotId'] = $unlikedEvents;
+    			$this -> filtersBuilder -> addfilter('searchNotId', $this -> session -> get('unlikedEvents'));
     		}
     	}
+    	$this -> pageTitle['location'] = 'in ' . $this -> filtersBuilder -> getFormFilters()['searchLocationCity'];
+    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getSearchFilters()['searchStartDate'])) 
+    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getSearchFilters()['searchEndDate']));
     	
-    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($postData['searchStartDate'])).' to ' . date('jS F', strtotime($postData['searchEndDate'] . ' -1 day'));
-    	
-    	if (isset($postData['searchTitle'])) {
-    		$searchTitle = (new \Phalcon\Filter()) -> sanitize($postData['searchTitle'], 'string');
-    		$this -> pageTitle['title'] = 'for "' . $postData['searchTitle'] . '"';
-    		$this -> queryData['compoundTitle'] = preg_replace('/([\(\)\[\]\{\}\\:\!]+)/i', ' ', $searchTitle);
+    	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
+    		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
     	}
     	
-     }
+    	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
+    														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
+    	$page = $this -> request -> getQuery('page');
+    	empty($page) ?	$eventGrid -> setPage(1) : $eventGrid -> setPage($page);
+    	
+    	if ($this -> filtersBuilder -> getFormFilters()['searchTypeResult'] == 'Map') {
+    		$eventGrid -> setLimit(50);
+    		$results = $eventGrid -> getData();
+    		
+    		foreach($results['data'] as $id => $event) {
+    			$result[$event -> id] = (array)$event;
+    			if ($this -> session -> has('likedEvents') && in_array($event -> id, $this -> session -> get('likedEvents'))) {
+    				$result[$event -> id]['disabled'] = 'disabled';
+    			}
+    		
+    			if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
+    				$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
+    			} else {
+    				$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
+    			}
+    			$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
+    			$result[$event -> id]['description'] = trim($event -> description);
+    			$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event);
+    		}
+    		
+    		$result = json_encode($result, JSON_UNESCAPED_UNICODE);
+    		$countResults = $results['all_count'];
+	   	} else {
+	   		$eventGrid -> setLimit(9);
+	   		$eventGrid -> setSort('start_date');
+	   		$eventGrid -> setSortDirection('ASC');
+	   		$results = $eventGrid -> getData();
+
+	   		foreach($results['data'] as $key => $value) {
+	   			if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+	   				$value -> disabled = 'disabled';
+	   			}
+	   			$value -> cover = (new EventImage()) -> getCover($value);
+	   			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
+	   		}
+	   		
+	   		if ($results['all_page'] > 1) {
+	   			$this -> view -> setVar('pagination', $results['array_pages']);
+	   			$this -> view -> setVar('pageCurrent', $results['page_now']);
+	   			$this -> view -> setVar('pageTotal', $results['all_page']);
+	   		}
+	   		$countResults = $results['all_count'];
+    	}
+    	
+    	$this -> view -> setVar('list', $result);
+    	$this -> view -> setVar('eventsTotal', $countResults);
+    	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
+    	$this -> view -> setVar('urlParams', $this -> request -> getQuery()['_url']);
+    	$this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
+    	
+    	$member_categories = (new MemberFilter()) -> getbyId();
+    	if (isset($member_categories['tag'])) 
+    		$this -> view -> setVars('tagIds', implode(',', $member_categories['tag']['value']));
+    	
+    	if (isset($member_categories['category'])) 
+    		$this -> view -> setVars('categoryIds', implode(',', $member_categories['category']['value']));
+    	
+    	if ($this -> filtersBuilder -> getFormFilters()['searchTypeResult'] == 'Map') {
+    		$this -> view -> setVar('link_to_list', true);
+    		$this -> view -> setVar('searchResult', true);
+    		$this -> view -> setVar('searchResultMap', true);
+    		 
+    		if ((int)$page > 1) {
+    			$results['page_now'] < $results['all_page'] ? $res['stop'] = false : $res['stop'] = true;
+    			$res['data'] = json_decode($result);
+    			$res['page_now'] = $results['page_now'];
+    			$res['page_all'] = $results['all_page'];
+    			$this -> sendAjax($res);
+    			
+    			exit();
+    			
+    		} else {
+    			$this -> view -> pick('event/map');
+    		}
+    		
+    	} else {
+    		$this -> view -> setVar('searchResultList', true);
+    		$page > 1 ? $this -> view -> pick('event/eventListPart') : $this -> view -> pick('event/eventList');
+    	}
+    	 
+    	
+    }
 
     
     protected function showList()
@@ -192,7 +273,6 @@ class SearchController extends \Core\Controller
     	$resut = false;
     	if (array_key_exists($elem, $this -> postData) 
     						&& !is_array($this -> postData[$elem]) 
-    						&& in_array($elem, $this -> postSearchVariables)
     						&& !empty($this -> postData[$elem])) 
     		$result = trim(strip_tags($this -> postData[$elem]));
     		
@@ -200,48 +280,30 @@ class SearchController extends \Core\Controller
     }
     
     
-    private function setLocationByCoordinates()
-    {
-    	$lat = ($this -> postData['searchLocationLatMin'] + $this -> postData['searchLocationLatMax']) / 2;
-    	$lng = ($this -> postData['searchLocationLngMin'] + $this -> postData['searchLocationLngMax']) / 2;
-    	$formattedAddress = get_object_vars(json_decode($this -> postData['searchLocationFormattedAddress']));
-    	
-    	$newLocation = (new Location()) -> createOnChange(['latitude' => $lat, 
-    													    'longitude' => $lng, 
-    														'city' => $formattedAddress['locality'], 
-    														'country' => $formattedAddress['country']]);
-    	$this -> session -> set('location', $newLocation);
-    	$this -> cookies -> get('lastLat') -> delete();
-    	$this -> cookies -> get('lastLng') -> delete();
-    }
-    
-    
     private function setLocationByCity($arg)
     {
-    	$city = substr($arg, 0, strrpos($arg, '-'));
-    	$country = substr($arg, strrpos($arg, '-')+1);
-    	
-    	$newLocation = (new Location()) -> createOnChange(['city' => $city,
-    														'country' => $country]);
-    	$this -> session -> set('location', $newLocation);
+    	$newLocation = (new Location()) -> createOnChange(['city' => substr($arg, 0, strrpos($arg, '-')),
+    														'country' => substr($arg, strrpos($arg, '-')+1)]);
+		$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);    	
+
     	$this -> cookies -> get('lastLat') -> delete();
     	$this -> cookies -> get('lastLng') -> delete();
-    	
-    	$this -> upSessionArray('userPreparedSearch', 'searchLocationField', $newLocation -> id);
     }
     
     
     protected function composeActionUrl()
     {
     	// set %city_name%
-    	if ($this -> postElemExists('searchLocationFormattedAddress') && !empty($this -> postData['searchLocationFormattedAddress'])) 
-    		$this -> setLocationByCoordinates();
+    	if ($this -> postElemExists('searchLocationFormattedAddress') && !empty($this -> postData['searchLocationFormattedAddress']))
+    		$this -> cookies -> get('lastLat') -> delete();
+    		$this -> cookies -> get('lastLng') -> delete();
+
     	$this -> actionUrl .= '/' . strtolower($this -> session -> get('location') -> city)
     												. '-' . strtolower(_L::getCodeByName($this -> session -> get('location') -> country));
     	 
      	// set %personalised%
-    	if ($this -> postElemExists('personalPresetActive') && $this -> postData['personalPresetActive'] == 1) 
-    		$this -> actionUrl .= '/personalised';
+    	//if ($this -> postElemExists('personalPresetActive') && $this -> postData['personalPresetActive'] == 1) 
+    	if ($this -> filtersBuilder -> getMemberPreset()) $this -> actionUrl .= '/personalised';
 
     	// set %from_date%-%to_date%
 		if ($this -> postData['searchStartDate'] == $this -> postData['searchEndDate']) {
@@ -267,34 +329,16 @@ class SearchController extends \Core\Controller
     
     private function setSearchDateVars($key = 'today')
     {
-    	$dateSearchVariables = ['today' =>
-							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
-							    	'end' => date('Y-m-d H:i:s', strtotime('tomorrow'))],
-					    		'tomorrow' =>
-							    	['start' => date('Y-m-d H:i:s', strtotime('tomorrow')),
-							    	'end' => date('Y-m-d H:i:s', strtotime('tomorrow + 1 day'))],
-						    	'this-week' =>
-							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
-							    	'end' => date('Y-m-d H:i:s', strtotime('today + 7 days'))],
-						    	'this-weekend' =>
-							    	['start' => date('Y-m-d H:i:s', strtotime('next Saturday')),
-							    	'end' => date('Y-m-d H:i:s', strtotime('next Monday'))],
-						    	'whats-on-in' =>
-							    	['start' => _UDT::getDefaultStartDate(),
-							    	'end' => _UDT::getDefaultEndDate()],
-						    	'things-to-do-in' =>
-							    	['start' => _UDT::getDefaultStartDate(),
-							    	'end' => _UDT::getDefaultEndDate()]
-						    	];
+    	$dateSearchVariables = _UDT::getDatesVars();
     	 
     	if (isset($dateSearchVariables[$key])) {
-    		$this -> upSessionArray('userPreparedSearch', 'searchStartDate', $dateSearchVariables[$key]['start']);
-    		$this -> upSessionArray('userPreparedSearch', 'searchEndDate', $dateSearchVariables[$key]['end']);
+    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
+    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
     		
-    		return;
-    	} else {
-			return false;
-    	}
+    		return true;
+    	} 
+    	
+    	return false;
     }
 
     
@@ -309,19 +353,11 @@ class SearchController extends \Core\Controller
 		preg_match($pattern, $end, $matches);
 		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0] . '+ 1 day'))
 						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate . '+ 1 day'));
-
-		$this -> upSessionArray('userPreparedSearch', 'searchStartDate', $startDate);
-		$this -> upSessionArray('userPreparedSearch', 'searchEndDate', $startEnd);
+		
+		$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
+								-> addFilter('searchEndDate', $endDate);
+		
 		
 		return;
     } 	
-    
-    
-    private function setSearchPersonalised($isActive = true)
-    {
-    	$isActive ? $this -> upSessionArray('userPreparedSearch', 'personalPresetActive', 1)
-   				  : $this -> upSessionArray('userPreparedSearch', 'personalPresetActive', 0);
-   	
-    	return;
-    }
 }

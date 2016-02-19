@@ -16,13 +16,13 @@ class SearchForm extends Form
         												  	  'value' => '']);
 
         // search by location
-        $this->addElement('hidden', 'searchLocationLatMin', 'By Location Latitude');
-        $this->addElement('hidden', 'searchLocationLngMin', 'By Location Longitude');
+//         $this->addElement('hidden', 'searchLocationLatMin', 'By Location Latitude');
+//         $this->addElement('hidden', 'searchLocationLngMin', 'By Location Longitude');
 
-        $this->addElement('hidden', 'searchLocationLatMax', 'By Location Latitude');
-        $this->addElement('hidden', 'searchLocationLngMax', 'By Location Longitude');
+//         $this->addElement('hidden', 'searchLocationLatMax', 'By Location Latitude');
+//         $this->addElement('hidden', 'searchLocationLngMax', 'By Location Longitude');
         
-        $this->addElement('hidden', 'searchLocationPlaceId', 'By Place ID');
+//         $this->addElement('hidden', 'searchLocationPlaceId', 'By Place ID');
         
         $this->addElement('hidden', 'searchLocationFormattedAddress', 'By Formatted Address');
 

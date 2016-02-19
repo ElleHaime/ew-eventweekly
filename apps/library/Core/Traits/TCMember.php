@@ -22,8 +22,7 @@ trait TCMember {
 	                                                    AND Frontend\Models\EventLike.member_id = " . $this -> session -> get('memberId'), 
 	                                            $this -> getDI());
 	        $event = $query -> execute();
-	        $likedEventsIds = [];
-	        $unlikedEventsIds = [];
+	        $likedEventsIds = $unlikedEventsIds = [];
 	
 	        if($event) {
 	            foreach ($event as $key) {
@@ -35,7 +34,9 @@ trait TCMember {
 	            }
 	        }
 	
+	        $this -> session -> set('likedEventsIds', $likedEventsIds);
 	        $this -> view -> setVar('likedEventsIds', $likedEventsIds);
+	        $this -> session -> set('unlikedEventsIds', $unlikedEventsIds);
 	        $this -> view -> setVar('unlikedEventsIds', $unlikedEventsIds);
     	}
     }

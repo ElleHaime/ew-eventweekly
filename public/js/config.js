@@ -154,8 +154,10 @@ require.config({
             restoreRel = /\/auth\/reset\/.+/,
             trendingRel = /\/[a-zA-Z\-\s]+\/trending/,
         	featuredRel = /^\/[a-zA-Z\-\s]+$/,
-        	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/;
-       
+        	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/,
+        	seoDaysRel = /^\/[a-z\-]+\/(personalised\/)?(today|tomorrow|this-week|this-weekend)$/,
+        	seoDatesRel = /^\/[a-z\-]+\/(personalised\/)?[a-z0-9]+(\-[a-z0-9]+)?$/;
+        
         if (whatsonRel.test(location.pathname)) {
 		} else if (freelisting.test(location.pathname)) {
         	fileName = '/'
@@ -169,6 +171,8 @@ require.config({
         	fileName = '/event/trending';
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
+        } else if (seoDaysRel.test(location.pathname) == true || seoDatesRel.test(location.pathname) == true) {
+        	fileName = '/search/list';
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
