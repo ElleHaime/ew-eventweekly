@@ -30,6 +30,12 @@ class FilterForm extends FiltersBuilder
 	/* @var string */
 	protected $searchTitle				= false;
 	
+	/* @var array */
+	protected $searchTags				= [];
+	
+	/* @var array */
+	protected $searchCategories		= [];
+	
 	/* @var string */
 	protected $searchTypeResult		= 'List';
 	
@@ -87,34 +93,59 @@ class FilterForm extends FiltersBuilder
 	
 	public function setTags($tags = [])
 	{
-		$tagsList = Tag::getFullTagsList();
-		if (empty($tags)) {
-			$tags = $tagsList;
-		}
+// 		$tagsList = Tag::getFullTagsList();
+// 		if (empty($tags)) {
+// 			$tags = $tagsList;
+// 		}
 		
-		foreach ($tagsList as $index => $filter) {
-			foreach ($filter['tags'] as $item => $tag) {
-				$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
-			}
-			$this -> userFilters[$index]['fullCategorySelect'] = 1;
-		}
+// 		foreach ($tagsList as $index => $filter) {
+// 			$this -> userFilters[$index] = $filter;
+// 			foreach ($this -> userFilters[$index]['tags'] as $item => $tag) {
+// 				$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
+// 			}
+// 			$this -> userFilters[$index]['fullCategorySelect'] = 1;
+// 		}
 		
-		return $this;
+// 		return $this;
+
+		$this -> searchTags = $tags; 
 	}
 	
-
-	public function getFilters()
+	
+	public function setCategories($categories = [])
 	{
-		$filters = [];
+		$this -> searchCategories = $categories;
+	}
+	
+	
+	public function applyGlobalPreset()
+	{
+		_U::dump($this -> searchTags, true);
+		_U::dump($this -> searchCategories, true);
 		
-		$props = $this -> getFilterProperties();
-		foreach ($props as $property) {
-			if (!empty($this -> $property)) {
-				$filters[$property] = $this -> $property;
-			} 
+		$this -> userFilters = Tag::getFullTagsList();;
+		
+		if (empty($this -> searchTags) && empty($this -> searchCategories)) {
+			foreach ($this -> userFilters as $index => $filter) {
+				foreach ($filter['tags'] as $item => $tag) {
+					$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
+				}
+				$this -> userFilters[$index]['fullCategorySelect'] = 1;
+			}
+		} else {
+			foreach ($this -> userFilters as $index => $filter) {
+				if (in_array($filter['id'], $this -> searchCategories)) {
+					$this -> userFilters[$index]['fullCategorySelect'] = 1;
+				}
+				foreach ($filter['tags'] as $item => $tag) {
+					if (in_array($tag['id'], $this -> searchTags)) {
+						$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
+					}
+				}
+			}
 		}
-		
-		return $filters;
+			
+		return $this;
 	}
 	
 	
@@ -147,6 +178,21 @@ class FilterForm extends FiltersBuilder
 		}
 		
 		return $this;
+	}
+
+
+	public function getFilters()
+	{
+		$filters = [];
+	
+		$props = $this -> getFilterProperties();
+		foreach ($props as $property) {
+			if (!empty($this -> $property)) {
+				$filters[$property] = $this -> $property;
+			}
+		}
+	
+		return $filters;
 	}
 	
 	

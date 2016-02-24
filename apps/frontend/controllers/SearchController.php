@@ -2,9 +2,8 @@
 
 namespace Frontend\Controllers;
 
-use Frontend\Models\EventImage;
-
-use Frontend\Models\MemberFilter,
+use Frontend\Models\EventImage,
+	Frontend\Models\MemberFilter,
     Frontend\Models\Tag,          
     Frontend\Form\SearchForm,
     Phalcon\Mvc\Model\Resultset,
@@ -68,11 +67,12 @@ class SearchController extends \Core\Controller
 			} 
 		}
  		$this -> filtersBuilder -> applyFilters();
- 		
+//_U::dump($this -> filtersBuilder -> getFormFilters()); 		
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
  		}
+		$result['status'] = 'OK';
 		    	 
 		$this -> sendAjax($result);
     }
@@ -146,7 +146,7 @@ class SearchController extends \Core\Controller
     	$this -> view -> form = new SearchForm();
 // _U::dump($this -> request -> getQuery());
 // _U::dump($this -> filtersBuilder -> getFormFilters()['searchTitle']);    	
-// _U::dump($this -> filtersBuilder -> getFormFilters());
+//_U::dump($this -> filtersBuilder -> getFormFilters());
 
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
@@ -163,7 +163,7 @@ class SearchController extends \Core\Controller
     	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
     		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
     	}
-    	
+//_U::dump($this -> filtersBuilder -> getSearchFilters());
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
     														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
     	$page = $this -> request -> getQuery('page');
@@ -217,6 +217,7 @@ class SearchController extends \Core\Controller
     	$this -> view -> setVar('eventsTotal', $countResults);
     	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
     	$this -> view -> setVar('urlParams', $this -> request -> getQuery()['_url']);
+//_U::dump($this -> filtersBuilder -> getFormFilters());    	
     	$this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
     	
     	$member_categories = (new MemberFilter()) -> getbyId();
@@ -330,7 +331,7 @@ class SearchController extends \Core\Controller
     private function setSearchDateVars($key = 'today')
     {
     	$dateSearchVariables = _UDT::getDatesVars();
-    	 
+ 
     	if (isset($dateSearchVariables[$key])) {
     		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
     							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);

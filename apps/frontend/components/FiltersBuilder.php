@@ -69,6 +69,7 @@ class FiltersBuilder extends Component
 	
 			case 'searchCategories':
 					$this -> filterSearch -> setCategories(array_keys($value));
+					$this -> filterForm -> setCategories(array_keys($value));
 				break;
 	
 			case 'searchTags':
@@ -102,6 +103,8 @@ class FiltersBuilder extends Component
 			// apply to tags
 			$this -> filterSearch -> applyMemberPreset();
 			$this -> filterForm -> applyMemberPreset();
+		} else {
+			$this -> filterForm -> applyGlobalPreset();
 		}
 		
 		$this -> session -> set('filterForm', $this -> getFormFilters());

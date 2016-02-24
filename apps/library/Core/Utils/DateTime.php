@@ -1120,10 +1120,10 @@ class DateTime {
     {
     	$dateSearchVariables = ['today' =>
 							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
-							    	 'end' => date('Y-m-d H:i:s', strtotime('tomorrow'))],
+							    	 'end' => date('Y-m-d H:i:s', strtotime('today'))],
 						    	'tomorrow' =>
 							    	['start' => date('Y-m-d H:i:s', strtotime('tomorrow')),
-							    	 'end' => date('Y-m-d H:i:s', strtotime('tomorrow + 1 day'))],
+							    	 'end' => date('Y-m-d H:i:s', strtotime('tomorrow'))],
 						    	'this-week' =>
 							    	['start' => date('Y-m-d H:i:s', strtotime('today')),
 							    	 'end' => date('Y-m-d H:i:s', strtotime('today + 7 days'))],

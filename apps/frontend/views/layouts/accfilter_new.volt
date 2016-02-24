@@ -17,7 +17,7 @@
 
 				<div class="categories-accordion">
 
-					{% for index, category in userSearch.userFilters %}
+					{% for index, category in userSearch['userFilters'] %}
 						<!-- accordeon item -->
 							<div class="categories-accordion__item">
 								<div class="categories-accordion__head">

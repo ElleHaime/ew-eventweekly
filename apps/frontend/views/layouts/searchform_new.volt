@@ -19,23 +19,27 @@
 							<div class="filters-form__item filters-form__item--input-with-icon">
 								<i class="fa fa-map-marker"></i>
 						        {% if userSearch is defined %}
-						        	{% if userSearch['searchLocationField'] is defined %}
-							        	{% set searchLocation = userSearch['searchLocationField'] %}
-							            {% set searchLocationPlaceholder = userSearch['searchLocationField'] %}
+						        	{% if userSearch['searchLocationCity'] is defined %}
+							        	{% set searchLocation = userSearch['searchLocationCity'] %}
+							            {% set searchLocationCityPlaceholder = userSearch['searchLocationCity'] %}
+							            {% set searchLocationCountryPlaceholder = userSearch['searchLocationCountry'] %}
 							        {% else %}
 							        	{% set searchLocation = '' %}
-						        		{% set searchLocationPlaceholder = '' %}
+						        		{% set searchLocationCityPlaceholder = '' %}
+						        		{% set searchLocationCountryPlaceholder = '' %}
 						        	{% endif %}
 						        {% else %}
 						        	{% if location is defined %}
 						        		{% set searchLocation = location.city %}
-						        		{% set searchLocationPlaceholder = location.city %}
+						        		{% set searchLocationCityPlaceholder = location.city %}
+						        		{% set searchLocationCountryPlaceholder = location.country %}
 						        	{% else %}
 						        		{% set searchLocation = '' %}
-						        		{% set searchLocationPlaceholder = '' %}
+						        		{% set searchLocationCityPlaceholder = '' %}
+						        		{% set searchLocationCountryPlaceholder = '' %}
 						        	{% endif %}
 						        {% endif %}
-						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationPlaceholder }}" value="{{ searchLocation }}"/>
+						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationCityPlaceholder }}, {{ searchLocationCountryPlaceholder }}" value="{{ searchLocationCityPlaceholder }}, {{ searchLocationCountryPlaceholder }}"/>
 						        
 						   {#     
 				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}

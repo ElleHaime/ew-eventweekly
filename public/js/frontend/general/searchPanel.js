@@ -192,15 +192,15 @@ define('frontSearchPanel',
 		                	$($this.settings.searchLocation).prop('disabled', true);
 		                    searchParams = form.serialize();
 console.log(searchParams);
-//		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
-//		    	            	console.log(response);
+		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
+console.log(response);
 //		    	                if (response.status == 'OK') {
 //		    	                	nativeForm.action = response.actionUrl;
 //		    	                } else {
 //		    	                	console.log('Oooops, problems');
 //		    	                }
-//		    	            });
-		                    //nativeForm.submit();
+		    	            });
+//		                    nativeForm.submit();
 		    	            return false;
 		                }
 		            }

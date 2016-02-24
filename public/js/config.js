@@ -169,10 +169,10 @@ require.config({
         	fileName = '/event/featured';
         } else if (trendingRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/trending';
-        } else if (re.test(location.pathname) != 'undefined') {
-            fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else if (seoDaysRel.test(location.pathname) == true || seoDatesRel.test(location.pathname) == true) {
         	fileName = '/search/list';
+        } else if (re.test(location.pathname) != 'undefined') {
+            fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
