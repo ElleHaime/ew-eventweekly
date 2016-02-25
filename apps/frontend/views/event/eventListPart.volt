@@ -49,7 +49,7 @@
 											{% if event.start_date != '0000-00-00' %}
                                                 {{ dateToFormat(event.start_date, '%d %b %Y') }}
                                                 
-                                                {% if event.end_date is defined and event.end_date != '0000-00-00' %}
+												{% if event.end_date is defined and event.end_date != '0000-00-00' and dateToFormat(event.end_date, '%d %b %Y') != dateToFormat(event.start_date, '%d %b %Y') %}
                                                  	- {{ dateToFormat(event.end_date, '%d %b %Y') }}
                                                  {% endif %}
                                             {% endif %}

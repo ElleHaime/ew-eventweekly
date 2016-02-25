@@ -18,13 +18,11 @@ class FiltersBuilder extends Component
 	
 	public function load()
 	{
- 		if (!$this -> session -> has('filters')) {
+  		if (!$this -> session -> has('filters')) {
 			$this -> resetFilters();
-			$this -> session -> set('filters', true);
-			$this -> applyFilters();
  		} else {
- 			$this -> filterForm -> setFromSession();
- 			$this -> filterSearch -> setFromSession();
+ 			$this -> filterForm -> getFromSession();
+ 			$this -> filterSearch -> getFromSession();
  		} 
 	}
 	
@@ -33,7 +31,7 @@ class FiltersBuilder extends Component
 	{
 		switch ($filter) {
 			case 'searchLocationFormattedAddress':
-					$formattedAddress = $value;//get_object_vars(json_decode($value));
+					$formattedAddress = get_object_vars(json_decode($value));
 					$value = (new Location()) -> createOnChange(['city' => $formattedAddress['locality'], 'country' => $formattedAddress['country']]);
 					$this -> session -> set('location', $value);
 					
@@ -104,6 +102,7 @@ class FiltersBuilder extends Component
 			$this -> filterSearch -> applyMemberPreset();
 			$this -> filterForm -> applyMemberPreset();
 		} else {
+			$this -> filterSearch -> applyGlobalPreset();
 			$this -> filterForm -> applyGlobalPreset();
 		}
 		
@@ -129,8 +128,12 @@ class FiltersBuilder extends Component
 	public function resetFilters()
 	{
 		$this -> setMemberPreset();
+		
 		$this -> filterSearch -> reset();
 		$this -> filterForm -> reset();
+		
+		$this -> session -> set('filters', true);
+		$this -> applyFilters();
 		
 		return $this;
 	}

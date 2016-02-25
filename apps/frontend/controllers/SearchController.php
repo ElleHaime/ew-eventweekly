@@ -50,29 +50,30 @@ class SearchController extends \Core\Controller
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
     	
-//     	$this -> postData = ['searchTitle' => 'Bububu',
-//     						 'searchLocationFormattedAddress' => ['locality' => 'Dublin',
-//     						 									  'administrative_area_level_2' => 'Dublin City',
-//     						 									  'administrative_area_level_1' => 'Dublin',
-//     						 									  'country' => 'Ireland'],
-//     						 'searchStartDate' => '2016-02-17',
-//     						 'searchEndDate' => '2016-02-25',
-//     						 'searchTypeResult' => 'List',
-//     						 'searchCategories' => ['6' => 'on'],
-//     						 'searchTags' => ['1' => 'on', '2' => 'on',  '3' => 'on',  '5' => 'on',  '83' => 'on',  '84' => 'on', '85' => 'on']];
+    	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Dublin',
+    						 									  'administrative_area_level_2' => 'Dublin City',
+    						 									  'administrative_area_level_1' => 'Dublin',
+    						 									  'country' => 'Ireland'],
+    						 'searchStartDate' => '2016-02-24',
+    						 'searchEndDate' => '2016-05-02',
+    						 'searchTitle' => 'Bububu',
+    						 'searchTypeResult' => 'List',
+    						 'searchCategories' => ['3' => 'on'],
+    						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']];
 
 		foreach ($this -> postData as $key => $val) {
-			if ($value = $this -> postElemExists($key)) {
+//			if ($value = $this -> postElemExists($key)) {
 				$this -> filtersBuilder -> addFilter($key, $val);
-			} 
+//			} 
 		}
  		$this -> filtersBuilder -> applyFilters();
-//_U::dump($this -> filtersBuilder -> getFormFilters()); 		
+_U::dump($this -> filtersBuilder -> getSearchFilters());
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
  		}
 		$result['status'] = 'OK';
+    	$result['bu'] = $this -> filtersBuilder -> getSearchFilters();
 		    	 
 		$this -> sendAjax($result);
     }
@@ -145,9 +146,10 @@ class SearchController extends \Core\Controller
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
 // _U::dump($this -> request -> getQuery());
-// _U::dump($this -> filtersBuilder -> getFormFilters()['searchTitle']);    	
-//_U::dump($this -> filtersBuilder -> getFormFilters());
+// _U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
+// _U::dump($this -> filtersBuilder -> getSearchFilters());
 
+_U::dump($this -> filtersBuilder -> getSearchFilters(), true);    	
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
@@ -157,13 +159,13 @@ class SearchController extends \Core\Controller
     		}
     	}
     	$this -> pageTitle['location'] = 'in ' . $this -> filtersBuilder -> getFormFilters()['searchLocationCity'];
-    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getSearchFilters()['searchStartDate'])) 
-    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getSearchFilters()['searchEndDate']));
+    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate'])) 
+    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
     	
     	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
     		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
     	}
-//_U::dump($this -> filtersBuilder -> getSearchFilters());
+_U::dump($this -> filtersBuilder -> getSearchFilters());
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
     														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
     	$page = $this -> request -> getQuery('page');
@@ -272,11 +274,15 @@ class SearchController extends \Core\Controller
     private function postElemExists($elem) 
     {
     	$resut = false;
-    	if (array_key_exists($elem, $this -> postData) 
-    						&& !is_array($this -> postData[$elem]) 
-    						&& !empty($this -> postData[$elem])) 
-    		$result = trim(strip_tags($this -> postData[$elem]));
-    		
+    	
+    	if (array_key_exists($elem, $this -> postData) && !empty($this -> postData[$elem])) {
+    		if (is_string($this -> postData[$elem])) { 
+    			$result = trim(strip_tags($this -> postData[$elem]));
+	    	} elseif(is_array($this -> postData[$elem])) {
+	    		$result = $this -> postData[$elem];
+	    	}
+    	}
+    	
     	return $result;
     }
     
@@ -352,13 +358,23 @@ class SearchController extends \Core\Controller
 						 : $starttDate = _UDT::getDefaultStartDate();
 
 		preg_match($pattern, $end, $matches);
-		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0] . '+ 1 day'))
-						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate . '+ 1 day'));
+		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0]))
+						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
 		
 		$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
 								-> addFilter('searchEndDate', $endDate);
 		
 		
 		return;
-    } 	
+    }
+
+    /**
+     * @Route('/search/resetFilters', methods={'GET'})
+     * @Acl(roles={'guest', 'member'})
+     */
+    public function resetFiltersAction()
+    {
+    	$this -> filtersBuilder -> resetFilters();
+    	$this -> response -> redirect('/');
+    }
 }

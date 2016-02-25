@@ -82,20 +82,12 @@ class FilterSearch extends FiltersBuilder
 		$title = (new \Phalcon\Filter()) -> sanitize($arg, 'string');
 		$this -> compoundTitle = preg_replace('/([\(\)\[\]\{\}\\:\!]+)/i', ' ', $title);
 		
-		if ($tags = Tag::find(['name like "%' . $title . '%"'])) {
-			foreach ($tags as $searchTag) {
-				$this -> compoundTag[] = (int)$searchTag -> id;
-			}
-		}
-		
 		return $this;
 	}
 
 	
 	public function setTags($tags = [])
 	{
-		$tagsList = Tag::getFullTagsList();
-		
 		if (!empty($tags)) {
 			$this -> compoundTag = $tags;
 		} 
@@ -139,6 +131,30 @@ class FilterSearch extends FiltersBuilder
 	}
 	
 	
+	public function applyGlobalPreset()
+	{
+		_U::dump($this -> getFilters());
+		
+		if (!empty($this -> compoundTitle) && (!empty($this -> compoundTag) || !empty($this -> compoundCategory))) {
+			$this -> compoundTag = [];
+			$this -> compoundCategory = [];
+			
+			if ($tags = Tag::find(['name like "%' . $this -> compoundTitle . '%"'])) {
+				foreach ($tags as $searchWord) {
+					$this -> compoundTag[] = (int)$searchWord -> id;
+				}
+			}
+
+			if ($categories = Category::find(['name like "%' . $this -> compoundTitle . '%"'])) {
+				foreach ($categories as $searchWord) {
+					$this -> compoundCategory[] = (int)$searchWord -> id;
+				}
+			}
+				
+		}
+	}
+	
+	
 	public function applyMemberPreset()
 	{
 		$memberPreset = $this -> getMemberPreset();
@@ -159,9 +175,9 @@ class FilterSearch extends FiltersBuilder
 	}
 	
 	
-	public function setFromSession()
+	public function getFromSession()
 	{
-		$filters = $this -> session -> get('filterForm');
+		$filters = $this -> session -> get('filterSearch');
 		$props = $this -> getFilterProperties();
 		
 		foreach ($props as $property) {
@@ -179,7 +195,12 @@ class FilterSearch extends FiltersBuilder
 		$this -> setLocation();
 		$this -> setStartDate();
 		$this -> setEndDate();
+		$this -> setCategories();
 		$this -> setTags();
+		
+		$this -> compoundTitle = null;
+		$this -> searchIn =[];
+		$this -> searchNotIn =[];
 		
 		return $this;
 	}

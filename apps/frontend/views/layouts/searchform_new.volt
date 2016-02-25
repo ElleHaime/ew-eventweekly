@@ -1,4 +1,4 @@
-<form action="/dublin-ie/today" method="get" class="form-horizontal" id="topSearchForm">
+<form action="/dublin-ie/today" method="post" class="form-horizontal" id="topSearchForm">
 
 		<div class="filters">
 				<div class="container">

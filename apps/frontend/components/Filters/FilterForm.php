@@ -93,37 +93,23 @@ class FilterForm extends FiltersBuilder
 	
 	public function setTags($tags = [])
 	{
-// 		$tagsList = Tag::getFullTagsList();
-// 		if (empty($tags)) {
-// 			$tags = $tagsList;
-// 		}
+		$this -> searchTags = $tags;
 		
-// 		foreach ($tagsList as $index => $filter) {
-// 			$this -> userFilters[$index] = $filter;
-// 			foreach ($this -> userFilters[$index]['tags'] as $item => $tag) {
-// 				$this -> userFilters[$index]['tags'][$item]['inPreset'] = 1;
-// 			}
-// 			$this -> userFilters[$index]['fullCategorySelect'] = 1;
-// 		}
-		
-// 		return $this;
-
-		$this -> searchTags = $tags; 
+		return $this; 
 	}
 	
 	
 	public function setCategories($categories = [])
 	{
 		$this -> searchCategories = $categories;
+		
+		return $this;
 	}
 	
 	
 	public function applyGlobalPreset()
 	{
-		_U::dump($this -> searchTags, true);
-		_U::dump($this -> searchCategories, true);
-		
-		$this -> userFilters = Tag::getFullTagsList();;
+		$this -> userFilters = Tag::getFullTagsList();
 		
 		if (empty($this -> searchTags) && empty($this -> searchCategories)) {
 			foreach ($this -> userFilters as $index => $filter) {
@@ -196,7 +182,7 @@ class FilterForm extends FiltersBuilder
 	}
 	
 	
-	public function setFromSession()
+	public function getFromSession()
 	{
 		$filters = $this -> session -> get('filterForm');
 		$props = $this -> getFilterProperties();
@@ -216,7 +202,11 @@ class FilterForm extends FiltersBuilder
 		$this -> setLocation();
 		$this -> setStartDate();
 		$this -> setEndDate();
+		$this -> setCategories();
 		$this -> setTags();
+		
+		$this -> searchTitle = false;
+		$this -> searchTypeResult = 'List';
 		
 		return $this;
 	}
