@@ -40,4 +40,16 @@ class Tag extends TagObject
 		
 		return $tagsFilters;
 	}
+	
+	
+	public static function getTagsByCategory($cId)
+	{
+		$result = false;
+		
+		if ($tags = Tag::find(['category_id = ' . (int)$cId])) {
+			$result = $tags;
+		}	
+	
+		return $result;
+	}
 } 

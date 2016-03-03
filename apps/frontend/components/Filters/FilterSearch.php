@@ -133,25 +133,26 @@ class FilterSearch extends FiltersBuilder
 	
 	public function applyGlobalPreset()
 	{
-		_U::dump($this -> getFilters());
-		
-		if (!empty($this -> compoundTitle) && (!empty($this -> compoundTag) || !empty($this -> compoundCategory))) {
-			$this -> compoundTag = [];
-			$this -> compoundCategory = [];
-			
+		if (!empty($this -> compoundTitle)) {
+			if (!empty($this -> compoundTag) || !empty($this -> compoundCategory)) {
+				$this -> compoundTag = [];
+				$this -> compoundCategory = [];
+			}			
+
 			if ($tags = Tag::find(['name like "%' . $this -> compoundTitle . '%"'])) {
 				foreach ($tags as $searchWord) {
 					$this -> compoundTag[] = (int)$searchWord -> id;
 				}
 			}
-
+	
 			if ($categories = Category::find(['name like "%' . $this -> compoundTitle . '%"'])) {
 				foreach ($categories as $searchWord) {
 					$this -> compoundCategory[] = (int)$searchWord -> id;
 				}
 			}
-				
 		}
+		
+		return $this;
 	}
 	
 	

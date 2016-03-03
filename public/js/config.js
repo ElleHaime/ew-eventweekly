@@ -169,14 +169,14 @@ require.config({
         	fileName = '/event/featured';
         } else if (trendingRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/trending';
-        } else if (seoDaysRel.test(location.pathname) == true || seoDatesRel.test(location.pathname) == true) {
+        } else if (seoDaysRel.test(location.pathname.replace(/%20/ig,'-')) == true || seoDatesRel.test(location.pathname.replace(/%20/g, '-')) == true) {
         	fileName = '/search/list';
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
-
+console.log(fileName);
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
         } else {

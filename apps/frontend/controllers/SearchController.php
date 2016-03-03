@@ -49,31 +49,35 @@ class SearchController extends \Core\Controller
     			   'actionUrl' => '',
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
-    	
-    	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Dublin',
-    						 									  'administrative_area_level_2' => 'Dublin City',
-    						 									  'administrative_area_level_1' => 'Dublin',
-    						 									  'country' => 'Ireland'],
-    						 'searchStartDate' => '2016-02-24',
-    						 'searchEndDate' => '2016-05-02',
-    						 'searchTitle' => 'Bububu',
-    						 'searchTypeResult' => 'List',
-    						 'searchCategories' => ['3' => 'on'],
-    						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']];
 
+//      	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Las Vegas',
+// 																  'administrative_area_level_2' => 'Clark County',
+// 														    	  'administrative_area_level_1' => 'Nevada',
+// 														    	  'country' => 'United States'],
+//     						 'searchStartDate' => '2016-03-24',
+//     						 'searchEndDate' => '2016-05-02',
+//     						 'searchTitle' => 'music',
+//     						 'searchTypeResult' => 'List',
+// //     						 'searchCategories' => ['3' => 'on'],
+// //     						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']
+//    						];
+//_U::dump($this -> postData);
 		foreach ($this -> postData as $key => $val) {
-//			if ($value = $this -> postElemExists($key)) {
+			if ($value = $this -> postElemExists($key)) {
 				$this -> filtersBuilder -> addFilter($key, $val);
-//			} 
+			} 
 		}
  		$this -> filtersBuilder -> applyFilters();
-_U::dump($this -> filtersBuilder -> getSearchFilters());
+// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
+// _U::dump($this -> filtersBuilder -> getFormFilters());
+
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
  		}
 		$result['status'] = 'OK';
-    	$result['bu'] = $this -> filtersBuilder -> getSearchFilters();
+    	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
+    	$result['bu'] = $this -> postData;
 		    	 
 		$this -> sendAjax($result);
     }
@@ -104,14 +108,18 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
      * @Route('/{location:[A-Za-z\-]+}/{arg:(things-to-do-in)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(today)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(tomorrow)}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/{arg:(this-week)}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/{arg:(this-weekend)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{dateDay:[a-z0-9]+}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{dateStart:[a-z0-9]+}-{dateEnd:[a-z0-9]+}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/{arg:(this-week)}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/{arg:(this-weekend)}', methods={'GET'})
      * @Acl(roles={'guest','member'});
      */
     public function globalSearchAction($location, $arg1, $arg2 = '')
     {
+// http://events.apppicker.loc/las%20vegas-us/1mar-28may
+// $re = '/[A-Za-z\-]+';
+// $str = '';
+//$str = 'las%20vegas-us/today';    	
     	$this -> setLocationByCity($location);
     	if (!$this -> setSearchDateVars($arg1)) $this -> setSearchDateCustom($arg1, $arg2);
 
@@ -124,10 +132,10 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
      * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(things-to-do-in)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(today)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(tomorrow)}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-week)}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-weekend)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{dateDay:[a-z0-9]+}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{dateStart:[a-z0-9]+}-{dateEnd:[a-z0-9]+}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-week)}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-weekend)}', methods={'GET'})
      * @Acl(roles={'guest','member'});
      */
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
@@ -149,7 +157,7 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
 // _U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
 // _U::dump($this -> filtersBuilder -> getSearchFilters());
 
-_U::dump($this -> filtersBuilder -> getSearchFilters(), true);    	
+//_U::dump($this -> filtersBuilder -> getSearchFilters(), true);    	
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
@@ -211,6 +219,8 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
 	   			$this -> view -> setVar('pagination', $results['array_pages']);
 	   			$this -> view -> setVar('pageCurrent', $results['page_now']);
 	   			$this -> view -> setVar('pageTotal', $results['all_page']);
+	   		} else {
+	   			$this -> view -> setVar('pageTotal', 0);
 	   		}
 	   		$countResults = $results['all_count'];
     	}
@@ -291,6 +301,7 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
     {
     	$newLocation = (new Location()) -> createOnChange(['city' => substr($arg, 0, strrpos($arg, '-')),
     														'country' => substr($arg, strrpos($arg, '-')+1)]);
+_U::dump($newLocation);    	
 		$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);    	
 
     	$this -> cookies -> get('lastLat') -> delete();
@@ -305,7 +316,7 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
     		$this -> cookies -> get('lastLat') -> delete();
     		$this -> cookies -> get('lastLng') -> delete();
 
-    	$this -> actionUrl .= '/' . strtolower($this -> session -> get('location') -> city)
+    	$this -> actionUrl .= '/' . str_replace(' ', '-', strtolower($this -> session -> get('location') -> city))
     												. '-' . strtolower(_L::getCodeByName($this -> session -> get('location') -> country));
     	 
      	// set %personalised%

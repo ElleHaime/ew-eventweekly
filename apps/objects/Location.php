@@ -128,7 +128,6 @@ class Location extends Model
 			}
 
 			if (!$isLocationExists) {
-
 				$query = array();
 				if (isset($argument['longitude'])) {
 					$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
@@ -141,13 +140,13 @@ class Location extends Model
 				}
 				
 				$query = implode(' and ', $query);
-
+_U::dump($query);
 		        if (!empty($query)) {
 		            $isLocationExists = self::findFirst($query);
 		        } else {
 		            $isLocationExists = false;
 		        }
-
+_U::dump($isLocationExists);
 				if (!$isLocationExists) {
 					if (!$isGeoObject) {
 						if (isset($argument['longitude']) && isset($argument['latitude'])) {

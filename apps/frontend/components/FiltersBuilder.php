@@ -29,6 +29,8 @@ class FiltersBuilder extends Component
 	
 	public function addFilter($filter, $value)
 	{
+		$this -> filters[] = $filter;
+		
 		switch ($filter) {
 			case 'searchLocationFormattedAddress':
 					$formattedAddress = get_object_vars(json_decode($value));
@@ -95,8 +97,22 @@ class FiltersBuilder extends Component
 	}
 	
 	
+	public function removeFilter($filter)
+	{
+		$this -> filterSearch -> unsetFilterProperty($filter);
+		$this -> filterForm -> unsetFilterProperty($filter);
+	}
+	
+	
 	public function applyFilters()
 	{
+		if (!array_search('searchTitle', $this -> filters)) {
+			$this -> removeFilter('compoundTitle');
+		}
+		if (!array_search('personalPresetActive', $this -> filters)) {
+			$this -> unsetMemberPreset();
+		}
+		
 		if ($this -> getMemberPreset()) {
 			// apply to tags
 			$this -> filterSearch -> applyMemberPreset();
@@ -176,4 +192,18 @@ class FiltersBuilder extends Component
 		
 		return $properties;
 	}
+	
+	public function unsetFilterProperty($propertyName)
+	{
+		if (property_exists($this, $propertyName)) {
+			if (is_array($this -> $propertyName)) {
+				$this -> $propertyName = [];
+			} else {
+				unset($this -> $propertyName);
+			}
+		}
+	
+		return $this;
+	}
+	
 }
