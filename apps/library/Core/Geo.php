@@ -47,6 +47,8 @@ class Geo extends Plugin
 	protected $di 						= false;
 	protected $_errors					= array();
 	
+	
+	
 	public function __construct($dependencyInjector = null)
 	{
 		if ($dependencyInjector) {

@@ -23,7 +23,7 @@ class Location extends Model
 	public $longitudeMin;
 	public $latitudeMax;
 	public $longitudeMax;
-	public $parent_id = 0;
+	public $place_id;
 	 
 
 	public function initialize()

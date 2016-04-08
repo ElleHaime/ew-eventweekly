@@ -33,6 +33,8 @@ class FiltersBuilder extends Component
 		
 		switch ($filter) {
 			case 'searchLocationFormattedAddress':
+//TODO: add administrative area.
+//TODO: problem here 12210 | Al Abageyah | Cairo Governorate | Egypt and in Japan
 					$formattedAddress = get_object_vars(json_decode($value));
 					$value = (new Location()) -> createOnChange(['city' => $formattedAddress['locality'], 'country' => $formattedAddress['country']]);
 					$this -> session -> set('location', $value);

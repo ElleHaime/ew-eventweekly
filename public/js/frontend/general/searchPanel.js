@@ -88,10 +88,12 @@ define('frontSearchPanel',
 		            var list = utils.addressAutocomplete($($this.settings.searchLocation)[0]);
 		
 		            google.maps.event.addListener(list, 'place_changed', function() {
-		                var formattedAddress = {}; 
+		                var formattedAddress = {};
+              
 		                $.each(list.getPlace().address_components, function(index, val) {
 		                	formattedAddress[val.types[0]] = val.long_name;
 		                });
+		                formattedAddress['place_id'] = list.getPlace().place_id;
 		                formattedAddress = JSON.stringify(formattedAddress);
 
 		                $this.__setSearchLocation(formattedAddress);
@@ -191,7 +193,7 @@ define('frontSearchPanel',
 		                } else {
 		                	$($this.settings.searchLocation).prop('disabled', true);
 		                    searchParams = form.serialize();
-console.log(searchParams);		    		                    
+console.log(searchParams);	
 		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
 console.log(response);		    	            	
 		    	                if (response.status == 'OK') {
