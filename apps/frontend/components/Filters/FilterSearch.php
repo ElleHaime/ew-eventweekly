@@ -159,7 +159,7 @@ class FilterSearch extends FiltersBuilder
 	public function applyMemberPreset()
 	{
 		$memberPreset = $this -> getMemberPreset();
-		
+
 		if (isset($memberPreset['category']) && !empty($memberPreset['category']['value'])) {
 			foreach ($memberPreset['category']['value'] as $category) {
 				$this -> compoundCategory[] = $category;

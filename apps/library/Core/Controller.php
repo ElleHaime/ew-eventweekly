@@ -47,19 +47,36 @@ class Controller extends \Phalcon\Mvc\Controller
         $loc = $this->session->get('location');
         if ($loc === null) {
             $locModel = new Location();
-            $loc = $locModel->createOnChange();
-            $this->session->set('location', $loc);
+            $loc = $locModel -> createOnChange();
+            $this -> session -> set('location', $loc);
         }
-
-        if (!$loc->latitude && !$loc->longitude) {
-            $loc->latitude = (float)(($loc->latitudeMin + $loc->latitudeMax) / 2);
-            $loc->longitude = (float)(($loc->longitudeMin + $loc->longitudeMax) / 2);
-            $loc->latitudeMin = (float)$loc->latitudeMin;
-            $loc->latitudeMax = (float)$loc->latitudeMax;
-            $loc->longitudeMin = (float)$loc->longitudeMin;
-            $loc->longitudeMax = (float)$loc->longitudeMax;
-
-            $this->session->set('location', $loc);
+        
+        if ($this->session->has('userSearch')) {
+        	$this->view->setVar('userSearch', $this->session->get('userSearch'));
+        }
+        
+        if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
+        	$this->memberId = $this->session->get('memberId');
+        	$this->view->member = $this->session->get('member');
+        
+        	if ($this->session->has('user_token')) {
+        		$this->view->setVar('external_logged', 'facebook');
+        
+        		$this->view->setVar('permission_base', $this->session->get('permission_base'));
+        		$this->view->setVar('permission_publish', $this->session->get('permission_publish'));
+        		$this->view->setVar('permission_manage', $this->session->get('permission_manage'));
+        
+        		if (isset($this->view->member->network)) {
+        			$this->view->setVar('acc_external', $this->view->member->network);
+        		}
+        	}
+        
+        	if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
+        		$this->view->setVar('acc_external', $member->network);
+        	}
+        	 
+        } else {
+        	$this->session->set('role', Acl::ROLE_GUEST);
         }
 
         if ($this->session->has('location_conflict')) {
@@ -77,7 +94,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> filtersBuilder -> load();
 
         $detect = new MobileDetect();
-        if ($detect->isMobile() || $detect->isTablet()) {
+        if ($detect -> isMobile() || $detect -> isTablet()) {
             $this->view->setVar('isMobile', '1');
         } else {
             $this->view->setVar('isMobile', '0');

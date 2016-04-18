@@ -14,6 +14,7 @@ class Location extends Model
 	public $state;
 	public $country;
 	public $alias;
+	public $search_alias;
 	public $serviceCity;
 	public $serviceState;
 	public $serviceCountry;
@@ -49,30 +50,37 @@ class Location extends Model
 								                      'latMax' => $loc -> latitudeMax,
 								                      'lonMax' => $loc -> longitudeMax,
 								                      'city' => $loc -> city,
-								                      'country' => $loc -> country);
+								                      'country' => $loc -> country, 
+													  'place_id' => $loc -> place_id);
 			}
 		}
 		$this -> getCache() -> save('locations', $locationsCache);
 	}
 
-	public function checkInCache($argument = [], $scope = [])
+	
+	public function checkInCache($argument = [])
 	{
 		$result = false;
-
-		if (!empty($argument) && !empty($locationsScope)) {
-			//$this -> checkInCache($argument);
-            foreach ($scope as $loc_id => $coords) {
-                if ($argument['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $argument['latitude'] &&
-                    $argument['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $argument['longitude'])
-                {
-                    $result = $scope[$loc_id];
-                    break;
-                }
-            }
+		
+		if ($this -> getCache() -> exists('locations')) {
+			$locationsScope = $this -> getCache() -> get('locations');
+			
+			if (!empty($argument) && !empty($locationsScope)) {
+				//$this -> checkInCache($argument);
+	            foreach ($scope as $loc_id => $coords) {
+	                if ($argument['latitude'] >= $coords['latMin'] && $coords['latMax'] >= $argument['latitude'] &&
+	                    $argument['longitude'] <= $coords['lonMax'] && $coords['lonMin'] <= $argument['longitude'])
+	                {
+	                    $result = $scope[$loc_id];
+	                    break;
+	                }
+	            }
+			}
 		}
 
 		return $result;
 	}
+	
 
 	public function addToCache($newLocation)
 	{
@@ -87,75 +95,63 @@ class Location extends Model
 								                 'latMax' => $newLocation->latitudeMax,
 								                 'lonMax' => $newLocation->longitudeMax,
 								                 'city' => $newLocation->city,
-								                 'country' => $newLocation->country];
-            $this -> getCache() -> delete('locations');
+								                 'country' => $newLocation->country,
+            									 'place_id' => $newLocation->place_id];
+            //$this -> getCache() -> delete('locations');
             $this -> getCache() -> save('locations', $locationsScope);
         }
 	}
+	
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
-//_U::dump($argument);		
+//_U::dump($argument, true);		
 		$isLocationExists = false;
 		$saveIp = false;
 		
-		if (empty($argument)) {
-			$saveIp = true;
-		}
-		
-		!is_null($this -> getCache() -> exists('locations')) 
-						? $locationsScope = $this -> getCache() -> get('locations')
-						: $locationsScope = [];
-
-		if (!empty($argument) && !empty($locationsScope)) {
-			$isLocationExists = $this -> checkInCache($argument, $locationsScope);
-		}
+		if (empty($argument)) $saveIp = true;
+		$isLocationExists = $this -> checkInCache($argument);
 
 		if (!$isLocationExists) {
 			$geo = $this -> getGeo();
 			$isGeoObject = false;
-			$newLoc = array();
+			$newLoc = [];
 	
 			if (empty($argument)) {
-				$argument = $geo -> getLocation();
-				if ($argument) {
+				if ($argument = $geo -> getLocation()) {
 					$isGeoObject = true;
-
 					if (isset($argument['location_id'])) {
 						$isLocationExists = self::findFirst($argument['location_id']);
 					}
 				}
-			}
 
+			}
 			if (!$isLocationExists) {
-				$query = array();
-				if (isset($argument['longitude'])) {
-					$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
+				$query = [];
+				if (isset($argument['place_id'])) {
+					$query[] = 'place_id = "' . $argument['place_id'] . '"';
+				} else {
+					if (isset($argument['longitude'])) {
+						$query[] = 'longitudeMin <= ' .  (float)$argument['longitude'] . ' AND ' . (float)$argument['longitude'] . ' <= longitudeMax';
+					}
+					if (isset($argument['latitude'])) {
+						$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
+					}
+					if (isset($argument['city'])) {
+						$query[] = 'city like "%' . $argument['city'] . '%"';
+					}
 				}
-				if (isset($argument['latitude'])) {
-					$query[] = 'latitudeMin <= ' .  (float)$argument['latitude'] . ' AND ' . (float)$argument['latitude'] . ' <= latitudeMax';
-				}
-				if (isset($argument['city'])) {
-					$query[] = 'city like "%' . $argument['city'] . '%"';
-				}
-				
 				$query = implode(' and ', $query);
-_U::dump($query);
+//_U::dump($query, true);
 		        if (!empty($query)) {
 		            $isLocationExists = self::findFirst($query);
 		        } else {
 		            $isLocationExists = false;
 		        }
-_U::dump($isLocationExists);
+//_U::dump($isLocationExists, true);
 				if (!$isLocationExists) {
-					if (!$isGeoObject) {
-						if (isset($argument['longitude']) && isset($argument['latitude'])) {
-							$newLoc = $geo -> getLocation($argument);
-						}				
-					} else {
-						$newLoc = $argument;
-					}
-
+					!$isGeoObject ? $newLoc = $geo -> getLocation($argument) : $newLoc = $argument;
+//_U::dump($newLoc);
 					if ($newLoc) {
 						if (!isset($argument['id']) || empty($argument['id'])) {
 							$newLoc[$network . '_id'] = null;
@@ -165,10 +161,7 @@ _U::dump($isLocationExists);
 					}
 					
 					if (!empty($newLoc)) {
-						$checkExistense = self::findFirst('city like "%' . $newLoc['city']. '%" and country like "%' . $newLoc['country']. '%"
-								and latitudeMin = ' . $newLoc['latitudeMin'] . ' and longitudeMin = ' . $newLoc['longitudeMin'] . '
-								and latitudeMax = ' . $newLoc['latitudeMax'] . ' and longitudeMax = ' . $newLoc['longitudeMax']);
-						
+						$checkExistense = self::findFirst('place_id = "' . $newLoc['place_id'] . '"');
 						if ($checkExistense) {
 							$isLocationExists = $checkExistense;
 						} else {
@@ -181,34 +174,21 @@ _U::dump($isLocationExists);
 							$newIp = new LocationIp();
 							$newIp -> saveNewIp($isLocationExists -> id, $newLoc['ip']);
 						}
-						$isLocationExists -> latitude = $newLoc['latitude'];
-						$isLocationExists -> longitude = $newLoc['longitude'];
-					} else {
-						$isLocationExists -> latitude = (float)$argument['latitude'];
-						$isLocationExists -> longitude = (float)$argument['longitude'];
-							
-						$isLocationExists -> id = 0;
-						if (isset($argument['formattedAddress'])) {
-							$isLocationExists -> city = $argument['formattedAddress']['locality'];
-							$isLocationExists -> alias = $argument['formattedAddress']['locality'];
-						}
-					}
+					} 
 				} else {
 					if ($saveIp !== false) {
 						$newIp = new LocationIp();
 						$newIp -> saveNewIp($isLocationExists -> id, $geo -> getUserIp());
-					} 
-					
-					$isLocationExists -> latitude = (float)$argument['latitude'];
-					$isLocationExists -> longitude = (float)$argument['longitude'];
+					}
 				}
-
 				$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
 				$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
 				$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
 				$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
+				$isLocationExists -> latitude = ($isLocationExists -> latitudeMin + $isLocationExists -> latitudeMax)/2;
+				$isLocationExists -> longitude = ($isLocationExists -> longitudeMin + $isLocationExists -> longitudeMax)/2;
 
-				$this -> addToCache($isLocationExists);
+//				$this -> addToCache($isLocationExists);
 			} 
 		}
 	

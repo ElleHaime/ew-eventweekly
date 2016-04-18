@@ -7,15 +7,12 @@ require([
     'utils',
     'domReady',
     'underscore',
-    'jCookie',
-    'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'
+    'jCookie'
     ],
 
     function($, fb, frontMemberEditControl, frontMemberChangeLocation, noty) {
         fb.init();
-
         frontMemberEditControl.init();
-
         frontMemberChangeLocation.init();
 
         if ($('#splash_messages').length > 0) {

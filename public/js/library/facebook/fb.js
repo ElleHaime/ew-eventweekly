@@ -202,6 +202,8 @@ define('fb',
 	           										if (response) {
 	           											self.userData.locationLat = response.location.latitude; 
 	           											self.userData.locationLng = response.location.longitude;
+	           											self.userData.locationCity = response.location.city;
+	           											self.userData.locationCountry = response.location.country;
 	           										}
 	           										self.__register(facebookData);
 	           									});

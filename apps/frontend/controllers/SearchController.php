@@ -50,13 +50,14 @@ class SearchController extends \Core\Controller
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
 
-//      	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Las Vegas',
-// 																  'administrative_area_level_2' => 'Clark County',
-// 														    	  'administrative_area_level_1' => 'Nevada',
-// 														    	  'country' => 'United States'],
-//     						 'searchStartDate' => '2016-03-24',
-//     						 'searchEndDate' => '2016-05-02',
-//     						 'searchTitle' => 'music',
+//      	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Allendale Charter Township',
+// 																  'administrative_area_level_2' => 'Ottawa County',
+// 														    	  'administrative_area_level_1' => 'Michigan',
+// 																  'place_id' => 'ChIJVVlMw1mYGYgRzA4J9D98Qpo',
+// 														    	  'country' => 'United States',],
+//     						 'searchStartDate' => '2016-04-12',
+//     						 'searchEndDate' => '2016-05-12',
+// //    						 'searchTitle' => 'music',
 //     						 'searchTypeResult' => 'List',
 // //     						 'searchCategories' => ['3' => 'on'],
 // //     						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']
@@ -108,8 +109,8 @@ class SearchController extends \Core\Controller
      * @Route('/{location:[A-Za-z\-]+}/{arg:(things-to-do-in)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(today)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(tomorrow)}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/{dateDay:[a-z0-9]+}', methods={'GET'})
-     * @Route('/{location:[A-Za-z\-]+}/{dateStart:[a-z0-9]+}-{dateEnd:[a-z0-9]+}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/{dateDay:[0-9]{1,2}[a-z]+}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/{dateStart:[0-9]{1,2}[a-z]+}-{dateEnd:[0-9]{1,2}[a-z]+}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(this-week)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(this-weekend)}', methods={'GET'})
      * @Acl(roles={'guest','member'});
@@ -173,7 +174,7 @@ class SearchController extends \Core\Controller
     	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
     		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
     	}
-_U::dump($this -> filtersBuilder -> getSearchFilters());
+//_U::dump($this -> filtersBuilder -> getSearchFilters());
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
     														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
     	$page = $this -> request -> getQuery('page');
@@ -301,7 +302,7 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
     {
     	$newLocation = (new Location()) -> createOnChange(['city' => substr($arg, 0, strrpos($arg, '-')),
     														'country' => substr($arg, strrpos($arg, '-')+1)]);
-_U::dump($newLocation);    	
+//_U::dump($newLocation);    	
 		$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);    	
 
     	$this -> cookies -> get('lastLat') -> delete();
@@ -386,6 +387,7 @@ _U::dump($newLocation);
     public function resetFiltersAction()
     {
     	$this -> filtersBuilder -> resetFilters();
+    	_U::dump('done');
     	$this -> response -> redirect('/');
     }
 }

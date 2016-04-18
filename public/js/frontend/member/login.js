@@ -23,7 +23,7 @@ require([
             });
         }
 
-        $("#loginBtn").click(function(){
+        $("#loginBtn").click(function() {
             $.post( "/auth/login", { email: $("input[name=email]").val(), password: $("input[name=password]").val() })
                 .done(function( data ) {
                     data = JSON.parse(data);

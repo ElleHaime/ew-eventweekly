@@ -156,13 +156,13 @@ require.config({
         	featuredRel = /^\/[a-zA-Z\-\s]+$/,
         	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/,
         	seoDaysRel = /^\/[a-z\-]+\/(personalised\/)?(today|tomorrow|this-week|this-weekend)$/,
-        	seoDatesRel = /^\/[a-z\-]+\/(personalised\/)?[a-z0-9]+(\-[a-z0-9]+)?$/;
-        
+        	seoDatesRel = /^\/[a-z\-]+\/(personalised\/)?[0-9]{1,2}[a-z]+(\-[0-9]{1,2}[a-z]+)?$/;
+console.log(location.pathname);
         if (whatsonRel.test(location.pathname)) {
 		} else if (freelisting.test(location.pathname)) {
         	fileName = '/'
         } else if (restoreRel.test(location.pathname)) {
-            fileName = '/auth/restore'
+            fileName = '/auth/restore'            
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
         } else if (featuredRel.test(location.pathname.replace(/%20/ig, ' '))) {

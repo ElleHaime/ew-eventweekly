@@ -135,16 +135,17 @@ class AuthController extends \Core\Controller
         			$this->session->remove('userSearch');
         			
         			$userSearch = ['personalPresetActive' => 1,
-        							'searchLocationField' => $this -> session -> get('location') -> city,
+        							'searchLocationCity' => $this -> session -> get('location') -> city,
+        							'searchLocationCountry' => $this -> session -> get('location') -> country,
+        							'searchLocationState' => $this -> session -> get('location') -> state,
         							'searchLocationLatMin' => $this -> session -> get('location') -> latitudeMin,
         							'searchLocationLatMax' => $this -> session -> get('location') -> latitudeMax,
         							'searchLocationLngMin' => $this -> session -> get('location') -> longitudeMin,
-        							'searchLocationLngMax' => $this -> session -> get('location') -> longitudeMax,
-        						   ];
-        			$this->session->set('userSearch', $userSearch);
-        			
+        							'searchLocationLngMax' => $this -> session -> get('location') -> longitudeMax];
+        			$this -> session -> set('userSearch', $userSearch);
+        			$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
+
         			$res['member_session_id'] = $this -> session -> get('memberId');
-        			(new Cron()) -> createUserTask();
         		} else {
         			$res['member_id'] = 'member_not_found';
         		}
@@ -186,7 +187,10 @@ class AuthController extends \Core\Controller
             $member = new Member();
             $locationByIp = $this->session->get('location');
             if (isset($userData['locationLat']) && isset($userData['locationLng']) && $locationByIp) {
-                $locationByFb = (new Location()) -> createOnChange(['latitude' => $userData['locationLat'], 'longitude' => $userData['locationLng']]);
+                $locationByFb = (new Location()) -> createOnChange(['latitude' => $userData['locationLat'], 
+                													 'longitude' => $userData['locationLng'],
+                													 'city' => $userData['locationCity'],
+                													 'country' => $userData['locationCountry']]);
 
                 if ($locationByIp -> id != $locationByFb -> id) { 
                     $this -> session -> set('location_conflict', true);
@@ -400,6 +404,8 @@ class AuthController extends \Core\Controller
     public function logoutAction()
     {
 		$this -> session -> destroy();
+		$this -> filtersBuilder -> resetFilters();
+		
 		return $this -> response -> redirect('/');
     }
     

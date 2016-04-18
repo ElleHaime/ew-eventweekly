@@ -28,7 +28,7 @@ class Geo extends Plugin
 								'postal_code',								
 								'country'];
 	
-	protected $_apiUrl 	= 'http://maps.googleapis.com/maps/api/geocode/json?sensor=false&language=en&';
+	protected $_apiUrl 	= 'http://maps.googleapis.com/maps/api/geocode/json?';
 
 	protected $_locLonCur				= false;
 	protected $_locLatCur				= false;
@@ -156,7 +156,7 @@ class Geo extends Plugin
 	
 	public function getLocation($coordinates = array())
 	{
-// _U::dump($coordinates, true);
+//_U::dump($coordinates, true);
 		$localityScope = [];
 		$units = [];
 		$baseType = 'locality';
@@ -173,28 +173,27 @@ class Geo extends Plugin
 			}
 		}
 	
-		
-		if (!empty($coordinates['city']) && !empty($coordinates['country']) && !empty($coordinates['latitude']) && !empty($coordinates['longitude']))
-		{
-			$queryParams = ['locality:' . urlencode($coordinates['city']), 'country:' . urlencode($coordinates['country'])];
-			$url = $this -> _apiUrl . 'components=' . implode('|', $queryParams);
-//_U::dump($url, true);
+		if (!empty($coordinates)) {
+			$url = $this -> _apiUrl . 'components=' . $this -> _buildLocationQuery($coordinates);
+	//_U::dump($url, true);
 			$result = json_decode(file_get_contents($url));
-//_U::dump($result, true);
-			if ($result -> status == 'OK' && count($result -> results) > 0)
-			{
-				if (count($result -> results) == 1)
-				{
+	//_U::dump($result, true);
+			if ($result -> status == 'OK' && count($result -> results) > 0) {
+				if (count($result -> results) == 1) {
 					$localityScope = $result -> results[0];
 					$baseType = 'locality';
 				} else {
 					foreach ($result -> results as $key => $scope) {
-						if ($this -> isInGeometry($coordinates['latitude'], $coordinates['longitude'], $scope -> geometry -> viewport)) {
+						$isInGeometry = true;
+						if (isset($coordinates['latitude']) && isset($coordinates['longitude'])) {
+							$isInGeometry = $this -> isInGeometry($coordinates['latitude'], $coordinates['longitude'], $scope -> geometry -> viewport);
+						}
+						if ($isInGeometry) {
 							foreach ($scope -> address_components as $area) {
 								if (in_array('locality', $area -> types) && $area -> long_name == $coordinates['city']) {
 									$localityScope = $scope;
 									$baseType = 'locality';
-									
+										
 									break;
 								}
 							}
@@ -203,23 +202,22 @@ class Geo extends Plugin
 				}
 			}
 		}
-//_U::dump($localityScope, true);
+
+//_U::dump($localityScope);
 		if (empty($localityScope)) 
 		{
 			if (!empty($coordinates['latitude']) && !empty($coordinates['longitude'])) {
-				$queryParams = $this -> _buildQuery($coordinates['latitude'], $coordinates['longitude']);
+				$queryParams = $this -> _buildCoordinatesQuery($coordinates['latitude'], $coordinates['longitude']);
 			} else {
-				$queryParams = $this -> _buildQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode);
+				$queryParams = $this -> _buildCoordinatesQuery($this -> _locLatCur, $this -> _locLonCur, $this -> _countryCode);
 			}
 			
 			$url = $this -> _apiUrl . $queryParams;
 			$result = json_decode(file_get_contents($url));
 //_U::dump($result);			
-			if ($result -> status == 'OK' && count($result -> results) > 0)
-			{
+			if ($result -> status == 'OK' && count($result -> results) > 0) {
 				foreach ($this -> _unitTypes as $index => $type) {
-					foreach ($result -> results as $object => $details)
-					{
+					foreach ($result -> results as $object => $details) {
 						if ($details -> types[0] == $type) $units[$details -> types[0]] = $object;
 					}
 				}
@@ -238,11 +236,11 @@ class Geo extends Plugin
 		{
 			foreach ($localityScope -> address_components as $obj => $lvl)
 			{
-				
 				if (in_array($baseType, $lvl -> types))
 				{
 					$location['alias'] = $lvl -> long_name;
 					$location['city'] = $lvl -> long_name;
+					$location['search_alias'] = \Core\Utils\SlugUri::slug($lvl -> long_name);
 				}
 				if (in_array('administrative_area_level_1', $lvl -> types))
 				{
@@ -255,44 +253,41 @@ class Geo extends Plugin
 				}
 				if (in_array('country', $lvl -> types)) $location['country'] = $lvl -> long_name;
 			}
-		
-			if (isset($location['city']) && isset($location['country']))
-			{
-				if (!empty($coordinates)) {
-					$location['latitude'] = (float)$coordinates['latitude'];
-					$location['longitude'] = (float)$coordinates['longitude'];
-				} else {
-					$location['ip'] = $this -> getUserIp();
-					$location['latitude'] = (float)$this -> _locLatCur ;
-					$location['longitude'] = (float)$this -> _locLonCur;
-				}
-		
-				if (isset($location['latitude']) && isset($location['longitude']))
-				{
-					$location['latitudeMin'] = (float)$localityScope -> geometry -> viewport -> southwest -> lat;
-					$location['longitudeMin'] = (float)$localityScope -> geometry -> viewport -> southwest -> lng;
-					$location['latitudeMax'] = (float)$localityScope -> geometry -> viewport -> northeast -> lat;
-					$location['longitudeMax'] = (float)$localityScope -> geometry -> viewport -> northeast -> lng;
-		
-					$location['resultSet'] = true;
-				}
-			}
+			$location['place_id'] = $localityScope -> place_id;
+			$location['latitudeMin'] = (float)$localityScope -> geometry -> viewport -> southwest -> lat;
+			$location['longitudeMin'] = (float)$localityScope -> geometry -> viewport -> southwest -> lng;
+			$location['latitudeMax'] = (float)$localityScope -> geometry -> viewport -> northeast -> lat;
+			$location['longitudeMax'] = (float)$localityScope -> geometry -> viewport -> northeast -> lng;
+			$location['longitude'] = ($location['longitudeMax'] + $location['longitudeMin'])/2;
+			$location['latitude'] = ($location['latitudeMax'] + $location['latitudeMin'])/2;
+			
+			if (empty($coordinates)) $location['ip'] = $this -> getUserIp();
+
+			$location['resultSet'] = true;
 		}
 //_U::dump($location);		
 		return $location;
 	}
 	
-	
-	protected function _buildQuery($lat, $lon, $countryCode = false)
-	{
-		$result = array();
 
-		if ($countryCode) {
-			$result[] = 'region=' . $this -> _countryCode;
-		}
-		if ($lat && $lon) {
-			$result[] = 'latlng=' . $lat . ',' . $lon;
-		}
+	protected function _buildLocationQuery($argument = [])
+	{
+		$result = [];
+		
+		if ($argument['city']) $result[] = 'locality:' . urlencode($argument['city']);
+		if ($argument['country']) $result[] = 'country:' . urlencode($argument['country']);
+		if ($argument['administrative_area_level_1']) $result[] = 'administrative_area_level_1:' . urlencode($argument['administrative_area_level_1']); 
+		
+		return implode('|', $result); 
+	}
+	
+	
+	protected function _buildCoordinatesQuery($lat, $lon, $countryCode = false)
+	{
+		$result = [];
+
+		if ($countryCode) $result[] = 'region=' . $this -> _countryCode;
+		if ($lat && $lon) $result[] = 'latlng=' . $lat . ',' . $lon;
 		
 		return implode("&", $result);
 	}

@@ -43,26 +43,12 @@ class MemberController extends \Core\Controllers\CrudController
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
 
-        $MemberFilter = new MemberFilter();
-        $member_categories = $MemberFilter->getbyId($list->id);
-
-        $tagIds = '';
-        if ( isset($member_categories['tag']['value']) ) {
-            $tagIds = implode(',', $member_categories['tag']['value']);
-        }
-        
-		$this->view->setVars(array(
-                'member', $list,
-                'categories' => Category::find(['is_default != 1'])->toArray(),
-                'tags' => Tag::find()->toArray(),
-                'tagIds' => $tagIds,
-                'member_categories' => $member_categories
-            ));
+		$this -> view -> setVars(['member' => $list,
+								  'userFilters' => $this -> filtersBuilder -> getFormFilters()['userFilters']]);
 
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));
         }
-        //_U::dump($this -> filters -> getUserFilters());        
 	}
 
 
@@ -228,8 +214,10 @@ class MemberController extends \Core\Controllers\CrudController
            								'value' => json_encode(array_keys($postData['tag']))]);
    			$memberFilters -> save();
         }
+        
+        $this -> filtersBuilder -> resetPreset();
 
-        $this->loadRedirect();
+        $this -> loadRedirect();
     }
 
     /**
@@ -250,11 +238,7 @@ class MemberController extends \Core\Controllers\CrudController
 
         if ($process) {
             $sMember = $this->session->get('member');
-            $member = Member::findFirst('id = '.$sMember->id);
-
-            if (!$member) {
-                $process = false;
-            }
+            if (!$member = Member::findFirst('id = ' . $sMember -> id)) $process = false;
         }
 
         if ($process) {
@@ -369,9 +353,7 @@ class MemberController extends \Core\Controllers\CrudController
     public function loginAction()
     {
         $form = new LoginForm();
-
         $this -> view -> form = $form;
-
         $this->view->pick('member/login');
     }
 

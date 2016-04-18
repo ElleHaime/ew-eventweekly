@@ -8,13 +8,15 @@ use \Core\Utils as _U,
 	\Frontend\Models\Category,
 	\Frontend\Models\Tag,
 	\Frontend\Models\Location,
-	\Frontend\Models\MemberFilter;
+	\Frontend\Models\MemberFilter,
+	\Frontend\Component\Filters\FilterSearch,
+	\Frontend\Component\Filters\FilterForm;
 
 class FiltersBuilder extends Component
 {
-	private $filters			 	= [];
-	private $memberPreset		= false;
-
+	public $filters			 	= [];
+	public $memberPreset		= false;
+	
 	
 	public function load()
 	{
@@ -23,7 +25,7 @@ class FiltersBuilder extends Component
  		} else {
  			$this -> filterForm -> getFromSession();
  			$this -> filterSearch -> getFromSession();
- 		} 
+ 		}
 	}
 	
 	
@@ -36,7 +38,11 @@ class FiltersBuilder extends Component
 //TODO: add administrative area.
 //TODO: problem here 12210 | Al Abageyah | Cairo Governorate | Egypt and in Japan
 					$formattedAddress = get_object_vars(json_decode($value));
-					$value = (new Location()) -> createOnChange(['city' => $formattedAddress['locality'], 'country' => $formattedAddress['country']]);
+// 					$formattedAddress = $value;
+					$value = (new Location()) -> createOnChange(['city' => $formattedAddress['locality'], 
+																 'country' => $formattedAddress['country'],
+																 'administrative_area_level_1' => $formattedAddress['administrative_area_level_1'],
+																 'place_id' => $formattedAddress['place_id']]);
 					$this -> session -> set('location', $value);
 					
 					$this -> filterSearch -> setLocation($value);
@@ -108,10 +114,12 @@ class FiltersBuilder extends Component
 	
 	public function applyFilters()
 	{
+		$this -> session -> set('filters', true);
+		
 		if (!array_search('searchTitle', $this -> filters)) {
 			$this -> removeFilter('compoundTitle');
 		}
-		if (!array_search('personalPresetActive', $this -> filters)) {
+		if (!in_array('personalPresetActive', $this -> filters)) {
 			$this -> unsetMemberPreset();
 		}
 		
@@ -146,25 +154,34 @@ class FiltersBuilder extends Component
 	public function resetFilters()
 	{
 		$this -> setMemberPreset();
-		
+
 		$this -> filterSearch -> reset();
 		$this -> filterForm -> reset();
 		
-		$this -> session -> set('filters', true);
+		$this -> applyFilters();
+		
+		return $this;
+	}
+
+	
+	public function resetPreset()
+	{
+		$this -> setMemberPreset();
 		$this -> applyFilters();
 		
 		return $this;
 	}
 	
-	
 	protected function setMemberPreset()
 	{
 		if ($this -> session -> has('memberId')) {
 			$preset = (new MemberFilter()) -> getbyId($this -> session -> get('memberId'));
+	
 			if (!empty($preset)) {
 				$this -> memberPreset = $preset;
 			}
 		}
+		$this -> session -> set('memberPreset', $this -> memberPreset);
 		
 		return $this;
 	}
@@ -173,12 +190,15 @@ class FiltersBuilder extends Component
 	protected function unsetMemberPreset()
 	{
 		$this -> memberPreset = false;
+		$this -> session -> set('memberPreset', $this -> memberPreset);
+		
+		return $this;
 	}
 	
 	
 	public function getMemberPreset()
 	{
-		return $this -> memberPreset;
+		return $this -> session -> get('memberPreset');
 	}
 	
 	
@@ -197,7 +217,8 @@ class FiltersBuilder extends Component
 	
 	public function unsetFilterProperty($propertyName)
 	{
-		if (property_exists($this, $propertyName)) {
+		if (property_exists($this, $propertyName) && !empty($this -> $propertyName)) 
+		{
 			if (is_array($this -> $propertyName)) {
 				$this -> $propertyName = [];
 			} else {

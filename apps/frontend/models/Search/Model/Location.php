@@ -66,7 +66,13 @@ class Location extends \Engine\Mvc\Model
      * @var string
      */
     public $alias;
-     
+    
+    /**
+     *
+     * @var string
+     */
+    public $search_alias;
+    
     /**
      *
      * @var string

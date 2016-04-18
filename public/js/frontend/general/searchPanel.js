@@ -193,7 +193,8 @@ define('frontSearchPanel',
 		                } else {
 		                	$($this.settings.searchLocation).prop('disabled', true);
 		                    searchParams = form.serialize();
-console.log(searchParams);	
+//console.log(searchParams);	
+//return false;
 		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
 console.log(response);		    	            	
 		    	                if (response.status == 'OK') {
