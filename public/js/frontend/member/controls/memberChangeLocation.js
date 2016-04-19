@@ -1,7 +1,3 @@
-/**
- * Created by Slava Basko on 12/19/13 <basko.slava@gmail.com>.
- */
-
 define('frontMemberChangeLocation', ['jquery', 'utils', 'noty', 'domReady'], function($, utils, noty){
 
     var memberChangeLocation = {
@@ -32,19 +28,17 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'noty', 'domReady'], fun
         __initializeListener: function(addr) {
             google.maps.event.addListener(addr, 'place_changed', function() {
                 var place = addr.getPlace();
-                var lat = place.geometry.location.lat();
-                var lng = place.geometry.location.lng();
-                var city = place.vicinity;
-                var country = $('.country-name', '<div>'+place.adr_address+'</div>').text();
+                var formattedAddress = {};
+                
+                $.each(place.address_components, function(index, val) {
+                	formattedAddress[val.types[0]] = val.long_name;
+                });
+                
+                formattedAddress['lat'] = place.geometry.location.lat();
+                formattedAddress['lng'] = place.geometry.location.lng();
+                formattedAddress['place_id'] = place.place_id;
 
-                var data = {
-                    lat: lat,
-                    lng: lng,
-                    city: city,
-                    country: country
-                };
-
-                $.post('/member/update-location', data, function(response){
+                $.post('/member/update-location', formattedAddress, function(response){
                     if (response.status == true) {
                         //console.log('all is OK');
 

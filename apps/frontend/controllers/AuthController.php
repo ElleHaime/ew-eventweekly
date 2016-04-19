@@ -57,8 +57,9 @@ class AuthController extends \Core\Controller
                         exit();
                     }
                 } else {
-                    $this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $member);
-                    $this->eventsManager->fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+                    $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
+                    $this -> eventsManager -> fire('App.Auth.Member:deleteCookiesAfterLogin', $this);
+                    $this -> filtersBuilder -> resetPreset();
 
                     if (!$this->request->isAjax()) {
                         $this -> response -> redirect('/');
@@ -100,6 +101,7 @@ class AuthController extends \Core\Controller
 
                 if ($member -> save()) {
                     $this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $member);
+                    $this -> filtersBuilder -> resetPreset();              
                     $this -> response -> redirect('/');
                 } 
                     
@@ -143,7 +145,7 @@ class AuthController extends \Core\Controller
         							'searchLocationLngMin' => $this -> session -> get('location') -> longitudeMin,
         							'searchLocationLngMax' => $this -> session -> get('location') -> longitudeMax];
         			$this -> session -> set('userSearch', $userSearch);
-        			$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
+        			$this -> filtersBuilder -> resetPreset();
 
         			$res['member_session_id'] = $this -> session -> get('memberId');
         		} else {

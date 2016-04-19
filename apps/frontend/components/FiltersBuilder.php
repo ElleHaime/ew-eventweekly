@@ -166,8 +166,7 @@ class FiltersBuilder extends Component
 	
 	public function resetPreset()
 	{
-		$this -> setMemberPreset();
-		$this -> applyFilters();
+		$this -> addFilter('personalPresetActive', 1) -> setMemberPreset() -> applyFilters();
 		
 		return $this;
 	}

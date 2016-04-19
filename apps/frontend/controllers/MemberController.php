@@ -233,7 +233,12 @@ class MemberController extends \Core\Controllers\CrudController
         $postData = $this -> request-> getPost();
 
         $newLoc = new Location();
-        $Location = $newLoc -> createOnChange(array('latitude' => $postData['lat'], 'longitude' => $postData['lng']));
+        $Location = $newLoc -> createOnChange(['place_id' => $postData['place_id'],
+        										'city' =>  $postData['locality'],
+        										'state' =>  $postData['administrative_area_level_1'],
+        										'country' =>  $postData['country'],
+        										'latitude' => $postData['lat'], 
+        										'longitude' => $postData['lng']]);
         $id = $Location->id;
 
         if ($process) {
