@@ -1,5 +1,6 @@
 define('frontEventEditControl',
-	['jquery', 'utils', 'fb', 'normalDatePicker', 'noty', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+//	['jquery', 'utils', 'fb', 'normalDatePicker', 'noty', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+	['jquery', 'utils', 'fb', 'normalDatePicker', 'noty', 'domReady'],
 	function($, utils, fb, normalDatePicker, noty) {
 
 		function frontEventEditControl($, utils, fb, normalDatePicker, noty)
@@ -510,6 +511,7 @@ define('frontEventEditControl',
 				if (self.__checkInputFill(input, list))	{
 		           	if (input == self.settings.inpLocation) {
                         var locs = utils.addressAutocomplete($(input)[0]);
+                        
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
 			                var lat = locs.getPlace().geometry.location.lat();
 			                var lng = locs.getPlace().geometry.location.lng();

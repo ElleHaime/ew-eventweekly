@@ -140,6 +140,9 @@ class Location extends Model
 					if (isset($argument['city'])) {
 						$query[] = 'city like "%' . $argument['city'] . '%"';
 					}
+					if (isset($argument['country'])) {
+						$query[] = 'country like "%' . $argument['country'] . '%"';
+					}
 				}
 				$query = implode(' and ', $query);
 //_U::dump($query, true);
