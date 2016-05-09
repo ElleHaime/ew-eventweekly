@@ -595,7 +595,11 @@ class EventController extends \Core\Controllers\CrudController
         if (empty($event['location_id']) && !empty($event['location_latitude']) && !empty($event['location_longitude'])) {
             // check location by coordinates
             $location = $loc->createOnChange(['latitude' => $event['location_latitude'],
-                                              'longitude' => $event['location_longitude']]);
+                                              'longitude' => $event['location_longitude'],
+            								  'city' => $event['location_city'],
+							            		'country' => $event['location_country'],
+							            		'state' => $event['location_state'],
+							            		'place_id' => $event['location_place_id']]);
             if ($location) {
                 $newEvent['location_id'] = $location->id;
                 $newEvent['latitude'] = $event['location_latitude'];
@@ -616,19 +620,6 @@ class EventController extends \Core\Controllers\CrudController
             }
             $newEvent['latitude'] = $event['venue_latitude'];
             $newEvent['longitude'] = $event['venue_longitude'];
-        }
-
-        // location coordinates wasn't set. Try to get location from address coordinates
-        if (!empty($event['address_latitude']) && !empty($event['address_longitude'])) {
-            if (!isset($newEvent['location_id'])) {
-                $location = $loc->createOnChange(['latitude' => $event['address_latitude'],
-                                                  'longitude' => $event['address_longitude']]);
-                $newEvent['location_id'] = $location->id;
-            }
-            if (!isset($newEvent['latitude']) && !isset($newEvent['longitude'])) {
-                $newEvent['latitude'] = $event['address_latitude'];
-                $newEvent['longitude'] = $event['address_longitude'];
-            }
         }
 
         // process venue

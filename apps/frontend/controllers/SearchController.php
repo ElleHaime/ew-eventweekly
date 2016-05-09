@@ -155,8 +155,8 @@ class SearchController extends \Core\Controller
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
 // _U::dump($this -> request -> getQuery());
-// _U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
-// _U::dump($this -> filtersBuilder -> getSearchFilters());
+//_U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
+_U::dump($this -> filtersBuilder -> getSearchFilters());
 
 //_U::dump($this -> filtersBuilder -> getSearchFilters(), true);    	
     	if ($this -> filtersBuilder -> getMemberPreset()) {
@@ -387,7 +387,10 @@ class SearchController extends \Core\Controller
     public function resetFiltersAction()
     {
     	$this -> filtersBuilder -> resetFilters();
-    	_U::dump('done');
+    	$this -> session -> set('location', false);
+    	$this -> session -> destroy();
+
+_U::dump('done');
     	$this -> response -> redirect('/');
     }
 }

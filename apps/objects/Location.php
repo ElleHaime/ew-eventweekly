@@ -105,7 +105,7 @@ class Location extends Model
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
-//_U::dump($argument, true);		
+// _U::dump($argument, true);		
 		$isLocationExists = false;
 		$saveIp = false;
 		
@@ -119,13 +119,14 @@ class Location extends Model
 	
 			if (empty($argument)) {
 				if ($argument = $geo -> getLocation()) {
+// _U::dump($argument);
 					$isGeoObject = true;
 					if (isset($argument['location_id'])) {
 						$isLocationExists = self::findFirst($argument['location_id']);
 					}
 				}
-
 			}
+// _U::dump($isLocationExists -> toArray());			
 			if (!$isLocationExists) {
 				$query = [];
 				if (isset($argument['place_id'])) {

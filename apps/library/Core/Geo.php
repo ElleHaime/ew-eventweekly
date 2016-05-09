@@ -130,7 +130,7 @@ class Geo extends Plugin
 		try {
 	        $client = new Client($this -> _config -> application -> GeoIp2 -> userId, 
 	        					 $this -> _config -> application -> GeoIp2 -> licenseKey);
-	
+
 	        $record = $client->city($this->_userIp);
 
 	        $this -> _locLatCur = $record->location->latitude;
@@ -154,9 +154,8 @@ class Geo extends Plugin
 	}
 
 	
-	public function getLocation($coordinates = array())
+	public function getLocation($coordinates = [])
 	{
-//_U::dump($coordinates, true);
 		$localityScope = [];
 		$units = [];
 		$baseType = 'locality';

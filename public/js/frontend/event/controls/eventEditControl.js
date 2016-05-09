@@ -36,6 +36,10 @@ define('frontEventEditControl',
 				coordsLocationLat: '#location_latitude',
 				coordsLocationLng: '#location_longitude',
 				coordsLocationId: '#location_id',
+				coordsLocationCity: '#location_city',
+				coordsLocationPlaceId: '#location_place_id',
+				coordsLocationCountry: '#location_country',
+				coordsLocationState: '#location_state',
 
 				inpAddress: '#address',
 				listAddress: '#addresses-list',
@@ -513,21 +517,29 @@ define('frontEventEditControl',
                         var locs = utils.addressAutocomplete($(input)[0]);
                         
 			           	google.maps.event.addListener(locs, 'place_changed', function() {
-			                var lat = locs.getPlace().geometry.location.lat();
-			                var lng = locs.getPlace().geometry.location.lng();
-
-			                $(self.settings.coordsLocationLat).val(lat);
-			                $(self.settings.coordsLocationLng).val(lng);
+			           		var place = locs.getPlace();
+			                var formattedAddress = {};
+			                
+			                $.each(place.address_components, function(index, val) {
+			                	formattedAddress[val.types[0]] = val.long_name;
+			                });
+//			                formattedAddress['lat'] = place.geometry.location.lat();
+//			                formattedAddress['lng'] = place.geometry.location.lng();
+//			                formattedAddress['place_id'] = place.place_id;
+//			                $(self.settings.coordsLocationHid).val(JSON.stringify(formattedAddress));
+			                $(self.settings.coordsLocationLat).val(place.geometry.location.lat());
+			                $(self.settings.coordsLocationLng).val(place.geometry.location.lng());
+			                $(self.settings.coordsLocationPlaceId).val(place.place_id);
+			                $(self.settings.coordsLocationCity).val(formattedAddress['locality']);
+			                $(self.settings.coordsLocationCountry).val(formattedAddress['country']);
+			                $(self.settings.coordsLocationState).val(formattedAddress['administrative_area_level_1']);
 			            });
 		           	}
 
 		           	if (input == self.settings.inpAddress) {
                         var addr = utils.addressAutocomplete($(input)[0], 'geocode');
 			           	google.maps.event.addListener(addr, 'place_changed', function() {
-			                var lat = addr.getPlace().geometry.location.lat();
-			                var lng = addr.getPlace().geometry.location.lng();
-
-			                $(self.settings.coordsAddress).val(lat + ';' + lng);
+			                $(self.settings.coordsAddress).val(addr.getPlace().geometry.location.lat() + ';' + addr.getPlace().geometry.location.lng());
 			            });
 		           	}
 

@@ -60,6 +60,11 @@ class EventForm extends Form
 		$this -> addElement('hidden', 'location_latitude');
 		$this -> addElement('hidden', 'location_longitude');
 		$this -> addElement('hidden', 'location_id');
+		$this -> addElement('hidden', 'location_place_id');
+		$this -> addElement('hidden', 'location_city');
+		$this -> addElement('hidden', 'location_country');
+		$this -> addElement('hidden', 'location_state');
+		$this -> addElement('hidden', 'location_data');
 		
 		$this -> addElement('text', 'address', 'Address', 
 								array('placeholder' => 'Choose address', 'autocomplete' => 'off'));

@@ -89,6 +89,12 @@
                                                 {{ form.render('location_latitude') }}
                                                 {{ form.render('location_longitude') }}
                                                 {{ form.render('location_id') }}
+                                                {{ form.render('location_place_id') }}
+                                                {{ form.render('location_city') }}
+                                                {{ form.render('location_country') }}
+                                                {{ form.render('location_state') }}
+                                                {{ form.render('location_data') }}
+                                                
                                                 <div class="search-queries hidden">
                                                     <ul id="locations-list">
                                                     </ul>

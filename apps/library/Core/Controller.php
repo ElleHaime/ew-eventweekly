@@ -30,9 +30,11 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
+_U::dump('controller init', true);    	
+_U::dump($this->session->get('location'));    	
         $this -> _setModule();
         $this -> _getChild();
-        $this -> _parseQueryVals();
+        $this -> _parseQueryVals(); 
 
         if (!$this->session->isStarted()) {
             $this->session->start();
@@ -45,6 +47,7 @@ class Controller extends \Phalcon\Mvc\Controller
         $member = $this->session->get('member');
 
         $loc = $this->session->get('location');
+//_U::dump($loc);        
         if ($loc === null) {
             $locModel = new Location();
             $loc = $locModel -> createOnChange();
