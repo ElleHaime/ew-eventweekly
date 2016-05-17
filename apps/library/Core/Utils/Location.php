@@ -258,7 +258,7 @@ class Location
 	
 	public static function getNameByCode($cCode)
 	{
-		$name = self::$countryCodes(trim($cCode));
+		$name = self::$countryCodes[strtoupper(trim($cCode))];
 		return $name;
 	}
 	

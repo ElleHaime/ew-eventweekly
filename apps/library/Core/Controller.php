@@ -30,8 +30,8 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
-_U::dump('controller init', true);    	
-_U::dump($this->session->get('location'));    	
+//_U::dump($this->session->has('userSearch'));    	
+//_U::dump($this->session->get('location'));    	
         $this -> _setModule();
         $this -> _getChild();
         $this -> _parseQueryVals(); 
@@ -46,16 +46,11 @@ _U::dump($this->session->get('location'));
 
         $member = $this->session->get('member');
 
-        $loc = $this->session->get('location');
-//_U::dump($loc);        
-        if ($loc === null) {
+        //$loc = $this->session->get('location');
+        if ($this->session->get('location') === null) {
             $locModel = new Location();
             $loc = $locModel -> createOnChange();
             $this -> session -> set('location', $loc);
-        }
-        
-        if ($this->session->has('userSearch')) {
-        	$this->view->setVar('userSearch', $this->session->get('userSearch'));
         }
         
         if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
@@ -95,7 +90,8 @@ _U::dump($this->session->get('location'));
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
         
         $this -> filtersBuilder -> load();
-
+        $this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
+//_U::dump($this -> filtersBuilder -> getFormFilters());
         $detect = new MobileDetect();
         if ($detect -> isMobile() || $detect -> isTablet()) {
             $this->view->setVar('isMobile', '1');

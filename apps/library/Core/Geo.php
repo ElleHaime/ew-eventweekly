@@ -12,6 +12,11 @@ use Phalcon\Mvc\User\Plugin,
 class Geo extends Plugin
 {
 	const DEFAULT_RADIUS_DIFF = 10;
+	const GMAPS_CITY = 'locality';
+	const GMAPS_COUNTRY = 'country';
+	const GMAPS_STATE = 'administrative_area_level_1';
+	const GMAPS_PLACE = 'place_id';
+	
 	protected $_unitTypes = ['locality',
 							  	'colloquial_area',
 							  	'sublocality',
@@ -172,11 +177,11 @@ class Geo extends Plugin
 			}
 		}
 	
-		if (!empty($coordinates)) {
+		if (!empty($coordinates) && isset($coordinates[self::GMAPS_STATE])) {
 			$url = $this -> _apiUrl . 'components=' . $this -> _buildLocationQuery($coordinates);
-	//_U::dump($url, true);
+//_U::dump($url, true);
 			$result = json_decode(file_get_contents($url));
-	//_U::dump($result, true);
+//_U::dump($result, true);
 			if ($result -> status == 'OK' && count($result -> results) > 0) {
 				if (count($result -> results) == 1) {
 					$localityScope = $result -> results[0];
@@ -273,9 +278,9 @@ class Geo extends Plugin
 	{
 		$result = [];
 		
-		if ($argument['city']) $result[] = 'locality:' . urlencode($argument['city']);
-		if ($argument['country']) $result[] = 'country:' . urlencode($argument['country']);
-		if ($argument['administrative_area_level_1']) $result[] = 'administrative_area_level_1:' . urlencode($argument['administrative_area_level_1']); 
+		if ($argument['city']) $result[] = self::GMAPS_COUNTRY . ':' . urlencode($argument['city']);
+		if ($argument[self::GMAPS_COUNTRY]) $result[] = self::GMAPS_COUNTRY . ':' . urlencode($argument['country']);
+		if ($argument[self::GMAPS_STATE]) $result[] = self::GMAPS_STATE . ':' . urlencode($argument['administrative_area_level_1']); 
 		
 		return implode('|', $result); 
 	}

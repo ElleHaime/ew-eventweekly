@@ -39,10 +39,10 @@ class FiltersBuilder extends Component
 //TODO: problem here 12210 | Al Abageyah | Cairo Governorate | Egypt and in Japan
 					$formattedAddress = get_object_vars(json_decode($value));
 // 					$formattedAddress = $value;
-					$value = (new Location()) -> createOnChange(['city' => $formattedAddress['locality'], 
-																 'country' => $formattedAddress['country'],
-																 'administrative_area_level_1' => $formattedAddress['administrative_area_level_1'],
-																 'place_id' => $formattedAddress['place_id']]);
+					$value = (new Location()) -> createOnChange(['city' => $formattedAddress[\Core\Geo::GMAPS_CITY], 
+																 'country' => $formattedAddress[\Core\Geo::GMAPS_COUNTRY],
+																 'administrative_area_level_1' => $formattedAddress[\Core\Geo::GMAPS_STATE],
+																 'place_id' => $formattedAddress[\Core\Geo::GMAPS_PLACE]]);
 					$this -> session -> set('location', $value);
 					
 					$this -> filterSearch -> setLocation($value);
@@ -86,7 +86,7 @@ class FiltersBuilder extends Component
 				break;
 				
 			case 'personalPresetActive':
-					$this -> setMemberPreset();
+					$value == 1 ? $this -> setMemberPreset() : $this -> unsetMemberPreset();
 				break;
 			
 			case 'searchNotId':

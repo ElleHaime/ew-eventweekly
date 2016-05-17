@@ -227,7 +227,7 @@
         </section>
     </div>
 </div>
-
+{% include 'layouts/accfilter_new.volt' %}
 	<input type='hidden' id="passwordChanged" value='{% if passwordChanged is defined %}1{% else %}0{% endif %}'>
 	
     {% if acc_external is defined %}

@@ -40,13 +40,11 @@ define('frontMemberChangeLocation', ['jquery', 'utils', 'noty', 'domReady'], fun
 
                 $.post('/member/update-location', formattedAddress, function(response){
                     if (response.status == true) {
-                        //console.log('all is OK');
-
                         // change city text in header
                         //$('.location-place_country span').text(city);
 
-                        $('#mLocation').text(city + ',' + country );
-                        $('#uLocation').text(city + ',' + country );
+                        $('#mLocation').text(formattedAddress['locality'] + ',' + formattedAddress['country'] );
+                        $('#uLocation').text(formattedAddress['locality'] + ',' + formattedAddress['country'] );
                         //$('#mLocation').text(city);
                         //$('#uLocation').val('');
 

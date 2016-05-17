@@ -13,34 +13,43 @@ use \Core\Utils as _U,
 class FilterForm extends FiltersBuilder
 {
 	/* @var string */
-	protected $searchLocationCity		= false;
+	protected $searchLocationCity				= false;
 	
 	/* @var string */
-	protected $searchLocationCountry	= false;
+	protected $searchLocationCountry			= false;
 	
 	/* @var string */
-	protected $searchLocationState		= false;
+	protected $searchLocationState				= false;
 	
 	/* @var string */
-	protected $searchStartDate			= false;
+	protected $searchStartDate					= false;
 	
 	/* @var string */
-	protected $searchEndDate			= false;
+	protected $searchEndDate					= false;
 	
 	/* @var string */
-	protected $searchTitle				= false;
+	protected $searchTitle						= false;
+	
+	/* @var string */
+	protected $searchLocationPlaceId			= false;
+	
+	/* @var string */
+	protected $searchLocationFormattedAddress	= false;
 	
 	/* @var array */
-	protected $searchTags				= [];
+	protected $searchTags						= [];
 	
 	/* @var array */
-	protected $searchCategories		= [];
+	protected $searchCategories				= [];
 	
 	/* @var string */
-	protected $searchTypeResult		= 'List';
+	protected $searchTypeResult				= 'List';
+	
+	/* @var int */
+	protected $personalPresetActive			= 0;
 	
 	/* @var array */
-	protected $userFilters				= [];
+	protected $userFilters						= [];
 	
 	
 	
@@ -50,8 +59,13 @@ class FilterForm extends FiltersBuilder
 
 		$this -> searchLocationCity = $location -> city;
 		$this -> searchLocationCountry = $location -> country;
+		$this -> searchLocationPlaceId = $location -> place_id;
 		if (!empty($location -> state)) 
 			$this -> searchLocationState = $location -> state;
+		$this -> searchLocationFormattedAddress = json_encode([\Core\Geo::GMAPS_CITY => $this -> searchLocationCity,
+																\Core\Geo::GMAPS_STATE => $this -> searchLocationState,
+																\Core\Geo::GMAPS_COUNTRY => $this -> searchLocationCountry,
+																\Core\Geo::GMAPS_PLACE => $this -> searchLocationPlaceId]);
 		
 		return $this;
 	}
@@ -130,6 +144,8 @@ class FilterForm extends FiltersBuilder
 				}
 			}
 		}
+		
+		$this -> personalPresetActive = 0;
 			
 		return $this;
 	}
@@ -162,6 +178,8 @@ class FilterForm extends FiltersBuilder
 				}
 			}
 		}
+		
+		$this -> personalPresetActive = 1;
 		
 		return $this;
 	}

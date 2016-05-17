@@ -57,7 +57,7 @@ class SearchController extends \Core\Controller
 // 														    	  'country' => 'United States',],
 //     						 'searchStartDate' => '2016-04-12',
 //     						 'searchEndDate' => '2016-05-12',
-// //    						 'searchTitle' => 'music',
+//     						 'searchTitle' => 'music',
 //     						 'searchTypeResult' => 'List',
 // //     						 'searchCategories' => ['3' => 'on'],
 // //     						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']
@@ -69,8 +69,6 @@ class SearchController extends \Core\Controller
 			} 
 		}
  		$this -> filtersBuilder -> applyFilters();
-// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
-// _U::dump($this -> filtersBuilder -> getFormFilters());
 
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
@@ -78,6 +76,7 @@ class SearchController extends \Core\Controller
  		}
 		$result['status'] = 'OK';
     	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
+    	$result['form'] = $this -> filtersBuilder -> getFormFilters();
     	$result['bu'] = $this -> postData;
 		    	 
 		$this -> sendAjax($result);
@@ -142,7 +141,7 @@ class SearchController extends \Core\Controller
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
     	$this -> setLocationByCity($location);
-    	$this -> filtersBuilder -> addFilter('personalPresetActive', 1);
+    	$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
     	if (!$this -> setSearchDateVars($arg1)) $this -> setSearchDateCustom($arg1, $arg2);
     
     	$this -> searchAction();
@@ -155,16 +154,15 @@ class SearchController extends \Core\Controller
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
 // _U::dump($this -> request -> getQuery());
-//_U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
-_U::dump($this -> filtersBuilder -> getSearchFilters());
+// _U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
+// _U::dump($this -> filtersBuilder -> getSearchFilters());
 
-//_U::dump($this -> filtersBuilder -> getSearchFilters(), true);    	
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
     		if ($this -> session -> has('unlikedEvents')) {
     		$this -> fetchMemberLikes();
-    			$this -> filtersBuilder -> addfilter('searchNotId', $this -> session -> get('unlikedEvents'));
+    			$this -> filtersBuilder -> addFilter('searchNotId', $this -> session -> get('unlikedEvents'));
     		}
     	}
     	$this -> pageTitle['location'] = 'in ' . $this -> filtersBuilder -> getFormFilters()['searchLocationCity'];
@@ -230,15 +228,16 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
     	$this -> view -> setVar('eventsTotal', $countResults);
     	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
     	$this -> view -> setVar('urlParams', $this -> request -> getQuery()['_url']);
-//_U::dump($this -> filtersBuilder -> getFormFilters());    	
     	$this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
     	
     	$member_categories = (new MemberFilter()) -> getbyId();
     	if (isset($member_categories['tag'])) 
-    		$this -> view -> setVars('tagIds', implode(',', $member_categories['tag']['value']));
+    		$this -> view -> setVar('tagIds', implode(',', $member_categories['tag']['value']));
     	
     	if (isset($member_categories['category'])) 
-    		$this -> view -> setVars('categoryIds', implode(',', $member_categories['category']['value']));
+    		$this -> view -> setVar('categoryIds', implode(',', $member_categories['category']['value']));
+    	
+    	$this -> view -> setVar('searchPage', true);
     	
     	if ($this -> filtersBuilder -> getFormFilters()['searchTypeResult'] == 'Map') {
     		$this -> view -> setVar('link_to_list', true);
@@ -300,13 +299,18 @@ _U::dump($this -> filtersBuilder -> getSearchFilters());
     
     private function setLocationByCity($arg)
     {
-    	$newLocation = (new Location()) -> createOnChange(['city' => substr($arg, 0, strrpos($arg, '-')),
-    														'country' => substr($arg, strrpos($arg, '-')+1)]);
-//_U::dump($newLocation);    	
-		$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);    	
+    	$requestedLocation = ['city' => substr($arg, 0, strrpos($arg, '-')),
+    						  'country' => \Core\Utils\Location::getNameByCode(substr($arg, strrpos($arg, '-')+1))];
 
-    	$this -> cookies -> get('lastLat') -> delete();
-    	$this -> cookies -> get('lastLng') -> delete();
+    	if (!$this -> session -> has('location') || $this -> session -> get('location') -> search_alias != $requestedLocation['city']) {
+	    	$newLocation = (new Location()) -> createOnChange($requestedLocation);
+//_U::dump($newLocation -> toArray());    	
+			$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);  
+			$this -> filtersBuilder -> applyFilters();
+		
+	    	$this -> cookies -> get('lastLat') -> delete();
+	    	$this -> cookies -> get('lastLng') -> delete();
+    	}
     }
     
     

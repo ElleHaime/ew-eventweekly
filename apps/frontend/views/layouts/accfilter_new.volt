@@ -2,8 +2,8 @@
 <input id="categoryIds" name="categoryIds" type="hidden" value="{{ categoryIds }}" />
 
 <form action="" id="form2">
-		<input id="personalPresetActive" name="personalPresetActive" type="hidden" value="{{ personalPresetActive }}" />
-		<div class="ew-filter-link" id="swithFilterPanel">
+		<input id="personalPresetActive" name="personalPresetActive" type="hidden" value="{{ userSearch['personalPresetActive'] }}" />
+		<div class="ew-filter-link" id="swithFilterPanel" {% if searchPage is not defined %}style="visibility:hidden;"{% endif %}>
 			<a class="Show Filter" style="cursor:pointer;">Show Filter</a>	
 		</div>
 		

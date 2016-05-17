@@ -42,6 +42,7 @@ trait Sliders {
 		if ($featuredEventIds) {
 			$queryData['searchId'] = array_keys($featuredEventIds);
 		}
+		
 		$eventGrid = new \Frontend\Models\Search\Grid\Event($queryData, $this -> getDi(), null, ['adapter' => 'dbMaster']);
 		$eventGrid -> setSort('start_date');
 		$eventGrid -> setSortDirection('ASC');

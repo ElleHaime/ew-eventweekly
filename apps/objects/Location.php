@@ -110,7 +110,7 @@ class Location extends Model
 		$saveIp = false;
 		
 		if (empty($argument)) $saveIp = true;
-		$isLocationExists = $this -> checkInCache($argument);
+		//$isLocationExists = $this -> checkInCache($argument);
 
 		if (!$isLocationExists) {
 			$geo = $this -> getGeo();
