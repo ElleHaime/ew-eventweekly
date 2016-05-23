@@ -82,6 +82,7 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->session->remove('location_conflict');
         }
         $this->view->setVar('location', $this->session->get('location'));
+///_U::dump($this->view->getVar('location')->toArray());        
 
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);

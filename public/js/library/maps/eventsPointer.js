@@ -1,6 +1,7 @@
 define('eventsPointer',
-	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	function($, gmap, noty, googleMarker, googleInfoWindow) {
+//	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'googleMarkerClusterer', 'underscore', 'google!maps,3,other_params:key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+	function($, gmap, noty, googleMarker, googleInfoWindow, googleMarkerClusterer) {
 
         return {
 

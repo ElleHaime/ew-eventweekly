@@ -67,6 +67,7 @@ require.config({
         'googleMap': 'library/google/map',
         'googleMc': 'library/google/mc',
         'googleMarker': 'library/google/marker',
+        'googleMarkerClusterer': 'library/vendors/google/markerclustererplus/src/markerclusterer',
         'googleInfoWindow': 'library/google/infoWindow',
         'llCalc': 'library/google/llCalc'
 	},
@@ -146,6 +147,7 @@ require.config({
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
+        window.searchTypeResult = document.getElementById('searchTypeResult').value;
         
         var moduleName, fileName = '', isPreview = 0,
         	freelisting = /\/freelisting/,
@@ -158,6 +160,7 @@ require.config({
         	seoDaysRel = /^\/[a-z\-]+\/(personalised\/)?(today|tomorrow|this-week|this-weekend)$/,
         	seoDatesRel = /^\/[a-z\-]+\/(personalised\/)?[0-9]{1,2}[a-z]+(\-[0-9]{1,2}[a-z]+)?$/;
 console.log(location.pathname);
+
         if (whatsonRel.test(location.pathname)) {
 		} else if (freelisting.test(location.pathname)) {
         	fileName = '/'
@@ -170,7 +173,11 @@ console.log(location.pathname);
         } else if (trendingRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/trending';
         } else if (seoDaysRel.test(location.pathname.replace(/%20/ig,'-')) == true || seoDatesRel.test(location.pathname.replace(/%20/g, '-')) == true) {
-        	fileName = '/search/list';
+        	if (window.searchTypeResult == 'List') {
+        		fileName = '/search/list';
+        	} else {
+        		fileName = '/search/map';
+        	}
         } else if (re.test(location.pathname) != 'undefined') {
             fileName = location.pathname.replace(/(\/[\d_]+)?$/, '');
         } else {

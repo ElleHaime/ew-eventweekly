@@ -193,6 +193,9 @@ class Location extends Model
 				$isLocationExists -> longitude = ($isLocationExists -> longitudeMin + $isLocationExists -> longitudeMax)/2;
 
 //				$this -> addToCache($isLocationExists);
+			} else {
+				$isLocationExists -> latitude = ($isLocationExists -> latitudeMin + $isLocationExists -> latitudeMax)/2;
+				$isLocationExists -> longitude = ($isLocationExists -> longitudeMin + $isLocationExists -> longitudeMax)/2;
 			} 
 		}
 	

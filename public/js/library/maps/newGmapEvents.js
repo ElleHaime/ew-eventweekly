@@ -2,7 +2,7 @@
  * Created by slav on 1/22/14.
  */
 define('newGmapEvents',
-    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noty', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+    ['jquery', 'googleMap', 'googleMc', 'googleMarker', 'googleInfoWindow', 'noty', 'underscore', 'https://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
     function($, googleMap, googleMc, googleMarker, googleInfoWindow, noty, _) {
 
         function newGmapEvents(Map, Mc, options) {

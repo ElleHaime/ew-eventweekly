@@ -50,19 +50,6 @@ class SearchController extends \Core\Controller
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
 
-//      	$this -> postData = ['searchLocationFormattedAddress' => ['locality' => 'Allendale Charter Township',
-// 																  'administrative_area_level_2' => 'Ottawa County',
-// 														    	  'administrative_area_level_1' => 'Michigan',
-// 																  'place_id' => 'ChIJVVlMw1mYGYgRzA4J9D98Qpo',
-// 														    	  'country' => 'United States',],
-//     						 'searchStartDate' => '2016-04-12',
-//     						 'searchEndDate' => '2016-05-12',
-//     						 'searchTitle' => 'music',
-//     						 'searchTypeResult' => 'List',
-// //     						 'searchCategories' => ['3' => 'on'],
-// //     						 'searchTags' => ['49' => 'on', '50' => 'on',  '52' => 'on',  '52' => 'on',  '53' => 'on',  '68' => 'on']
-//    						];
-//_U::dump($this -> postData);
 		foreach ($this -> postData as $key => $val) {
 			if ($value = $this -> postElemExists($key)) {
 				$this -> filtersBuilder -> addFilter($key, $val);
@@ -77,7 +64,7 @@ class SearchController extends \Core\Controller
 		$result['status'] = 'OK';
     	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
     	$result['form'] = $this -> filtersBuilder -> getFormFilters();
-    	$result['bu'] = $this -> postData;
+    	$result['location'] = $this -> session -> get('location') -> toArray();
 		    	 
 		$this -> sendAjax($result);
     }
@@ -153,15 +140,16 @@ class SearchController extends \Core\Controller
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
+// _U::dump($this -> view -> getVar('location') -> toArray());    	
 // _U::dump($this -> request -> getQuery());
-// _U::dump($this -> filtersBuilder -> getFormFilters(), true);    	
+// _U::dump($this -> filtersBuilder -> getFormFilters());    	
 // _U::dump($this -> filtersBuilder -> getSearchFilters());
 
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
     		if ($this -> session -> has('unlikedEvents')) {
-    		$this -> fetchMemberLikes();
+    			$this -> fetchMemberLikes();
     			$this -> filtersBuilder -> addFilter('searchNotId', $this -> session -> get('unlikedEvents'));
     		}
     	}
@@ -226,6 +214,7 @@ class SearchController extends \Core\Controller
     	
     	$this -> view -> setVar('list', $result);
     	$this -> view -> setVar('eventsTotal', $countResults);
+    	$this -> view -> setVar('searchTypeResult', $this -> filtersBuilder -> getFormFilters()['searchTypeResult']);
     	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
     	$this -> view -> setVar('urlParams', $this -> request -> getQuery()['_url']);
     	$this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());

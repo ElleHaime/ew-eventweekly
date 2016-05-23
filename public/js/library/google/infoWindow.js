@@ -1,5 +1,6 @@
 define('googleInfoWindow',
-    ['jquery', 'underscore', 'jTruncate', 'niceDate', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+//    ['jquery', 'underscore', 'jTruncate', 'niceDate', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+    ['jquery', 'underscore', 'jTruncate', 'niceDate', 'domReady'],
     function($, _) {
 
         function InfoWindow(event) {

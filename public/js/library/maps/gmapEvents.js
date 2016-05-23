@@ -1,5 +1,5 @@
 define('gmapEvents',
-	['jquery', 'gmap', 'noty', 'niceDate', 'jTruncate', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
+	['jquery', 'gmap', 'noty', 'niceDate', 'jTruncate', 'underscore', 'https://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
 	function($, gmap, noty, niceDate, jTruncate) {
 
 		function gmapEvents($, gmap, noty, niceDate, jTruncate)

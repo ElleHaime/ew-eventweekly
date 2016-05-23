@@ -197,7 +197,7 @@ console.log(searchParams);
 //return false;
 		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
 console.log(response);		    
-//return false;
+return false;
 		    	                if (response.status == 'OK') {
 		    	                	nativeForm.action = response.actionUrl;
 				                    nativeForm.submit();

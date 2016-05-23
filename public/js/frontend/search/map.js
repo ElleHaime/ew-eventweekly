@@ -15,7 +15,9 @@ require([
 ],
     function($, fb, frontEventLike, noty, gmap, eventsPointer) {
         var locationElem = $('#current_location');
-
+console.log(locationElem);
+console.log(locationElem.attr('latitude'));
+console.log(locationElem.attr('longitude'));
         gmap.init({
             mapCenter: {
                 lat: locationElem.attr('latitude'),
