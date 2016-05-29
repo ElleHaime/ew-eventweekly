@@ -1,7 +1,7 @@
 define('eventsPointer',
 //	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'underscore', 'http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js'],
-	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'googleMarkerClusterer', 'underscore', 'google!maps,3,other_params:key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
-	function($, gmap, noty, googleMarker, googleInfoWindow, googleMarkerClusterer) {
+	['jquery', 'gmap', 'noty', 'googleMarker', 'googleInfoWindow', 'underscore', 'google!maps,3,other_params:key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
+	function($, gmap, noty, googleMarker, googleInfoWindow) {
 
         return {
 
@@ -12,7 +12,7 @@ define('eventsPointer',
                 eventsUrlParams: '.urlParams',
                 truncateLength: 30,
                 pageCurrent: 1,
-                requestInterval: 2000
+                requestInterval: 20000
             },
 
             __lastLat: null,
@@ -44,7 +44,8 @@ define('eventsPointer',
                     // add markers to clusterer
                     gmap.MC.addMarkers(gmap.Map.markers);
                     // redraw clusterer
-                    gmap.MC.redraw();
+                    //gmap.MC.redraw();
+                    gmap.MC.repaint();
 
                     //gmap.Map.setCenter(new google.maps.LatLng($this.__lastLat, $this.__lastLng));
                 }
@@ -109,19 +110,23 @@ define('eventsPointer',
             	var $this = this;
             	
             	var makeRequest = function() {
-            		var url = $this.settings.eventsUrl + '?' + searchUrlParams + '&page=' + $this.settings.pageCurrent;
-
+            		//var url = $this.settings.eventsUrl + '?' + searchUrlParams + '&page=' + $this.settings.pageCurrent;
+            		var url = searchUrlParams + '&page=' + $this.settings.pageCurrent;
+//console.log(url);
             		$.when($.ajax({ url: url,
                         			type: 'GET',
                         			dataType: 'json',
-                        error: function() {
+                        error: function(response, error) {
+//console.log('error:');
+//console.log(error);
+//console.log(response.responseText);
                         	$this.settings.pageCurrent = 1;
                             clearInterval(interval);
                         }
                     })).done(function(response) {
+//console.log(response.data);
                     	$this.__responseHandler(response);
                     }).always(function(response) {
-                        //console.log('empty result');
                     }); 	
             	};
             	

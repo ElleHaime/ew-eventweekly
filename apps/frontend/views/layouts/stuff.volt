@@ -68,8 +68,8 @@
     <input id="fbAppSecret" type="hidden" value="{{ fbAppSecret }}" />
 {% endif %}
 
-{% if searchTypeResult is defined %}
+{#% if searchTypeResult is defined %}
     <input id="searchTypeResult" type="hidden" value="{{ searchTypeResult }}" />
 {% else %}
 	<input id="searchTypeResult" type="hidden" value="List" />    
-{% endif %}
+{% endif %#}

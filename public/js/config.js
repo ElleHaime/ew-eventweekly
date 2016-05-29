@@ -148,7 +148,7 @@ require.config({
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
         window.searchTypeResult = document.getElementById('searchTypeResult').value;
-        
+console.log(window.searchTypeResult);        
         var moduleName, fileName = '', isPreview = 0,
         	freelisting = /\/freelisting/,
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,

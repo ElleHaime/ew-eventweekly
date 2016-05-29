@@ -197,7 +197,7 @@ console.log(searchParams);
 //return false;
 		    	            $.when(utils.request('post', $this.settings.addSearchParamUrl, searchParams)).then(function(response){
 console.log(response);		    
-return false;
+//return false;
 		    	                if (response.status == 'OK') {
 		    	                	nativeForm.action = response.actionUrl;
 				                    nativeForm.submit();
@@ -252,7 +252,7 @@ return false;
 		        	selectedType = $(typeObj).find('a').data('value');
 		        	$($this.settings.searchTypeResult).val(selectedType);
 		        	$($this.settings.searchTypeResultCurrent).html(selectedType);
-		        	        	
+
 		        	if (selectedType == 'Map') {
 		            	$(typeObj).find('a').data('value', 'List');
 		            	$(typeObj).find('a').text('List');

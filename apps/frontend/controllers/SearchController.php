@@ -49,7 +49,7 @@ class SearchController extends \Core\Controller
     			   'actionUrl' => '',
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
-
+    	
 		foreach ($this -> postData as $key => $val) {
 			if ($value = $this -> postElemExists($key)) {
 				$this -> filtersBuilder -> addFilter($key, $val);
@@ -64,7 +64,7 @@ class SearchController extends \Core\Controller
 		$result['status'] = 'OK';
     	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
     	$result['form'] = $this -> filtersBuilder -> getFormFilters();
-    	$result['location'] = $this -> session -> get('location') -> toArray();
+    	$result['location'] = $this -> session -> get('location');
 		    	 
 		$this -> sendAjax($result);
     }
@@ -140,7 +140,8 @@ class SearchController extends \Core\Controller
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
-// _U::dump($this -> view -> getVar('location') -> toArray());    	
+
+//_U::dump($this -> view -> getVar('location') -> latitude);
 // _U::dump($this -> request -> getQuery());
 // _U::dump($this -> filtersBuilder -> getFormFilters());    	
 // _U::dump($this -> filtersBuilder -> getSearchFilters());
@@ -163,6 +164,8 @@ class SearchController extends \Core\Controller
 //_U::dump($this -> filtersBuilder -> getSearchFilters());
     	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
     														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
+    	
+    	
     	$page = $this -> request -> getQuery('page');
     	empty($page) ?	$eventGrid -> setPage(1) : $eventGrid -> setPage($page);
     	
@@ -250,8 +253,8 @@ class SearchController extends \Core\Controller
     		$this -> view -> setVar('searchResultList', true);
     		$page > 1 ? $this -> view -> pick('event/eventListPart') : $this -> view -> pick('event/eventList');
     	}
-    	 
-    	
+  	 
+   	
     }
 
     
@@ -293,7 +296,7 @@ class SearchController extends \Core\Controller
 
     	if (!$this -> session -> has('location') || $this -> session -> get('location') -> search_alias != $requestedLocation['city']) {
 	    	$newLocation = (new Location()) -> createOnChange($requestedLocation);
-//_U::dump($newLocation -> toArray());    	
+
 			$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);  
 			$this -> filtersBuilder -> applyFilters();
 		

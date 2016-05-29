@@ -31,7 +31,8 @@ class Controller extends \Phalcon\Mvc\Controller
     public function initialize()
     {
 //_U::dump($this->session->has('userSearch'));    	
-//_U::dump($this->session->get('location'));    	
+// _U::dump($this->session->get('location')->latitude);
+
         $this -> _setModule();
         $this -> _getChild();
         $this -> _parseQueryVals(); 
@@ -46,12 +47,13 @@ class Controller extends \Phalcon\Mvc\Controller
 
         $member = $this->session->get('member');
 
-        //$loc = $this->session->get('location');
         if ($this->session->get('location') === null) {
             $locModel = new Location();
             $loc = $locModel -> createOnChange();
             $this -> session -> set('location', $loc);
         }
+        $this->session->get('location')->latitude = $this->session->get('location')->getCenterLat();
+        $this->session->get('location')->longitude = $this->session->get('location')->getCenterLng();
         
         if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
         	$this->memberId = $this->session->get('memberId');
@@ -82,8 +84,7 @@ class Controller extends \Phalcon\Mvc\Controller
             $this->session->remove('location_conflict');
         }
         $this->view->setVar('location', $this->session->get('location'));
-///_U::dump($this->view->getVar('location')->toArray());        
-
+// _U::dump($this->session->get('location')->latitude);
         if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
             $this->view->setVar('acc_synced', 1);
         }
@@ -92,7 +93,7 @@ class Controller extends \Phalcon\Mvc\Controller
         
         $this -> filtersBuilder -> load();
         $this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
-//_U::dump($this -> filtersBuilder -> getFormFilters());
+// _U::dump($this->view->getVar('location')->latitude);
         $detect = new MobileDetect();
         if ($detect -> isMobile() || $detect -> isTablet()) {
             $this->view->setVar('isMobile', '1');

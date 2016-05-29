@@ -105,7 +105,7 @@ class Location extends Model
 
 	public function createOnChange($argument = [], $network = 'facebook')
 	{
-// _U::dump($argument, true);		
+// _U::dump($argument);		
 		$isLocationExists = false;
 		$saveIp = false;
 		
@@ -126,7 +126,7 @@ class Location extends Model
 					}
 				}
 			}
-// _U::dump($isLocationExists -> toArray());			
+// _U::dump($isLocationExists);			
 			if (!$isLocationExists) {
 				$query = [];
 				if (isset($argument['place_id'])) {
@@ -146,13 +146,13 @@ class Location extends Model
 					}
 				}
 				$query = implode(' and ', $query);
-//_U::dump($query, true);
+// _U::dump($query);
 		        if (!empty($query)) {
 		            $isLocationExists = self::findFirst($query);
 		        } else {
 		            $isLocationExists = false;
 		        }
-//_U::dump($isLocationExists, true);
+// _U::dump($isLocationExists->latitude);
 				if (!$isLocationExists) {
 					!$isGeoObject ? $newLoc = $geo -> getLocation($argument) : $newLoc = $argument;
 //_U::dump($newLoc);
@@ -185,20 +185,32 @@ class Location extends Model
 						$newIp -> saveNewIp($isLocationExists -> id, $geo -> getUserIp());
 					}
 				}
-				$isLocationExists -> latitudeMin = (float)$isLocationExists -> latitudeMin;
-				$isLocationExists -> latitudeMax = (float)$isLocationExists -> latitudeMax;
-				$isLocationExists -> longitudeMin = (float)$isLocationExists -> longitudeMin;
-				$isLocationExists -> longitudeMax = (float)$isLocationExists -> longitudeMax;
-				$isLocationExists -> latitude = ($isLocationExists -> latitudeMin + $isLocationExists -> latitudeMax)/2;
-				$isLocationExists -> longitude = ($isLocationExists -> longitudeMin + $isLocationExists -> longitudeMax)/2;
-
-//				$this -> addToCache($isLocationExists);
-			} else {
-				$isLocationExists -> latitude = ($isLocationExists -> latitudeMin + $isLocationExists -> latitudeMax)/2;
-				$isLocationExists -> longitude = ($isLocationExists -> longitudeMin + $isLocationExists -> longitudeMax)/2;
 			} 
 		}
 	
 		return $isLocationExists;
-	} 
+	}
+
+	
+	public function getCenterLat()
+	{
+		return ($this -> latitudeMin + $this -> latitudeMax)/2;
+	}
+	
+	
+	public function getCenterLng()
+	{
+		return ($this -> longitudeMin + $this -> longitudeMax)/2;
+	}
+	
+	public function afterFetch()
+	{
+		$this -> latitudeMin = (float)$this -> latitudeMin;
+		$this -> latitudeMax = (float)$this -> latitudeMax;
+		$this -> longitudeMin = (float)$this -> longitudeMin;
+		$this -> longitudeMax = (float)$this -> longitudeMax;
+		
+		$this -> latitude = ($this -> latitudeMin + $this -> latitudeMax)/2;
+		$this -> longitude = ($this -> longitudeMin + $this -> longitudeMax)/2;
+	}
 }

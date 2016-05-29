@@ -1,7 +1,7 @@
 define('gmap', 
 //	['jquery', 'underscore', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
-	['jquery', 'underscore', 'domReady'],
-	function($) {	
+	['jquery', 'googleMc', 'underscore', 'domReady'],
+	function($, googleMc) {	
 		function gmap($) {
 			var self = this;
 
@@ -15,11 +15,11 @@ define('gmap',
 		        mapZoom: 14,
 		        mapTypeId: 'ROADMAP', // https://developers.google.com/maps/documentation/javascript/reference?hl=en#MapTypeId
 		        // marker clusterer settings
-		        mcGridSize: 50,
-		        mcMaxZoom: 15
+//		        mcGridSize: 50,
+//		        mcMaxZoom: 15
 		    },
 		    self.Map = null,
-		    self.MC = null, // MarkerClusterer http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/docs/reference.html
+		    self.MC = null, 
 		    self.markers = [],
 
 			self.init = function(options)
@@ -61,10 +61,12 @@ define('gmap',
 		    } 
 
 		    self.__initializeMarkerClusterer = function() {
-                //console.log('Initialize marker clusterer');
-		        self.MC = new MarkerClusterer(self.Map, 
-		        							  self.markers, 
-		        							  {gridSize: self.settings.mcGridSize, maxZoom: self.settings.mcMaxZoom});
+console.log('Initialize marker clusterer');
+//		        self.MC = new MarkerClusterer(self.Map, 
+//		        							  self.markers, 
+//		        							  {gridSize: self.settings.mcGridSize, maxZoom: self.settings.mcMaxZoom});
+		        self.MC = new googleMc({Map: self.Map});
+
 
 		        return _.isNull(self.MC);
 		    }
