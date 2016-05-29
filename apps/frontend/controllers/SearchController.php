@@ -141,11 +141,6 @@ class SearchController extends \Core\Controller
     	$likedEvents = $unlikedEvents = [];
     	$this -> view -> form = new SearchForm();
 
-//_U::dump($this -> view -> getVar('location') -> latitude);
-// _U::dump($this -> request -> getQuery());
-// _U::dump($this -> filtersBuilder -> getFormFilters());    	
-// _U::dump($this -> filtersBuilder -> getSearchFilters());
-
     	if ($this -> filtersBuilder -> getMemberPreset()) {
     		$this -> pageTitle['type'] = 'Personalised events';
     		
