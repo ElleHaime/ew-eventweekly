@@ -4737,7 +4737,7 @@ table.default thead {
   position: relative;
   padding: 20px;
   background: #404040;
-  height: 360px;
+  height: 440px;
 }
 .b-list-of-events-g__item {
   float: left;
@@ -4783,57 +4783,75 @@ table.default thead {
   margin-right: 6px;
 }
 .b-list-of-events-g__picture {
-  float: left;
-  width: 100px;
+  /*float: left;*/
+  width: 100%;
   margin: 0 15px 10px 0;
   overflow: hidden;
 }
 .b-list-of-events-g__picture img {
-  max-height: 100px;
+  max-height: 200px;
+    width: 100%;
 }
-.b-list-of-events-g__picture .like-buttons {
-  margin: 10px 0 0 -10px;
-}
-.b-list-of-events-g__picture .like-buttons__item {
-  float: left;
-  padding-left: 10px;
-}
-.b-list-of-events-g__picture .like-buttons__item .ew-button {
-  display: block;
-  padding: 6px 12px;
-}
-.b-list-of-events-g__picture .like-buttons__item .ew-button i {
-  margin: 0;
-}
+
 .b-list-of-events-g__title {
   display: block;
   margin: 0 0 10px 0;
   padding: 0 0 1px 0;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   font-size: 20px;
   font-weight: 300;
   color: #F7931E;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 80%;
+  max-width: 100%;
 }
 .b-list-of-events-g__title a {
   color: #F7931E;
   text-decoration: none;
+}
+
+.b-list-of-events-g__venue p{
+    line-height: inherit;
+    margin-bottom: 0;
 }
 .b-list-of-events-g__date {
   margin: 0 0 10px 0;
   color: #F7931E;
   font-family: "Open Sans";
   font-size: 12px;
+    width: 100%;
+    float: right;
+    text-align: right;
+    overflow: hidden;
 }
+
+.b-list-of-events-g__date-venue {
+   float: left;
+    width: 50%;
+    margin-bottom: 0;
+    line-height: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left
+}
+
+.b-list-of-events-g__date time {
+    float: right;
+    width: 45%;
+    margin-bottom: 0;
+    line-height: inherit;
+    margin-left: 5%;
+}
+
 .b-list-of-events-g__category {
-  margin-bottom: 10px;
+  margin: 20px 0 0 0;
   color: #878787;
   font-family: "Open Sans";
   font-size: 12px;
   line-height: 21px;
+    text-align: right;
 }
 .b-list-of-events-g__category i {
   font-size: 13px;
@@ -4847,8 +4865,9 @@ table.default thead {
   text-overflow: ellipsis;
   word-wrap: break-word;
   overflow: hidden;
-  height: 125px;
+  height: 100px;
   line-height: 20px;
+    width: 100%;
 }
 .b-list-of-events-g__description:before, .b-list-of-events-g__description:after {
   content: "";
@@ -4870,15 +4889,61 @@ table.default thead {
   border-top: 1px solid #383838;
   text-align: center;
   text-decoration: none;
-  padding: 16px 0;
+  padding: 10px 0;
   color: #383838;
   font-size: 0;
+    height: 50px;
+    overflow: hidden;
 }
-.b-list-of-events-g__link-detail:before {
+/*.b-list-of-events-g__link-detail:before {
   content: "\25CF \25CF \25CF";
   letter-spacing: 5px;
   font-size: 18px;
   color: #383838;
+}*/
+.b-list-of-events-g__link-detail .like-buttons{
+    float: left;
+    width: 70%
+}
+
+.b-list-of-events-g__link-detail .like-buttons__item {
+    float: left;
+    padding-left: 10px;
+    width: 50px;
+    height: 30px;
+}
+
+.b-list-of-events-g__link-detail .like-buttons__item-share {
+    float: left;
+    padding-left: 10px;
+    width: 90px;
+    height: 30px;
+}
+
+.b-list-of-events-g__link-detail .like-buttons__item .ew-button {
+    display: block;
+    padding: 6px 12px;
+}
+
+.b-list-of-events-g__link-detail .like-buttons__item-share .ew-button {
+    font-size: 13px;
+    padding: 8px 12px;
+    display: block;
+}
+
+.b-list-of-events-g__link-detail .like-buttons__item .ew-button i {
+    margin: 0;
+}
+
+.b-list-of-events-g__link-detail .read-more{
+    float: right;
+    width: 30%;
+}
+
+.b-list-of-events-g__link-detail .read-more .read-more-link{
+    display: block;
+    font-size: 13px;
+    padding: 8px 2px;
 }
 
 .breadcrumbs {

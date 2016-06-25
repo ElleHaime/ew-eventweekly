@@ -209,7 +209,7 @@ class SearchController extends \Core\Controller
 	   		}
 	   		$countResults = $results['all_count'];
     	}
-    	
+//_U::dump($results['data']);    	
     	$this -> view -> setVar('list', $result);
     	$this -> view -> setVar('eventsTotal', $countResults);
     	$this -> view -> setVar('searchTypeResult', $this -> filtersBuilder -> getFormFilters()['searchTypeResult']);
