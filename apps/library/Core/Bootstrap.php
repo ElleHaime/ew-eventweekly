@@ -222,13 +222,22 @@ abstract class Bootstrap implements ModuleDefinitionInterface
             return '\Core\Utils\DateTime::format('.trim($args[0]).', '.trim($args[1]).')';
         });
         
-        $compiler -> addFunction('checkLogo', function($resolvedArgs) {
-			return "(!is_null(' . $resolvedArgs -> logo . ') && file_exists(ROOT_APP . 'public/upload/img/event/' . $resolvedArgs -> id . '/' . $resolvedArgs ->logo)) ? '/upload/img/event/' . $resolvedArgs ->id . '/' . $resolvedArgs ->logo : '/img/logo200.png'";
-        });
+        $compiler -> addFunction(
+        			'checkLogo', 
+        			function($resolvedArgs, $exprArg) {
+        				$type = $exprArgs[0]['expr']['value'];
+        				return '\Core\CoreTag::checkLogo(' . $resolvedArgs . ', "' . $type . '")';
+        		}
+		);
 
-        $compiler -> addFunction('checkCover', function($resolvedArgs) {
-        	return "file_exists(ROOT_APP . 'public/upload/img/event/' . $resolvedArgs -> event_id . '/cover/' . $resolvedArgs ->image) ? '/upload/img/event/' . $resolvedArgs ->event_id . '/cover/' . $resolvedArgs ->image : '/img/logo200.png'";
-        });
+        $compiler -> addFunction(
+        		'checkCover', 
+        		function($resolvedArgs, $exprArgs) {
+        			$cover = $exprArgs[0]['expr']['value'];
+        			$type = $exprArgs[1]['expr']['value'];
+        			return '\Core\CoreTag::checkCover(' . $resolvedArgs . ', "' . $cover . '", "' . $type . '")';
+				}
+        );
         
         $compiler -> addFunction('checkTmpLogo', function($resolvedArgs) {
         	return "file_exists(ROOT_APP . 'public/upload/img/event/tmp/' . $resolvedArgs ->logo) ? '/upload/img/event/tmp/' . $resolvedArgs ->logo : '/img/logo200.png'";

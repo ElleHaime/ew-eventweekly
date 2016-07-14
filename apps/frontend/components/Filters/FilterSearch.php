@@ -35,6 +35,7 @@ class FilterSearch extends FiltersBuilder
 	
 	/* @var array */
 	protected $searchNotIn				= [];
+
 	
 	
 	
@@ -200,8 +201,9 @@ class FilterSearch extends FiltersBuilder
 		$this -> setTags();
 		
 		$this -> compoundTitle = null;
-		$this -> searchIn =[];
-		$this -> searchNotIn =[];
+		$this -> searchIn = [];
+		$this -> searchNotIn = [];
+		$this -> searchGrid = 'event';
 		
 		return $this;
 	}

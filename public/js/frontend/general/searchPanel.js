@@ -19,13 +19,30 @@ define('frontSearchPanel',
 		            startDatePicker: '#js-selectDateTimeStart',
 		            startDateField: '#searchPanel-startDate',
 		            startDateInput: '#searchStartDate',
+		            startDateMain: '#startDate-main',
+		            startDateReserve: '#startDate-reserve',
 		            endDatePicker: '#js-selectDateTimeEnd',
 		            endDateField: '#searchPanel-endDate',
 		            endDateInput: '#searchEndDate',
+		            endDateMain: '#endDate-main',
+		            endDateReserve: '#endDate-reserve',
+		            searchGrid: '#searchGridElem',
+		            searchGridOption: '.searchGridMenuTab',
+		            searchGridInput: '#searchGrid',
 		            isLoggedUser: '#isLogged',
-		            addSearchParamUrl: '/search/addSearchParam'
+		            addSearchParamUrl: '/search/addSearchParam',
+		            datepickerOptions: {
+		                format: 'yyyy-mm-dd',
+		                pickDate: false,
+		                autoclose: true,
+		                minView: 2
+		            } 
 		        },
-		
+		        
+		        __startDate: false,
+		        
+		        __endDate: false,
+		        
 		        /**
 		         * TRUE if at least ona option is chosen
 		         */
@@ -102,44 +119,38 @@ define('frontSearchPanel',
 		            // add date picker
 		            var nowTemp = new Date();
 		            var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
-		
-		            var startDate = $($this.settings.startDatePicker).datetimepicker({
-		                format: 'yyyy-mm-dd',
-		                pickDate: false,
-		                autoclose: true,
-		                minView: 2
-		            });
-		
-		            var endDate = $($this.settings.endDatePicker).datetimepicker({
-		                format: 'yyyy-mm-dd',
-		                pickDate: false,
-		                autoclose: true,
-		                minView: 2
-		            }); 
+
+		            $this.__startDate = $($this.settings.startDatePicker)
+		            	.datetimepicker($this.settings.datepickerOptions)
+		            	.on('changeDate', function(e) {
+			            	selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
+			            	selDay = (0+(e.date.getDate()).toString()).slice(-2);
+			            	
+			            	selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
+			            	$($this.settings.startDateField).html(selectedDate);
+			            	$($this.settings.startDateInput).val(selectedDate);
+		            	});
 		            
-		            startDate.on('changeDate', function(e) {
-		            	selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
-		            	selDay = (0+(e.date.getDate()).toString()).slice(-2);
-		            	
-		            	selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
-		            	$($this.settings.startDateField).html(selectedDate);
-		            	$($this.settings.startDateInput).val(selectedDate);
-		            	
+		            $this.__endDate = $($this.settings.endDatePicker)
+		            	.datetimepicker($this.settings.datepickerOptions)
+		            	.on('changeDate', function(e) {
+			                selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
+			                selDay = (0+(e.date.getDate()).toString()).slice(-2);
+			                
+			                selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
+			                $($this.settings.endDateField).html(selectedDate);
+			                $($this.settings.endDateInput).val(selectedDate);
+			            }); 
+
+		            $($this.settings.searchGridOption).on('click', function(e) {
+		            	$this.__switchGridHandler(this);
 		            });
-		
-		            endDate.on('changeDate', function(e) {
-		                selMonth = (0+((e.date.getMonth()+1)).toString()).slice(-2);
-		                selDay = (0+(e.date.getDate()).toString()).slice(-2);
-		                
-		                selectedDate = e.date.getFullYear() + '-' + selMonth + '-'+ selDay;  
-		                $($this.settings.endDateField).html(selectedDate);
-		                $($this.settings.endDateInput).val(selectedDate);
-		                
-		            }); 
 		            
 		            $($this.settings.searchTypeResultMenu + ' li').click(function(e) {
 		            	$this.__switchResultTypeHandler(this);
 		            });
+		            
+		           $this.__disableDatesByGrid();
 		        },
 		
 		        /**
@@ -259,6 +270,44 @@ console.log(response);
 		        	} else {
 		            	$(typeObj).find('a').data('value', 'Map');
 		            	$(typeObj).find('a').text('Map');
+		        	}
+		        },
+		        
+		        
+		        __switchGridHandler: function(gridObj) {
+		        	var newGridVal = $(gridObj).data('grid-id');
+		        	var newGridName = $(gridObj).data('grid-name');
+		        	var oldGridVal = $(this.settings.searchGrid).data('grid-id');
+		        	var oldGridName = $(this.settings.searchGrid).data('grid-name');
+		        	
+		        	$(this.settings.searchGrid).data('grid-id', newGridVal);
+		        	$(this.settings.searchGrid).data('grid-name', newGridName);
+		        	$(this.settings.searchGrid).html(newGridName);
+		        	
+		        	$(gridObj).data('grid-id', oldGridVal);
+		        	$(gridObj).data('grid-name', oldGridName);
+		        	$(gridObj).html(oldGridName);
+		        	
+		        	$(this.settings.searchGridInput).val(newGridVal);
+	        	
+		        	this.__disableDatesByGrid();
+		        },
+		        
+		        
+		        __disableDatesByGrid: function() {
+		        	if ($(this.settings.searchGridInput).val() == 'venue') {
+		        		$(this.settings.startDateMain).hide();
+		        		$(this.settings.startDateReserve).show();
+		        		
+		        		$(this.settings.endDateMain).hide();
+		        		$(this.settings.endDateReserve).show();
+		        	} else {
+		        		$(this.settings.startDateMain).show();
+		        		$(this.settings.startDateReserve).hide();
+		        		
+		        		$(this.settings.endDateMain).show();
+		        		$(this.settings.endDateReserve).hide();
+		        												
 		        	}
 		        },
 		        

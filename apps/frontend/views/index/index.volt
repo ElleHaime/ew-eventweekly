@@ -20,14 +20,15 @@
 					<div class="b-popular-events-slider">
 						<div class="js-main-popular-events-slider">
 							{% for index, event in paidEvents %}
+							
 								<!-- start slider item -->
 								<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
 		
 									<div class="b-slide__picture">
-										{% if event.cover is defined %}
+										{% if event.hyucover is defined %}
 											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}">
 										{% else %}
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}">
+											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}">
 										{% endif%}
 									</div>
 									
@@ -65,7 +66,7 @@
 				</div>
 			  {% endif %}
 
-			  {% if featuredEvents is defined %}
+			  {#{% if featuredEvents is defined %}
 				<div class="list-of-events col-3 container">
 	
 					<div class="header">
@@ -93,7 +94,7 @@
 								<div class="list-of-events__picture">
 									<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
 										{% if event.logo is defined %}
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event, 'event') }}">
 										{% elseif event.cover is defined %}
 											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
 										{% else %}
@@ -159,7 +160,7 @@
 								<div class="list-of-events__picture">
 									<a href="/{{ toSlugUri(event.name) }}-{{ event.id }}">
 										{% if event.logo is defined %}
-											<img src="{{ checkLogo(event) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event) }}">
+											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event, 'event') }}">
 										{% elseif event.cover is defined %}
 											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
 										{% else %}
@@ -190,7 +191,7 @@
 					{% endfor %}
 				</div>
 			{% endif %}
-
+#}
 			<div class="clearfix"></div>
 
 		</section>

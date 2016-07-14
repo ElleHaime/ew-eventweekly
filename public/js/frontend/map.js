@@ -1,7 +1,8 @@
 require([
     'jquery',
     'fb',
-    'googleMap',
+//    'googleMap',
+    'gmap',
     'newGmapEvents',
     'googleMc',
     'utils',
@@ -13,7 +14,8 @@ require([
     function($, fb, googleMap, newGmapEvents, googleMc, utils, noty) {
         var locationElem = $('#current_location');
 
-        var map = new googleMap({
+//        var map = new googleMap({
+        var map = new gmap({	
             mapCenter: {
                 lat: locationElem.attr('latitude'),
                 lng: locationElem.attr('longitude')

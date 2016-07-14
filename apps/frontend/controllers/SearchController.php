@@ -36,7 +36,8 @@ class SearchController extends \Core\Controller
    	protected $postData		= [];
    	protected $queryData		= [];
    	protected $actionUrl		= '';
-   	
+   	protected $currentGrid		= 'event';
+  	
    	
     
 	/**
@@ -135,68 +136,65 @@ class SearchController extends \Core\Controller
     }
     
 
-    protected function searchAction()
+    private function searchAction()
     {
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
+    	$this -> currentGrid  = $this -> filtersBuilder -> getFormFilters()['searchGrid'];
     	$this -> view -> form = new SearchForm();
 
-    	if ($this -> filtersBuilder -> getMemberPreset()) {
-    		$this -> pageTitle['type'] = 'Personalised events';
-    		
+    	if ($this -> currentGrid == 'event') {
     		if ($this -> session -> has('unlikedEvents')) {
     			$this -> fetchMemberLikes();
     			$this -> filtersBuilder -> addFilter('searchNotId', $this -> session -> get('unlikedEvents'));
     		}
     	}
-    	$this -> pageTitle['location'] = 'in ' . $this -> filtersBuilder -> getFormFilters()['searchLocationCity'];
-    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate'])) 
-    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
-    	
-    	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
-    		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
-    	}
-//_U::dump($this -> filtersBuilder -> getSearchFilters());
-    	$eventGrid = new \Frontend\Models\Search\Grid\Event($this -> filtersBuilder -> getSearchFilters(), 
-    														 $this -> getDi(), null, ['adapter' => 'dbMaster']);
-    	
+    	$this -> setTitleType();
+    	$this -> setTitleLocation();
+    	$this -> setTitleDates();
+    	$this -> setTitleTitle();
+// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
+// _U::dump($this -> filtersBuilder -> getFormFilters(), true);
+// _U::dump($this -> currentGrid);
+
+   		$objectsGridName = '\Frontend\Models\Search\Grid\\' . ucfirst($this -> currentGrid);
+   		$objectsGridModel = '\Frontend\Models\Search\Model\\' . ucfirst($this -> currentGrid);
+   		$objectsImgModel = '\Frontend\Models\\' . ucfirst($this -> currentGrid) . 'Image';
+    	 
+    	$objectsGrid = new $objectsGridName($this -> filtersBuilder -> getSearchFilters(), $this -> getDi(), null, ['adapter' => 'dbMaster']);
     	
     	$page = $this -> request -> getQuery('page');
-    	empty($page) ?	$eventGrid -> setPage(1) : $eventGrid -> setPage($page);
+    	empty($page) ?	$objectsGrid -> setPage(1) : $objectsGrid -> setPage($page);
     	
     	if ($this -> filtersBuilder -> getFormFilters()['searchTypeResult'] == 'Map') {
-    		$eventGrid -> setLimit(50);
-    		$results = $eventGrid -> getData();
+    		$objectsGrid -> setLimit(50);
+    		$results = $objectsGrid -> getData();
     		
-    		foreach($results['data'] as $id => $event) {
-    			$result[$event -> id] = (array)$event;
-    			if ($this -> session -> has('likedEvents') && in_array($event -> id, $this -> session -> get('likedEvents'))) {
-    				$result[$event -> id]['disabled'] = 'disabled';
+    		foreach($results['data'] as $id => $object) {
+    			$result[$object -> id] = (array)$object;
+    			if ($this -> currentGrid == 'event' && $this -> session -> has('likedEvents') && in_array($object -> id, $this -> session -> get('likedEvents'))) {
+    				$result[$object -> id]['disabled'] = 'disabled';
     			}
     		
-    			if (isset($event -> logo) && file_exists(ROOT_APP . 'public/upload/img/event/' . $event -> id . '/' . $event -> logo)) {
-    				$result[$event -> id]['logo'] = '/upload/img/event/' . $event -> id . '/' . $event -> logo;
-    			} else {
-    				$result[$event -> id]['logo'] = $this -> config -> application -> defaultLogo;
-    			}
-    			$result[$event -> id]['slugUri'] = \Core\Utils\SlugUri::slug($event -> name). '-' . $event -> id;
-    			$result[$event -> id]['description'] = trim($event -> description);
-    			$result[$event -> id]['cover'] = (new EventImage()) -> getCover($event);
+   				$result[$object -> id]['logo'] = (new $objectsImgModel()) -> getLogo($value);
+    			$result[$object -> id]['slugUri'] = \Core\Utils\SlugUri::slug($object -> name). '-' . $object -> id;
+    			$result[$object -> id]['description'] = trim($object -> description);
+    			$result[$object -> id]['cover'] = (new $objectsImgModel()) -> getCover($object);
     		}
     		
     		$result = json_encode($result, JSON_UNESCAPED_UNICODE);
     		$countResults = $results['all_count'];
 	   	} else {
-	   		$eventGrid -> setLimit(9);
-	   		$eventGrid -> setSort('start_date');
-	   		$eventGrid -> setSortDirection('ASC');
-	   		$results = $eventGrid -> getData();
-
+	   		$objectsGrid -> setLimit(9);
+	   		$objectsGrid -> setSort((new $objectsGridModel) -> getDefaultSorting());
+	   		$objectsGrid -> setSortDirection('ASC');
+	   		$results = $objectsGrid -> getData();
+// _U::dump($results);
 	   		foreach($results['data'] as $key => $value) {
-	   			if (!empty($likedEvents) && in_array($value -> id, $likedEvents)) {
+	   			if ($this -> currentGrid == 'event' && !empty($likedEvents) && in_array($value -> id, $likedEvents)) {
 	   				$value -> disabled = 'disabled';
 	   			}
-	   			$value -> cover = (new EventImage()) -> getCover($value);
+	   			$value -> cover = (new $objectsImgModel()) -> getCover($value);
 	   			$result[] = json_decode(json_encode($value, JSON_UNESCAPED_UNICODE), FALSE);
 	   		}
 	   		
@@ -209,8 +207,9 @@ class SearchController extends \Core\Controller
 	   		}
 	   		$countResults = $results['all_count'];
     	}
-//_U::dump($results['data']);    	
+    	
     	$this -> view -> setVar('list', $result);
+    	$this -> view -> setVar('searchGrid', $this -> currentGrid);
     	$this -> view -> setVar('eventsTotal', $countResults);
     	$this -> view -> setVar('searchTypeResult', $this -> filtersBuilder -> getFormFilters()['searchTypeResult']);
     	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
@@ -246,24 +245,63 @@ class SearchController extends \Core\Controller
     		
     	} else {
     		$this -> view -> setVar('searchResultList', true);
-    		$page > 1 ? $this -> view -> pick('event/eventListPart') : $this -> view -> pick('event/eventList');
+    		$page > 1 ? $this -> view -> pick('search/searchListPart') 
+    				  : $this -> view -> pick('search/searchList');
     	}
   	 
    	
     }
 
     
-    protected function showList()
+    private function setTitleType()
+    {
+   		$grids = $this -> currentGrid . 's';
+    	
+    	$this -> filtersBuilder -> getMemberPreset() 
+    				? $this -> pageTitle['type'] = 'Personalised ' . $grids 
+    				: $this -> pageTitle['type'] = 'All ' . $grids;
+    	
+    	return;
+    }
+    
+    
+    private function setTitleLocation()
+    {
+    	$this -> pageTitle['location'] = 'in ' . $this -> filtersBuilder -> getFormFilters()['searchLocationCity'];
+    	
+    	return;
+    }
+    
+    
+    private function setTitleDates()
+    {
+    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate']))
+    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
+    	
+    	return;
+    }
+    
+    
+    private function setTitleTitle()
+    {
+    	if (!is_null($this -> filtersBuilder -> getFormFilters()['searchTitle'])) {
+    		$this -> pageTitle['title'] = 'for "' . $this -> filtersBuilder -> getFormFilters()['searchTitle'] . '"';
+    	}
+    	
+    	return;
+    }
+    
+    private function showList()
     {
     }
     
     
-    protected function showMap()
+    private function showMap()
     {
     }
     
 
-    protected function showSliders()
+    private function showSliders()
     {
     }
     
@@ -339,37 +377,43 @@ class SearchController extends \Core\Controller
     
     private function setSearchDateVars($key = 'today')
     {
-    	$dateSearchVariables = _UDT::getDatesVars();
- 
-    	if (isset($dateSearchVariables[$key])) {
-    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
-    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
-    		
-    		return true;
-    	} 
+    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
+	    	$dateSearchVariables = _UDT::getDatesVars();
+	 
+	    	if (isset($dateSearchVariables[$key])) {
+	    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
+	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
+	    		
+	    		return true;
+	    	} 
+	    	
+	    	return false;
+    	}
     	
-    	return false;
+    	return true;
     }
 
     
     private function setSearchDateCustom($start, $end = '')
     {
-		$pattern = '/^([0-9]{1,2})(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec){1}/i'; 
-
-		preg_match($pattern, $start, $matches);
-		!empty($matches) ? $startDate = date('Y-m-d H:i:s', strtotime($matches[0])) 
-						 : $starttDate = _UDT::getDefaultStartDate();
-
-		preg_match($pattern, $end, $matches);
-		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0]))
-						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
-		
-		$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
-								-> addFilter('searchEndDate', $endDate);
-		
-		
+    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
+			$pattern = '/^([0-9]{1,2})(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec){1}/i'; 
+	
+			preg_match($pattern, $start, $matches);
+			!empty($matches) ? $startDate = date('Y-m-d H:i:s', strtotime($matches[0])) 
+							 : $starttDate = _UDT::getDefaultStartDate();
+	
+			preg_match($pattern, $end, $matches);
+			!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0]))
+							 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
+			
+			$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
+									-> addFilter('searchEndDate', $endDate);
+    	}
+    			
 		return;
     }
+    
 
     /**
      * @Route('/search/resetFilters', methods={'GET'})

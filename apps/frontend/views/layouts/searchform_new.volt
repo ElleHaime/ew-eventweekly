@@ -12,7 +12,7 @@
 								{% else %}
 									{% set searchTitle = '' %}
 								{% endif %}
-						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'Event or venue...', 'value': searchTitle }) }}
+						        {{ searchForm.render('searchTitle', {'class':'filters-form__input', 'placeholder':'', 'value': searchTitle }) }}
 							</div>
 							
 							<!-- search by location -->
@@ -41,37 +41,6 @@
 						        {% endif %}
 						        <input type="text" data-location-chosen="false" id="searchLocationField" name="searchLocationField" class="filters-form__input" placeholder="{{ searchLocationCityPlaceholder }}, {{ searchLocationCountryPlaceholder }}" value="{{ searchLocationCityPlaceholder }}, {{ searchLocationCountryPlaceholder }}"/>
 						        
-						   {#     
-				                {% if  userSearch is defined and userSearch['searchLocationLatMin'] is defined %}
-						            {% set searchLocationLatMin = userSearch['searchLocationLatMin'] %}
-						        {% else %}
-						            {% set searchLocationLatMin = '' %}
-						        {% endif %}
-						        {{ searchForm.render('searchLocationLatMin', {'value': searchLocationLatMin}) }}
-						
-						        {% if  userSearch is defined and userSearch['searchLocationLngMin'] is defined %}
-						            {% set searchLocationLngMin = userSearch['searchLocationLngMin'] %}
-						        {% else %}
-						            {% set searchLocationLngMin = '' %}
-						        {% endif %}
-						        {{ searchForm.render('searchLocationLngMin', {'value': searchLocationLngMin}) }}
-						
-						        {% if  userSearch is defined and userSearch['searchLocationLatMax'] is defined %}
-						            {% set searchLocationLatMax = userSearch['searchLocationLatMax'] %}
-						        {% else %}
-						            {% set searchLocationLatMax = '' %}
-						        {% endif %}
-						        {{ searchForm.render('searchLocationLatMax', {'value': searchLocationLatMax}) }}
-						
-						        {% if  userSearch is defined and userSearch['searchLocationLngMax'] is defined %}
-						            {% set searchLocationLngMax = userSearch['searchLocationLngMax'] %}
-						        {% else %}
-						            {% set searchLocationLngMax = '' %}
-						        {% endif %}
-						        {{ searchForm.render('searchLocationLngMax', {'value': searchLocationLngMax}) }}
-						        
-						        {{ searchForm.render('searchLocationPlaceId', {'value': ''}) }}
-						   #}     
 						        {% if  userSearch is defined and userSearch['searchLocationFormattedAddress'] is defined %}
 						            {% set searchLocationFormattedAddress = userSearch['searchLocationFormattedAddress'] %}
 						        {% else %}
@@ -81,28 +50,41 @@
 							</div>
 							
 							<!-- events dropdown -->
-							{#<div class="filters-form__item">
+							{% if userSearch is defined %}
+								{% set searchGridName = searchGrids[userSearch['searchGrid']] %}
+								{% set searchGridVal = userSearch['searchGrid'] %}
+							{% else %}
+								{% set searchGridName = 'Events' %}
+								{% set searchGridVal = 'event' %}
+						    {% endif %}
+							<div class="filters-form__item">
 								<div class="dropdown">
 									<!-- button -->
-									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
-										<i class="fa fa-glass"></i>
-										Events <span class="caret"></span>
+									<a class="filters-form__dropdown" data-toggle="dropdown">
+										<i class="fa fa-check"></i><span id="searchGridElem" data-grid-id="{{ searchGridVal }}" data-grid-name="{{ searchGridName }}"> {{ searchGridName }}</span> 
+										<span class="caret"></span>
 									</a>
-									
 									<!-- dropdown -->
 									<ul class="dropdown-menu" role="menu" aria-labelledby="js-selectEventType">
-										<li>
-											<a role="menuitem"  tabindex="-1" href="#">Event</a>
-										</li>
-										<!-- li>
-											<a role="menuitem" tabindex="-1" href="#">Venues</a>
-										</li -->
+										{% for gridVal, gridName in searchGrids %}
+											{% if gridVal != searchGridVal %}
+												<li>
+													<a role="menuitem" tabindex="-1" style="cursor:pointer;" class="searchGridMenuTab" data-grid-id="{{ gridVal }}" data-grid-name="{{ gridName }}">
+														<span style="padding-left:15px;">{{ gridName }}</span>
+													</a>	
+												</li>
+											{% endif %}
+										{% endfor %}
 									</ul>
+									
+									{{ searchForm.render('searchGrid', {'value': searchGridVal}) }}
 								</div>
-							</div> #}
+							</div>
+							
+							
 							
 							<!-- datetime dropdown -->
-							<div class="filters-form__item">
+							<div class="filters-form__item" id="startDate-main">
 								<div class="dropdown">
 								  <a class="filters-form__dropdown" id="js-selectDateTimeStart">
 								  	<i class="fa fa-calendar"></i>
@@ -117,7 +99,16 @@
 								</div>
 							</div>
 							
-							<div class="filters-form__item">
+							<div class="filters-form__item" style="display:none;" id="startDate-reserve">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" style=" cursor:arrow;color:rgb(153, 153, 153);">
+								  	<i class="fa fa-calendar"></i>
+						            <span id="searchPanel-startDate" name="start_date">{{ searchStartDate }}</span>
+								  </a>
+								</div>
+							</div>
+							
+							<div class="filters-form__item" id="endDate-main">
 								<div class="dropdown">
 								  <a class="filters-form__dropdown" id="js-selectDateTimeEnd">
 								  	<i class="fa fa-calendar"></i>
@@ -132,6 +123,17 @@
 								</div>
 							</div>
 							
+							<div class="filters-form__item" style="display:none;" id="endDate-reserve">
+								<div class="dropdown">
+								  <a class="filters-form__dropdown" style=" cursor:arrow;color:rgb(153, 153, 153);">
+								  	<i class="fa fa-calendar"></i>
+						            <span id="searchPanel-endDate" name="end_date">{{ searchStartDate }}</span>
+								  </a>
+								</div>
+							</div>
+							
+							
+							
 							<!-- map dropdown -->
 							<div class="filters-form__item">
 							 	{% if userSearch['searchTypeResult'] is defined %}
@@ -142,7 +144,7 @@
 								<div class="dropdown">
 									<!-- button -->
 									<a class="filters-form__dropdown" id="js-selectEventType" data-toggle="dropdown">
-										<i class="fa fa-globe"></i>
+										<i class="fa fa-check"></i>
 										<span id="searchTypeResultCurrent">{{ searchTypeResult }}</span>
 										<span class="caret"></span>
 									</a>
@@ -161,7 +163,21 @@
 								</div>
 							</div>
 
-							<div class="filters-form__item filters-form__divider"></div>
+							{# <div class="filters-form__item filters-form__divider"></div> #}
+							
+							{#														
+							<div class="filters-form__item">
+								<div class="form-checkbox">
+									<input type="checkbox" class="userFilter-category" name="searchGrid[event]" id="searchGrid-event"
+										{% if userSearch is defined and userSearch['searchGrid]['event'] id defined %} checked{% endif %}>
+									<label for="t1"><span><span></span></span>Event</label>
+								
+									<input type="checkbox" class="userFilter-category" name="searchGrid[venue]"  id="searchGrid-venue"
+										{% if userSearch is defined and userSearch['searchGrid]['venue'] id defined %} checked{% endif %}>
+									<label for="t1"><span><span></span></span>Venue</label>
+								</div>
+							</div>
+							#}							 
 
 							<div class="filters-form__item">
 								<button type="submit" id="searchSubmit" class="filters-form__button">Show results</button>

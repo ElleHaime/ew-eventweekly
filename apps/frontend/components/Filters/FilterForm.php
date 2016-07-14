@@ -44,6 +44,9 @@ class FilterForm extends FiltersBuilder
 	
 	/* @var string */
 	protected $searchTypeResult				= 'List';
+		
+	/* @var string */
+	protected $searchGrid						= 'event';
 	
 	/* @var int */
 	protected $personalPresetActive			= 0;
@@ -101,6 +104,14 @@ class FilterForm extends FiltersBuilder
 	{
 		$this -> searchTypeResult = $arg;
 	
+		return $this;
+	}
+	
+	
+	public function setGrid($arg = 'event')
+	{
+		$this -> searchGrid = $arg;
+
 		return $this;
 	}
 	
@@ -222,6 +233,7 @@ class FilterForm extends FiltersBuilder
 		$this -> setEndDate();
 		$this -> setCategories();
 		$this -> setTags();
+		$this -> setGrid();
 		
 		$this -> searchTitle = false;
 		$this -> searchTypeResult = 'List';

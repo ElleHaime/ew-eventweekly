@@ -26,7 +26,7 @@ $cfg_memcache = array(
 );
 
 $cfg_elastic = array(
-    'index' => 'eventweekly',
+    'index' => 'eventweeklytest',
     'connections' => [
         [
             'host' => 'localhost',

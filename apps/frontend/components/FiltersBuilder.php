@@ -16,16 +16,21 @@ class FiltersBuilder extends Component
 {
 	public $filters			 	= [];
 	public $memberPreset		= false;
+	public $filtersInSession	= false;
 	
 	
 	public function load()
 	{
   		if (!$this -> session -> has('filters')) {
+  			$this -> filtersInSession = false;
 			$this -> resetFilters();
  		} else {
+ 			$this -> filtersInSession = true; 			
  			$this -> filterForm -> getFromSession();
  			$this -> filterSearch -> getFromSession();
  		}
+
+ 		$this -> session -> set('filtersInSession', $this -> filtersInSession);
 	}
 	
 	
@@ -59,6 +64,10 @@ class FiltersBuilder extends Component
 			case 'searchTitle':
 					$this -> filterSearch -> setTitle($value);
 					$this -> filterForm -> setTitle($value);
+				break;
+				
+			case 'searchGrid':
+					$this -> filterForm -> setGrid($value);
 				break;
 			
 			case 'searchStartDate':
@@ -214,6 +223,7 @@ class FiltersBuilder extends Component
 		return $properties;
 	}
 	
+	
 	public function unsetFilterProperty($propertyName)
 	{
 		if (property_exists($this, $propertyName) && !empty($this -> $propertyName)) 
@@ -227,5 +237,11 @@ class FiltersBuilder extends Component
 	
 		return $this;
 	}
+
+	
+	public function isFiltersInSession()
+	{
+		return $this -> session -> get('filtersInSession');
+	} 
 	
 }

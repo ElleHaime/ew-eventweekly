@@ -14,15 +14,6 @@ class SearchForm extends Form
         // search by title
         $this->addElement('text', 'searchTitle', 'By Title', ['placeholder' => 'Event or venue...',
         												  	  'value' => '']);
-
-        // search by location
-//         $this->addElement('hidden', 'searchLocationLatMin', 'By Location Latitude');
-//         $this->addElement('hidden', 'searchLocationLngMin', 'By Location Longitude');
-
-//         $this->addElement('hidden', 'searchLocationLatMax', 'By Location Latitude');
-//         $this->addElement('hidden', 'searchLocationLngMax', 'By Location Longitude');
-        
-//         $this->addElement('hidden', 'searchLocationPlaceId', 'By Place ID');
         
         $this->addElement('hidden', 'searchLocationFormattedAddress', 'By Formatted Address');
 
@@ -35,6 +26,10 @@ class SearchForm extends Form
         // search result: map or list
         $this->addElement('hidden', 'searchTypeResult', 'Show result');
         $this -> view -> setVar('searchTypes', ['Map', 'List']);
+        
+        // search grid: event, venue or both
+        $this -> addElement('hidden', 'searchGrid', 'Search grid');
+        $this -> view -> setVar('searchGrids', ['event' => 'Events', 'venue' => 'Venues']);
 
         $this->add(new Submit('search'));
     }

@@ -30,9 +30,6 @@ class Controller extends \Phalcon\Mvc\Controller
 
     public function initialize()
     {
-//_U::dump($this->session->has('userSearch'));    	
-// _U::dump($this->session->get('location')->latitude);
-
         $this -> _setModule();
         $this -> _getChild();
         $this -> _parseQueryVals(); 

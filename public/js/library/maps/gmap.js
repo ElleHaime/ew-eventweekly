@@ -1,5 +1,4 @@
 define('gmap', 
-//	['jquery', 'underscore', 'domReady', 'google!maps,3,other_params:sensor=false&key=AIzaSyBmhn9fnmPJSCXhztoLm9TR7Lln3bTpkcA&libraries=places'],
 	['jquery', 'googleMc', 'underscore', 'domReady'],
 	function($, googleMc) {	
 		function gmap($) {

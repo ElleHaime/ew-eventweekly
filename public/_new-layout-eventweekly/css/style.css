@@ -3715,11 +3715,13 @@ table.default thead {
   margin-bottom: 7px;
   vertical-align: middle;
 }
+
 @media only screen and (max-width: 768px) {
   #header .filters .filters-form__item {
     margin-right: 3px;
   }
 }
+
 #header .filters .filters-form__item--input-with-icon {
   position: relative;
 }
@@ -3765,6 +3767,25 @@ table.default thead {
   font-size: 15px;
   text-decoration: none;
 }
+
+#header .filters .filters-form__dropdown-disabled {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  -webkit-box-shadow: 2px 2px 0px #424242;
+  -moz-box-shadow: 2px 2px 0px #424242;
+  box-shadow: 2px 2px 0px #424242;
+  display: inline-block;
+  padding: 10px 15px 9px 15px;
+  background: #808080;
+  font-family: "Open Sans";
+  font-size: 15px;
+  text-decoration: none;	
+  color: rgb(153, 153, 153);
+}
+
 #header .filters .filters-form__dropdown i {
   font-size: 16px;
   margin-right: 9px;
@@ -3774,6 +3795,8 @@ table.default thead {
   margin-left: 9px;
   color: #ccc;
 }
+
+
 #header .filters .filters-form__input {
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;

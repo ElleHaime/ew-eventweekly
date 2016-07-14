@@ -54,9 +54,23 @@ class EventImage extends EventImageObject
 		return $cover;
 	}
 	
+	
+	public function getLogo($event)
+	{
+		$result = $this -> getDI() -> get('config') -> application -> defaultLogo;
+		
+		$logoName = $this -> getDI() -> get('config') -> application -> uploadImgDir . 'event/' . $event -> id . '/' . $event -> logo;
+		if (isset($event -> logo) && file_exists($logoName)) {
+			$result = $this -> getDI() -> get('config') -> application -> relUploadImgDir . 'event/' . $event -> id . '/' . $event -> logo;
+		} 		
+		
+		return $result;
+	}
+	
+	
 	/**
 	 * @param $oldFilename string
-	 * @param $file \Phalcon\Http\Request\FileInterface
+	 * @param $file \Phalcon\Http\Request\FileInterface 
 	 * @param $path string
 	 *
 	 * Upload Image of type jpeg, png
@@ -85,5 +99,7 @@ class EventImage extends EventImageObject
 	
 		return $filename;
 	}
+	
+	
 }
 
