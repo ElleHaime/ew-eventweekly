@@ -33,14 +33,14 @@
 
 									<div class="b-list-of-events-g__info">
 										<h2 class="b-list-of-events-g__title">
-											<a href="{{ objectLink }}/{{ toSlugUri(event.name) }}-{{ object.id }}">{{ object.name }}</a>
+											<a href="{{ objectLink }}/{{ toSlugUri(object.name) }}-{{ object.id }}">{{ object.name }}</a>
 										</h2>
 										
 										<div class="b-list-of-events-g__date">
 											{% if object.location is defined %}
 												<p class="b-list-of-events-g__date-venue">
 													<i class="fa fa-map-marker"></i> {{ object.location }}
-													{% if object.address is defined %}
+													{% if object.address is defined and searchGrid == 'event' %}
 														, {{ object.address }}
 													{% endif %}
 												</p>
@@ -53,6 +53,10 @@
 		                                                 {% endif %}
 		                                            </time>
 	                                            {% endif %}
+	                                        {% elseif searchGrid == 'venue' %}
+	                                        	{% if object.address is defined %}
+	                                        		<time>{{ object.address }}</time>
+	                                        	{% endif %}
 	                                        {% endif %}
 										</div>
 										

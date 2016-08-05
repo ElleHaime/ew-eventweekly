@@ -29,6 +29,7 @@ define('frontSearchPanel',
 		            searchGrid: '#searchGridElem',
 		            searchGridOption: '.searchGridMenuTab',
 		            searchGridInput: '#searchGrid',
+		            filterPanelSwitchGrid: '.switchGridButton',
 		            isLoggedUser: '#isLogged',
 		            addSearchParamUrl: '/search/addSearchParam',
 		            datepickerOptions: {
@@ -142,8 +143,8 @@ define('frontSearchPanel',
 			                $($this.settings.endDateInput).val(selectedDate);
 			            }); 
 
-		            $($this.settings.searchGridOption).on('click', function(e) {
-		            	$this.__switchGridHandler(this);
+		            $($this.settings.searchGridOption).on('click', function() {
+		            	$this.__switchGridHandler($(this));
 		            });
 		            
 		            $($this.settings.searchTypeResultMenu + ' li').click(function(e) {
@@ -193,9 +194,10 @@ define('frontSearchPanel',
 		                    }
 		                });
 		
+		                var activeGrid = $($this.settings.searchGridInput).val();
 		                /* sent data from form2(filters) */
-		                $.each ($('#form2 input').serializeArray(), function ( i, obj ) {
-		                  $('<input type="hidden">').prop(obj).appendTo(nativeForm);
+		                $.each ($('#form2 input[data-grid="' + activeGrid + '"]').serializeArray(), function ( i, obj ) {
+		                	$('<input type="hidden">').prop(obj).appendTo(nativeForm);
 		                } );
 		
 		                // If no option was chosen show notification or submit form
@@ -275,22 +277,26 @@ console.log(response);
 		        
 		        
 		        __switchGridHandler: function(gridObj) {
-		        	var newGridVal = $(gridObj).data('grid-id');
-		        	var newGridName = $(gridObj).data('grid-name');
-		        	var oldGridVal = $(this.settings.searchGrid).data('grid-id');
-		        	var oldGridName = $(this.settings.searchGrid).data('grid-name');
-		        	
-		        	$(this.settings.searchGrid).data('grid-id', newGridVal);
-		        	$(this.settings.searchGrid).data('grid-name', newGridName);
+		        	var newGridVal = gridObj.attr('grid-id');
+		        	var newGridName = gridObj.attr('grid-name');
+		        	var oldGridVal = $(this.settings.searchGrid).attr('grid-id');
+		        	var oldGridName = $(this.settings.searchGrid).attr('grid-name');
+
+		        	$(this.settings.searchGrid).attr('grid-id', newGridVal);
+		        	$(this.settings.searchGrid).attr('grid-name', newGridName);
 		        	$(this.settings.searchGrid).html(newGridName);
-		        	
-		        	$(gridObj).data('grid-id', oldGridVal);
-		        	$(gridObj).data('grid-name', oldGridName);
-		        	$(gridObj).html(oldGridName);
-		        	
+
+		        	gridObj.attr('grid-id', oldGridVal);
+		        	gridObj.attr('grid-name', oldGridName);
+		        	gridObj.html('<span style="padding-left:15px;">' + oldGridName + '</span>');
+
 		        	$(this.settings.searchGridInput).val(newGridVal);
-	        	
-		        	this.__disableDatesByGrid();
+
+		        	// switch search grid on filter panel
+					var filterSwitchButton = this.settings.filterPanelSwitchGrid;
+					$.when(this.__disableDatesByGrid()).then(function() {
+						$(filterSwitchButton + '[data-grid="' + newGridVal + '"]').trigger('click');
+					});
 		        },
 		        
 		        

@@ -233,8 +233,8 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         $compiler -> addFunction(
         		'checkCover', 
         		function($resolvedArgs, $exprArgs) {
-        			$cover = $exprArgs[0]['expr']['value'];
-        			$type = $exprArgs[1]['expr']['value'];
+        			$type = $exprArgs[0]['expr']['value'];
+        			$cover = $exprArgs[1]['expr']['value'];
         			return '\Core\CoreTag::checkCover(' . $resolvedArgs . ', "' . $cover . '", "' . $type . '")';
 				}
         );
@@ -254,6 +254,14 @@ abstract class Bootstrap implements ModuleDefinitionInterface
         $compiler -> addFunction('getDefaultEndDate', function() {
         	return '\Core\Utils\DateTime::getDefaultEndDate(true)';
         });
+        
+        $compiler -> addFilter('getAttribute', function ($resolvedArgs, $exprArgs) {
+			return vsprintf('%s->{%s}', explode(', ', $resolvedArgs));
+		});
+		
+		$compiler -> addFunction('checkArray', function ($resolvedArgs, $exprArgs) {
+			return 'is_array(' . $resolvedArgs . ')';
+		});
     }
 
     public function initCoreTag($di)

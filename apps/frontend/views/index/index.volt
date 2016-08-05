@@ -25,8 +25,8 @@
 								<div class="b-popular-events-slider__slide b-slide js-main-popular-events-slider-slide">
 		
 									<div class="b-slide__picture">
-										{% if event.hyucover is defined %}
-											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}">
+										{% if event.qwecover is defined %}
+											<img src="{{ checkCover(event, event.cover.image, 'event') }}" alt="{{ event.name }}">
 										{% else %}
 											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}">
 										{% endif%}
@@ -66,7 +66,7 @@
 				</div>
 			  {% endif %}
 
-			  {#{% if featuredEvents is defined %}
+			  {% if featuredEvents is defined %}
 				<div class="list-of-events col-3 container">
 	
 					<div class="header">
@@ -96,7 +96,7 @@
 										{% if event.logo is defined %}
 											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event, 'event') }}">
 										{% elseif event.cover is defined %}
-											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
+											<img src="{{ checkCover(event, event.cover.image, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
 										{% else %}
 											<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
 										{% endif %}
@@ -162,7 +162,7 @@
 										{% if event.logo is defined %}
 											<img src="{{ checkLogo(event, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkLogo(event, 'event') }}">
 										{% elseif event.cover is defined %}
-											<img src="{{ checkCover(event.cover) }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
+											<img src="{{ checkCover(event, event.cover.image, 'event') }}" alt="{{ event.name }}" class="lazy" data-original="{{ checkCover(event.cover) }}">
 										{% else %}
 											<img src="/img/logo200.png" alt="{{ event.name }}" class="lazy" data-original="/upload/img/logo200.png">
 										{% endif %}
@@ -191,16 +191,14 @@
 					{% endfor %}
 				</div>
 			{% endif %}
-#}
+
 			<div class="clearfix"></div>
-
+			
 		</section>
-
+{#% include 'layouts/accfilter_new.volt' %#}
 	    <input type="hidden" id="trending_events" value="{% if trendingEvents is defined %}1{% else %}0{%endif%}">
 		<input type="hidden" id="featured_simple_events" value="{% if featuredEvents is defined %}1{% else %}0{%endif%}">
 		<input type="hidden" id="featured_paid_events" value="{% if paidEvents is defined %}1{% else %}0{%endif%}">
 		
-		<!-- <div class="ew-filter-link">
-			<a href="#" class="Show Filter">Show Filter</a>	
-		</div> -->
+		
 {% endblock %}

@@ -46,7 +46,7 @@ class FilterForm extends FiltersBuilder
 	protected $searchTypeResult				= 'List';
 		
 	/* @var string */
-	protected $searchGrid						= 'event';
+	protected $searchGrid						= false;
 	
 	/* @var int */
 	protected $personalPresetActive			= 0;
@@ -54,6 +54,12 @@ class FilterForm extends FiltersBuilder
 	/* @var array */
 	protected $userFilters						= [];
 	
+	
+	
+	public function __construct($searchGrid)
+	{
+		$this -> searchGrid = $searchGrid;
+	}
 	
 	
 	public function setLocation($location = null)
@@ -211,9 +217,9 @@ class FilterForm extends FiltersBuilder
 	}
 	
 	
-	public function getFromSession()
+	public function getFromSession($grid)
 	{
-		$filters = $this -> session -> get('filterForm');
+		$filters = $this -> session -> get('filterForm' . ucfirst($grid));
 		$props = $this -> getFilterProperties();
 		
 		foreach ($props as $property) {
@@ -233,7 +239,7 @@ class FilterForm extends FiltersBuilder
 		$this -> setEndDate();
 		$this -> setCategories();
 		$this -> setTags();
-		$this -> setGrid();
+// 		$this -> setGrid();
 		
 		$this -> searchTitle = false;
 		$this -> searchTypeResult = 'List';

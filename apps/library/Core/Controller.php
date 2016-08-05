@@ -41,56 +41,30 @@ class Controller extends \Phalcon\Mvc\Controller
         $this -> plugSearch();
         $this -> checkCache();
         $this -> counters -> setUserCounters();
+        $this -> setPermissions();
 
-        $member = $this->session->get('member');
-
-        if ($this->session->get('location') === null) {
+        if (!$this->session->get('location') || $this->session->get('location') === null) {
             $locModel = new Location();
             $loc = $locModel -> createOnChange();
             $this -> session -> set('location', $loc);
         }
+
         $this->session->get('location')->latitude = $this->session->get('location')->getCenterLat();
         $this->session->get('location')->longitude = $this->session->get('location')->getCenterLng();
-        
-        if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
-        	$this->memberId = $this->session->get('memberId');
-        	$this->view->member = $this->session->get('member');
-        
-        	if ($this->session->has('user_token')) {
-        		$this->view->setVar('external_logged', 'facebook');
-        
-        		$this->view->setVar('permission_base', $this->session->get('permission_base'));
-        		$this->view->setVar('permission_publish', $this->session->get('permission_publish'));
-        		$this->view->setVar('permission_manage', $this->session->get('permission_manage'));
-        
-        		if (isset($this->view->member->network)) {
-        			$this->view->setVar('acc_external', $this->view->member->network);
-        		}
-        	}
-        
-        	if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
-        		$this->view->setVar('acc_external', $member->network);
-        	}
-        	 
-        } else {
-        	$this->session->set('role', Acl::ROLE_GUEST);
-        }
 
         if ($this->session->has('location_conflict')) {
             $this->view->setVar('location_conflict', $this->session->get('location_conflict'));
             $this->session->remove('location_conflict');
         }
         $this->view->setVar('location', $this->session->get('location'));
-// _U::dump($this->session->get('location')->latitude);
-        if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
-            $this->view->setVar('acc_synced', 1);
-        }
-
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
         
         $this -> filtersBuilder -> load();
+        $this -> view -> setVar('searchGrid', $this -> filtersBuilder -> getActiveGrid());
+        $this -> view -> setVar('searchGridsAll', $this -> filtersBuilder -> getGridsList());
         $this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
-// _U::dump($this->view->getVar('location')->latitude);
+        $this -> view -> setVar('userSearchInactive', $this -> filtersBuilder -> getFormFiltersInactive());
+
         $detect = new MobileDetect();
         if ($detect -> isMobile() || $detect -> isTablet()) {
             $this->view->setVar('isMobile', '1');
@@ -205,30 +179,35 @@ class Controller extends \Phalcon\Mvc\Controller
     
     public function setPermissions()
     {
-    	if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
-    		$this->memberId = $this->session->get('memberId');
-    		$this->view->member = $this->session->get('member');
-    	
-    		if ($this->session->has('user_token')) {
-    			$this->view->setVar('external_logged', 'facebook');
-    	
-    			$this->view->setVar('permission_base', $this->session->get('permission_base'));
-    			$this->view->setVar('permission_publish', $this->session->get('permission_publish'));
-    			$this->view->setVar('permission_manage', $this->session->get('permission_manage'));
-    	
-    			if (isset($this->view->member->network)) {
-    				$this->view->setVar('acc_external', $this->view->member->network);
-    			}
-    		}
-    	
-    		if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
-    			$this->view->setVar('acc_external', $member->network);
-    		}
-    		 
-    	} else {
-    		$this->session->set('role', Acl::ROLE_GUEST);
-    	}
-    }
+		if ($this->session->has('role') && $this->session->get('role') == Acl::ROLE_MEMBER) {
+        	$this->memberId = $this->session->get('memberId');
+        	$this->view->member = $this->session->get('member');
+        
+        	if ($this->session->has('user_token')) {
+        		$this->view->setVar('external_logged', 'facebook');
+        
+        		$this->view->setVar('permission_base', $this->session->get('permission_base'));
+        		$this->view->setVar('permission_publish', $this->session->get('permission_publish'));
+        		$this->view->setVar('permission_manage', $this->session->get('permission_manage'));
+        
+        		if (isset($this->view->member->network)) {
+        			$this->view->setVar('acc_external', $this->view->member->network);
+        		}
+        	}
+        
+        	$member = $this->session->get('member');
+        	if (isset($member) && ($member->auth_type == 'email' && isset($member->network->account_uid))) {
+        		$this->view->setVar('acc_external', $member->network);
+        	}
+        	if ($this->session->has('acc_synced') && $this->session->get('acc_synced') !== false) {
+        		$this->view->setVar('acc_synced', 1);
+        	}
+        } else {
+        	$this->session->set('role', Acl::ROLE_GUEST);
+        }
+        
+        return;
+	}
     
     
     public function upSessionArray($sessName, $varName, $varValue)

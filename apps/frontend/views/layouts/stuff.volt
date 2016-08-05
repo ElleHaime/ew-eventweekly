@@ -68,8 +68,6 @@
     <input id="fbAppSecret" type="hidden" value="{{ fbAppSecret }}" />
 {% endif %}
 
-{#% if searchTypeResult is defined %}
-    <input id="searchTypeResult" type="hidden" value="{{ searchTypeResult }}" />
-{% else %}
-	<input id="searchTypeResult" type="hidden" value="List" />    
-{% endif %#}
+{% if searchGrid is defined %}
+    <input id="searchGridType" type="hidden" value="{{ searchGrid }}" />
+{% endif %}

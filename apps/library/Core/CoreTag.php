@@ -48,7 +48,7 @@ class CoreTag extends \Phalcon\Tag {
 			
 			(!is_null($args['logo']) && file_exists($fPath['full'] . '/' . $args['logo'])) 
 				? $result = $fPath['rel'] . '/' . $args['logo'] 
-				: $result = '/img/logo201.png';
+				: $result = '/img/logo200.png';
 		}
 		
 		return $result;
@@ -68,9 +68,9 @@ class CoreTag extends \Phalcon\Tag {
     	} else {
     		$fPath = self::composeVenuePath($args);
     		
-    		(!is_null($args['logo']) && file_exists($fPath['full'] . '/cover/' . $cover))
-	    		? $result = $fPath['rel'] . '/cover/' . $args['logo']
-	    		: $result = '/img/logo201.png';
+    		(!is_null($cover) && file_exists($fPath['full'] . '/cover/' . $cover))
+	    		? $result = $fPath['rel'] . '/cover/' . $cover
+	    		: $result = '/img/logo200.png';
     	}
     
     	return $result;
@@ -86,12 +86,13 @@ class CoreTag extends \Phalcon\Tag {
     		$objDatesName = 'undated';
     	}
     	
-    	return ['full' => ROOT_APP . 'public/upload/img/event/' . $objDatesName. '/' . $args['id'],
-    			 'rel' => '/upload/img/event/' . $objDatesName. '/' . $args['id']];
+    	return ['full' => ROOT_APP . 'public/upload/img/event1/' . $objDatesName. '/' . $args['id'],
+    			 'rel' => '/upload/img/event1/' . $objDatesName. '/' . $args['id']];
     }
 
     private static function composeVenuePath($args)
     {
-    	return ROOT_APP . 'public/upload/img/venue/' . $args['location_id'] . '/' . $args['id'];
+    	return ['full' => ROOT_APP . 'public/upload/img/venue/' . $args['location_id'] . '/' . $args['id'],
+    			 'rel' => '/upload/img/venue/' . $args['location_id'] . '/' . $args['id']];
     }
 } 

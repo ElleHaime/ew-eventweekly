@@ -19,7 +19,12 @@ define('frontFilterPanel',
 				toggleBtn: '.categories-accordion__arrow',
 				filtersWrapper: '.b-filters__wrapper',
 				personalPresetState: '#personalPresetActive',
-				personalPresetTags: '#tagIds'
+				personalPresetTags: '#tagIds',
+				btnSwitchGrid: '.switchGridButton',
+				gridPanel: '.categories-accordion',
+				currentActiveGrid: '#currentActiveGrid',
+				topSearchGridInput: '#searchGrid',
+				topSearchGridElem: '.searchGridMenuTab',
 			},
 			checkboxAction: '',
 			panelState: null,
@@ -38,6 +43,10 @@ define('frontFilterPanel',
 				
 				$(this.settings.btnSwitchPanel).click(function(e) {
 					$this.__switchPanel();
+				});
+				
+				$(this.settings.btnSwitchGrid).click(function(e) {
+					$this.__switchGrid(this);
 				});
 				
 				$(this.settings.boxCheckAll).click(function(e) {
@@ -69,10 +78,13 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__setCategoriesChecked: function() {
-				$(this.settings.filtersWrapper).find(this.settings.categoryBox).each(function() { 
+				var activeGrid = $(this.settings.currentActiveGrid).val();
+				var categoryElem = this.settings.categoryBox + '.' + activeGrid;
+
+				$(this.settings.filtersWrapper).find(categoryElem).each(function() { 
 					var isChecked = true;
-					if ($(this).closest('.categories-accordion__item').find('.userFilter-tag').length > 0) {
-						$(this).closest('.categories-accordion__item').find('.userFilter-tag').each(function() {
+					if ($(this).closest('.categories-accordion__item').find('.userFilter-tag.' + activeGrid).length > 0) {
+						$(this).closest('.categories-accordion__item').find('.userFilter-tag.' + activeGrid).each(function() {
 	                        if($(this).is(':checked') === false) {
 	                        	isChecked = false;
 	                        	return false;
@@ -106,6 +118,37 @@ define('frontFilterPanel',
 					this.panelState = null;
 				}
 			},
+			
+			
+			__switchGrid: function(elem) {
+				var activeGrid = $(elem).data('grid');
+				
+				$(this.settings.gridPanel).each(function() {
+					if ($(this).data('grid') != activeGrid) {
+						$(this).hide();
+					} else {
+						$(this).show();
+						$(elem).find('i').addClass('fa fa-check-square-o');
+					}
+				});
+				
+				$(this.settings.btnSwitchGrid).each(function() {
+					var checkElem = $(this).find('i');
+					
+					if ($(this).data('grid') != activeGrid && checkElem.hasClass('fa-check-square-o')) {
+						checkElem.removeClass('fa-check-square-o').addClass('fa-square-o');
+					} else if ($(this).data('grid') == activeGrid) {
+						checkElem.removeClass('fa-square-o').addClass('fa-check-square-o');
+					}
+				});
+				
+				$(this.settings.currentActiveGrid).val(activeGrid);
+				var gridMenuElem = this.settings.topSearchGridElem;
+				$.when($(this.settings.currentActiveGrid).val(activeGrid)).then(function(elem) {
+					$(gridMenuElem + '[grid-id="' + elem.val() + '"]').trigger('click');
+				});
+			},
+			
 
 			/*
 			**********************
@@ -123,6 +166,7 @@ define('frontFilterPanel',
 			*/
 			__applyPersonalize: function() {
 				var $this = this;
+				var activeGrid = $(this.settings.currentActiveGrid).val();
 				
 				var personalTags = $(this.settings.personalPresetTags).val().split(',');
 				if (personalTags.length == 0) {
@@ -130,7 +174,7 @@ define('frontFilterPanel',
             		return true;
             	}
 				
-				$('.userFilter-tag').each(function() { //loop through each checkbox
+				$('.userFilter-tag.' + activeGrid).each(function() { //loop through each checkbox
 					var tagNumber = this.id.replace( /[^\d.]/g, '' );
 					if ($.inArray(tagNumber, personalTags) >= 0) {
 						this.checked = true;		
@@ -150,12 +194,13 @@ define('frontFilterPanel',
 			*/
 			__checkOptions: function() {
 				var $this = this;
+				var activeGrid = $(this.settings.currentActiveGrid).val();
 				
-				$('.userFilter-tag').each(function() { //loop through each checkbox
+				$('.userFilter-tag.' + activeGrid).each(function() { //loop through each checkbox
                 	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
             	});
-            	$('.userFilter-category').each(function() { //loop through each checkbox
-                this.checked = true;  //select all checkboxes with class "userFilter-category"               
+            	$('.userFilter-category.' + activeGrid).each(function() { //loop through each checkbox
+            		this.checked = true;  //select all checkboxes with class "userFilter-category"               
             	});
             	
             	$(this.settings.personalPresetState).val('0');
@@ -169,11 +214,12 @@ define('frontFilterPanel',
 			*/
 			__uncheckOptions: function() {
 				var $this = this;
-				
-				$('.userFilter-tag').each(function() { //loop through each checkbox
+				var activeGrid = $(this.settings.currentActiveGrid).val();
+
+				$('.userFilter-tag.' + activeGrid).each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-tag"               
             	});
-            	$('.userFilter-category').each(function() { //loop through each checkbox
+            	$('.userFilter-category.' + activeGrid).each(function() { //loop through each checkbox
                 	this.checked = false;  //select all checkboxes with class "userFilter-category"               
             	});
             	$(this.settings.personalPresetState).val('0');

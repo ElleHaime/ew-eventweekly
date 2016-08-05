@@ -22,6 +22,21 @@ class VenueImage extends VenueImageObject
 	}
 	
 	
+	public function getGallery($venue)
+	{
+		$gallery = [];
+		$images = self::find(['venue_id = "' . $venue -> id . '" and type = "gallery"']);
+	
+		if (!empty($images)) {
+			foreach ($images as $img) {
+				$gallery[] = $img;
+			}
+		}
+	
+		return $gallery;
+	}
+	
+	
 	public function getLogo($event)
 	{
 		$result = $this -> getDI() -> get('config') -> application -> defaultLogo;

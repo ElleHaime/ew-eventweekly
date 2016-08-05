@@ -33,15 +33,10 @@ class Bootstrap extends \Core\Bootstrap
 		});
 	}
 
-// 	public function _initFilters($di)
-// 	{
-// 		$di -> set('filters', function() use ($di) {
-// 			return new Filter();
-// 		});
-// 	}
-
 	public function _initFilters($di)
 	{
+		$searchGrids = ['event', 'venue'];
+		
 		$di -> set('filtersBuilder', function() use ($di) {
 			return new FiltersBuilder();
 		});
@@ -49,9 +44,9 @@ class Bootstrap extends \Core\Bootstrap
 		$di -> set('filterSearch', function() use ($di) {
 			return new FilterSearch();
 		});
-		
-		$di -> set('filterForm', function() use ($di) {
-			return new FilterForm();
-		});
+
+		foreach ($searchGrids as $index => $grid) {
+			$di -> set('filterForm' . ucfirst($grid), new FilterForm($grid));
+		}
 	}
 }

@@ -38,8 +38,19 @@ class Venue extends Model
 	{
 		parent::initialize();
 				
-		$this -> belongsTo('location_id', '\Object\Location', 'id', array('alias' => 'location'));
-		$this -> hasMany('id', '\Frontend\Models\Event', 'venue_id', array('alias' => 'event'));
+		$this -> belongsTo('location_id', '\Objects\Location', 'id', array('alias' => 'location',
+																	 	   'baseField' => 'alias'));
+		$this -> hasMany('id', '\Frontend\Models\Event', 'venue_id', ['alias' => 'event']);
+		$this -> hasManyToMany('id', '\Frontend\Models\VenueCategory',
+									 'venue_id', 'category_id',
+									 '\Frontend\Models\Category', 'id', ['alias' => 'category',
+																		 'baseField' => 'name']);
+		$this -> hasManyToMany('id', '\Frontend\Models\VenueTag',
+									 'venue_id', 'tag_id',
+									 '\Frontend\Models\Tag', 'id', ['alias' => 'tag',
+																	'baseField' => 'name']);
+		$this -> hasMany('id', '\Frontend\Models\VenueImage', 'venue_id', array('alias' => 'image'));
+		
 	}
 	
 	public function createOnChange($argument = array())

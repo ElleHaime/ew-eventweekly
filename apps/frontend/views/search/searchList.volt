@@ -12,7 +12,7 @@
 				{% if list is defined %}
 					{% if searchGrid == 'event' %}
 						{% set objectLink = '' %}
-					{% elseif userSearch['searchGrid'] == 'venue' %}
+					{% elseif searchGrid == 'venue' %}
 						{% set objectLink = '/venue' %}
 					{% endif %}
 					
@@ -29,7 +29,7 @@
 											{% if object.logo is defined %}
 												<img src="{{ checkLogo(object, searchGrid) }}" alt="{{ object.name }}" class="lazy" data-original="{{ checkLogo(object, searchGrid) }}">
 											{% elseif object.cover is defined %}
-												<img src="{{ checkCover(object.cover, searchGrid) }}" alt="{{ object.name }}" class="lazy" data-original="{{ checkCover(object.cover, searchGrid) }}">
+												<img src="{{ checkCover(object, object.cover.image, searchGrid) }}" alt="{{ object.name }}" class="lazy" data-original="{{ checkCover(object.cover, searchGrid) }}">
 											{% else %}
 												<img src="/img/logo200.png" alt="{{ object.name }}" class="lazy" data-original="/img/logo200.png">
 											{% endif %} 
@@ -38,14 +38,14 @@
 
 									<div class="b-list-of-events-g__info">
 										<h2 class="b-list-of-events-g__title">
-											<a href="{{ objectLink }}/{{ toSlugUri(event.name) }}-{{ object.id }}">{{ object.name }}</a>
+											<a href="{{ objectLink }}/{{ toSlugUri(object.name) }}-{{ object.id }}">{{ object.name }}</a>
 										</h2>
 										
 										<div class="b-list-of-events-g__date">
 											{% if object.location is defined %}
 												<p class="b-list-of-events-g__date-venue">
 													<i class="fa fa-map-marker"></i> {{ object.location }}
-													{% if object.address is defined %}
+													{% if object.address is defined and searchGrid == 'event' %}
 														, {{ object.address }}
 													{% endif %}
 												</p>
@@ -58,6 +58,10 @@
 		                                                 {% endif %}
 		                                            </time>
 	                                            {% endif %}
+	                                        {% elseif searchGrid == 'venue' %}
+	                                        	{% if object.address is defined %}
+	                                        		<time>{{ object.address }}</time>
+	                                        	{% endif %}
 	                                        {% endif %}
 										</div>
 										

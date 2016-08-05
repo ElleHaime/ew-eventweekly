@@ -51,6 +51,19 @@ class SearchController extends \Core\Controller
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
     	
+//     	$this -> postData = ['searchLocationFormattedAddress' => ["locality" => "Dublin",
+//     															  "administrative_area_level_1" => "Dublin", 
+//     															  "country" => "Ireland",
+//     															  "place_id" => "ChIJL6wn6oAOZ0gRoHExl6nHAAo"],
+//     						 'searchTypeResult' => 'List',
+//     						 'searchCategories' => ['6' => 'on'],
+//     						 'searchTags' => ['83' => 'on', '84' => 'on', '85' => 'on', '32' => 'on'],
+//     						 'searchGrid' => 'venue'];
+// _U::dump($this -> postData, true);
+
+		if (isset($this -> postData['searchGrid'])) {
+			$this -> filtersBuilder -> setActiveGrid($this -> postData['searchGrid']);
+		}    	
 		foreach ($this -> postData as $key => $val) {
 			if ($value = $this -> postElemExists($key)) {
 				$this -> filtersBuilder -> addFilter($key, $val);
@@ -62,6 +75,7 @@ class SearchController extends \Core\Controller
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
  		}
+// _U::dump($this -> filtersBuilder -> getFormFilters()); 		
 		$result['status'] = 'OK';
     	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
     	$result['form'] = $this -> filtersBuilder -> getFormFilters();
@@ -100,6 +114,7 @@ class SearchController extends \Core\Controller
      * @Route('/{location:[A-Za-z\-]+}/{dateStart:[0-9]{1,2}[a-z]+}-{dateEnd:[0-9]{1,2}[a-z]+}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(this-week)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/{arg:(this-weekend)}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/{arg:(venues)}', methods={'GET'})
      * @Acl(roles={'guest','member'});
      */
     public function globalSearchAction($location, $arg1, $arg2 = '')
@@ -109,7 +124,12 @@ class SearchController extends \Core\Controller
 // $str = '';
 //$str = 'las%20vegas-us/today';    	
     	$this -> setLocationByCity($location);
-    	if (!$this -> setSearchDateVars($arg1)) $this -> setSearchDateCustom($arg1, $arg2);
+    	if ($arg1 == 'venues') {
+    		$this -> filtersBuilder -> setActiveGrid('venue') -> applyFilters();
+    	}
+    	if ($this -> filtersBuilder -> getActiveGrid() == 'venue' || !$this -> setSearchDateVars($arg1))  {
+    		$this -> setSearchDateCustom($arg1, $arg2);
+    	}
 
     	$this -> searchAction();
     }
@@ -124,13 +144,19 @@ class SearchController extends \Core\Controller
      * @Route('/{location:[A-Za-z\-]+}/personalised/{dateStart:[a-z0-9]+}-{dateEnd:[a-z0-9]+}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-week)}', methods={'GET'})
      * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(this-weekend)}', methods={'GET'})
+     * @Route('/{location:[A-Za-z\-]+}/personalised/{arg:(venues)}', methods={'GET'})
      * @Acl(roles={'guest','member'});
      */
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
     	$this -> setLocationByCity($location);
+    	if ($arg1 == 'venues') {
+    		$this -> filtersBuilder -> setActiveGrid('venue');
+    	}
     	$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
-    	if (!$this -> setSearchDateVars($arg1)) $this -> setSearchDateCustom($arg1, $arg2);
+    	if ($this -> filtersBuilder -> getActiveGrid() == 'venue' || !$this -> setSearchDateVars($arg1))  {
+    		$this -> setSearchDateCustom($arg1, $arg2);
+    	}
     
     	$this -> searchAction();
     }
@@ -140,7 +166,7 @@ class SearchController extends \Core\Controller
     {
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
-    	$this -> currentGrid  = $this -> filtersBuilder -> getFormFilters()['searchGrid'];
+    	$this -> currentGrid  = $this -> filtersBuilder -> getActiveGrid();
     	$this -> view -> form = new SearchForm();
 
     	if ($this -> currentGrid == 'event') {
@@ -153,7 +179,7 @@ class SearchController extends \Core\Controller
     	$this -> setTitleLocation();
     	$this -> setTitleDates();
     	$this -> setTitleTitle();
-// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
+// _U::dump($this -> filtersBuilder -> getSearchFilters());
 // _U::dump($this -> filtersBuilder -> getFormFilters(), true);
 // _U::dump($this -> currentGrid);
 
@@ -163,7 +189,7 @@ class SearchController extends \Core\Controller
     	 
     	$objectsGrid = new $objectsGridName($this -> filtersBuilder -> getSearchFilters(), $this -> getDi(), null, ['adapter' => 'dbMaster']);
     	
-    	$page = $this -> request -> getQuery('page');
+     	$page = $this -> request -> getQuery('page');
     	empty($page) ?	$objectsGrid -> setPage(1) : $objectsGrid -> setPage($page);
     	
     	if ($this -> filtersBuilder -> getFormFilters()['searchTypeResult'] == 'Map') {
@@ -207,7 +233,7 @@ class SearchController extends \Core\Controller
 	   		}
 	   		$countResults = $results['all_count'];
     	}
-    	
+// _U::dump($this -> filtersBuilder -> getFormFiltersInactive());    	
     	$this -> view -> setVar('list', $result);
     	$this -> view -> setVar('searchGrid', $this -> currentGrid);
     	$this -> view -> setVar('eventsTotal', $countResults);
@@ -215,6 +241,7 @@ class SearchController extends \Core\Controller
     	$this -> view -> setVar('listTitle', implode($this -> pageTitle, ' '));
     	$this -> view -> setVar('urlParams', $this -> request -> getQuery()['_url']);
     	$this -> view -> setVar('userSearch', $this -> filtersBuilder -> getFormFilters());
+    	$this -> view -> setVar('userSearchInactive', $this -> filtersBuilder -> getFormFiltersInactive());
     	
     	$member_categories = (new MemberFilter()) -> getbyId();
     	if (isset($member_categories['tag'])) 
@@ -275,8 +302,12 @@ class SearchController extends \Core\Controller
     
     private function setTitleDates()
     {
-    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate']))
-    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
+    	$this -> pageTitle['date'] = '';
+    
+    	if ($this -> currentGrid == 'event') {
+	    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate']))
+	    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
+    	}	
     	
     	return;
     }
@@ -354,22 +385,26 @@ class SearchController extends \Core\Controller
     	if ($this -> filtersBuilder -> getMemberPreset()) $this -> actionUrl .= '/personalised';
 
     	// set %from_date%-%to_date%
-		if ($this -> postData['searchStartDate'] == $this -> postData['searchEndDate']) {
-			if (strtotime('today') == strtotime($this -> postData['searchStartDate'])) {
-				$this -> actionUrl .= '/' . self::$today;
-			} elseif (strtotime('tomorrow') == strtotime($this -> postData['searchStartDate'])) {
-				$this -> actionUrl .= '/' . self::$tomorrow;
-			}
-		} else {
-			if (strtotime($this -> postData['searchEndDate']) - strtotime($this -> postData['searchStartDate']) == 604800) {
-				$this -> actionUrl .= '/' . self::$week;
-			} elseif((strtotime($this -> postData['searchStartDate']) == strtotime('next Saturday')) && (strtotime($this -> postData['searchEndDate']) == strtotime('next Sunday'))) {
-				$this -> actionUrl .= '/' . self::$weekend;
+    	if ($this -> filtersBuilder -> getFormFilters()['searchGrid'] == 'event') {
+			if ($this -> postData['searchStartDate'] == $this -> postData['searchEndDate']) {
+				if (strtotime('today') == strtotime($this -> postData['searchStartDate'])) {
+					$this -> actionUrl .= '/' . self::$today;
+				} elseif (strtotime('tomorrow') == strtotime($this -> postData['searchStartDate'])) {
+					$this -> actionUrl .= '/' . self::$tomorrow;
+				}
 			} else {
-				$this -> actionUrl .= '/' . strtolower(date('jM', strtotime($this -> postData['searchStartDate'])))
-						. '-' . strtolower(date('jM', strtotime($this -> postData['searchEndDate'])));
+				if (strtotime($this -> postData['searchEndDate']) - strtotime($this -> postData['searchStartDate']) == 604800) {
+					$this -> actionUrl .= '/' . self::$week;
+				} elseif((strtotime($this -> postData['searchStartDate']) == strtotime('next Saturday')) && (strtotime($this -> postData['searchEndDate']) == strtotime('next Sunday'))) {
+					$this -> actionUrl .= '/' . self::$weekend;
+				} else {
+					$this -> actionUrl .= '/' . strtolower(date('jM', strtotime($this -> postData['searchStartDate'])))
+							. '-' . strtolower(date('jM', strtotime($this -> postData['searchEndDate'])));
+				}
 			}
-		}	
+    	} else {
+    		$this -> actionUrl .= '/venues';
+    	}	
 		
 		return true;
     }
@@ -382,7 +417,8 @@ class SearchController extends \Core\Controller
 	 
 	    	if (isset($dateSearchVariables[$key])) {
 	    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
-	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
+	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end'])
+	    								-> applyFilters();
 	    		
 	    		return true;
 	    	} 
@@ -408,7 +444,8 @@ class SearchController extends \Core\Controller
 							 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
 			
 			$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
-									-> addFilter('searchEndDate', $endDate);
+									-> addFilter('searchEndDate', $endDate)
+									-> applyFilters();
     	}
     			
 		return;

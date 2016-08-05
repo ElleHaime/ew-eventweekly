@@ -147,32 +147,41 @@ require.config({
         window.fbAppId = document.getElementById('fbAppId').value;
         window.fbAppSecret = document.getElementById('fbAppSecret').value;
         window.fbAppVersion = document.getElementById('fbAppVersion').value;
-        window.searchTypeResult = document.getElementById('searchTypeResult').value;
-console.log(window.searchTypeResult);        
+
+		if (document.getElementById('searchTypeResult') != null) {
+			window.searchTypeResult = document.getElementById('searchTypeResult').value;	
+		} else {
+			window.searchTypeResult = 'event';
+		}
+        
         var moduleName, fileName = '', isPreview = 0,
         	freelisting = /\/freelisting/,
         	re = /(\/[a-zA-Z-_]+)*(\/[\d_]+){1}$/,
             re1 = /\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
+            reVenue = /\/venue\/([a-zA-Z0-9\-_]+)*\-([\d_]+){1}$/,
             restoreRel = /\/auth\/reset\/.+/,
             trendingRel = /\/[a-zA-Z\-\s]+\/trending/,
         	featuredRel = /^\/[a-zA-Z\-\s]+$/,
+        	venuesRel = /\/[a-zA-Z\-\s]+\/venues$/,
         	whatsonRel = /^(\/whats\-on\-in){1}[a-zA-Z\-]+$/,
         	seoDaysRel = /^\/[a-z\-]+\/(personalised\/)?(today|tomorrow|this-week|this-weekend)$/,
         	seoDatesRel = /^\/[a-z\-]+\/(personalised\/)?[0-9]{1,2}[a-z]+(\-[0-9]{1,2}[a-z]+)?$/;
-console.log(location.pathname);
+//console.log(location.pathname);
 
         if (whatsonRel.test(location.pathname)) {
 		} else if (freelisting.test(location.pathname)) {
         	fileName = '/'
         } else if (restoreRel.test(location.pathname)) {
             fileName = '/auth/restore'            
+        } else if (reVenue.test(location.pathname) == true) {
+        	fileName = '/venue/show';
         } else if (re1.test(location.pathname) == true) {
             fileName = '/event/show';
-        } else if (featuredRel.test(location.pathname.replace(/%20/ig, ' '))) {
+        }  else if (featuredRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/featured';
         } else if (trendingRel.test(location.pathname.replace(/%20/ig, ' '))) {
         	fileName = '/event/trending';
-        } else if (seoDaysRel.test(location.pathname.replace(/%20/ig,'-')) == true || seoDatesRel.test(location.pathname.replace(/%20/g, '-')) == true) {
+        } else if (venuesRel.test(location.pathname.replace(/%20/ig, ' ')) || seoDaysRel.test(location.pathname.replace(/%20/ig,'-')) == true || seoDatesRel.test(location.pathname.replace(/%20/g, '-')) == true) {
         	if (window.searchTypeResult == 'List') {
         		fileName = '/search/list';
         	} else {
@@ -183,7 +192,7 @@ console.log(location.pathname);
         } else {
             fileName = location.pathname.match(/(\/\w+)*?$/)
         } 
-console.log(fileName);
+//console.log(fileName);
         if (!fileName || fileName == '/' || fileName == '') {
         	moduleName = 'frontend/index';
         } else {
@@ -200,8 +209,6 @@ console.log(moduleName);
 	        require(['jquery', 'frontSearchPanel', 'frontTopPanel', 'frontFilterPanel', 'frontCounterUpdater', 'bootstrap'], 
 	      		function($, frontSearchPanel, frontTopPanel, frontFilterPanel, frontCounterUpdater, bootstrap)
 	      		{
-		            //$('.tooltip-text').tooltip();
-		            
 		            frontSearchPanel.init();
 		            frontFilterPanel.init();
 		            frontTopPanel.init();

@@ -42,9 +42,9 @@ class MemberController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
-
+_U::dump((new MemberFilter) -> getbyId());
 		$this -> view -> setVars(['member' => $list,
-								  'userFilters' => $this -> filtersBuilder -> getFormFilters()['userFilters']]);
+								  'userFilters' => (new MemberFilter) -> getbyId()]);
 
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));

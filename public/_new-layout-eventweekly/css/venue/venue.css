@@ -1,0 +1,241 @@
+html {
+  height: 100%; }
+
+body {
+  height: 100%;
+  background: url("../../i/bg.png");
+  min-width: 320px; }
+
+.venue-page-breadcrumb {
+  padding: 8px 3px;
+  list-style: none;
+  font-size: 12px; }
+  .venue-page-breadcrumb-item {
+    display: inline; }
+    .venue-page-breadcrumb-item:before {
+      padding: 8px;
+      content: "::";
+      color: #F7931E; }
+    .venue-page-breadcrumb-item:first-child:before {
+      display: none; }
+    .venue-page-breadcrumb-item:last-child a {
+      pointer-events: none;
+      cursor: default;
+      color: #cccccc;
+      text-decoration: none; }
+    .venue-page-breadcrumb-item-link {
+      color: #F7931E; }
+      .venue-page-breadcrumb-item-link:hover {
+        color: #F7931E; }
+.venue-page-title {
+  font-family: "Open Sans", sans-serif;
+  color: #ff9933;
+  font-size: 42px;
+  font-weight: 100;
+  margin: 10px 0 25px 0; }
+.venue-page-place {
+  height: 300px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 10px; }
+  @media only screen and (max-width: 640px) {
+    .venue-page-place {
+      height: 200px; } }
+  .venue-page-place-img {
+    height: 100%;
+    width: 100%; }
+.venue-page-location {
+  overflow: hidden;
+  height: 160px;
+  margin-bottom: 10px; }
+  @media only screen and (max-width: 1024px) {
+    .venue-page-location {
+      height: auto; } }
+  .venue-page-location-address {
+    float: left;
+    padding-left: 0; }
+    @media only screen and (max-width: 991px) {
+      .venue-page-location-address {
+        padding-right: 0; } }
+    .venue-page-location-address-contact {
+      float: left;
+      background: #404040;
+      padding: 20px;
+      width: calc(100% - 195px); }
+      @media only screen and (max-width: 1024px) {
+        .venue-page-location-address-contact {
+          width: calc(100% - 175px); } }
+      @media only screen and (max-width: 735px) {
+        .venue-page-location-address-contact {
+          padding: 20px 10px; } }
+      @media only screen and (max-width: 640px) {
+        .venue-page-location-address-contact {
+          width: 100%;
+          float: none;
+          overflow: hidden; } }
+      .venue-page-location-address-contact-img {
+        width: 120px;
+        height: 120px; }
+        @media only screen and (max-width: 480px) {
+          .venue-page-location-address-contact-img {
+            width: 100%;
+            height: 160px; } }
+        .venue-page-location-address-contact-img-wrp {
+          float: left;
+          margin-right: 20px; }
+          @media only screen and (max-width: 1024px) {
+            .venue-page-location-address-contact-img-wrp {
+              margin-right: 10px; } }
+          @media only screen and (max-width: 480px) {
+            .venue-page-location-address-contact-img-wrp {
+              margin-right: 0; } }
+      .venue-page-location-address-contact-text {
+        float: left; }
+        .venue-page-location-address-contact-text-item {
+          margin: 11px 0; }
+          .venue-page-location-address-contact-text-item i {
+            color: #F7931E;
+            font-size: 18px;
+            padding: 0 10px 0 0; }
+            .venue-page-location-address-contact-text-item i.fa-globe {
+              font-size: 17px;
+              padding: 0 6px 0 0; }
+          .venue-page-location-address-contact-text-item.is-middle {
+            margin: 22px 0; }
+            @media only screen and (max-width: 1024px) {
+              .venue-page-location-address-contact-text-item.is-middle {
+                margin: 19px 0; } }
+          .venue-page-location-address-contact-text-item a:hover {
+            color: #F7931E; }
+    .venue-page-location-address-social {
+      float: right;
+      background: #4D4D4D;
+      padding: 25px;
+      width: 195px; }
+      @media only screen and (max-width: 1024px) {
+        .venue-page-location-address-social {
+          padding: 25px 15px;
+          width: 175px; } }
+      @media only screen and (max-width: 640px) {
+        .venue-page-location-address-social {
+          width: 100%;
+          float: none;
+          margin-right: auto;
+          margin-left: auto; } }
+      .venue-page-location-address-social-link {
+        display: block;
+        text-decoration: none;
+        color: #ffffff;
+        background: #D6801A;
+        width: 145px;
+        border-radius: 3px;
+        text-align: center;
+        padding: 8px;
+        font-size: 13px;
+        margin: 0 0 10px 0;
+        box-shadow: inset 0 -1px #8F5611;
+        border-bottom: 1px solid #8F5611; }
+        @media only screen and (max-width: 640px) {
+          .venue-page-location-address-social-link {
+            margin-right: auto;
+            margin-left: auto; } }
+        .venue-page-location-address-social-link:last-child {
+          margin-bottom: 0; }
+        .venue-page-location-address-social-link:before {
+          padding: 0 10px 0 0; }
+        .venue-page-location-address-social-link:hover {
+          color: #ffffff;
+          text-decoration: none; }
+  .venue-page-location-map {
+    float: right;
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    transform: translateZ(0px);
+    background-color: #e5e3df; }
+    @media only screen and (max-width: 991px) {
+      .venue-page-location-map {
+        margin-top: 10px; } }
+.venue-page-tabs-list {
+  border-bottom: none;
+  background: #383838; }
+  .venue-page-tabs-list-item.active .venue-page-tabs-list-item-link {
+    background: #404040 !important;
+    border: none !important;
+    color: #ffffff !important; }
+  .venue-page-tabs-list-item-link {
+    background: #383838;
+    font-weight: 600;
+    font-size: 18px;
+    border: none !important; }
+    .venue-page-tabs-list-item-link:hover {
+      color: #F7931E;
+      text-decoration: underline !important;
+      background: #404040 !important;
+      border: none !important; }
+.venue-page-tabs-content {
+  padding: 20px;
+  box-sizing: border-box;
+  background: #404040; }
+  .venue-page-tabs-content-item {
+    overflow: hidden; }
+    .venue-page-tabs-content-item-img {
+      float: left;
+      width: calc(100% / 6);
+      height: 183px; }
+      @media only screen and (max-width: 1024px) {
+        .venue-page-tabs-content-item-img {
+          width: calc(100% / 4);
+          height: 225px; } }
+      @media only screen and (max-width: 768px) {
+        .venue-page-tabs-content-item-img {
+          height: 170px; } }
+      @media only screen and (max-width: 640px) {
+        .venue-page-tabs-content-item-img {
+          width: calc(100% / 2);
+          height: 275px; } }
+      @media only screen and (max-width: 480px) {
+        .venue-page-tabs-content-item-img {
+          width: calc(100% / 2);
+          height: 195px; } }
+      @media only screen and (max-width: 480px) {
+        .venue-page-tabs-content-item-img {
+          width: calc(100% / 2);
+          height: 136px; } }
+    .venue-page-tabs-content-item-venue-features-list {
+      overflow: hidden;
+      border-bottom: 1px solid #545454;
+      padding: 25px 0; }
+      .venue-page-tabs-content-item-venue-features-list-left {
+        width: 50%;
+        float: left; }
+      .venue-page-tabs-content-item-venue-features-list-right {
+        width: 50%;
+        float: left; }
+      .venue-page-tabs-content-item-venue-features-list-item-caption {
+        color: #F7931E;
+        text-align: right; }
+      .venue-page-tabs-content-item-venue-features-list-item-icon img {
+        width: calc(55% / 8);
+        margin-right: 5%; }
+        @media only screen and (max-width: 768px) {
+          .venue-page-tabs-content-item-venue-features-list-item-icon img {
+            width: calc(67% / 8);
+            margin-right: 3%; } }
+        @media only screen and (max-width: 640px) {
+          .venue-page-tabs-content-item-venue-features-list-item-icon img {
+            width: calc(72% / 8);
+            margin-right: 1%; } }
+        @media only screen and (max-width: 480px) {
+          .venue-page-tabs-content-item-venue-features-list-item-icon img {
+            width: calc(74% / 8); } }
+        @media only screen and (max-width: 375px) {
+          .venue-page-tabs-content-item-venue-features-list-item-icon img {
+            width: calc(100% / 8);
+            margin-right: 7%;
+            margin-top: 5px; } }
+  .venue-page-tabs-content .ew-button:hover {
+    color: #ffffff;
+    text-decoration: none; }
+
+/*# sourceMappingURL=venue.css.map */

@@ -10,6 +10,7 @@ define('eventsPointer',
                 autoGetEvents: true,
                 eventsUrl: '/search/map',
                 eventsUrlParams: '.urlParams',
+                searchGrid: '#searchGridType', 
                 truncateLength: 30,
                 pageCurrent: 1,
                 requestInterval: 20000
@@ -61,7 +62,7 @@ define('eventsPointer',
                 if (event.latitude != null && event.longitude != null && !_.isUndefined(event.latitude) && !_.isUndefined(event.longitude)) {
                     $this.__lastLat = event.latitude;
                     $this.__lastLng = event.longitude;
-                }else if (!_.isUndefined(event.venue) && !_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
+                } else if (!_.isUndefined(event.venue) && !_.isUndefined(event.venue.latitude) && !_.isUndefined(event.venue.longitude)) {
                     $this.__lastLat =  event.venue.latitude;
                     $this.__lastLng = event.venue.longitude;
                 }
@@ -95,12 +96,19 @@ define('eventsPointer',
             __createInfoPopupContentSingle: function(event) {
                 var eventlink = window.location.origin+'/event/'+event.id;
                 if (!_.isUndefined(event.slugUri)) {
-                    eventlink = '/'+event.slugUri;
+                	if ($($this.settings.searchGrid).val() == 'venue') {
+                		eventlink = '/venue/'+event.slugUri;
+                		fbLink = 'https://www.facebook.com/'+event.fb_uid;
+                	} else {
+                		eventlink = '/'+event.slugUri;
+                		fbLink = 'https://www.facebook.com/events/'+event.fb_uid;
+                	}
                 }
+
                 return '<div class="info-win" id="content">' +
                     '<div class="venue-name">'+event.name+'</div><div>'+event.description+'</div>' +
                     '<div>' +
-                    '<a target="_blank" href="https://www.facebook.com/events/'+event.fb_uid+'">Facebook link</a> ' +
+                    '<a target="_blank" href="'+fbLink+'">Facebook link</a> ' +
                     '<a href="'+eventlink+'">Eventweekly link</a></div>' +
                     '</div>';
             },

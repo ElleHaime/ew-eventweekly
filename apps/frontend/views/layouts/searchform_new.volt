@@ -61,7 +61,7 @@
 								<div class="dropdown">
 									<!-- button -->
 									<a class="filters-form__dropdown" data-toggle="dropdown">
-										<i class="fa fa-check"></i><span id="searchGridElem" data-grid-id="{{ searchGridVal }}" data-grid-name="{{ searchGridName }}"> {{ searchGridName }}</span> 
+										<i class="fa fa-check"></i><span id="searchGridElem" grid-id="{{ searchGridVal }}" grid-name="{{ searchGridName }}"> {{ searchGridName }}</span> 
 										<span class="caret"></span>
 									</a>
 									<!-- dropdown -->
@@ -69,7 +69,7 @@
 										{% for gridVal, gridName in searchGrids %}
 											{% if gridVal != searchGridVal %}
 												<li>
-													<a role="menuitem" tabindex="-1" style="cursor:pointer;" class="searchGridMenuTab" data-grid-id="{{ gridVal }}" data-grid-name="{{ gridName }}">
+													<a role="menuitem" tabindex="-1" style="cursor:pointer;" class="searchGridMenuTab" grid-id="{{ gridVal }}" grid-name="{{ gridName }}">
 														<span style="padding-left:15px;">{{ gridName }}</span>
 													</a>	
 												</li>

@@ -1,0 +1,293 @@
+html
+  height: 100%
+
+body
+  height: 100%
+  background: url("../_new-layout-eventweekly/i/bg.png")
+  min-width: 320px
+
+.venue-page
+
+  &-breadcrumb
+    padding: 8px 3px
+    list-style: none
+    font-size: 12px
+
+    &-item
+      display: inline
+
+      &:before
+        padding: 8px
+        content: "\003A\003A"
+        color: #F7931E
+
+      &:first-child:before
+        display: none
+
+      &:last-child a
+        pointer-events: none
+        cursor: default
+        color: #cccccc
+        text-decoration: none
+
+      &-link
+        color: #F7931E
+
+        &:hover
+          color: #F7931E
+
+  &-title
+    font-family: "Open Sans", sans-serif
+    color: #ff9933
+    font-size: 42px
+    font-weight: 100
+    margin: 10px 0 25px 0
+
+  &-place
+    height: 300px
+    width: 100%
+    overflow: hidden
+    margin-bottom: 10px
+
+    @media only screen and (max-width: 640px)
+      height: 200px
+
+    &-img
+      height: 100%
+      width: 100%
+
+  &-location
+    overflow: hidden
+    height: 160px
+    margin-bottom: 10px
+
+    @media only screen and (max-width: 1024px)
+      height: auto
+
+    &-address
+      float: left
+      padding-left: 0
+      //width: 70%
+      //margin-right: 1%
+      @media only screen and (max-width: 991px)
+        padding-right: 0
+
+      &-contact
+        float: left
+        background: #404040
+        padding: 20px
+        width: calc(100% - 195px)
+
+        @media only screen and (max-width: 1024px)
+          width: calc(100% - 175px)
+
+        @media only screen and (max-width: 735px)
+          padding: 20px 10px
+
+        @media only screen and (max-width: 640px)
+          width: 100%
+          float: none
+          overflow: hidden
+
+        &-img
+          width: 120px
+          height: 120px
+
+          @media only screen and (max-width: 480px)
+            width: 100%
+            height: 160px
+
+          &-wrp
+            float: left
+            margin-right: 20px
+
+            @media only screen and (max-width: 1024px)
+              margin-right: 10px
+
+            @media only screen and (max-width: 480px)
+              margin-right: 0
+
+        &-text
+          float: left
+
+          &-item
+            margin: 11px 0
+            i
+              color: #F7931E
+              font-size: 18px
+              padding: 0 10px 0 0
+
+              &.fa-globe
+                font-size: 17px
+                padding: 0 6px 0 0
+
+            &.is-middle
+              margin: 22px 0
+
+              @media only screen and (max-width: 1024px)
+                margin: 19px 0
+
+            a
+              &:hover
+                color: #F7931E
+
+      &-social
+        float: right
+        background: #4D4D4D
+        padding: 25px
+        width: 195px
+
+        @media only screen and (max-width: 1024px)
+          padding: 25px 15px
+          width: 175px
+
+        //@media only screen and (max-width: 768px)
+          padding: 25px 15px
+          width: 195px
+
+        @media only screen and (max-width: 640px)
+          width: 100%
+          float: none
+          margin-right: auto
+          margin-left: auto
+
+        &-link
+          display: block
+          text-decoration: none
+          color: #ffffff
+          background: #D6801A
+          width: 145px
+          border-radius: 3px
+          text-align: center
+          padding: 8px
+          font-size: 13px
+          margin: 0 0 10px 0
+          box-shadow: inset 0 -1px #8F5611
+          border-bottom: 1px solid #8F5611
+
+          @media only screen and (max-width: 640px)
+            margin-right: auto
+            margin-left: auto
+
+          &:last-child
+            margin-bottom: 0
+
+          &:before
+            padding: 0 10px 0 0
+
+          &:hover
+            color: #ffffff
+            text-decoration: none
+
+    &-map
+      float: right
+      height: 160px
+      position: relative
+      overflow: hidden
+      transform: translateZ(0px)
+      background-color: rgb(229, 227, 223)
+      //width: 29%
+
+      @media only screen and (max-width: 991px)
+        margin-top: 10px
+
+  &-tabs
+    &-list
+      border-bottom: none
+      background: #383838
+
+      &-item
+        &.active
+          .venue-page-tabs-list-item-link
+            background: #404040 !important
+            border: none !important
+            color: #ffffff !important
+
+        &-link
+          background: #383838
+          font-weight: 600
+          font-size: 18px
+          border: none !important
+
+          &:hover
+            color: #F7931E
+            text-decoration: underline !important
+            background: #404040 !important
+            border: none !important
+
+    &-content
+      padding: 20px
+      box-sizing: border-box
+      background: #404040
+
+      &-item
+        overflow: hidden
+
+        &-img
+          float: left
+          width: calc(100% / 6)
+          height: 183px
+          //width: 220px
+
+          @media only screen and (max-width: 1024px)
+            width: calc(100% / 4)
+            height: 225px
+
+          @media only screen and (max-width: 768px)
+            height: 170px
+
+          @media only screen and (max-width: 640px)
+            width: calc(100% / 2)
+            height: 275px
+
+          @media only screen and (max-width: 480px)
+            width: calc(100% / 2)
+            height: 195px
+
+          @media only screen and (max-width: 480px)
+            width: calc(100% / 2)
+            height: 136px
+
+        &-venue-features
+          &-list
+            overflow: hidden
+            border-bottom: 1px solid #545454
+            padding: 25px 0
+
+            &-left
+              width: 50%
+              float: left
+
+            &-right
+              width: 50%
+              float: left
+
+            &-item
+              &-caption
+                color: #F7931E
+                text-align: right
+
+              &-icon
+                img
+                  width: calc(55% / 8)
+                  margin-right: 5%
+
+                  @media only screen and (max-width: 768px)
+                    width: calc(67% / 8)
+                    margin-right: 3%
+
+                  @media only screen and (max-width: 640px)
+                    width: calc(72% / 8)
+                    margin-right: 1%
+
+                  @media only screen and (max-width: 480px)
+                    width: calc(74% / 8)
+
+                  @media only screen and (max-width: 375px)
+                    width: calc(100% / 8)
+                    margin-right: 7%
+                    margin-top: 5px
+      .ew-button
+        &:hover
+          color: #ffffff
+          text-decoration: none

@@ -22,7 +22,8 @@ use Categoryzator\Categoryzator,
     Objects\EventTag AS EventTagObject,
     Objects\Tag AS TagObject,
     Phalcon\Mvc\Model\Resultset,
-    Core\Utils\SlugUri as SUri;
+    Core\Utils\SlugUri as SUri,
+	Thirdparty\Facebook\Extractor;
 
 
 class Event extends EventObject
@@ -125,6 +126,7 @@ class Event extends EventObject
         }
     }
     
+    
     public function getRecurEvents($id)
     {
     	$result = [];
@@ -144,6 +146,7 @@ class Event extends EventObject
     	return $result;
     }
 
+    
     public function getCover()
     {
     	$this -> cover = false;
@@ -158,4 +161,24 @@ class Event extends EventObject
 		
 		return $this;
 	}
+	
+	
+	public function getEventsByVenue(\Frontend\Models\Venue $venue)
+	{
+		$result = false;
+		
+		$this -> setShardByCriteria($venue -> location_id);
+		$events = self::find(['venue_id = ' . $venue -> id]);
+		
+		if ($events) {
+			foreach ($events as $e) {
+				if (!empty($e -> fb_uid)) {
+					$e -> tickets_url = (new Extractor($this -> getDi())) -> getEventTicketUrl($e -> fb_uid, $e -> tickets_url);
+				}
+				$result[] = $e;
+			}
+		}
+		
+		return $result;
+	} 
 } 

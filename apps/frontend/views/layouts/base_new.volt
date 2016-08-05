@@ -45,6 +45,11 @@
     {{ stylesheet_link('/_new-layout-eventweekly/libs/idangerous.swiper/idangerous.swiper.min.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/bootstrap/bootstrap.css') }}
     {{ stylesheet_link('/_new-layout-eventweekly/libs/bootstrap/bootstrap-theme.css') }}
+    
+    {% if includeVenueCss is defined %}
+    	{{ stylesheet_link('/_new-layout-eventweekly/css/venue/bootstrap.min.css') }}
+    	{{ stylesheet_link('/_new-layout-eventweekly/css/venue/venue.css') }}
+    {% endif %}
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700,300&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
 	

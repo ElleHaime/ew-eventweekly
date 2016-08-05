@@ -22,9 +22,10 @@ class MemberFilter extends MemberFilterObject
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+    
     public function getbyId($id = false)
     {
-        $return = array();
+        $return = [];
 
         if (!$id) {
         	if ($this -> getDI() -> has('session') && $this -> getDI() -> get('session') -> has('memberId')) {
@@ -47,6 +48,7 @@ class MemberFilter extends MemberFilterObject
 
         return $return;
     }
+    
     
     public function compareById($id, $compareSet)
     {
