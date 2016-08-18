@@ -24,18 +24,18 @@ class FiltersBuilder extends Component
 	
 	public function load()
 	{
-// $this -> session -> remove('filters');
-// _U::dump($this -> session -> has('filters'));
+$this -> session -> remove('filters');
+_U::dump($this -> session -> has('filters'));
   		if (!$this -> session -> has('filters')) {
   			$this -> filtersInSession = false;
 			$this -> resetFilters();
  		} else {
  			$this -> filtersInSession = true;
- 			$this -> filterSearch -> getFromSession();
+ 			$this -> setActiveGrid($this -> session -> get('searchGrid'));
  			
+ 			$this -> getSearchFilters();
  			foreach ($this -> gridsList as $index => $grid) {
- 				$filterFormName = $this -> getFilterFormName($grid);
- 				$this -> $filterFormName -> getFromSession($grid);
+ 				$this -> getFormFilters($grid);
  			}
  		}
 
@@ -67,12 +67,18 @@ class FiltersBuilder extends Component
 					$this -> session -> set('location', $value);
 				
 					$this -> filterSearch -> setLocation($value);
-					$this -> $filterFormName -> setLocation($value);
+					foreach ($this -> gridsList as $index => $grid) {
+						$filterFormName = $this -> getFilterFormName($grid);
+						$this -> $filterFormName -> setLocation($value);
+					}
 				break;
 			
 			case 'searchTitle':
 					$this -> filterSearch -> setTitle($value);
-					$this -> $filterFormName -> setTitle($value);
+					foreach ($this -> gridsList as $index => $grid) {
+						$filterFormName = $this -> getFilterFormName($grid);
+						$this -> $filterFormName -> setTitle($value);
+					}
 				break;
 				
 			case 'searchStartDate':
@@ -134,48 +140,65 @@ class FiltersBuilder extends Component
 		if (!in_array('personalPresetActive', $this -> filters)) {
 			$this -> unsetMemberPreset();
 		}
-		
+
 		if ($this -> getMemberPreset()) {
 			// apply to tags
 			$this -> filterSearch -> applyMemberPreset();
+			
 			foreach ($this -> gridsList as $index => $grid) {
 				$filterFormName = $this -> getFilterFormName($grid);
 				$this -> $filterFormName -> applyMemberPreset();
+				$this -> session -> set($filterFormName, $this -> getTempFormFilters($grid));
 			}
 		} else {
 			$this -> filterSearch -> applyGlobalPreset();
+			
 			$filterFormName = $this -> getFilterFormName($this -> activeGrid);
 			$this -> $filterFormName -> applyGlobalPreset();
-			$this -> session -> set($filterFormName, $this -> getFormFilters($this -> activeGrid));
-			
+			$this -> session -> set($filterFormName, $this -> getTempFormFilters($this -> activeGrid));
+				
 			foreach ($this -> gridsList as $index => $grid) {
 				if ($grid != $this -> activeGrid) {
 					$filterFormName = $this -> getFilterFormName($grid);
-					$this -> $filterFormName -> getFromSession($grid);
-					$this -> session -> set($filterFormName, $this -> getFormFilters($grid));
+					if (!$this -> $filterFormName -> getFromSession($grid)) {
+						$this -> $filterFormName -> applyGlobalPreset();
+						$this -> session -> set($filterFormName, $this -> $filterFormName -> getTempFormFilters($grid));
+					}
 				}
 			}					
 		}
 		
-		$this -> session -> set('filterSearch', $this -> getSearchFilters());
-		
+		$this -> session -> set('filterSearch', $this -> getTempSearchFilters());
+
 		return $this;
 	}
 	
 	
 	public function getSearchFilters()
 	{
-		return $this -> filterSearch -> getFilters();
+		return $this -> filterSearch -> getFromSession();
 	}
 	
 	
 	public function getFormFilters($grid = false)
 	{
-		if (!$grid) {
-			$filterFormName = $this -> getFilterFormName($this -> activeGrid);
-		} else {
-			$filterFormName = $this -> getFilterFormName($grid);
-		}
+		if (!$grid) $grid = $this -> activeGrid; 
+		$filterFormName = $this -> getFilterFormName($grid);
+
+		return $this -> $filterFormName -> getFromSession($grid);
+	}
+	
+	
+	public function getTempSearchFilters()
+	{
+		return $this -> filterSearch -> getFilters();
+	}
+	
+	
+	public function getTempFormFilters($grid = false)
+	{
+		if (!$grid) $grid = $this -> activeGrid;
+		$filterFormName = $this -> getFilterFormName($grid);
 		
 		return $this -> $filterFormName -> getFilters();
 	}
@@ -197,10 +220,10 @@ class FiltersBuilder extends Component
 
 	public function resetFilters()
 	{
+		$this -> setActiveGrid();
 		$this -> setMemberPreset();
-
-		$this -> filterSearch -> reset();
 		
+		$this -> filterSearch -> reset();
 		foreach ($this -> gridsList as $index => $grid) {
 			$filterFormName = $this -> getFilterFormName($grid);
 			$this -> $filterFormName -> reset();
@@ -290,6 +313,12 @@ class FiltersBuilder extends Component
 	}
 	
 	
+	public function getActiveGridFromSession()
+	{
+		return $this -> session -> get('searchGrid');
+	}
+	
+	
 	public function getGridsList()
 	{
 		return $this -> gridsList;
@@ -299,6 +328,14 @@ class FiltersBuilder extends Component
 	public function setActiveGrid($grid = 'event')
 	{
 		$this -> activeGrid = $grid;
+		
+		$this -> filterSearch -> setFromSession();
+		foreach ($this -> gridsList as $index => $grid) {
+			$filterFormName = $this -> getFilterFormName($grid);
+			$this -> $filterFormName -> setFromSession($grid);
+		}
+		
+		$this -> session -> set('searchGrid', $this -> activeGrid);
 	
 		return $this;
 	}

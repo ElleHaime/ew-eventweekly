@@ -58,7 +58,7 @@ class Controller extends \Phalcon\Mvc\Controller
         }
         $this->view->setVar('location', $this->session->get('location'));
         $this->view->setVar('eventListCreatorFlag', $this->eventListCreatorFlag);
-        
+
         $this -> filtersBuilder -> load();
         $this -> view -> setVar('searchGrid', $this -> filtersBuilder -> getActiveGrid());
         $this -> view -> setVar('searchGridsAll', $this -> filtersBuilder -> getGridsList());

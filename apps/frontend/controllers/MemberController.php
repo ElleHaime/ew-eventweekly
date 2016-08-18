@@ -26,6 +26,7 @@ class MemberController extends \Core\Controllers\CrudController
 	 */
 	public function listAction()
 	{
+// _U::dump($this -> session -> get('memberPreset'));
 		if ($this -> session -> has('passwordChanged') && $this -> session -> get('passwordChanged') === true) {
 			$this -> session -> set('passwordChanged', false);
 			$this -> view -> setVar('passwordChanged', true);
@@ -42,9 +43,10 @@ class MemberController extends \Core\Controllers\CrudController
 		if ($this -> session -> has('eventsTotal')) {
 			$this -> view -> setVar('eventsTotal', $this -> session -> get('eventsTotal'));
 		}
-_U::dump((new MemberFilter) -> getbyId());
+
 		$this -> view -> setVars(['member' => $list,
-								  'userFilters' => (new MemberFilter) -> getbyId()]);
+								  'userFilters' => (new MemberFilter) -> getbyId(),
+								  'tagsList' => Tag::getFullTagsList()]);
 
         if ($this->session->has('location_conflict_profile_flag')) {
             $this->view->setVar('conflict', $this->session->get('location_conflict_profile_flag'));

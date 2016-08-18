@@ -64,7 +64,7 @@ class FilterForm extends FiltersBuilder
 	
 	public function setLocation($location = null)
 	{
-		if (empty($location)) $location = $this -> session -> get('location');
+		if (is_null($location)) $location = $this -> session -> get('location');
 
 		$this -> searchLocationCity = $location -> city;
 		$this -> searchLocationCountry = $location -> country;
@@ -171,7 +171,7 @@ class FilterForm extends FiltersBuilder
 	public function applyMemberPreset()
 	{
 		$memberPreset = $this -> getMemberPreset();
-		
+
 		if (isset($memberPreset['category']) && !empty($memberPreset['category']['value'])) {
 			$memberCategories = $memberPreset['category']['value'];
 		} else {
@@ -219,14 +219,23 @@ class FilterForm extends FiltersBuilder
 	
 	public function getFromSession($grid)
 	{
+		return $this -> session -> get('filterForm' . ucfirst($grid));
+	}
+	
+	
+	public function setFromSession($grid)
+	{
 		$filters = $this -> session -> get('filterForm' . ucfirst($grid));
-		$props = $this -> getFilterProperties();
 		
-		foreach ($props as $property) {
-			if (isset($filters[$property]) && !empty($filters[$property])) {
-				$this -> $property = $filters[$property];
+		if ($filters) {
+			$props = $this -> getFilterProperties();
+	
+			foreach ($props as $property) {
+				if (isset($filters[$property]) && !empty($filters[$property])) {
+					$this -> $property = $filters[$property];
+				}
 			}
-		}
+		} 
 		
 		return $this;
 	}
@@ -239,7 +248,6 @@ class FilterForm extends FiltersBuilder
 		$this -> setEndDate();
 		$this -> setCategories();
 		$this -> setTags();
-// 		$this -> setGrid();
 		
 		$this -> searchTitle = false;
 		$this -> searchTypeResult = 'List';

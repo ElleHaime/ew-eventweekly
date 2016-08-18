@@ -59,7 +59,7 @@ class SearchController extends \Core\Controller
 //     						 'searchCategories' => ['6' => 'on'],
 //     						 'searchTags' => ['83' => 'on', '84' => 'on', '85' => 'on', '32' => 'on'],
 //     						 'searchGrid' => 'venue'];
-// _U::dump($this -> postData, true);
+// _U::dump($this -> filtersBuilder -> getSearchFilters());
 
 		if (isset($this -> postData['searchGrid'])) {
 			$this -> filtersBuilder -> setActiveGrid($this -> postData['searchGrid']);
@@ -75,7 +75,7 @@ class SearchController extends \Core\Controller
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
  		}
-// _U::dump($this -> filtersBuilder -> getFormFilters()); 		
+ 		
 		$result['status'] = 'OK';
     	$result['search'] = $this -> filtersBuilder -> getSearchFilters();
     	$result['form'] = $this -> filtersBuilder -> getFormFilters();
@@ -122,14 +122,13 @@ class SearchController extends \Core\Controller
 // http://events.apppicker.loc/las%20vegas-us/1mar-28may
 // $re = '/[A-Za-z\-]+';
 // $str = '';
-//$str = 'las%20vegas-us/today';    	
+//$str = 'las%20vegas-us/today';
+    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue') -> applyFilters();
+    	    	
     	$this -> setLocationByCity($location);
-    	if ($arg1 == 'venues') {
-    		$this -> filtersBuilder -> setActiveGrid('venue') -> applyFilters();
-    	}
-    	if ($this -> filtersBuilder -> getActiveGrid() == 'venue' || !$this -> setSearchDateVars($arg1))  {
+
+    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1)) 
     		$this -> setSearchDateCustom($arg1, $arg2);
-    	}
 
     	$this -> searchAction();
     }
@@ -149,14 +148,13 @@ class SearchController extends \Core\Controller
      */
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
+    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue');
+    	
     	$this -> setLocationByCity($location);
-    	if ($arg1 == 'venues') {
-    		$this -> filtersBuilder -> setActiveGrid('venue');
-    	}
+
     	$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
-    	if ($this -> filtersBuilder -> getActiveGrid() == 'venue' || !$this -> setSearchDateVars($arg1))  {
+    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1))  
     		$this -> setSearchDateCustom($arg1, $arg2);
-    	}
     
     	$this -> searchAction();
     }
@@ -164,6 +162,8 @@ class SearchController extends \Core\Controller
 
     private function searchAction()
     {
+    	$this -> filtersBuilder -> applyFilters();
+    	
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
     	$this -> currentGrid  = $this -> filtersBuilder -> getActiveGrid();
@@ -179,8 +179,9 @@ class SearchController extends \Core\Controller
     	$this -> setTitleLocation();
     	$this -> setTitleDates();
     	$this -> setTitleTitle();
+// _U::dump($this -> filtersBuilder -> getMemberPreset(), true);
 // _U::dump($this -> filtersBuilder -> getSearchFilters());
-// _U::dump($this -> filtersBuilder -> getFormFilters(), true);
+// _U::dump($this -> filtersBuilder -> getFormFilters());
 // _U::dump($this -> currentGrid);
 
    		$objectsGridName = '\Frontend\Models\Search\Grid\\' . ucfirst($this -> currentGrid);
@@ -358,15 +359,16 @@ class SearchController extends \Core\Controller
     	$requestedLocation = ['city' => substr($arg, 0, strrpos($arg, '-')),
     						  'country' => \Core\Utils\Location::getNameByCode(substr($arg, strrpos($arg, '-')+1))];
 
-    	if (!$this -> session -> has('location') || $this -> session -> get('location') -> search_alias != $requestedLocation['city']) {
+    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
 	    	$newLocation = (new Location()) -> createOnChange($requestedLocation);
 
 			$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);  
-			$this -> filtersBuilder -> applyFilters();
 		
 	    	$this -> cookies -> get('lastLat') -> delete();
 	    	$this -> cookies -> get('lastLng') -> delete();
     	}
+    	
+    	return; 
     }
     
     
@@ -381,7 +383,6 @@ class SearchController extends \Core\Controller
     												. '-' . strtolower(_L::getCodeByName($this -> session -> get('location') -> country));
     	 
      	// set %personalised%
-    	//if ($this -> postElemExists('personalPresetActive') && $this -> postData['personalPresetActive'] == 1) 
     	if ($this -> filtersBuilder -> getMemberPreset()) $this -> actionUrl .= '/personalised';
 
     	// set %from_date%-%to_date%
@@ -417,8 +418,7 @@ class SearchController extends \Core\Controller
 	 
 	    	if (isset($dateSearchVariables[$key])) {
 	    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
-	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end'])
-	    								-> applyFilters();
+	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
 	    		
 	    		return true;
 	    	} 
@@ -444,8 +444,7 @@ class SearchController extends \Core\Controller
 							 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
 			
 			$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
-									-> addFilter('searchEndDate', $endDate)
-									-> applyFilters();
+									-> addFilter('searchEndDate', $endDate);
     	}
     			
 		return;

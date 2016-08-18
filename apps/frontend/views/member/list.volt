@@ -152,8 +152,14 @@
 
                                     <!-- form with checkboxes -->
                                         <form action="/member/save-filters" method="post" id="filters">
-                                            {% for index, node in userFilters %}
-                                                <div class="settings-box-one {% if node['fullCategorySelect'] is defined %}active-box{% endif %}">
+                                            {% for index, node in tagsList %}
+                                            
+                                            	{% set categoryChecked = false %}
+                                            	{% if userFilters['category'] is defined and (node['id'] in userFilters['category']['value']) %}
+                                            		{% set categoryChecked = true %}
+                                            	{% endif %}
+                                            
+                                                <div class="settings-box-one {% if categoryChecked %}active-box{% endif %}">
                                                     <input name="fieldId" class="fieldId" type="hidden" value="{{ node['id'] }}" />
                                                 <div class="categories-accordion__item">
 
@@ -167,7 +173,7 @@
 													<div class="checkbox">
 	                                                    <div class="form-checkbox pure-u-1-2">
 	                                                        <input type="checkbox" class="checkbox_category" name="category[{{ node['id'] }}]" id="tag-{{ node['name'] }}" 
-	                                                        	style="display:visible;" {% if node['fullCategorySelect'] is defined %} checked{% endif %}>
+	                                                        	style="display:visible;" {% if categoryChecked %} checked{% endif %}>
 	                                                        <label class='catNamen' for="tag-{{ node['name'] }}" title="{{ node['name'] }}">
 	                                                        	<span><span>
 	                                                        	</span></span>
@@ -182,18 +188,20 @@
                                                                 
                                                                 {% for tag in node['tags'] %}
 
-                                                                        {% set checked = false %}
-                                                                        {% if tag['inPreset'] is defined %}
-																			{% set checked = true %}
+                                                                        {% set tagChecked = false %}
+                                                                        {% if userFilters['tag'] is defined and (tag['id'] in userFilters['tag']['value']) %}
+																			{% set tagChecked = true %}
                                                                         {% endif %}
 
-		<div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if checked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
-        <input type="checkbox" class="userFilter-tag" name="tag[{{ tag['id']}}]" {% if checked %}checked{% endif %} >
-        <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}" style="overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 90%;
-  padding: 2px 0;"><span><span></span></span>{{ tag['name'] }}</label>
+		<div class="form-checkbox 1pure-u-1-2 event-category  clearfix marker {% if tagChecked %}disabled-marker{% endif %}" data-id="{{ tag['id'] }}">
+        <input type="checkbox" class="userFilter-tag" name="tag[{{ tag['id']}}]" {% if tagChecked %}checked{% endif %} >
+        <label for="tag-{{ tag['id']}}" title="{{ tag['name'] }}" 
+        	style="overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				max-width: 90%;
+				padding: 2px 0;"><span><span></span></span>{{ tag['name'] }}
+		</label>
  
     </div>
 
@@ -227,7 +235,7 @@
         </section>
     </div>
 </div>
-{% include 'layouts/accfilter_new.volt' %}
+{#% include 'layouts/accfilter_new.volt' %#}
 	<input type='hidden' id="passwordChanged" value='{% if passwordChanged is defined %}1{% else %}0{% endif %}'>
 	
     {% if acc_external is defined %}

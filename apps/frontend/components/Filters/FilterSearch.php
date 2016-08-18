@@ -179,6 +179,12 @@ class FilterSearch extends FiltersBuilder
 	
 	public function getFromSession()
 	{
+		return $this -> session -> get('filterSearch');
+	}
+	
+	
+	public function setFromSession()
+	{
 		$filters = $this -> session -> get('filterSearch');
 		$props = $this -> getFilterProperties();
 		
@@ -187,7 +193,7 @@ class FilterSearch extends FiltersBuilder
 				$this -> $property = $filters[$property];
 			}
 		}
-		
+
 		return $this;
 	}
 	

@@ -133,19 +133,8 @@ class AuthController extends \Core\Controller
         		$memberNetwork = MemberNetwork::findFirst('account_uid = "' . $uid . '"');
         		 
         		if ($memberNetwork) {
-        			$this->eventsManager->fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
-        			$this->session->remove('userSearch');
-        			
-        			$userSearch = ['personalPresetActive' => 1,
-        							'searchLocationCity' => $this -> session -> get('location') -> city,
-        							'searchLocationCountry' => $this -> session -> get('location') -> country,
-        							'searchLocationState' => $this -> session -> get('location') -> state,
-        							'searchLocationLatMin' => $this -> session -> get('location') -> latitudeMin,
-        							'searchLocationLatMax' => $this -> session -> get('location') -> latitudeMax,
-        							'searchLocationLngMin' => $this -> session -> get('location') -> longitudeMin,
-        							'searchLocationLngMax' => $this -> session -> get('location') -> longitudeMax];
-        			$this -> session -> set('userSearch', $userSearch);
-        			$this -> filtersBuilder -> resetPreset();
+        			$this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
+        			$this -> filtersBuilder -> resetFilters() -> resetPreset();
 
         			$res['member_session_id'] = $this -> session -> get('memberId');
         		} else {
