@@ -30,6 +30,7 @@ define('frontSearchPanel',
 		            searchGridOption: '.searchGridMenuTab',
 		            searchGridInput: '#searchGrid',
 		            filterPanelSwitchGrid: '.switchGridButton',
+		            filterPanelPersonalisedPreset: '#personalPresetActive',
 		            isLoggedUser: '#isLogged',
 		            addSearchParamUrl: '/search/addSearchParam',
 		            datepickerOptions: {
@@ -198,7 +199,8 @@ define('frontSearchPanel',
 		                /* sent data from form2(filters) */
 		                $.each ($('#form2 input[data-grid="' + activeGrid + '"]').serializeArray(), function ( i, obj ) {
 		                	$('<input type="hidden">').prop(obj).appendTo(nativeForm);
-		                } );
+		                });
+		                $($this.settings.filterPanelPersonalisedPreset).appendTo(nativeForm);
 		
 		                // If no option was chosen show notification or submit form
 		                if ($this.__formFilled === false) {

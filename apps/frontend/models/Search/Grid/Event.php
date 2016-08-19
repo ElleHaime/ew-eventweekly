@@ -123,9 +123,6 @@ class Event extends Grid
 			'searchStartDate' => new Field\Date('Event start', 'start_date', null, Criteria::CRITERIA_MORE),
         	'searchEndDate' => new Field\Date('Event end', 'end_date', null, Criteria::CRITERIA_LESS),
         		
-//         	'searchStartDate' => new Field\Between('Event start', 'start_date', null, null, Criteria::CRITERIA_MORE),
-//         	'searchEndDate' => new Field\Between('Event end', 'end_date', null, null, Criteria::CRITERIA_LESS),
-        		
         	'searchLatitude' => new Field\Standart('Latitude', 'latitude', null),
         	'searchLongitude' => new Field\Standart('Longitude', 'longitude', null),
         	'searchAddress' => new Field\Standart('Address', 'address', null, Criteria::CRITERIA_LIKE),

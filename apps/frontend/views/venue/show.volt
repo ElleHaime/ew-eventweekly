@@ -51,7 +51,7 @@
 					<div class="venue-page-location-address-contact-text-item">
 						{% if venue.site is defined %}
 							<i class="fa fa-globe"></i>
-	                        Official web-site: <a href="{{ venue.site }}">{{ venue.site }}</a><br>
+	                        Official web-site: <a href="http://{{ venue.site }}">{{ venue.site }}</a><br>
 						{% endif %}
 					</div>
 					
@@ -142,9 +142,9 @@
 	
 	                                <div class="b-list-of-events-l__date">
 	                                    {% if item.start_date != '0000-00-00' %}
-											<time>{{ dateToFormat(item.start_date, '%d %b') }}
+											<time>{{ dateToFormat(item.start_date, '%e %B %Y') }}
 												{% if item.end_date is defined and item.end_date != '0000-00-00' and dateToFormat(item.end_date, '%d %b %Y') != dateToFormat(item.start_date, '%d %b %Y') %}
-		                                                 	- {{ dateToFormat(item.end_date, '%d %b') }}
+		                                                 	- {{ dateToFormat(item.end_date, '%e %B %Y') }}
 												{% endif %}
 											</time>
 										{% endif %}
@@ -156,7 +156,7 @@
 	
 	                                <div class="footer">
 	                                	{# <div class="footer__item"><i class="fa fa-ticket"></i> Tickets: $100-$200</div> #}
-	                                    {# <div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div> #}s
+	                                    {# <div class="footer__item"><i class="fa fa-retweet"></i> Weekly event</div> #}
 	                                </div>
 	
 	                                <div class="actions">

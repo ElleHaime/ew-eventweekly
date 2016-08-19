@@ -159,6 +159,9 @@ class FilterSearch extends FiltersBuilder
 	
 	public function applyMemberPreset()
 	{
+		$this -> compoundCategory = [];
+		$this -> compoundTag = [];
+		
 		$memberPreset = $this -> getMemberPreset();
 
 		if (isset($memberPreset['category']) && !empty($memberPreset['category']['value'])) {

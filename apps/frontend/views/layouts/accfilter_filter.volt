@@ -1,9 +1,9 @@
-<div class="categories-accordion" data-grid="{{ indexGrid }}" id="categories-accordion-{{ searchGrid }}" {% if indexGrid != searchGrid %}style="display:none;"{% endif %}>
+<div class="categories-accordion side" data-grid="{{ indexGrid }}" id="categories-accordion-{{ searchGrid }}" {% if indexGrid != searchGrid %}style="display:none;"{% endif %}>
 	{% for index, category in userSearchFilters['userFilters'] %}
 		<!-- accordeon item -->
-			<div class="categories-accordion__item">
-				<div class="categories-accordion__head">
-					<div class="categories-accordion__line"></div>
+			<div class="categories-accordion__item side">
+				<div class="categories-accordion__head side">
+					<div class="categories-accordion__line side"></div>
 
 					<div class="form-checkbox">
 						<input type="checkbox" data-grid={{ indexGrid }} name="searchCategories[{{ category['id'] }}]" id="cattag-{{ category['id']}}" class="userFilter-category {{ indexGrid }}" 

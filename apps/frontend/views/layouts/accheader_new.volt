@@ -84,7 +84,7 @@
 	                              id="events_count"
 	                              data-original-title="0">Go find</span>
 							{% endif %}
-							 events
+							 {{ searchGrid }}s
 							</p>
 						</div>
 

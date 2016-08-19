@@ -138,10 +138,10 @@
                 <div id="profile_right" >
                     <div class="categories-accordion">
 
-                <div class="b-filters__buttons">
-                    <a class="check_all ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
-                    <a class="uncheck_all ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
-                </div>
+		                <div class="b-filters__buttons">
+		                    <a class="check_all ew-button"><i class="fa fa-check-square-o"></i> Check all</a>
+		                    <a class="uncheck_all ew-button"><i class="fa fa-square-o"></i> Uncheck all</a>
+		                </div>
                         <div class="categories-accordion__item">
                             <div class="categories-accordion__head">
                             
@@ -235,7 +235,7 @@
         </section>
     </div>
 </div>
-{#% include 'layouts/accfilter_new.volt' %#}
+{% include 'layouts/accfilter_new.volt' %}
 	<input type='hidden' id="passwordChanged" value='{% if passwordChanged is defined %}1{% else %}0{% endif %}'>
 	
     {% if acc_external is defined %}

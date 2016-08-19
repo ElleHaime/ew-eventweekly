@@ -21,7 +21,7 @@ define('frontFilterPanel',
 				personalPresetState: '#personalPresetActive',
 				personalPresetTags: '#tagIds',
 				btnSwitchGrid: '.switchGridButton',
-				gridPanel: '.categories-accordion',
+				gridPanel: '.categories-accordion.side',
 				currentActiveGrid: '#currentActiveGrid',
 				topSearchGridInput: '#searchGrid',
 				topSearchGridElem: '.searchGridMenuTab',
@@ -83,8 +83,8 @@ define('frontFilterPanel',
 
 				$(this.settings.filtersWrapper).find(categoryElem).each(function() { 
 					var isChecked = true;
-					if ($(this).closest('.categories-accordion__item').find('.userFilter-tag.' + activeGrid).length > 0) {
-						$(this).closest('.categories-accordion__item').find('.userFilter-tag.' + activeGrid).each(function() {
+					if ($(this).closest('.categories-accordion__item.side').find('.userFilter-tag.' + activeGrid).length > 0) {
+						$(this).closest('.categories-accordion__item.side').find('.userFilter-tag.' + activeGrid).each(function() {
 	                        if($(this).is(':checked') === false) {
 	                        	isChecked = false;
 	                        	return false;
@@ -232,7 +232,7 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__getAllOptions: function(e) {
-				var accordionItem = $(e.target).closest('.categories-accordion__item');
+				var accordionItem = $(e.target).closest('.categories-accordion__item.side');
 				if( e.target.checked ) {
 					accordionItem.find('.userFilter-tag').each(function() { //loop through each checkbox
 	                	this.checked = true;  //select all checkboxes with class "userFilter-tag"               
@@ -263,7 +263,7 @@ define('frontFilterPanel',
 			**********************
 			*/
 			__toggleCategory: function(e) {
-				var accordionItem = $(e.target).closest('.categories-accordion__item');
+				var accordionItem = $(e.target).closest('.categories-accordion__item.side');
 				accordionItem.find('.userTag-subfilters').toggle();
 			}
 		}

@@ -58,11 +58,11 @@
 					{% if event.start_date != '0000-00-00' %}
 						<div class="short-info__item">
 							<i class="fa fa-calendar"></i> 
-							<time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.start_date, '%d %b %Y') }}
+							<time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.start_date, '%e %B %Y') }}
 							{% if dateToFormat(event.start_date, '%R') != '00:00' %}, {{ dateToFormat(event.start_date, '%R') }}{% endif %}</time>
 							
 							{% if event.end_date != '0000-00-00' %}
-                                - <time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.end_date, '%d %b %Y') }}
+                                - <time datetime="2014-09-21T22:00+00:00">{{ dateToFormat(event.end_date, '%e %B %Y') }}
                                 {% if dateToFormat(event.end_date, '%R') != '00:00' %}, {{ dateToFormat(event.end_date, '%R') }}{% endif %}</time>
                             {% endif %}
 						</div>
@@ -148,7 +148,7 @@
 					<!-- location -->
 					{% if event.venue is defined and event.venue.name != '' %}
 						<div class="short-info__item">
-							<p>EVENT HOST: {{ event.venue.name|striptags }}</p>
+							<p>EVENT HOST: <a href="/venue/{{ toSlugUri(event.venue.name) }}-{{ event.venue.id }}">{{ event.venue.name|striptags }}</a></p>
 						</div>
 					{% endif %}
 					

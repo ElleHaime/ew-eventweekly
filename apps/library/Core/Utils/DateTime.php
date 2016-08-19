@@ -21,7 +21,7 @@ class DateTime {
      *
      * @var string
      */
-    public static $niceFormat = '%a, %b %eS %Y, %H:%M';
+    public static $niceFormat = '%a, %B %eS %Y, %H:%M';
 
     /**
      * The format to use when formatting a time using `DateTime::timeAgoInWords()`

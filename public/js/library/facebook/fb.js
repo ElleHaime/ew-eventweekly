@@ -126,12 +126,11 @@ define('fb',
 
 			self.__register = function(data)
 			{
-//console.log('register::data');				
-//console.log(data);				
 				params = self.userData;
 				params.uid = self.accessUid;
 				params.token = self.accessToken;
-
+//console.log(params);
+//return false;
                 $.when(self.__request('post', '/auth/fbregister', params)).then(function(response) {
 //console.log('register::server response');
 //console.log(response);
@@ -171,7 +170,8 @@ define('fb',
 //console.log(authParams);		   
 		        $.when(self.__request('post', '/auth/fblogin', authParams)).then(function(data) {
 //console.log('getLoginData::server response');		        	
-//console.log(data);		        	
+//console.log(data);
+//return false;
 		         		data = $.parseJSON(data);
 		         		if (data.status == 'OK') {
 		         			if (self.accessType == 'login') {
@@ -194,6 +194,8 @@ define('fb',
 					        				self.userData.locationId = facebookData.location.id;
 					        			}
 					               		FB.api('/me/picture', function(response) {
+//console.log(response);
+//return false;					               			
 	           								if (response) {
 	           									self.userData.logo = response.data.url;
 	           								}

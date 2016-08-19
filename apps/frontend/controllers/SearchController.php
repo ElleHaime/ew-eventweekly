@@ -56,11 +56,12 @@ class SearchController extends \Core\Controller
 //     															  "country" => "Ireland",
 //     															  "place_id" => "ChIJL6wn6oAOZ0gRoHExl6nHAAo"],
 //     						 'searchTypeResult' => 'List',
+//     						 'searchTitle' => 'McFadden',
 //     						 'searchCategories' => ['6' => 'on'],
 //     						 'searchTags' => ['83' => 'on', '84' => 'on', '85' => 'on', '32' => 'on'],
-//     						 'searchGrid' => 'venue'];
-// _U::dump($this -> filtersBuilder -> getSearchFilters());
-
+//     						 'searchGrid' => 'event'];
+// _U::dump($this -> postData, true);
+// _U::dump($this -> postData, true);
 		if (isset($this -> postData['searchGrid'])) {
 			$this -> filtersBuilder -> setActiveGrid($this -> postData['searchGrid']);
 		}    	
@@ -69,8 +70,9 @@ class SearchController extends \Core\Controller
 				$this -> filtersBuilder -> addFilter($key, $val);
 			} 
 		}
+// _U::dump($this -> filtersBuilder -> getMemberPreset(), true);		
  		$this -> filtersBuilder -> applyFilters();
-
+// _U::dump($this -> filtersBuilder -> getMemberPreset());
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
@@ -123,13 +125,17 @@ class SearchController extends \Core\Controller
 // $re = '/[A-Za-z\-]+';
 // $str = '';
 //$str = 'las%20vegas-us/today';
-    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue') -> applyFilters();
-    	    	
-    	$this -> setLocationByCity($location);
-
-    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1)) 
-    		$this -> setSearchDateCustom($arg1, $arg2);
-
+    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
+	    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue') -> applyFilters();
+	    	    	
+	    	$this -> setLocationByCity($location);
+	
+	    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1)) 
+	    		$this -> setSearchDateCustom($arg1, $arg2);
+	    	
+	    	$this -> filtersBuilder -> applyFilters();
+    	}
+    		
     	$this -> searchAction();
     }
     
@@ -148,22 +154,24 @@ class SearchController extends \Core\Controller
      */
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
-    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue');
-    	
-    	$this -> setLocationByCity($location);
-
-    	$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
-    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1))  
-    		$this -> setSearchDateCustom($arg1, $arg2);
-    
+    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
+	    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue');
+	    	
+	    	$this -> setLocationByCity($location);
+	
+	    	$this -> filtersBuilder -> addFilter('personalPresetActive', 1) -> applyFilters();
+	    	if ($this -> filtersBuilder -> getActiveGrid() == 'event' && !$this -> setSearchDateVars($arg1))  
+	    		$this -> setSearchDateCustom($arg1, $arg2);
+	    	
+	    	$this -> filtersBuilder -> applyFilters();
+    	}
+    	    
     	$this -> searchAction();
     }
     
 
     private function searchAction()
     {
-    	$this -> filtersBuilder -> applyFilters();
-    	
     	$countResults = 0;
     	$likedEvents = $unlikedEvents = [];
     	$this -> currentGrid  = $this -> filtersBuilder -> getActiveGrid();
@@ -180,15 +188,16 @@ class SearchController extends \Core\Controller
     	$this -> setTitleDates();
     	$this -> setTitleTitle();
 // _U::dump($this -> filtersBuilder -> getMemberPreset(), true);
-// _U::dump($this -> filtersBuilder -> getSearchFilters());
+// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
 // _U::dump($this -> filtersBuilder -> getFormFilters());
 // _U::dump($this -> currentGrid);
 
    		$objectsGridName = '\Frontend\Models\Search\Grid\\' . ucfirst($this -> currentGrid);
    		$objectsGridModel = '\Frontend\Models\Search\Model\\' . ucfirst($this -> currentGrid);
    		$objectsImgModel = '\Frontend\Models\\' . ucfirst($this -> currentGrid) . 'Image';
-    	 
+   		
     	$objectsGrid = new $objectsGridName($this -> filtersBuilder -> getSearchFilters(), $this -> getDi(), null, ['adapter' => 'dbMaster']);
+    	 
     	
      	$page = $this -> request -> getQuery('page');
     	empty($page) ?	$objectsGrid -> setPage(1) : $objectsGrid -> setPage($page);
@@ -359,14 +368,12 @@ class SearchController extends \Core\Controller
     	$requestedLocation = ['city' => substr($arg, 0, strrpos($arg, '-')),
     						  'country' => \Core\Utils\Location::getNameByCode(substr($arg, strrpos($arg, '-')+1))];
 
-    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
-	    	$newLocation = (new Location()) -> createOnChange($requestedLocation);
+    	$newLocation = (new Location()) -> createOnChange($requestedLocation);
 
-			$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);  
-		
-	    	$this -> cookies -> get('lastLat') -> delete();
-	    	$this -> cookies -> get('lastLng') -> delete();
-    	}
+		$this -> filtersBuilder -> addFilter('searchLocation', $newLocation);  
+	
+    	$this -> cookies -> get('lastLat') -> delete();
+    	$this -> cookies -> get('lastLng') -> delete();
     	
     	return; 
     }
@@ -413,39 +420,33 @@ class SearchController extends \Core\Controller
     
     private function setSearchDateVars($key = 'today')
     {
-    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
-	    	$dateSearchVariables = _UDT::getDatesVars();
-	 
-	    	if (isset($dateSearchVariables[$key])) {
-	    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
-	    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
-	    		
-	    		return true;
-	    	} 
-	    	
-	    	return false;
-    	}
+    	$dateSearchVariables = _UDT::getDatesVars();
+ 
+    	if (isset($dateSearchVariables[$key])) {
+    		$this -> filtersBuilder -> addFilter('searchStartDate', $dateSearchVariables[$key]['start'])
+    							    -> addFilter('searchEndDate', $dateSearchVariables[$key]['end']);
+    		
+    		return true;
+    	} 
     	
-    	return true;
+    	return false;
     }
 
     
     private function setSearchDateCustom($start, $end = '')
     {
-    	if (!$this -> filtersBuilder -> isFiltersInSession()) {
-			$pattern = '/^([0-9]{1,2})(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec){1}/i'; 
-	
-			preg_match($pattern, $start, $matches);
-			!empty($matches) ? $startDate = date('Y-m-d H:i:s', strtotime($matches[0])) 
-							 : $starttDate = _UDT::getDefaultStartDate();
-	
-			preg_match($pattern, $end, $matches);
-			!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0]))
-							 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
-			
-			$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
-									-> addFilter('searchEndDate', $endDate);
-    	}
+		$pattern = '/^([0-9]{1,2})(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec){1}/i'; 
+
+		preg_match($pattern, $start, $matches);
+		!empty($matches) ? $startDate = date('Y-m-d H:i:s', strtotime($matches[0])) 
+						 : $starttDate = _UDT::getDefaultStartDate();
+
+		preg_match($pattern, $end, $matches);
+		!empty($matches) ? $endDate = date('Y-m-d H:i:s', strtotime($matches[0]))
+						 : $endDate = date('Y-m-d H:i:s', strtotime($startDate));
+		
+		$this -> filtersBuilder -> addFilter('searchStartDate', $startDate)
+								-> addFilter('searchEndDate', $endDate);
     			
 		return;
     }

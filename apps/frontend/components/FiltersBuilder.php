@@ -24,8 +24,8 @@ class FiltersBuilder extends Component
 	
 	public function load()
 	{
-$this -> session -> remove('filters');
-_U::dump($this -> session -> has('filters'));
+// $this -> session -> remove('filters');
+// _U::dump($this -> session -> has('filters'));
   		if (!$this -> session -> has('filters')) {
   			$this -> filtersInSession = false;
 			$this -> resetFilters();
@@ -125,6 +125,7 @@ _U::dump($this -> session -> has('filters'));
 	public function removeFilter($filter)
 	{
 		$this -> filterSearch -> unsetFilterProperty($filter);
+
 		$filterFormName = $this -> getFilterFormName($this -> activeGrid);
 		$this -> $filterFormName -> unsetFilterProperty($filter);
 	}
@@ -134,10 +135,12 @@ _U::dump($this -> session -> has('filters'));
 	{
 		$this -> session -> set('filters', true);
 		
-		if (!array_search('searchTitle', $this -> filters)) {
+		if (array_search('searchTitle', $this -> filters) === false) {
+			$this -> removeFilter('searchTitle');
 			$this -> removeFilter('compoundTitle');
 		}
-		if (!in_array('personalPresetActive', $this -> filters)) {
+
+		if (array_search('personalPresetActive', $this -> filters) === false) {
 			$this -> unsetMemberPreset();
 		}
 

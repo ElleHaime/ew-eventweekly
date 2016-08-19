@@ -135,7 +135,6 @@ class AuthController extends \Core\Controller
         		if ($memberNetwork) {
         			$this -> eventsManager -> fire('App.Auth.Member:registerMemberSession', $this, $memberNetwork -> member);
         			$this -> filtersBuilder -> resetFilters() -> resetPreset();
-
         			$res['member_session_id'] = $this -> session -> get('memberId');
         		} else {
         			$res['member_id'] = 'member_not_found';
@@ -228,13 +227,11 @@ class AuthController extends \Core\Controller
                 (new Cron()) -> createUserTask();                
             }
         } else {
-        	if (empty($this -> session -> get('member') -> logo)) {
-        		$member = Member::findFirst($this -> session -> memberId);
-        		$member -> assign(['logo' => $userData['logo']]);
-        		$member -> save();
+       		$member = Member::findFirst($this -> session -> memberId);
+        	$member -> assign(['logo' => $userData['logo']]);
+        	$member -> update();
         		
-        		$this -> session -> member -> logo = $userData['logo'];
-        	}
+        	$this -> session -> member -> logo = $userData['logo'];
         }
 
         $res['status'] = 'OK';
