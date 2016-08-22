@@ -37,6 +37,7 @@ class SearchController extends \Core\Controller
    	protected $queryData		= [];
    	protected $actionUrl		= '';
    	protected $currentGrid		= 'event';
+   	protected $searchType		= false;
   	
    	
     
@@ -51,17 +52,6 @@ class SearchController extends \Core\Controller
     			   'status' => 'error'];
     	$this -> postData = $this -> request -> getPost();
     	
-//     	$this -> postData = ['searchLocationFormattedAddress' => ["locality" => "Dublin",
-//     															  "administrative_area_level_1" => "Dublin", 
-//     															  "country" => "Ireland",
-//     															  "place_id" => "ChIJL6wn6oAOZ0gRoHExl6nHAAo"],
-//     						 'searchTypeResult' => 'List',
-//     						 'searchTitle' => 'McFadden',
-//     						 'searchCategories' => ['6' => 'on'],
-//     						 'searchTags' => ['83' => 'on', '84' => 'on', '85' => 'on', '32' => 'on'],
-//     						 'searchGrid' => 'event'];
-// _U::dump($this -> postData, true);
-// _U::dump($this -> postData, true);
 		if (isset($this -> postData['searchGrid'])) {
 			$this -> filtersBuilder -> setActiveGrid($this -> postData['searchGrid']);
 		}    	
@@ -70,9 +60,7 @@ class SearchController extends \Core\Controller
 				$this -> filtersBuilder -> addFilter($key, $val);
 			} 
 		}
-// _U::dump($this -> filtersBuilder -> getMemberPreset(), true);		
  		$this -> filtersBuilder -> applyFilters();
-// _U::dump($this -> filtersBuilder -> getMemberPreset());
  		if ($this -> composeActionUrl()) { 
  			$result['status'] = 'OK';
  			$result['actionUrl'] = $this -> actionUrl;
@@ -91,9 +79,25 @@ class SearchController extends \Core\Controller
      * @Route("/{city:[A_Za-z\-]+}/trending", methods={"GET", "POST"})
      * @Acl(roles={'guest','member'});
      */
-    public function trendingSearchAction()
+    public function trendingSearchAction($location)
     {
-    	_U::dump('trending');
+    	$this -> searchType = 'Trending';
+
+    	$this -> filtersBuilder -> setActiveGrid() 
+    							-> unsetMemberPreset()
+    							-> unsetStartDate()
+    							-> unsetEndDate();
+    	
+    	$this -> setLocationByCity($location);
+    	    	
+    	$events = (new EventRating()) -> getTrendingIds($this -> session -> get('location') -> id);
+    	if ($events) {
+    		$this -> filtersBuilder -> addFilter('searchId', $events);
+    	}
+
+    	$this -> filtersBuilder -> applyFilters();
+
+    	$this -> searchAction();
     }
 
     
@@ -101,9 +105,24 @@ class SearchController extends \Core\Controller
      * @Route("/{location:[A_Za-z\-]+}", methods={"GET", "POST"})
      * @Acl(roles={'guest','member'});
      */
-    public function featuredSearchAction()
+    public function featuredSearchAction($location)
     {
-    	_U::dump('featured');
+    	$this -> searchType = 'Featured';
+    	$this -> filtersBuilder -> setActiveGrid()
+						    	-> unsetMemberPreset()
+						    	-> unsetStartDate()
+						    	-> unsetEndDate();
+    	 
+    	$this -> setLocationByCity($location);
+    	
+    	$events = (new Featured()) -> getFeatured($this -> session -> get('location') -> id);
+    	if ($events) {
+    		$this -> filtersBuilder -> addFilter('searchId', array_keys($events));
+    	}
+    	
+    	$this -> filtersBuilder -> applyFilters();
+    	
+    	$this -> searchAction();
     }
     
     
@@ -121,6 +140,7 @@ class SearchController extends \Core\Controller
      */
     public function globalSearchAction($location, $arg1, $arg2 = '')
     {
+    	$this -> searchType = 'All';
 // http://events.apppicker.loc/las%20vegas-us/1mar-28may
 // $re = '/[A-Za-z\-]+';
 // $str = '';
@@ -154,6 +174,8 @@ class SearchController extends \Core\Controller
      */
     public function personalisedSearchAction($location, $arg1, $arg2 = '')
     {
+    	$this -> searchType = 'Personalised';
+    	
     	if (!$this -> filtersBuilder -> isFiltersInSession()) {
 	    	if ($arg1 == 'venues') $this -> filtersBuilder -> setActiveGrid('venue');
 	    	
@@ -188,7 +210,7 @@ class SearchController extends \Core\Controller
     	$this -> setTitleDates();
     	$this -> setTitleTitle();
 // _U::dump($this -> filtersBuilder -> getMemberPreset(), true);
-// _U::dump($this -> filtersBuilder -> getSearchFilters(), true);
+// _U::dump($this -> filtersBuilder -> getSearchFilters());
 // _U::dump($this -> filtersBuilder -> getFormFilters());
 // _U::dump($this -> currentGrid);
 
@@ -292,11 +314,7 @@ class SearchController extends \Core\Controller
     
     private function setTitleType()
     {
-   		$grids = $this -> currentGrid . 's';
-    	
-    	$this -> filtersBuilder -> getMemberPreset() 
-    				? $this -> pageTitle['type'] = 'Personalised ' . $grids 
-    				: $this -> pageTitle['type'] = 'All ' . $grids;
+   		$this -> pageTitle['type'] = $this -> searchType . ' ' . $this -> currentGrid . 's';
     	
     	return;
     }
@@ -314,7 +332,7 @@ class SearchController extends \Core\Controller
     {
     	$this -> pageTitle['date'] = '';
     
-    	if ($this -> currentGrid == 'event') {
+    	if ($this -> currentGrid == 'event' && $this -> filtersBuilder -> getFormFilters()['searchStartDate']) {
 	    	$this -> pageTitle['date'] = 'from '. date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchStartDate']))
 	    								.' to ' . date('jS F', strtotime($this -> filtersBuilder -> getFormFilters()['searchEndDate']));
     	}	
@@ -332,12 +350,13 @@ class SearchController extends \Core\Controller
     	return;
     }
     
-    private function showList()
+    
+    private function showList($result, $page)
     {
     }
     
     
-    private function showMap()
+    private function showMap($result, $page)
     {
     }
     

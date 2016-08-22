@@ -53,7 +53,6 @@ class FiltersBuilder extends Component
 //TODO: add administrative area.
 //TODO: problem here 12210 | Al Abageyah | Cairo Governorate | Egypt and in Japan
 					$formattedAddress = get_object_vars(json_decode($value));
-// 					$formattedAddress = $value;
 					$value = (new Location()) -> createOnChange(['city' => $formattedAddress[\Core\Geo::GMAPS_CITY], 
 																 'country' => $formattedAddress[\Core\Geo::GMAPS_COUNTRY],
 																 'administrative_area_level_1' => $formattedAddress[\Core\Geo::GMAPS_STATE],
@@ -143,7 +142,8 @@ class FiltersBuilder extends Component
 		if (array_search('personalPresetActive', $this -> filters) === false) {
 			$this -> unsetMemberPreset();
 		}
-
+// _U::dump($this -> filterSearch -> getFilters(), true);
+// _U::dump($this -> filterSearch -> getFromSession());
 		if ($this -> getMemberPreset()) {
 			// apply to tags
 			$this -> filterSearch -> applyMemberPreset();
@@ -260,7 +260,7 @@ class FiltersBuilder extends Component
 	}
 	
 	
-	protected function unsetMemberPreset()
+	public function unsetMemberPreset()
 	{
 		$this -> memberPreset = false;
 		$this -> session -> set('memberPreset', $this -> memberPreset);
@@ -349,4 +349,23 @@ class FiltersBuilder extends Component
 		return 'filterForm' . ucfirst($grid); 
 	}
 	
+	
+	public function unsetStartDate()
+	{
+		$this -> filterSearch -> deleteStartDate();
+		$filterFormName = $this -> getFilterFormName($this -> activeGrid);
+		$this -> $filterFormName -> deleteStartDate();
+
+		return $this;
+	}
+	
+	
+	public function unsetEndDate()
+	{
+		$this -> filterSearch -> deleteEndDate();
+		$filterFormName = $this -> getFilterFormName($this -> activeGrid);
+		$this -> $filterFormName -> deleteEndDate();
+			
+		return $this;
+	}
 }

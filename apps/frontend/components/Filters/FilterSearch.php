@@ -31,10 +31,10 @@ class FilterSearch extends FiltersBuilder
 	protected $compoundTitle			= null;
 	
 	/* @var array */
-	protected $searchIn				= [];
+	protected $searchId				= [];
 	
 	/* @var array */
-	protected $searchNotIn				= [];
+	protected $searchNotId				= [];
 
 	
 	
@@ -76,6 +76,22 @@ class FilterSearch extends FiltersBuilder
 	{
 		return $this -> searchEndDate;
 	}
+
+	
+	public function deleteStartDate()
+	{
+		$this -> searchStartDate = null;
+	
+		return $this;
+	}
+	
+	
+	public function deleteEndDate()
+	{
+		$this -> searchEndDate = null;
+	
+		return $this;
+	}
 	
 	
 	public function setTitle($arg)
@@ -109,8 +125,8 @@ class FilterSearch extends FiltersBuilder
 	
 	public function setIds($value, $isInSearch = true)
 	{
-		$isInSearch ? $this -> searchIn = $value 
-					: $this -> searchNotIn = $value;
+		$isInSearch ? $this -> searchId = $value 
+					: $this -> searchNotId = $value;
 		
 		return $this;
 	}

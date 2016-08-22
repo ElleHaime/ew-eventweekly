@@ -96,6 +96,22 @@ class FilterForm extends FiltersBuilder
 		
 		return $this;
 	}
+
+	
+	public function deleteStartDate()
+	{
+		$this -> searchStartDate = null;
+	
+		return $this;
+	}
+	
+	
+	public function deleteEndDate()
+	{
+		$this -> searchEndDate = null;
+	
+		return $this;
+	}
 	
 	
 	public function setTitle($arg)
