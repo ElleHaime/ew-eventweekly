@@ -1,0 +1,38 @@
+alter table venue drop column coordinates;
+alter table venue add column `fb_username` varchar(100) DEFAULT NULL after `fb_uid`;
+alter table venue add column `fb_url` text default null after `fb_username`;
+alter table venue add column `site` varchar(100) DEFAULT NULL;
+alter table venue add column `intro` text DEFAULT NULL;
+alter table venue add column `description` text DEFAULT NULL;
+alter table venue add column `worktime` text DEFAULT NULL;
+alter table venue add column `phone` varchar(100) DEFAULT NULL;
+alter table venue add column `email` varchar(100) DEFAULT NULL;
+alter table venue add column `transit` text DEFAULT NULL;
+alter table venue add column `pricerange` varchar(10) DEFAULT '$$ (10-30)';
+alter table venue add column `services` text DEFAULT NULL;
+alter table venue add column `specialties` text DEFAULT NULL;
+alter table venue add column `payment` text DEFAULT NULL;
+alter table venue add column `parking` text DEFAULT NULL;
+
+CREATE TABLE `venue_category` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`venue_id` int(10) unsigned NOT NULL,
+`category_id` int(10) unsigned NOT NULL,
+PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `venue_image` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`venue_id` int(11) unsigned NOT NULL,
+`image` varchar(255) DEFAULT NULL,
+`type` varchar(50) DEFAULT NULL,
+PRIMARY KEY (`id`)
+);
+
+
+CREATE TABLE `venue_tag` (
+`id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+`venue_id` int(11) unsigned NOT NULL,
+`tag_id` int(10) unsigned NOT NULL,
+PRIMARY KEY (`id`)
+);
